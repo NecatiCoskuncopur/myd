@@ -6,6 +6,7 @@ import { ValidationError } from 'yup';
 import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import messages from '@/lib/messages';
+import { validateRecaptcha } from '@/lib/recaptcha';
 import { sendSms } from '@/lib/sendSms';
 import welcomeMail from '@/mailTemplates/welcome.mail';
 import { Balance, User } from '@/models';
@@ -22,10 +23,13 @@ interface SignUpInput {
     line1?: string;
     city?: string;
   };
+  recaptchaToken: string;
 }
 
 const signUp = async (data: SignUpInput) => {
   try {
+    await validateRecaptcha(data.recaptchaToken);
+
     await createUserSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
