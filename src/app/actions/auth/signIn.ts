@@ -16,7 +16,7 @@ interface SignInInput {
   recaptchaToken: string;
 }
 
-export const signIn = async (data: SignInInput) => {
+const signIn = async (data: SignInInput) => {
   try {
     await validateRecaptcha(data.recaptchaToken);
 
@@ -66,3 +66,5 @@ export const signIn = async (data: SignInInput) => {
     throw error;
   }
 };
+
+export default signIn;

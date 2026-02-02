@@ -10,7 +10,7 @@ interface ForgotPasswordInput {
   email: string;
 }
 
-export const forgotPassword = async (data: ForgotPasswordInput) => {
+const forgotPassword = async (data: ForgotPasswordInput) => {
   try {
     const user = await User.findOne({ email: data.email });
 
@@ -44,3 +44,5 @@ export const forgotPassword = async (data: ForgotPasswordInput) => {
     throw error;
   }
 };
+
+export default forgotPassword;
