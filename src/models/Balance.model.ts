@@ -28,6 +28,6 @@ const BalanceScheme = new mongoose.Schema({
 
 BalanceScheme.plugin(mongoosePaginate);
 
-const BalanceModel = mongoose.models.Balance || mongoose.model('Balance', BalanceScheme);
+const Balance = mongoose.models.Balance || mongoose.model('Balance', BalanceScheme);
 
-export default BalanceModel;
+export default Balance;

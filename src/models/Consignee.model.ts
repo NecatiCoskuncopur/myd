@@ -17,6 +17,6 @@ const ConsigneeSchema = new mongoose.Schema({
   },
 });
 
-const ConsigneeModel = mongoose.models.Consignee || mongoose.model('Consignee', ConsigneeSchema);
+const Consignee = mongoose.models.Consignee || mongoose.model('Consignee', ConsigneeSchema);
 
-export default ConsigneeModel;
+export default Consignee;

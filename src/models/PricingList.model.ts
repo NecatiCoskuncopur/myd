@@ -30,6 +30,6 @@ const PricingListSchema = new mongoose.Schema({
 
 PricingListSchema.plugin(mongoosePaginate);
 
-const PricingListModel = mongoose.models.PricingList || mongoose.model('PricingList', PricingListSchema);
+const PricingList = mongoose.models.PricingList || mongoose.model('PricingList', PricingListSchema);
 
-export default PricingListModel;
+export default PricingList;

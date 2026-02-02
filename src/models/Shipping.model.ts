@@ -105,6 +105,6 @@ const ShippingSchema = new mongoose.Schema(
 
 ShippingSchema.plugin(mongoosePaginate);
 
-const ShippingModel = mongoose.models.Shipping || mongoose.model('Shipping', ShippingSchema);
+const Shipping = mongoose.models.Shipping || mongoose.model('Shipping', ShippingSchema);
 
-export default ShippingModel;
+export default Shipping;
