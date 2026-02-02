@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 
-import { StyledComponentsRegistry } from '@/lib';
+import StyledComponentsRegistry from '@/lib/StyledComponentsRegistry';
 import { GlobalStyles } from '@/styles';
 
 const Providers = ({ children }: { children: ReactNode }) => {
