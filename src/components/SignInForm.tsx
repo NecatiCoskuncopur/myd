@@ -10,24 +10,18 @@ import { Button, Col, Form, Input, message, Row, Typography } from 'antd';
 import signIn from '@/app/actions/auth/signIn';
 import HCaptchaField from './HCaptcha';
 
-interface SignInFormValues {
-  email: string;
-  password: string;
-  captcha: string;
-}
-
 const SignInForm = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const onFinish = (values: SignInFormValues) => {
+  const onFinish = (values: ISignInForm) => {
     startTransition(async () => {
       try {
         await signIn({
           email: values.email,
           password: values.password,
-          recaptchaToken: values.captcha,
+          recaptchaToken: values.recaptchaToken,
         });
 
         router.push('/panel');

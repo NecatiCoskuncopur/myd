@@ -7,17 +7,12 @@ import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import { User } from '@/models';
 
-interface ResetPasswordInput {
-  newPassword: string;
-  token: string;
-}
-
 interface ResetTokenPayload extends JwtPayload {
   userId: string;
   email: string;
 }
 
-const resetPassword = async (data: ResetPasswordInput) => {
+const resetPassword = async (data: IResetPasswordForm) => {
   try {
     await connectMongoDB();
 

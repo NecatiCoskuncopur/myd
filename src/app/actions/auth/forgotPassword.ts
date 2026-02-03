@@ -6,11 +6,7 @@ import MydMail from '@/lib/mailer';
 import forgotPasswordMail from '@/mailTemplates/forgotPassword.mail';
 import { User } from '@/models';
 
-interface ForgotPasswordInput {
-  email: string;
-}
-
-const forgotPassword = async (data: ForgotPasswordInput) => {
+const forgotPassword = async (data: IForgotPasswordForm) => {
   try {
     const user = await User.findOne({ email: data.email });
 

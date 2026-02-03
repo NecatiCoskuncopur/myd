@@ -12,21 +12,7 @@ import welcomeMail from '@/mailTemplates/welcome.mail';
 import { Balance, User } from '@/models';
 import createUserSchema from '@/schemas/createUser.schema';
 
-interface SignUpInput {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  company?: string;
-  phone?: string;
-  address?: {
-    line1?: string;
-    city?: string;
-  };
-  recaptchaToken: string;
-}
-
-const signUp = async (data: SignUpInput) => {
+const signUp = async (data: ISignUpForm) => {
   try {
     await validateRecaptcha(data.recaptchaToken);
 

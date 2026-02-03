@@ -10,13 +10,7 @@ import messages from '@/lib/messages';
 import { validateRecaptcha } from '@/lib/recaptcha';
 import { User } from '@/models';
 
-interface SignInInput {
-  email: string;
-  password: string;
-  recaptchaToken: string;
-}
-
-const signIn = async (data: SignInInput) => {
+const signIn = async (data: ISignInForm) => {
   try {
     await validateRecaptcha(data.recaptchaToken);
 
