@@ -7,8 +7,8 @@ import { BankOutlined, EnvironmentOutlined, LoadingOutlined, LockOutlined, MailO
 import { Button, Col, Form, Input, message, Row, Typography } from 'antd';
 
 import signUp from '@/app/actions/auth/signUp';
-import HCaptchaField from './HCaptcha';
 import SignUpSuccess from './SignUpSuccess';
+import HCaptchaField from '../HCaptcha';
 
 const SignUpForm = () => {
   const [form] = Form.useForm<ISignUpForm>();

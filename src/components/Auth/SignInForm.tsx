@@ -8,7 +8,7 @@ import { LoadingOutlined, LockOutlined, MailOutlined, UnlockOutlined } from '@an
 import { Button, Col, Form, Input, message, Row, Typography } from 'antd';
 
 import signIn from '@/app/actions/auth/signIn';
-import HCaptchaField from './HCaptcha';
+import HCaptchaField from '../HCaptcha';
 
 const SignInForm = () => {
   const [form] = Form.useForm();
