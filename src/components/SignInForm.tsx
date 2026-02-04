@@ -32,7 +32,7 @@ const SignInForm = () => {
           message.error('Giriş başarısız');
         }
 
-        form.resetFields(['captcha']);
+        form.resetFields(['recaptchaToken']);
       }
     });
   };
@@ -59,13 +59,13 @@ const SignInForm = () => {
             <Input.Password prefix={<LockOutlined />} />
           </Form.Item>
 
-          <Form.Item name="captcha" rules={[{ required: true, message: 'Lütfen doğrulamayı tamamlayın' }]} style={{ width: '100% ' }}>
+          <Form.Item name="recaptchaToken" rules={[{ required: true, message: 'Lütfen doğrulamayı tamamlayın' }]} style={{ width: '100% ' }}>
             <HCaptchaField
               onVerify={token => {
-                form.setFieldValue('captcha', token);
+                form.setFieldValue('recaptchaToken', token);
               }}
               onExpire={() => {
-                form.setFieldValue('captcha', '');
+                form.setFieldValue('recaptchaToken', '');
               }}
             />
           </Form.Item>
