@@ -14,7 +14,7 @@ interface IResetPasswordForm {
   token: string;
 }
 
-interface ISignUpForm extends ISignInForm {
+interface IEditUserForm extends IForgotPasswordForm {
   firstName: string;
   lastName: string;
   company?: string;
@@ -26,4 +26,9 @@ interface ISignUpForm extends ISignInForm {
     city: string;
     postalCode: string;
   };
+}
+
+interface ISignUpForm extends IEditUserForm {
+  password: string;
+  recaptchaToken: string;
 }
