@@ -1,4 +1,4 @@
-export default {
+const company = {
   name: 'MYD Export',
   contactName: 'Celalettin Narşap',
   phone: '905446453474',
@@ -16,3 +16,5 @@ export default {
   phonePretty: '+90 (544) 645 34 74',
   website: 'https://mydexport.com',
 };
+
+export default company;
