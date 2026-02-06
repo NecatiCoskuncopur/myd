@@ -52,3 +52,15 @@ interface IUserBalanceParams {
   page?: number;
   limit?: number;
 }
+
+interface IListShippingParams {
+  page?: number;
+  pageSize?: number;
+  senderName?: string;
+  consigneeName?: string;
+  consigneeCompany?: string;
+  consigneePhone?: string;
+  trackingNumber?: string;
+  startDate?: string;
+  endDate?: string;
+}
