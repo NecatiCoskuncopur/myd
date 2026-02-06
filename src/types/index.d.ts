@@ -47,3 +47,8 @@ interface IShippingStats {
   keys: string[];
   datas: number[];
 }
+
+interface IUserBalanceParams {
+  page?: number;
+  limit?: number;
+}
