@@ -8,6 +8,7 @@ import { CaretRightFilled, LoadingOutlined, LockOutlined } from '@ant-design/ico
 import { Button, Col, Form, Input, message, Row, Typography } from 'antd';
 
 import resetPassword from '@/app/actions/auth/resetPassword';
+import { formMessages } from '@/constants';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 
 interface IFormValues {
@@ -19,6 +20,7 @@ const ResetPasswordForm = () => {
   const { secret } = useParams<{ secret: string }>();
   const [isPending, startTransition] = useTransition();
   const [success, setSuccess] = useState(false);
+  const { required, minLength, maxLength } = formMessages;
 
   const onFinish = (values: IFormValues) => {
     if (values.newPassword !== values.newPasswordRepeat) {
@@ -71,11 +73,19 @@ const ResetPasswordForm = () => {
         </Row>
 
         <Form onFinish={onFinish} autoComplete="off" layout="vertical">
-          <Form.Item label="Yeni Parola" name="newPassword" rules={[{ required: true, message: 'Yeni parola zorunludur' }, { min: 8 }, { max: 255 }]}>
+          <Form.Item label="Yeni Parola" name="newPassword" rules={[{ required: true, message: required.newPassword }, { min: 8 }, { max: 255 }]}>
             <Input.Password prefix={<LockOutlined />} />
           </Form.Item>
 
-          <Form.Item label="Yeni Parola Tekrar" name="newPasswordRepeat" rules={[{ required: true }, { min: 8 }, { max: 255 }]}>
+          <Form.Item
+            label="Yeni Parola Tekrar"
+            name="newPasswordRepeat"
+            rules={[
+              { required: true, message: required.newPasswordRepeat },
+              { min: 8, message: minLength.password },
+              { max: 255, message: maxLength.password },
+            ]}
+          >
             <Input.Password prefix={<LockOutlined />} />
           </Form.Item>
 

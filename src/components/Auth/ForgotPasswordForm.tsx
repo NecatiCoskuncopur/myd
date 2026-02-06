@@ -7,12 +7,14 @@ import { CaretRightFilled, LoadingOutlined, MailOutlined } from '@ant-design/ico
 import { Button, Col, Form, Input, message, Row, Typography } from 'antd';
 
 import forgotPassword from '@/app/actions/auth/forgotPassword';
+import { formMessages } from '@/constants';
 import ForgotPasswordSuccess from './ForgotPasswordSuccess';
 
 const ForgotPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const [form] = Form.useForm();
   const [success, setSuccess] = useState(false);
+  const { required, valid } = formMessages;
 
   const onFinish = (values: IForgotPasswordForm) => {
     startTransition(async () => {
@@ -59,8 +61,8 @@ const ForgotPasswordForm = () => {
             label="E-Posta"
             name="email"
             rules={[
-              { required: true, message: 'E-posta zorunludur' },
-              { type: 'email', message: 'Geçerli bir e-posta girin' },
+              { required: true, message: required.email },
+              { type: 'email', message: valid.email },
             ]}
           >
             <Input prefix={<MailOutlined />} />
