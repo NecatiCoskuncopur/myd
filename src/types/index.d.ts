@@ -32,3 +32,8 @@ interface ISignUpForm extends IEditUserForm {
   password: string;
   recaptchaToken: string;
 }
+
+interface IChangePasswordForm {
+  currentPassword: string;
+  newPassword: string;
+}
