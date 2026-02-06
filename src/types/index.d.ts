@@ -42,3 +42,8 @@ interface IHeatMap {
   country: string;
   value: number;
 }
+
+interface IShippingStats {
+  keys: string[];
+  datas: number[];
+}
