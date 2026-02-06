@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Balance } from '@/models';
 
-export const getUserBalance = async ({ page = 1, limit = 10 }: IUserBalanceParams) => {
+const getUserBalance = async ({ page = 1, limit = 10 }: IUserBalanceParams) => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -45,3 +45,5 @@ export const getUserBalance = async ({ page = 1, limit = 10 }: IUserBalanceParam
     limit,
   };
 };
+
+export default getUserBalance;

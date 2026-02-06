@@ -8,7 +8,7 @@ import { Shipping } from '@/models';
 
 type ShippingStatsType = 'monthly' | 'yearly';
 
-export const shippingsStats = async (type: ShippingStatsType): Promise<IShippingStats> => {
+const shippingsStats = async (type: ShippingStatsType): Promise<IShippingStats> => {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     throw new Error('Yetkisiz İşlem');
