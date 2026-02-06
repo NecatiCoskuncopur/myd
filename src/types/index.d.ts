@@ -37,3 +37,8 @@ interface IChangePasswordForm {
   currentPassword: string;
   newPassword: string;
 }
+
+interface IHeatMap {
+  country: string;
+  value: number;
+}

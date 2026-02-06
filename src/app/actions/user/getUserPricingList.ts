@@ -3,7 +3,7 @@
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { PricingList, User } from '@/models';
 
-export const getUserPricingList = async () => {
+const getUserPricingList = async () => {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     throw new Error('Yetkisiz İşlem');
@@ -19,3 +19,5 @@ export const getUserPricingList = async () => {
 
   return pricingList;
 };
+
+export default getUserPricingList;

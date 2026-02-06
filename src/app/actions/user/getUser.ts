@@ -15,3 +15,5 @@ export const getUser = async () => {
 
   return user;
 };
+
+export default getUser;
