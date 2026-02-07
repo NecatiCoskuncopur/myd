@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import { User } from '@/models';
 
-export type UserRole = 'CUSTOMER' | 'OPERATOR ' | 'ADMIN';
+export type UserRole = 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
 
 export interface JwtPayload {
   userId: string;
