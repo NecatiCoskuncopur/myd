@@ -64,3 +64,53 @@ interface IListShippingParams {
   startDate?: string;
   endDate?: string;
 }
+
+interface IConsigneeInput {
+  _id?: string;
+  name: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+  taxId?: string;
+  address: {
+    line1: string;
+    line2?: string;
+    country: string;
+    state?: string;
+    city: string;
+    postalCode: string;
+  };
+}
+
+interface ICreateShippingForm {
+  senderId?: string;
+  consignee: IConsigneeInput;
+  detail: {
+    payor: {
+      shipping: 'SENDER' | 'CONSIGNEE';
+      customs: 'SENDER' | 'CONSIGNEE';
+    };
+    iossNumber?: string;
+    purpose: 'GIFT' | 'PERSONAL' | 'SAMPLE' | 'REPAIR_OR_RETURN' | 'COMMERCIAL';
+  };
+
+  content: {
+    currency: 'USD' | 'EUR' | 'GBP';
+    description?: string;
+    freight?: number;
+    products: Array<{
+      name: string;
+      piece: number;
+      unitPrice: number;
+      harmonizedCode?: string;
+    }>;
+  };
+
+  package: {
+    weight: number;
+    numberOfPackage: number;
+    width: number;
+    height: number;
+    length: number;
+  };
+}
