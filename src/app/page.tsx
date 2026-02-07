@@ -1,7 +1,15 @@
-import React from 'react';
+import { redirect } from 'next/navigation';
 
-const Home = () => {
-  return <div>Home</div>;
+import { getCurrentUser } from '@/lib/getCurrentUser';
+
+const Home = async () => {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser) {
+    redirect('/panel');
+  } else {
+    redirect('/kullanici/giris');
+  }
 };
 
 export default Home;
