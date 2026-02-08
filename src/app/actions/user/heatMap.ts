@@ -2,10 +2,12 @@
 
 import mongoose from 'mongoose';
 
+import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
 
 const heatMap = async (): Promise<IHeatMap[]> => {
+  await connectMongoDB();
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     throw new Error('Yetkisiz İşlem');

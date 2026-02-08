@@ -5,4 +5,5 @@ export { default as SignUpForm } from './Auth/SignUpForm';
 export { default as DashboardShell } from './Dashboard/DashboardShell';
 export { default as Footer } from './Dashboard/Footer';
 export { default as Header } from './Dashboard/Header';
+export { default as Overview } from './Dashboard/Overview';
 export { default as SideMenu } from './Dashboard/SideMenu';

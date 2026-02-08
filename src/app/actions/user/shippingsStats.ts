@@ -3,12 +3,14 @@
 import moment from 'moment';
 import mongoose from 'mongoose';
 
+import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
 
 type ShippingStatsType = 'monthly' | 'yearly';
 
 const shippingsStats = async (type: ShippingStatsType): Promise<IShippingStats> => {
+  await connectMongoDB();
   const currentUser = await getCurrentUser();
   if (!currentUser) {
     throw new Error('Yetkisiz İşlem');

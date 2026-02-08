@@ -11,13 +11,6 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     box-sizing: border-box;
   }
-
-  body {
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-  }
 `;
 
 export default GlobalStyles;

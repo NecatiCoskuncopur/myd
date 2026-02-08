@@ -12,30 +12,30 @@ interface MongooseCache {
 }
 
 const globalForMongoose = globalThis as typeof globalThis & {
-  mongoose?: MongooseCache;
+  _mongoose?: MongooseCache;
 };
 
+const cached: MongooseCache = globalForMongoose._mongoose ?? {
+  conn: null,
+  promise: null,
+};
+
+globalForMongoose._mongoose = cached;
+
 const connectMongoDB = async (): Promise<typeof mongoose> => {
-  if (globalForMongoose.mongoose?.conn) {
-    return globalForMongoose.mongoose.conn;
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  if (!globalForMongoose.mongoose) {
-    globalForMongoose.mongoose = {
-      conn: null,
-      promise: null,
-    };
-  }
-
-  if (!globalForMongoose.mongoose.promise) {
-    globalForMongoose.mongoose.promise = mongoose.connect(MONGODB_URI, {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
     });
   }
 
-  globalForMongoose.mongoose.conn = await globalForMongoose.mongoose.promise;
+  cached.conn = await cached.promise;
 
-  return globalForMongoose.mongoose.conn;
+  return cached.conn;
 };
 
 export default connectMongoDB;

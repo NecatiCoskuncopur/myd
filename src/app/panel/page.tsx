@@ -1,5 +1,7 @@
+import { Overview } from '@/components';
+
 const PanelPage = async () => {
-  return <div>panel</div>;
+  return <Overview />;
 };
 
 export default PanelPage;
