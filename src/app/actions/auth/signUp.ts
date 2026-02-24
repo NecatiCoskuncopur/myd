@@ -8,7 +8,7 @@ import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import { sendSms } from '@/lib/sendSms';
 import validateRecaptcha from '@/lib/validateRecaptcha';
-import { User } from '@/models';
+import { Balance, User } from '@/models';
 import createUserSchema from '@/schema/createUser.schema';
 
 const signUp = async (data: ISignUpPayload): Promise<IActionResponse> => {
@@ -53,7 +53,7 @@ const signUp = async (data: ISignUpPayload): Promise<IActionResponse> => {
       password: hashedPassword,
     });
 
-    // await Balance.create({ userId: newUser._id });
+    await Balance.create({ userId: newUser._id });
 
     try {
       await MydMail.sendMail({
