@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: myd
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs_app
+    working_dir: /app
+    ports:
+      - '3000:3000'
+    environment:
+      MONGODB_URI: mongodb://root:rootpassword@mongo:27017/myd?authSource=admin
+      CHOKIDAR_USEPOLLING: 'true'
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: yarn dev
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
