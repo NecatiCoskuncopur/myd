@@ -3,3 +3,7 @@ interface IActionResponse<T = undefined> {
   data?: T;
   message?: string;
 }
+
+interface IForgotPasswordPayload {
+  email: string;
+}
