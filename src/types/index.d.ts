@@ -12,3 +12,14 @@ interface IResetPasswordPayload {
   newPassword: string;
   token: string;
 }
+
+interface ISignInPayload {
+  email: string;
+  password: string;
+  recaptchaToken: string;
+}
+
+interface ISignInResponse {
+  role: string;
+  barcodePermits: number;
+}

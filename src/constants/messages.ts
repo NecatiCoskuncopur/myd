@@ -14,6 +14,12 @@ const messages = {
     MAX: 'Parola en fazla 255 karakter olmalı.',
     REQUIRED: 'Parola zorunludur.',
   },
+  EMAIL: {
+    TYPE: 'E-Posta adresi metin tipinde olmalı.',
+    INVALID: 'E-Posta adresi geçersiz',
+    REQUIRED: 'E-Posta adresi zorunludur.',
+  },
+
   TOKEN: {
     TYPE: 'Token metin tipinde olmalı',
     REQUIRED: 'Token zorunludur.',
