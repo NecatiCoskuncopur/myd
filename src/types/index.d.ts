@@ -23,3 +23,20 @@ interface ISignInResponse {
   role: string;
   barcodePermits: number;
 }
+
+interface ISignUpPayload {
+  email: string;
+  password: string;
+  recaptchaToken: string;
+  firstName: string;
+  lastName: string;
+  company?: string;
+  phone: string;
+  address: {
+    line1: string;
+    line2?: string;
+    district: string;
+    city: string;
+    postalCode: string;
+  };
+}
