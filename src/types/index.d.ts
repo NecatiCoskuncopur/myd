@@ -7,3 +7,8 @@ interface IActionResponse<T = undefined> {
 interface IForgotPasswordPayload {
   email: string;
 }
+
+interface IResetPasswordPayload {
+  newPassword: string;
+  token: string;
+}
