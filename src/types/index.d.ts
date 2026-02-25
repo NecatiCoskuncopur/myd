@@ -165,3 +165,12 @@ interface IPricingList {
   createdAt: Date;
   updatedAt: Date;
 }
+
+interface ShippingStatsParams {
+  type: 'monthly' | 'yearly';
+}
+
+interface IShippingStats {
+  keys: string[];
+  datas: number[];
+}

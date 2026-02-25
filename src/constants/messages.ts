@@ -80,6 +80,9 @@ const messages = {
     NOT_FOUND: 'Fiyat listesi bulunamadı',
     USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
   },
+  SHIPPINGSTATS: {
+    INVALID_TYPE: 'Geçersiz gönderi tipi.',
+  },
 } as const;
 
 export default messages;
