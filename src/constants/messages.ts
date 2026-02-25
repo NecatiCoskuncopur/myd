@@ -16,6 +16,8 @@ const messages = {
     MAX: 'Parola en fazla 255 karakter olmalı.',
     REQUIRED: 'Parola zorunludur.',
     REPEAT: 'Lütfen parolanızı tekrar girin.',
+    CURRENT_INVALID: 'Mevcut parola yanlış.',
+    SAME_AS_OLD: 'Yeni parola eskisiyle aynı olamaz.',
   },
   EMAIL: {
     TYPE: 'E-Posta adresi metin tipinde olmalı.',

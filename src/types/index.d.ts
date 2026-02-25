@@ -86,3 +86,10 @@ interface IConsignee {
 interface IConsigneeData extends IPaginationResponse {
   consignees: IConsignee[];
 }
+
+//USER
+
+interface IChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
