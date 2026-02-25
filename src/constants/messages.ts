@@ -76,6 +76,10 @@ const messages = {
     REQUIRED: 'Posta Kodu zorunludur.',
   },
   CAPTCHA: { REQUIRED: 'Lütfen doğrulamayı tamamlayın' },
+  PRICINGLIST: {
+    NOT_FOUND: 'Fiyat listesi bulunamadı',
+    USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
+  },
 } as const;
 
 export default messages;

@@ -150,3 +150,18 @@ interface IUserBalance {
 interface IUserBalanceData extends IPaginationResponse {
   balances: IUserBalance[];
 }
+
+interface IPricingList {
+  _id: string;
+  name: string;
+  zone: {
+    number: number;
+    prices: {
+      weight?: number;
+      price?: number;
+    }[];
+    than?: number;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
+}
