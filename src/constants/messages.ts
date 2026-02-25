@@ -2,6 +2,7 @@ const messages = {
   GENERAL: {
     UNEXPECTED_ERROR: 'Beklenmeyen bir hata oluştu',
     UNAUTHORIZED: 'Yetkisiz işlem',
+    USER_NOT_FOUND: 'Kullanıcı bulunamadı.',
   },
   AUTH: {
     INVALID_CREDENTIALS: 'E-posta adresi veya parola hatalı!',
@@ -23,6 +24,7 @@ const messages = {
     TYPE: 'E-Posta adresi metin tipinde olmalı.',
     INVALID: 'E-Posta adresi geçersiz',
     REQUIRED: 'E-Posta adresi zorunludur.',
+    EXIST: 'Bu E-Posta adresi zaten kayıtlı!',
   },
   TOKEN: {
     TYPE: 'Token metin tipinde olmalı',
@@ -57,19 +59,19 @@ const messages = {
     REQUIRED: 'Adres zorunludur.',
   },
   DISTRICT: {
-    TYPE: 'İlçe dizi tipinde olmalı',
+    TYPE: 'İlçe metin tipinde olmalı',
     MIN: 'İlçe en az 2 karakter olmalı.',
     MAX: 'İlçe en fazla 25 karakter olmalı.',
     REQUIRED: 'İlçe zorunludur.',
   },
   CITY: {
-    TYPE: 'Şehir dizi tipinde olmalı',
+    TYPE: 'Şehir metin tipinde olmalı',
     MIN: 'Şehir en az 2 karakter olmalı.',
     MAX: 'Şehir en fazla 35 karakter olmalı.',
     REQUIRED: 'Şehir zorunludur.',
   },
   POSTALCODE: {
-    TYPE: 'Posta kodu dizi tipinde olmalıdır.',
+    TYPE: 'Posta kodu metin tipinde olmalıdır.',
     LENGTH: 'Posta Kodu  5 karakter olmalı.',
     REQUIRED: 'Posta Kodu zorunludur.',
   },

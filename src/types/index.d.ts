@@ -93,3 +93,18 @@ interface IChangePasswordPayload {
   currentPassword: string;
   newPassword: string;
 }
+
+interface IEditUserPayload {
+  email: string;
+  firstName: string;
+  lastName: string;
+  company?: string;
+  phone: string;
+  address: {
+    line1: string;
+    line2?: string;
+    district: string;
+    city: string;
+    postalCode: string;
+  };
+}
