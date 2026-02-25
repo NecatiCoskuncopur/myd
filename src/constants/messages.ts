@@ -69,6 +69,7 @@ const messages = {
     LENGTH: 'Posta Kodu  5 karakter olmalı.',
     REQUIRED: 'Posta Kodu zorunludur.',
   },
+  CAPTCHA: { REQUIRED: 'Lütfen doğrulamayı tamamlayın' },
 } as const;
 
 export default messages;
