@@ -131,3 +131,22 @@ interface IUser {
   createdAt: Date;
   updatedAt: Date;
 }
+
+interface IUserBalance {
+  _id: string;
+  userId: string;
+  total?: number;
+  transactions: {
+    transactionType: 'PAY' | 'SPEND';
+    amount?: number;
+    shippingId?: string;
+    note?: string;
+    createdAt: Date;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IUserBalanceData extends IPaginationResponse {
+  balances: IUserBalance[];
+}
