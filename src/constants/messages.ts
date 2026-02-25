@@ -1,6 +1,7 @@
 const messages = {
   GENERAL: {
     UNEXPECTED_ERROR: 'Beklenmeyen bir hata oluştu',
+    UNAUTHORIZED: 'Yetkisiz işlem',
   },
   AUTH: {
     INVALID_CREDENTIALS: 'E-posta adresi veya parola hatalı!',
