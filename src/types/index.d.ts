@@ -19,6 +19,17 @@ interface IPaginationResponse {
   hasNextPage: boolean;
 }
 
+//SIDEBAR
+interface ISidebarItem {
+  key: string;
+  label: string;
+  icon?: ReactNode;
+  path?: string;
+  external?: boolean;
+  action?: () => void;
+  children?: ISidebarItem[];
+}
+
 //AUTH
 interface IForgotPasswordPayload {
   email: string;
