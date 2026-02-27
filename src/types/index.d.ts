@@ -143,23 +143,19 @@ interface IUser {
   updatedAt: Date;
 }
 
-interface IUserBalance {
-  _id: string;
-  userId: string;
-  total?: number;
-  transactions: {
-    transactionType: 'PAY' | 'SPEND';
-    amount?: number;
-    shippingId?: string;
-    note?: string;
-    createdAt: Date;
-  }[];
+interface IUserTransaction {
+  transactionType: 'PAY' | 'SPEND';
+  amount?: number;
+  shippingId?: string;
+  note?: string;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 interface IUserBalanceData extends IPaginationResponse {
-  balances: IUserBalance[];
+  balanceId: string;
+  userId: string;
+  total?: number;
+  transactions: IUserTransaction[];
 }
 
 interface IPricingList {

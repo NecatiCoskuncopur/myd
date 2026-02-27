@@ -10,6 +10,7 @@ import { Balance } from '@/models';
 const getUserBalance = async (params: IPaginationParams): Promise<IActionResponse<IUserBalanceData>> => {
   try {
     await connectMongoDB();
+
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
@@ -18,43 +19,64 @@ const getUserBalance = async (params: IPaginationParams): Promise<IActionRespons
         message: messages.GENERAL.UNAUTHORIZED,
       };
     }
+
     const page = Math.max(1, params.page ?? 1);
     const limit = Math.max(1, params.limit ?? 5);
-
     const skip = (page - 1) * limit;
 
-    const [result] = await Balance.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(currentUser.id),
-        },
-      },
-      { $unwind: '$transactions' },
-      { $sort: { 'transactions.createdAt': -1 } },
-      {
-        $facet: {
-          docs: [{ $skip: skip }, { $limit: limit }],
-          totalCount: [{ $count: 'count' }],
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          totalCount: {
-            $ifNull: [{ $arrayElemAt: ['$totalCount.count', 0] }, 0],
-          },
-        },
-      },
-    ]);
+    const balance = await Balance.findOne({
+      userId: new mongoose.Types.ObjectId(currentUser.id),
+    }).lean<{
+      _id: mongoose.Types.ObjectId;
+      userId: mongoose.Types.ObjectId;
+      total?: number;
+      transactions: {
+        transactionType: 'PAY' | 'SPEND';
+        amount?: number;
+        shippingId?: mongoose.Types.ObjectId;
+        note?: string;
+        createdAt: Date;
+      }[];
+    }>();
 
-    const totalCount = result?.totalCount ?? 0;
+    if (!balance) {
+      return {
+        status: 'OK',
+        data: {
+          balanceId: '',
+          userId: currentUser.id,
+          total: 0,
+          transactions: [],
+          totalCount: 0,
+          page,
+          limit,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+    }
 
+    const sortedTransactions = [...balance.transactions].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    const totalCount = sortedTransactions.length;
     const totalPages = totalCount > 0 ? Math.ceil(totalCount / limit) : 1;
+
+    const paginatedTransactions = sortedTransactions.slice(skip, skip + limit).map<IUserTransaction>(tx => ({
+      transactionType: tx.transactionType,
+      amount: tx.amount,
+      shippingId: tx.shippingId?.toString(),
+      note: tx.note,
+      createdAt: tx.createdAt,
+    }));
 
     return {
       status: 'OK',
       data: {
-        balances: result?.doc ?? [],
+        balanceId: balance._id.toString(),
+        userId: balance.userId.toString(),
+        total: balance.total,
+        transactions: paginatedTransactions,
         totalCount,
         page,
         limit,
