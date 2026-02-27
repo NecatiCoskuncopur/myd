@@ -85,7 +85,9 @@ const messages = {
   SHIPPINGSTATS: {
     INVALID_TYPE: 'Geçersiz gönderi tipi.',
   },
-  CHANGE_PASSWORD: {},
+  EDITUSER: {
+    SUCCESS: 'Bilgileriniz başarıyla güncellendi.',
+  },
 } as const;
 
 export default messages;

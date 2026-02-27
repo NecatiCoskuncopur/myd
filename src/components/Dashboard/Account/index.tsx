@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Box, Paper, Tab, Tabs } from '@mui/material';
 
 import ChangePasswordForm from './ChangePasswordForm';
+import EditUserForm from './EditUserForm';
 const ProfileSections = () => {
   const [value, setValue] = useState<number>(0);
 
@@ -20,7 +21,7 @@ const ProfileSections = () => {
       </Tabs>
 
       <Box sx={{ mt: 3 }}>
-        {/* {value === 0 && <EditUserForm />} */}
+        {value === 0 && <EditUserForm />}
         {value === 1 && <ChangePasswordForm />}
       </Box>
     </Paper>

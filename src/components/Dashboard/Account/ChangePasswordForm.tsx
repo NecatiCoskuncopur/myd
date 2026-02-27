@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import changePassword from '@/app/actions/user/changePassword';
 import { messages } from '@/constants';
 
+const { GENERAL, PASSWORD } = messages;
+
 const ChangePasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +27,7 @@ const ChangePasswordForm = () => {
 
   const onSubmit = (values: IChangePasswordFormUI) => {
     if (values.newPassword !== values.newPasswordRepeat) {
-      setSnackbar({ open: true, message: messages.PASSWORD.DO_NOT_MATCH, severity: 'error' });
+      setSnackbar({ open: true, message: PASSWORD.DO_NOT_MATCH, severity: 'error' });
       return;
     }
 
@@ -44,11 +46,11 @@ const ChangePasswordForm = () => {
           });
           return;
         }
-        setSnackbar({ open: true, message: messages.PASSWORD.SUCCESS, severity: 'success' });
+        setSnackbar({ open: true, message: PASSWORD.SUCCESS, severity: 'success' });
         reset();
       } catch (error: unknown) {
         const err = error as Error;
-        setSnackbar({ open: true, message: err.message || messages.GENERAL.UNEXPECTED_ERROR, severity: 'error' });
+        setSnackbar({ open: true, message: err.message || GENERAL.UNEXPECTED_ERROR, severity: 'error' });
       }
     });
   };
@@ -67,7 +69,11 @@ const ChangePasswordForm = () => {
             fullWidth
             margin="normal"
             disabled={isPending}
-            {...register('currentPassword', { required: 'Zorunlu alan' })}
+            {...register('currentPassword', {
+              required: PASSWORD.REQUIRED,
+              minLength: { value: 8, message: PASSWORD.MIN },
+              maxLength: { value: 255, message: PASSWORD.MAX },
+            })}
             error={!!errors.currentPassword}
             helperText={errors.currentPassword?.message}
             InputProps={{
@@ -92,7 +98,11 @@ const ChangePasswordForm = () => {
             fullWidth
             margin="normal"
             disabled={isPending}
-            {...register('newPassword', { required: 'Zorunlu alan', minLength: { value: 8, message: 'Min 8 karakter' } })}
+            {...register('newPassword', {
+              required: PASSWORD.REQUIRED,
+              minLength: { value: 8, message: PASSWORD.MIN },
+              maxLength: { value: 255, message: PASSWORD.MAX },
+            })}
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
             InputProps={{
@@ -117,7 +127,9 @@ const ChangePasswordForm = () => {
             fullWidth
             margin="normal"
             disabled={isPending}
-            {...register('newPasswordRepeat', { required: 'Zorunlu alan' })}
+            {...register('newPasswordRepeat', {
+              required: PASSWORD.REPEAT,
+            })}
             error={!!errors.newPasswordRepeat}
             helperText={errors.newPasswordRepeat?.message}
             InputProps={{
