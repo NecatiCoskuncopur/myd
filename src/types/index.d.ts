@@ -158,17 +158,21 @@ interface IUserBalanceData extends IPaginationResponse {
   transactions: IUserTransaction[];
 }
 
-interface IPricingList {
-  _id: string;
+interface IPricingPrice {
+  weight?: number;
+  price?: number;
+}
+
+interface IPricingZone {
+  number: number;
+  than?: number;
+  prices: IPricingPrice[];
+}
+
+interface IUserPricingListData extends IPaginationResponse {
+  pricingListId: string;
   name: string;
-  zone: {
-    number: number;
-    prices: {
-      weight?: number;
-      price?: number;
-    }[];
-    than?: number;
-  }[];
+  zones: IPricingZone[];
   createdAt: Date;
   updatedAt: Date;
 }
