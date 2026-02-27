@@ -19,6 +19,8 @@ const messages = {
     REPEAT: 'Lütfen parolanızı tekrar girin.',
     CURRENT_INVALID: 'Mevcut parola yanlış.',
     SAME_AS_OLD: 'Yeni parola eskisiyle aynı olamaz.',
+    DO_NOT_MATCH: 'Parolalar eşleşmiyor',
+    SUCCESS: 'Parolanız başarıyla güncellendi.',
   },
   EMAIL: {
     TYPE: 'E-Posta adresi metin tipinde olmalı.',
@@ -83,6 +85,7 @@ const messages = {
   SHIPPINGSTATS: {
     INVALID_TYPE: 'Geçersiz gönderi tipi.',
   },
+  CHANGE_PASSWORD: {},
 } as const;
 
 export default messages;
