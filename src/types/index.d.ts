@@ -189,3 +189,11 @@ interface IShippingStats {
   keys: string[];
   datas: number[];
 }
+
+//ADMIN
+interface IAddTransactionUserBalance {
+  userId: string;
+  amount: number;
+  type: 'PAY' | 'SPEND';
+  note?: string;
+}

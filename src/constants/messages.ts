@@ -92,6 +92,17 @@ const messages = {
     ERROR: 'Bakiye işlenirken hata oluştu!',
     INVALID: 'Bakiye işlem tipi geçersiz.',
   },
+  TRANSACTION: {
+    USERID_TYPE: 'Kullanıcı ID değeri string tipinde olmalıdır.',
+    USERID_REQUIRED: 'Kullanıcı ID zorunludur.',
+    TYPE_INVALID: 'İşlem tipi geçersiz',
+    TYPE_REQUIRED: 'İşlem tipi zorunludur.',
+    AMOUNT_TYPE: 'İşlem miktarı sayı tipinde olmalıdır.',
+    AMOUNT_REQUIRED: 'İşlem miktarı zorunludur.',
+    AMOUNT_MIN: 'İşlem miktarı 0.01 den küçük olamaz',
+    NOTE_TYPE: 'İşlem notu dizi tipinde olmalı.',
+    NOTE_MAX: 'İşlem notu en fazla 35 karakter olmalı.',
+  },
 } as const;
 
 export default messages;
