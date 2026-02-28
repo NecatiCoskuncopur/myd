@@ -210,3 +210,11 @@ interface IListAllUsersParams extends IPaginationParams {
 interface IUsersData extends IPaginationResponse {
   users: IUser[];
 }
+
+interface ISetUserPayload extends IEditUserPayload {
+  userId: string;
+  priceListId: string;
+  role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
+  isActive: boolean;
+  barcodePermits: string[];
+}

@@ -81,6 +81,8 @@ const messages = {
   PRICINGLIST: {
     NOT_FOUND: 'Fiyat listesi bulunamadı',
     USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
+    TYPE: 'Fiyat listesi dizi tipinde olmalıdır.',
+    REQUIRED: 'Fiyat listesi zorunludur.',
   },
   SHIPPINGSTATS: {
     INVALID_TYPE: 'Geçersiz gönderi tipi.',
@@ -102,6 +104,17 @@ const messages = {
     AMOUNT_MIN: 'İşlem miktarı 0.01 den küçük olamaz',
     NOTE_TYPE: 'İşlem notu dizi tipinde olmalı.',
     NOTE_MAX: 'İşlem notu en fazla 35 karakter olmalı.',
+  },
+  ROLE: {
+    INVALID: 'Kullanıcı rolü geçersiz.',
+    REQUIRED: 'Kullanıcı rolü zorunludur.',
+  },
+  ISACTIVE: {
+    TYPE: 'Kullanıcı aktiflik değeri boolean formatında olmalıdır',
+    REQUIRED: 'Kullanıcı aktiflik değeri zorunludur.',
+  },
+  BARCODE_PERMITS: {
+    INVALID: 'Barkod izni geçersiz.',
   },
 } as const;
 
