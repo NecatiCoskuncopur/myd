@@ -218,3 +218,18 @@ interface ISetUserPayload extends IEditUserPayload {
   isActive: boolean;
   barcodePermits: string[];
 }
+
+interface IPricingList {
+  _id: string;
+  name: string;
+  zone: {
+    number: number;
+    prices: {
+      weight?: number;
+      price?: number;
+    }[];
+    than?: number;
+  }[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
