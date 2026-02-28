@@ -197,3 +197,16 @@ interface IAddTransactionUserBalance {
   type: 'PAY' | 'SPEND';
   note?: string;
 }
+
+interface IListAllUsersParams extends IPaginationParams {
+  balanceSorting?: string;
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+}
+
+interface IUsersData extends IPaginationResponse {
+  users: IUser[];
+}
