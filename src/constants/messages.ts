@@ -88,6 +88,10 @@ const messages = {
   EDITUSER: {
     SUCCESS: 'Bilgileriniz başarıyla güncellendi.',
   },
+  BALANCE: {
+    ERROR: 'Bakiye işlenirken hata oluştu!',
+    INVALID: 'Bakiye işlem tipi geçersiz.',
+  },
 } as const;
 
 export default messages;
