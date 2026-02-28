@@ -116,6 +116,15 @@ const messages = {
   BARCODE_PERMITS: {
     INVALID: 'Barkod izni geçersiz.',
   },
+  COUNTRY: {
+    NOT_FOUND: 'Ülke bulunamadı',
+  },
+  PRICING: {
+    NOT_FOUND: 'Fiyatlandırma bulunamadı.',
+  },
+  PRICE: {
+    NOT_FOUND: 'Fiyat bulunamadı.',
+  },
 } as const;
 
 export default messages;
