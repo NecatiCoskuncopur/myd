@@ -233,3 +233,9 @@ interface IPricingList {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+interface IManualLabelPayload {
+  id: string;
+  firm: string;
+  trackingNumber: string;
+}

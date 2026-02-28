@@ -125,6 +125,10 @@ const messages = {
   PRICE: {
     NOT_FOUND: 'Fiyat bulunamadı.',
   },
+  SHIPPING: {
+    NOT_FOUND: 'GÖnderi bulunamadı',
+    ALREADY_LABELED: 'Gönderi zaten etiketlenmiş',
+  },
 } as const;
 
 export default messages;
