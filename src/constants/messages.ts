@@ -129,6 +129,10 @@ const messages = {
     NOT_FOUND: 'GÖnderi bulunamadı',
     ALREADY_LABELED: 'Gönderi zaten etiketlenmiş',
   },
+  PRINTER: {
+    ERROR: 'Yazıcı servis hatası!',
+    NOT_FOUND: 'Yazıcı servisi bulunamadı',
+  },
 } as const;
 
 export default messages;
