@@ -1,0 +1,74 @@
+'use server';
+
+import { ValidationError } from 'yup';
+
+import { messages } from '@/constants';
+import connectMongoDB from '@/lib/db';
+import { getCurrentUser } from '@/lib/getCurrentUser';
+import { User } from '@/models';
+import editUserSchema from '@/schemas/editUser.schema';
+
+const { GENERAL, USER } = messages;
+
+const editUser = async (data: IEditUserPayload): Promise<IActionResponse> => {
+  try {
+    await connectMongoDB();
+
+    const validatedData = await editUserSchema.validate(data, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return {
+        status: 'ERROR',
+        message: GENERAL.UNAUTHORIZED,
+      };
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUser.id,
+      {
+        $set: validatedData,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!updatedUser) {
+      return {
+        status: 'ERROR',
+        message: USER.NOT_FOUND,
+      };
+    }
+
+    return {
+      status: 'OK',
+      message: USER.SUCCESS,
+    };
+  } catch (error: unknown) {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+      return {
+        status: 'ERROR',
+        message: USER.EMAIL.EXIST,
+      };
+    }
+
+    if (error instanceof ValidationError) {
+      return {
+        status: 'ERROR',
+        message: error.errors.join(', '),
+      };
+    }
+
+    return {
+      status: 'ERROR',
+      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+    };
+  }
+};
+
+export default editUser;

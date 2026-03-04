@@ -85,6 +85,8 @@ const messages = {
   },
   USER: {
     EXIST: 'Kullanıcı zaten mevcut.',
+    NOT_FOUND: 'Kullanıcı bulunamadı.',
+    SUCCESS: 'Kullanıcı başarıyla güncellendi.',
     EMAIL: {
       TYPE: 'E-Posta adresi metin tipinde olmalı.',
       INVALID: 'E-Posta adresi geçersiz',

@@ -68,10 +68,8 @@ interface ISignInPayload {
   recaptchaToken: string;
 }
 
-interface ISignUpPayload {
+interface IEditUserPayload {
   email: string;
-  password: string;
-  recaptchaToken: string;
   firstName: string;
   lastName: string;
   company?: string;
@@ -83,6 +81,11 @@ interface ISignUpPayload {
     city: string;
     postalCode: string;
   };
+}
+
+interface ISignUpPayload extends IEditUserPayload {
+  password: string;
+  recaptchaToken: string;
 }
 
 interface IForgotPasswordPayload {
