@@ -18,6 +18,12 @@ const messages = {
     SHIPMENT_FAILED: 'Gönderim başarısız oldu',
     TRACKING_NUMBER_NOT_FOUND: 'Takip numarası bulunamadı.',
   },
+  CAPTCHA: {
+    SECRET_MISSING: 'Captcha secret bilgisi eksik.',
+    TOKEN_MISSING: 'Captcha token bilgisi eksik.',
+    INVALID: 'Geçersiz Captcha!',
+    SERVER_ERROR: 'Captcha doğrulama sunucusundan yanıt alınamadı.',
+  },
   GENERAL: {
     UNEXPECTED_ERROR: 'Beklenmeyen bir hata oluştu',
     UNAUTHORIZED: 'Yetkisiz işlem',
