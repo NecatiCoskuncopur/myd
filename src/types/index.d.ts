@@ -84,3 +84,7 @@ interface ISignUpPayload {
     postalCode: string;
   };
 }
+
+interface IForgotPasswordPayload {
+  email: string;
+}
