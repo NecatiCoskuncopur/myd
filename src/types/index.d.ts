@@ -93,3 +93,8 @@ interface IResetPasswordPayload {
   newPassword: string;
   token: string;
 }
+
+interface IChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
