@@ -116,6 +116,10 @@ const messages = {
       REQUIRED: 'Cep telefonu numarası zorunludur.',
     },
   },
+  PRICINGLIST: {
+    NOT_FOUND: 'Fiyat listesi bulunamadı',
+    USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
+  },
 } as const;
 
 export default messages;
