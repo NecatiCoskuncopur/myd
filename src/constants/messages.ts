@@ -1,11 +1,34 @@
 const messages = {
   ADDRESS: {
+    CITY: {
+      TYPE: 'Şehir metin tipinde olmalı',
+      MIN: 'Şehir en az 2 karakter olmalı.',
+      MAX: 'Şehir en fazla 35 karakter olmalı.',
+      REQUIRED: 'Şehir zorunludur.',
+    },
     COUNTRY: {
       NOT_FOUND: 'Ülke bulunamadı',
       TYPE: 'Ülke metin tipinde olmalı',
       MIN: 'Ülke en az 2 karakter olabilir.',
       MAX: 'Ülke en fazla 45 karakter olabilir.',
       REQUIRED: 'Ülke zorunludur.',
+    },
+    DISTRICT: {
+      TYPE: 'İlçe metin tipinde olmalı',
+      MIN: 'İlçe en az 2 karakter olmalı.',
+      MAX: 'İlçe en fazla 25 karakter olmalı.',
+      REQUIRED: 'İlçe zorunludur.',
+    },
+    LINE: {
+      TYPE: 'Adres metin tipinde olmalı.',
+      MIN: 'Adres en az 5 karakter olmalı.',
+      MAX: 'Adres en fazla 255 karakter olmalı',
+      REQUIRED: 'Adres zorunludur.',
+    },
+    POSTALCODE: {
+      TYPE: 'Posta kodu metin tipinde olmalıdır.',
+      LENGTH: 'Posta Kodu  5 karakter olmalı.',
+      REQUIRED: 'Posta Kodu zorunludur.',
     },
   },
   AUTH: {
@@ -31,12 +54,7 @@ const messages = {
     INVALID: 'Geçersiz Captcha!',
     SERVER_ERROR: 'Captcha doğrulama sunucusundan yanıt alınamadı.',
   },
-  EMAIL: {
-    TYPE: 'E-Posta adresi metin tipinde olmalı.',
-    INVALID: 'E-Posta adresi geçersiz',
-    REQUIRED: 'E-Posta adresi zorunludur.',
-    EXIST: 'Bu E-Posta adresi zaten kayıtlı!',
-  },
+
   GENERAL: {
     UNEXPECTED_ERROR: 'Beklenmeyen bir hata oluştu',
     UNAUTHORIZED: 'Yetkisiz işlem',
@@ -63,6 +81,37 @@ const messages = {
   TOKEN: {
     TYPE: 'Token metin tipinde olmalı',
     REQUIRED: 'Token zorunludur.',
+  },
+  USER: {
+    EXIST: 'Kullanıcı zaten mevcut.',
+    EMAIL: {
+      TYPE: 'E-Posta adresi metin tipinde olmalı.',
+      INVALID: 'E-Posta adresi geçersiz',
+      REQUIRED: 'E-Posta adresi zorunludur.',
+      EXIST: 'Bu E-Posta adresi zaten kayıtlı!',
+    },
+    COMPANY: {
+      TYPE: 'Şirket adı metin tipinde olmalı.',
+      MIN: 'Şirket adı en az 5 karakter olmalı.',
+      MAX: 'Şirket adı en fazla 75 karakter olmalı',
+    },
+    FIRSTNAME: {
+      TYPE: 'Ad metin tipinde olmalı.',
+      MIN: 'Ad en az 2 karakter olmalı.',
+      MAX: 'Ad en fazla 75 karakter olmalı.',
+      REQUIRED: 'Ad zorunludur.',
+    },
+    LASTNAME: {
+      TYPE: 'Soyad metin tipinde olmalı.',
+      MIN: 'Soyad en az 2 karakter olmalı.',
+      MAX: 'Soyad en fazla 75 karakter olmalı.',
+      REQUIRED: 'Soyad zorunludur.',
+    },
+    PHONE: {
+      TYPE: 'Cep telefonu numarası metin tipinde olmalı.',
+      LENGTH: 'Cep telefonu numarası 10 karakter olmalı.',
+      REQUIRED: 'Cep telefonu numarası zorunludur.',
+    },
   },
 } as const;
 
