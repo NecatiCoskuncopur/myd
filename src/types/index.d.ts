@@ -50,3 +50,20 @@ interface ICreateUpsLabelParams extends ICarrierServiceLabel {
     clientSecret: string;
   };
 }
+
+interface IActionResponse<T = undefined> {
+  status: 'OK' | 'ERROR';
+  data?: T;
+  message?: string;
+}
+
+interface ISignInResponse {
+  role: string;
+  barcodePermits: number;
+}
+
+interface ISignInPayload {
+  email: string;
+  password: string;
+  recaptchaToken: string;
+}
