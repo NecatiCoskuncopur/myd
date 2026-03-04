@@ -13,6 +13,11 @@ const messages = {
     INVALID: 'Bakiye işlem tipi geçersiz.',
     NOT_FOUND: 'Bakiye bulunamadı',
   },
+  CARRIER: {
+    AUTH_FAILED: 'Kimlik doğrulaması başarısız oldu.',
+    SHIPMENT_FAILED: 'Gönderim başarısız oldu',
+    TRACKING_NUMBER_NOT_FOUND: 'Takip numarası bulunamadı.',
+  },
   GENERAL: {
     UNEXPECTED_ERROR: 'Beklenmeyen bir hata oluştu',
     UNAUTHORIZED: 'Yetkisiz işlem',
