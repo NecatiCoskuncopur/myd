@@ -9,6 +9,20 @@ interface CurrentUser {
   email: string;
 }
 
+interface IPaginationParams {
+  page?: number;
+  limit?: number;
+}
+
+interface IPaginationResponse {
+  totalCount: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+}
+
 interface IUserRole {
   role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
 }
@@ -140,4 +154,19 @@ interface IPricingList {
   _id: string;
   name: string;
   zone: IZone[];
+}
+
+interface IUserTransaction {
+  transactionType: 'PAY' | 'SPEND';
+  amount?: number;
+  shippingId?: string;
+  note?: string;
+  createdAt: Date;
+}
+
+interface IUserBalanceData extends IPaginationResponse {
+  balanceId: string;
+  userId: string;
+  total?: number;
+  transactions: IUserTransaction[];
 }
