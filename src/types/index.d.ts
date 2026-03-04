@@ -88,3 +88,8 @@ interface ISignUpPayload {
 interface IForgotPasswordPayload {
   email: string;
 }
+
+interface IResetPasswordPayload {
+  newPassword: string;
+  token: string;
+}

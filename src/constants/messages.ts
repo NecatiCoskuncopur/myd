@@ -37,6 +37,7 @@ const messages = {
     SIGNOUT_ERROR: 'Çıkış yapılırken bir hata oluştu',
     INVALID_TOKEN: 'Geçersiz veya süresi dolmuş token',
     SIGNUP_SUCCESS: 'Kayıt işlemi başarılı',
+    RESET_PASSWORD_SUCCESS: 'Şifre başarıyla değiştirildi.',
   },
   BALANCE: {
     ERROR: 'Bakiye işlenirken hata oluştu!',
