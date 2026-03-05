@@ -220,3 +220,10 @@ interface ISetUserPayload extends IEditUserPayload {
   isActive: boolean;
   barcodePermits: string[];
 }
+
+interface ISearchSenderResult {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+}
