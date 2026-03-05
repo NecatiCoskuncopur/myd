@@ -78,13 +78,25 @@ const messages = {
     NOT_FOUND: 'Fiyatlandırma bulunamadı.',
     USER_NOT_FOUND: 'Fiyatlandırma kullanıcısı bulunamadı',
   },
-  ICINGLIST: {
+  PRICINGLIST: {
     NOT_FOUND: 'Fiyat listesi bulunamadı',
     USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
   },
   TOKEN: {
     TYPE: 'Token metin tipinde olmalı',
     REQUIRED: 'Token zorunludur.',
+  },
+  TRANSACTION: {
+    USERID_TYPE: 'Kullanıcı ID değeri string tipinde olmalıdır.',
+    USERID_REQUIRED: 'Kullanıcı ID zorunludur.',
+    TYPE_INVALID: 'İşlem tipi geçersiz',
+    TYPE_REQUIRED: 'İşlem tipi zorunludur.',
+    AMOUNT_TYPE: 'İşlem miktarı sayı tipinde olmalıdır.',
+    AMOUNT_REQUIRED: 'İşlem miktarı zorunludur.',
+    AMOUNT_MIN: 'İşlem miktarı 0.01 den küçük olamaz',
+    NOTE_TYPE: 'İşlem notu metin tipinde olmalı.',
+    NOTE_MAX: 'İşlem notu en fazla 35 karakter olmalı.',
+    SUCCESS: 'Kullanıcının bakiyesi başarıyla güncellendi.',
   },
   USER: {
     EXIST: 'Kullanıcı zaten mevcut.',
