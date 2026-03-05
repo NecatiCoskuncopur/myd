@@ -170,3 +170,12 @@ interface IUserBalanceData extends IPaginationResponse {
   total?: number;
   transactions: IUserTransaction[];
 }
+
+interface IShippingStatsParams {
+  type: 'monthly' | 'yearly';
+}
+
+interface IShippingStats {
+  keys: string[];
+  datas: number[];
+}

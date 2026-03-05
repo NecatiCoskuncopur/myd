@@ -71,13 +71,16 @@ const messages = {
     DO_NOT_MATCH: 'Parolalar eşleşmiyor',
     SUCCESS: 'Parolanız başarıyla güncellendi.',
   },
-
+  PRICE: {
+    NOT_FOUND: 'Fiyat bulunamadı.',
+  },
   PRICING: {
     NOT_FOUND: 'Fiyatlandırma bulunamadı.',
     USER_NOT_FOUND: 'Fiyatlandırma kullanıcısı bulunamadı',
   },
-  PRICE: {
-    NOT_FOUND: 'Fiyat bulunamadı.',
+  ICINGLIST: {
+    NOT_FOUND: 'Fiyat listesi bulunamadı',
+    USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
   },
   TOKEN: {
     TYPE: 'Token metin tipinde olmalı',
@@ -116,9 +119,8 @@ const messages = {
       REQUIRED: 'Cep telefonu numarası zorunludur.',
     },
   },
-  PRICINGLIST: {
-    NOT_FOUND: 'Fiyat listesi bulunamadı',
-    USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
+  SHIPPING: {
+    INVALID_STATS_TYPE: 'Geçersiz istatistik türü.',
   },
 } as const;
 
