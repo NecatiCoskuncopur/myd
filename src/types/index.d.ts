@@ -154,6 +154,8 @@ interface IPricingList {
   _id: string;
   name: string;
   zone: IZone[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface IUserTransaction {
@@ -197,4 +199,12 @@ interface ICreatePricingListPayload {
     }[];
     than: number;
   }[];
+}
+
+interface IPricingListsParams extends IPaginationParams {
+  name?: string;
+}
+
+interface IPricingListData extends IPaginationResponse {
+  pricingLists: IPricingList[];
 }

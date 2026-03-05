@@ -39,6 +39,8 @@ const getUserPricingList = async (): Promise<IActionResponse<IPricingList>> => {
         prices: z.prices.map((p: IPrice) => ({ weight: p.weight, price: p.price })),
         than: z.than,
       })),
+      createdAt: pricingListDoc.createdAt,
+      updatedAt: pricingListDoc.updatedAt,
     };
 
     return { status: 'OK', data: pricingList };
