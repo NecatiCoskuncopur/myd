@@ -240,3 +240,9 @@ interface IListAllUsersParams extends IPaginationParams {
 interface IUsersData extends IPaginationResponse {
   users: IUser[];
 }
+
+interface IManualLabelPayload {
+  id: string;
+  firm: string;
+  trackingNumber: string;
+}
