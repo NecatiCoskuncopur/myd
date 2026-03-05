@@ -208,3 +208,7 @@ interface IPricingListsParams extends IPaginationParams {
 interface IPricingListData extends IPaginationResponse {
   pricingLists: IPricingList[];
 }
+
+interface IUpdatePricingListPayload extends ICreatePricingListPayload {
+  pricingListId: string;
+}

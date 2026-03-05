@@ -80,6 +80,8 @@ const messages = {
   },
   PRICINGLIST: {
     NOT_FOUND: 'Fiyat listesi bulunamadı',
+    ID_TYPE: 'Fiyat listesi id metin tipinde olmalıdır.',
+    ID_REQUIRED: 'Fiyat listesi id zorunludur.',
     USER_LIST_UNDEFINED: 'Kullanıcı fiyat listesi tanımlı değil',
     TYPE: 'Fiyat listesi metin tipinde olmalıdır.',
     REQUIRED: 'Fiyat listesi zorunludur.',
