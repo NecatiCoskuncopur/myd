@@ -186,6 +186,11 @@ const messages = {
     COST_NOT_CALCULATED: 'Kargo ücreti hesaplanamadı.',
     PAPER_NOT_FOUND: 'Talep edilen belge bulunamadı.',
     INVALID_PAPER_TYPE: 'Geçersiz belge türü.',
+    COUNTRYCODE: {
+      TYPE: 'Ülke kodu metin tipinde olmalı',
+      LENGTH: 'Ülke kodu 2 karakter olmalıdır.',
+      REQUIRED: 'Ülke kodu zorunludur.',
+    },
     CARRIER: {
       NOT_FOUND: 'Taşıyıcı firma bulunamadı.',
       UNSUPPORTED: 'Desteklenmeyen taşıyıcı firma.',

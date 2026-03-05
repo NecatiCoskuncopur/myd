@@ -350,3 +350,8 @@ interface IShippingMatch {
   'carrier.trackingNumber'?: { $regex: string; $options: 'i' };
   createdAt?: { $gte: Date; $lte: Date };
 }
+
+interface ICalculateShippingPayload {
+  weight: number;
+  countryCode: string;
+}
