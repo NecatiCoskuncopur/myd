@@ -160,6 +160,17 @@ const messages = {
       LENGTH: 'Cep telefonu numarası 10 karakter olmalı.',
       REQUIRED: 'Cep telefonu numarası zorunludur.',
     },
+    BARCODE_PERMITS: {
+      INVALID: 'Barkod izni geçersiz.',
+    },
+    ROLE: {
+      INVALID: 'Kullanıcı rolü geçersiz.',
+      REQUIRED: 'Kullanıcı rolü zorunludur.',
+    },
+    ISACTIVE: {
+      TYPE: 'Kullanıcı aktiflik değeri boolean formatında olmalıdır',
+      REQUIRED: 'Kullanıcı aktiflik değeri zorunludur.',
+    },
   },
   SHIPPING: {
     INVALID_STATS_TYPE: 'Geçersiz istatistik türü.',

@@ -212,3 +212,11 @@ interface IPricingListData extends IPaginationResponse {
 interface IUpdatePricingListPayload extends ICreatePricingListPayload {
   pricingListId: string;
 }
+
+interface ISetUserPayload extends IEditUserPayload {
+  userId: string;
+  priceListId: string;
+  role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
+  isActive: boolean;
+  barcodePermits: string[];
+}
