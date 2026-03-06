@@ -30,6 +30,11 @@ const messages = {
       LENGTH: 'Posta Kodu  5 karakter olmalı.',
       REQUIRED: 'Posta Kodu zorunludur.',
     },
+    STATE: {
+      TYPE: 'Eyalet metin tipinde olmalı',
+      MIN: 'Eyalet en az 2 karakter olabilir.',
+      MAX: 'Eyalet en fazla 45 karakter olabilir.',
+    },
   },
   AUTH: {
     INVALID_CREDENTIALS: 'E-posta adresi veya parola hatalı!',
