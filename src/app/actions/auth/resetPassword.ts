@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { ValidationError } from 'yup';
@@ -54,7 +55,7 @@ const resetPassword = async (data: IResetPasswordPayload): Promise<IActionRespon
         html: 'Parolanız başarıyla sıfırlandı. Eğer bu işlemi siz yapmadıysanız hemen bizimle iletişime geçin.',
       });
     } catch (mailError) {
-      console.error('Welcome mail error:', mailError);
+      Sentry.captureException(mailError);
     }
 
     return { status: 'OK', message: AUTH.RESET_PASSWORD_SUCCESS };
@@ -66,9 +67,13 @@ const resetPassword = async (data: IResetPasswordPayload): Promise<IActionRespon
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };

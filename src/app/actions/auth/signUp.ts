@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
@@ -49,7 +50,7 @@ const signUp = async (data: ISignUpPayload): Promise<IActionResponse> => {
         html: welcomeMail,
       });
     } catch (mailError) {
-      console.error('Welcome mail error:', mailError);
+      Sentry.captureException(mailError);
     }
 
     if (newUser.phone) {
@@ -58,7 +59,7 @@ const signUp = async (data: ISignUpPayload): Promise<IActionResponse> => {
 
         await sendSms(newUser.phone, smsText);
       } catch (smsError) {
-        console.error('Welcome SMS error:', smsError);
+        Sentry.captureException(smsError);
       }
     }
 
@@ -74,9 +75,13 @@ const signUp = async (data: ISignUpPayload): Promise<IActionResponse> => {
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };

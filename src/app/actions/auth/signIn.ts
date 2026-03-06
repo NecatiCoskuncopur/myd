@@ -1,7 +1,7 @@
 'use server';
-
 import { cookies } from 'next/headers';
 
+import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'yup';
@@ -73,9 +73,13 @@ const signIn = async (data: ISignInPayload): Promise<IActionResponse<ISignInResp
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };

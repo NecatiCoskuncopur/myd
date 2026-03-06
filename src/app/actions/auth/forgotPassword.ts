@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'yup';
 
@@ -42,7 +43,7 @@ const forgotPassword = async (data: IForgotPasswordPayload): Promise<IActionResp
         html: forgotPasswordMail(`${env.FRONT_URL}/kullanici/parolami-unuttum/${token}`),
       });
     } catch (mailError) {
-      console.error('Welcome mail error:', mailError);
+      Sentry.captureException(mailError);
     }
 
     return { status: 'OK' };
@@ -54,9 +55,13 @@ const forgotPassword = async (data: IForgotPasswordPayload): Promise<IActionResp
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };
