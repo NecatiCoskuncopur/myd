@@ -1,12 +1,22 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 import styled from '@emotion/styled';
 import { Box, Grid } from '@mui/material';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+
+  const isSignUpPage = pathname === '/kullanici/kayit';
   return (
     <Wrapper>
-      <Content>
+      <Content
+        sx={{
+          maxWidth: { xs: '90%', md: '50%', lg: isSignUpPage ? '35%' : '25%' },
+          width: '100%',
+        }}
+      >
         <Grid size={{ xs: 10, md: 8 }} display="flex" justifyContent="center">
           <Box
             component="img"
@@ -44,15 +54,19 @@ const Wrapper = styled(Grid)`
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
   }
 `;
 
-const Content = styled.div`
+const Content = styled(Grid)`
   position: relative;
   z-index: 1;
   padding: 20px;
   background-color: #ffffff;
   border-radius: 12px;
-  min-width: 200px;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(10, 5, 5, 0.3);
+  }
 `;
