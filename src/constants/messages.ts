@@ -179,7 +179,9 @@ const messages = {
   },
   SHIPPING: {
     INVALID_STATS_TYPE: 'Geçersiz istatistik türü.',
-    INVALID_ID: 'Geçersiz gönder id.',
+    INVALID_ID: 'Geçersiz gönderi id.',
+    ID_TYPE: 'Gönderi id metin tipinde olmalıdır.',
+    ID_REQUIRED: 'Göndersi id zorunludur.',
     NOT_FOUND: 'GÖnderi bulunamadı',
     ALREADY_LABELED: 'Gönderi zaten etiketlenmiş',
     TYPE_INVALID: 'Kargo tipi geçersiz.',

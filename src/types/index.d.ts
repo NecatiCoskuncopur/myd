@@ -404,3 +404,7 @@ interface ICreateShippingPayload {
     length: number;
   };
 }
+
+interface IUpdateShippingPayload extends ICreateShippingPayload {
+  shippingId: string;
+}
