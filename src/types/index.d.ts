@@ -408,3 +408,8 @@ interface ICreateShippingPayload {
 interface IUpdateShippingPayload extends ICreateShippingPayload {
   shippingId: string;
 }
+
+interface IGetPaperParams {
+  shippingId: string;
+  type: 'labels' | 'invoices';
+}
