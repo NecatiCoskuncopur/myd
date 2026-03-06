@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import mongoose from 'mongoose';
 
 import { messages } from '@/constants';
@@ -70,7 +71,11 @@ const getUserBalance = async (params: IPaginationParams): Promise<IActionRespons
         hasNextPage: page < totalPages,
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return { status: 'ERROR', message: GENERAL.UNEXPECTED_ERROR };
   }
 };

@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
@@ -67,9 +68,13 @@ const changePassword = async (data: IChangePasswordPayload): Promise<IActionResp
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };

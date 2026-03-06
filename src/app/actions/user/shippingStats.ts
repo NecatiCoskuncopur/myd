@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import moment from 'moment';
 import mongoose from 'mongoose';
 
@@ -77,7 +78,11 @@ const shippingsStats = async (params: IShippingStatsParams): Promise<IActionResp
         datas: keys.map(key => statsMap[key] || 0),
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return { status: 'ERROR', message: GENERAL.UNEXPECTED_ERROR };
   }
 };

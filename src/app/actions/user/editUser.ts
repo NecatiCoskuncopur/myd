@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { messages } from '@/constants';
@@ -64,9 +65,13 @@ const editUser = async (data: IEditUserPayload): Promise<IActionResponse> => {
       };
     }
 
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
-      message: error instanceof Error ? error.message : GENERAL.UNEXPECTED_ERROR,
+      message: GENERAL.UNEXPECTED_ERROR,
     };
   }
 };
