@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import type { PaginateModel } from 'mongoose';
 
 import { messages } from '@/constants';
@@ -57,7 +58,11 @@ const getPricingLists = async (params: IPricingListsParams = {}): Promise<IActio
         hasNextPage: result.hasNextPage,
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: messages.GENERAL.UNEXPECTED_ERROR,

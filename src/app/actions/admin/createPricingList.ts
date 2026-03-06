@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { messages } from '@/constants';
@@ -39,6 +40,10 @@ const createPricingList = async (data: ICreatePricingListPayload): Promise<IActi
         status: 'ERROR',
         message: error.errors.join(', '),
       };
+    }
+
+    if (error instanceof Error) {
+      Sentry.captureException(error);
     }
 
     return {

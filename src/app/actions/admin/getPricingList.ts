@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
 import { messages } from '@/constants';
@@ -47,7 +48,11 @@ const getPricingList = async (listId: string): Promise<IActionResponse<IPricingL
       status: 'OK',
       data: pricingList,
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,

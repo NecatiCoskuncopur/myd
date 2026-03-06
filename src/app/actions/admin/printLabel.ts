@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { messages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
@@ -77,7 +79,7 @@ const printLabel = async (shippingId: string): Promise<IActionResponse<null>> =>
     clearTimeout(timeout);
 
     if (!response.ok) {
-      console.error('Printer responded with error:', response.status);
+      Sentry.captureException(response.status);
 
       return {
         status: 'ERROR',
@@ -89,7 +91,11 @@ const printLabel = async (shippingId: string): Promise<IActionResponse<null>> =>
       status: 'OK',
       data: null,
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,

@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { messages } from '@/constants';
@@ -40,6 +41,10 @@ const addTransactionUserBalance = async (data: IAddTransactionUserBalancePayload
         status: 'ERROR',
         message: error.errors[0],
       };
+    }
+
+    if (error instanceof Error) {
+      Sentry.captureException(error);
     }
 
     return {

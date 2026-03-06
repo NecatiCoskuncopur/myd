@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { messages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
@@ -40,7 +42,11 @@ const searchSenderUser = async (nameSearch: string): Promise<IActionResponse<ISe
       status: 'OK',
       data: result,
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,
