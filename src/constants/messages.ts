@@ -42,6 +42,7 @@ const messages = {
     SIGNOUT_ERROR: 'Çıkış yapılırken bir hata oluştu',
     INVALID_TOKEN: 'Geçersiz veya süresi dolmuş token',
     SIGNUP_SUCCESS: 'Kayıt işlemi başarılı',
+    SIGNUP_ERROR: 'Kayıt sırasında hata oluştu.',
     RESET_PASSWORD_SUCCESS: 'Şifre başarıyla değiştirildi.',
     SIGNIN_ERROR: 'Giriş başarısız.',
   },
