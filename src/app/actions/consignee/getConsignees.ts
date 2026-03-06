@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { messages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -66,7 +68,11 @@ const getConsignees = async (params: IConsigneeParams): Promise<IActionResponse<
         hasNextPage: page < totalPages,
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,
