@@ -424,3 +424,31 @@ interface ICarrierCredential {
   key: string;
   value: string;
 }
+
+interface IConsigneeParams extends IPaginationParams {
+  name: string;
+}
+
+interface IConsignee {
+  _id: string;
+  userId: string;
+  name: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+  identityNumber?: string;
+  address?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    postalCode?: string;
+    state?: string;
+    country?: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+interface IConsigneeData extends IPaginationResponse {
+  consignees: IConsignee[];
+}
