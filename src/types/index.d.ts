@@ -452,3 +452,8 @@ interface IConsignee {
 interface IConsigneeData extends IPaginationResponse {
   consignees: IConsignee[];
 }
+
+interface IResetPasswordForm {
+  newPassword: string;
+  newPasswordRepeat: string;
+}

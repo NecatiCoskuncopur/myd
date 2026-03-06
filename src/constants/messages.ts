@@ -46,6 +46,7 @@ const messages = {
     RESET_PASSWORD_SUCCESS: 'Şifre başarıyla değiştirildi.',
     FORGOTPASSWORD_ERROR: 'Parola sıfırlama isteği gönderilemedi',
     SIGNIN_ERROR: 'Giriş başarısız.',
+    RESET_PASSWORD_ERROR: 'Şifre sıfırlama işlemi başarısız.',
   },
   BALANCE: {
     ERROR: 'Bakiye işlenirken hata oluştu!',
@@ -77,7 +78,7 @@ const messages = {
     REPEAT: 'Lütfen parolanızı tekrar girin.',
     CURRENT_INVALID: 'Mevcut parola yanlış.',
     SAME_AS_OLD: 'Yeni parola eskisiyle aynı olamaz.',
-    DO_NOT_MATCH: 'Parolalar eşleşmiyor',
+    DO_NOT_MATCH: 'Parolalar eşleşmiyor.',
     SUCCESS: 'Parolanız başarıyla güncellendi.',
   },
   PRICE: {
