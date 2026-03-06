@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { messages } from '@/constants';
@@ -93,6 +94,10 @@ const createShipping = async (data: ICreateShippingPayload): Promise<IActionResp
         status: 'ERROR',
         message: error.errors.join(', '),
       };
+    }
+
+    if (error instanceof Error) {
+      Sentry.captureException(error);
     }
 
     return {

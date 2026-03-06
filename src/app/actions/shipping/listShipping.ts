@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import json2xls from 'json2xls';
 import moment from 'moment';
 import { PaginateModel } from 'mongoose';
@@ -122,7 +123,11 @@ const listShipping = async (params: IListShippingParams): Promise<IActionRespons
         hasPrevPage: result.hasPrevPage,
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,

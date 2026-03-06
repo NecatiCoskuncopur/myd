@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import mongoose from 'mongoose';
 
 import { messages } from '@/constants';
@@ -75,7 +76,11 @@ const getPaper = async (params: IGetPaperParams): Promise<IActionResponse<{ file
         file: base64File,
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,

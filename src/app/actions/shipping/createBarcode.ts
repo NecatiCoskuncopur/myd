@@ -1,5 +1,7 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
+
 import { messages } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import createFedexLabel from '@/lib/carriers/fedex';
@@ -138,7 +140,11 @@ const createBarcode = async (data: ICreateBarcodeParams): Promise<IActionRespons
       status: 'OK',
       data: { trackingNumber },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+    }
+
     return {
       status: 'ERROR',
       message: GENERAL.UNEXPECTED_ERROR,
