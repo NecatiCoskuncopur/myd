@@ -191,6 +191,7 @@ const messages = {
     COST_NOT_CALCULATED: 'Kargo ücreti hesaplanamadı.',
     PAPER_NOT_FOUND: 'Talep edilen belge bulunamadı.',
     INVALID_PAPER_TYPE: 'Geçersiz belge türü.',
+    DELETE_SUCCESS: 'Göndeeri başarıyla silindi.',
     COUNTRYCODE: {
       TYPE: 'Ülke kodu metin tipinde olmalı',
       LENGTH: 'Ülke kodu 2 karakter olmalıdır.',
