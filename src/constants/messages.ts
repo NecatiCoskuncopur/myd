@@ -43,6 +43,7 @@ const messages = {
     INVALID_TOKEN: 'Geçersiz veya süresi dolmuş token',
     SIGNUP_SUCCESS: 'Kayıt işlemi başarılı',
     RESET_PASSWORD_SUCCESS: 'Şifre başarıyla değiştirildi.',
+    SIGNIN_ERROR: 'Giriş başarısız.',
   },
   BALANCE: {
     ERROR: 'Bakiye işlenirken hata oluştu!',
@@ -59,6 +60,7 @@ const messages = {
     TOKEN_MISSING: 'Captcha token bilgisi eksik.',
     INVALID: 'Geçersiz Captcha!',
     SERVER_ERROR: 'Captcha doğrulama sunucusundan yanıt alınamadı.',
+    REQUIRED: 'Lütfen doğrulama işlemini tamamlayın',
   },
 
   GENERAL: {
