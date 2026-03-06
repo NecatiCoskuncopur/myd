@@ -44,6 +44,7 @@ const messages = {
     SIGNUP_SUCCESS: 'Kayıt işlemi başarılı',
     SIGNUP_ERROR: 'Kayıt sırasında hata oluştu.',
     RESET_PASSWORD_SUCCESS: 'Şifre başarıyla değiştirildi.',
+    FORGOTPASSWORD_ERROR: 'Parola sıfırlama isteği gönderilemedi',
     SIGNIN_ERROR: 'Giriş başarısız.',
   },
   BALANCE: {
