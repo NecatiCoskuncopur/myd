@@ -413,3 +413,14 @@ interface IGetPaperParams {
   shippingId: string;
   type: 'labels' | 'invoices';
 }
+
+interface ICreateBarcodeParams {
+  shippingId: string;
+  firm: 'UPS' | 'FEDEX';
+  accountNumber: string;
+}
+
+interface ICarrierCredential {
+  key: string;
+  value: string;
+}
