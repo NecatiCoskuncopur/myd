@@ -84,7 +84,7 @@ const SideMenu = ({ role, open, toggleDrawer }: Props) => {
           <React.Fragment key={item.key}>
             <ListItemButton onClick={() => handleToggle(item.key)} sx={{ pl: 2 + depth * 2 }}>
               {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
-              {showText && <ListItemText primary={item.label} />}
+              {showText && <ListItemText primaryTypographyProps={{ fontWeight: 500, letterSpacing: '0.02em' }} primary={item.label} />}
               {showText && (isOpen ? <ExpandLess /> : <ExpandMore />)}
             </ListItemButton>
 
@@ -98,7 +98,15 @@ const SideMenu = ({ role, open, toggleDrawer }: Props) => {
       return (
         <ListItemButton key={item.key} selected={isSelected} sx={{ pl: 2 + depth * 2 }} onClick={() => handleNavigate(item)}>
           {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
-          {showText && <ListItemText primary={item.label} />}
+          {showText && (
+            <ListItemText
+              primary={item.label}
+              primaryTypographyProps={{
+                fontWeight: 500,
+                letterSpacing: '0.02em',
+              }}
+            />
+          )}
         </ListItemButton>
       );
     });
@@ -125,7 +133,7 @@ const SideMenu = ({ role, open, toggleDrawer }: Props) => {
         </IconButton>
       </Box>
 
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
+      <Divider />
 
       <Box
         sx={{
@@ -136,8 +144,8 @@ const SideMenu = ({ role, open, toggleDrawer }: Props) => {
       >
         <List>{renderItems(menuItems)}</List>
       </Box>
-      <Box sx={{ p: 1 }}>
-        <Divider sx={{ mb: 1 }} />
+      <Box>
+        <Divider />
         <List>{renderItems([signOutItem])}</List>
       </Box>
     </Box>
