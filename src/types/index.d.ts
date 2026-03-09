@@ -457,3 +457,13 @@ interface IResetPasswordForm {
   newPassword: string;
   newPasswordRepeat: string;
 }
+
+interface ISidebarItem {
+  key: string;
+  label: string;
+  icon?: ReactNode;
+  path?: string;
+  external?: boolean;
+  action?: () => void;
+  children?: ISidebarItem[];
+}

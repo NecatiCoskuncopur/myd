@@ -2,21 +2,22 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import styled from '@emotion/styled';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import NightlightRoundIcon from '@mui/icons-material/NightlightRound';
-import { Box, CssBaseline, IconButton, ThemeProvider, useMediaQuery } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 
 import getDashboardTheme from '@/theme/dashboardTheme';
+import Header from './Header';
+import SideMenu from './SideMenu';
+import SupportFab from './SupportFab';
 
 type Props = {
   children: React.ReactNode;
-  role: IUserRole | '';
+  role: IUserRole['role'] | '';
 };
 
 const DashboardShell = ({ children, role }: Props) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = useState<'light' | 'dark' | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('dashboard-theme') as 'light' | 'dark' | null;
@@ -34,6 +35,8 @@ const DashboardShell = ({ children, role }: Props) => {
     localStorage.setItem('dashboard-theme', newMode);
   };
 
+  const toggleDrawer = () => setIsDrawerOpen(prev => !prev);
+
   const theme = useMemo(() => {
     return getDashboardTheme(mode || 'light');
   }, [mode]);
@@ -42,19 +45,17 @@ const DashboardShell = ({ children, role }: Props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100vh', overflowX: 'hidden' }}>
+        <SideMenu role={role} open={isDrawerOpen} toggleDrawer={toggleDrawer} />
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            minWidth: 0,
-            p: 3,
-            display: 'flex',
-            flexDirection: 'column',
             backgroundColor: theme.palette.dashboard.content,
           }}
         >
-          <Button onClick={toggleTheme}>{mode === 'light' ? <NightlightRoundIcon /> : <LightModeIcon />}</Button>
-          <Box sx={{ flex: 1 }}>{children}</Box>
+          <Header toggleDrawer={toggleDrawer} toggleTheme={toggleTheme} mode={mode} />
+          <Box sx={{ flex: 1, minWidth: 0, p: 3, display: 'flex', flexDirection: 'column' }}>{children}</Box>
+          <SupportFab />
         </Box>
       </Box>
     </ThemeProvider>
@@ -62,14 +63,3 @@ const DashboardShell = ({ children, role }: Props) => {
 };
 
 export default DashboardShell;
-
-const Button = styled(IconButton)`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.05);
-`;

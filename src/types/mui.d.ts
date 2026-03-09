@@ -5,6 +5,7 @@ declare module '@mui/material/styles' {
     dashboard: {
       sidebar: string;
       content: string;
+      textSidebar: string;
     };
   }
 
@@ -12,6 +13,7 @@ declare module '@mui/material/styles' {
     dashboard?: {
       sidebar?: string;
       content?: string;
+      textSidebar?: string;
     };
   }
 }
