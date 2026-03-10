@@ -44,17 +44,28 @@ const DashboardShell = ({ children, role }: Props) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100vh', overflowX: 'hidden' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <SideMenu role={role} open={isDrawerOpen} toggleDrawer={toggleDrawer} />
         <Box
           component="main"
           sx={{
             flexGrow: 1,
             backgroundColor: theme.palette.dashboard.content,
+            minWidth: 0,
           }}
         >
           <Header toggleDrawer={toggleDrawer} toggleTheme={toggleTheme} mode={mode} />
-          <Box sx={{ flex: 1, minWidth: 0, p: 3, display: 'flex', flexDirection: 'column' }}>{children}</Box>
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              p: 3,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {children}
+          </Box>
           <SupportFab />
         </Box>
       </Box>

@@ -14,29 +14,23 @@ const getAllUsers = async (params: IListAllUsersParams): Promise<IActionResponse
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, balanceSorting, firstName, lastName, company, phone, email } = params;
+    const { page = 1, limit = 5, search, balanceSorting } = params;
 
     const safePage = Math.max(page, 1);
     const safeLimit = Math.max(limit, 1);
     const skip = (safePage - 1) * safeLimit;
 
-    const match: Record<string, unknown> = {
-      ...(firstName && {
-        firstName: { $regex: firstName, $options: 'i' },
-      }),
-      ...(lastName && {
-        lastName: { $regex: lastName, $options: 'i' },
-      }),
-      ...(company && {
-        company: { $regex: company, $options: 'i' },
-      }),
-      ...(phone && {
-        phone: { $regex: phone, $options: 'i' },
-      }),
-      ...(email && {
-        email: { $regex: email, $options: 'i' },
-      }),
-    };
+    const match: Record<string, unknown> = {};
+
+    if (search) {
+      match.$or = [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { company: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
 
     const sort: Record<string, 1 | -1> =
       balanceSorting === '1' || balanceSorting === '-1' ? { 'balance.total': Number(balanceSorting) as 1 | -1 } : { createdAt: 1 };
@@ -74,6 +68,7 @@ const getAllUsers = async (params: IListAllUsersParams): Promise<IActionResponse
           lastName: 1,
           company: 1,
           phone: 1,
+          address: 1,
           role: 1,
           isActive: 1,
           createdAt: 1,

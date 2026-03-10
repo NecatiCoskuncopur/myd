@@ -139,6 +139,11 @@ interface IUser {
   updatedAt: Date;
 }
 
+interface IUserWithPopulatedBalance extends IUser {
+  balance: IUserBalanceData;
+  pricingList?: { _id: string; name: string };
+}
+
 interface IPrice {
   weight?: number;
   price?: number;
@@ -230,15 +235,11 @@ interface ISearchSenderResult {
 
 interface IListAllUsersParams extends IPaginationParams {
   balanceSorting?: string;
-  firstName?: string;
-  lastName?: string;
-  company?: string;
-  phone?: string;
-  email?: string;
+  search?: string;
 }
 
 interface IUsersData extends IPaginationResponse {
-  users: IUser[];
+  users: IUserWithPopulatedBalance[];
 }
 
 interface IManualLabelPayload {
