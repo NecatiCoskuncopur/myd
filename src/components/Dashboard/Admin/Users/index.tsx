@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import getAllUsers from '@/app/actions/admin/getAllUsers';
 import { messages } from '@/constants';
+import AddTransaction from './AddTransaction';
 import columns from './columns';
 
 const { GENERAL } = messages;
@@ -94,7 +97,10 @@ const Users = () => {
     setMenuAnchorEl(null);
   };
 
-  const handleCloseModal = () => setModalState({ type: '', open: false });
+  const handleCloseModal = () => {
+    setSelectedRow(null);
+    setModalState({ type: '', open: false });
+  };
 
   const usersColumns: GridColDef[] = [
     ...columns,
@@ -125,8 +131,19 @@ const Users = () => {
               setSelectedRow(null);
             }}
           >
-            <MenuItem onClick={() => handleOpenModal('edit')}>Düzenle</MenuItem>
-            <MenuItem onClick={() => handleOpenModal('balance')}>Bakiye Ekle</MenuItem>
+            <MenuItem onClick={() => handleOpenModal('edit')}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Düzenle</ListItemText>
+            </MenuItem>
+
+            <MenuItem onClick={() => handleOpenModal('balance')}>
+              <ListItemIcon>
+                <AccountBalanceWalletIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Bakiye Ekle</ListItemText>
+            </MenuItem>
           </Menu>
         </>
       ),
@@ -196,6 +213,16 @@ const Users = () => {
           />
         </Box>
       </Box>
+
+      <AddTransaction
+        userId={selectedRow?._id ?? ''}
+        open={modalState.type === 'balance' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          setFilters(prev => ({ ...prev }));
+          handleCloseModal();
+        }}
+      />
     </Box>
   );
 };
