@@ -15,14 +15,14 @@ const getPricingLists = async (params: IPricingListsParams = {}): Promise<IActio
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, name } = params;
+    const { page = 1, limit = 5, search } = params;
 
     const safePage = Math.max(page, 1);
     const safeLimit = Math.max(limit, 1);
 
     const query = {
-      ...(name && {
-        name: { $regex: name, $options: 'i' },
+      ...(search && {
+        $or: [{ name: { $regex: search, $options: 'i' } }],
       }),
     };
 
@@ -39,7 +39,10 @@ const getPricingLists = async (params: IPricingListsParams = {}): Promise<IActio
       name: item.name,
       zone: item.zone.map(z => ({
         number: z.number,
-        prices: z.prices.map(p => ({ weight: p.weight, price: p.price })),
+        prices: z.prices.map(p => ({
+          weight: p.weight,
+          price: p.price,
+        })),
         than: z.than,
       })),
       createdAt: item.createdAt,

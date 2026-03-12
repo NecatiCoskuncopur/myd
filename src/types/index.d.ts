@@ -207,7 +207,7 @@ interface ICreatePricingListPayload {
 }
 
 interface IPricingListsParams extends IPaginationParams {
-  name?: string;
+  search?: string;
 }
 
 interface IPricingListData extends IPaginationResponse {
