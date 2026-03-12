@@ -13,6 +13,7 @@ import getAllUsers from '@/app/actions/admin/getAllUsers';
 import { messages } from '@/constants';
 import AddTransaction from './AddTransaction';
 import columns from './columns';
+import EditUser from './EditUser';
 
 const { GENERAL } = messages;
 
@@ -218,6 +219,16 @@ const Users = () => {
         userId={selectedRow?._id ?? ''}
         open={modalState.type === 'balance' && modalState.open}
         onClose={handleCloseModal}
+        onSuccess={() => {
+          setFilters(prev => ({ ...prev }));
+          handleCloseModal();
+        }}
+      />
+
+      <EditUser
+        open={modalState.type === 'edit' && modalState.open}
+        onClose={handleCloseModal}
+        user={selectedRow}
         onSuccess={() => {
           setFilters(prev => ({ ...prev }));
           handleCloseModal();

@@ -2,13 +2,12 @@ import * as yup from 'yup';
 
 import { messages } from '@/constants';
 
-const { ADDRESS, PASSWORD, USER } = messages;
+const { ADDRESS, USER } = messages;
 const { EMAIL, COMPANY, FIRSTNAME, LASTNAME, PHONE } = USER;
 const { CITY, DISTRICT, LINE, POSTALCODE } = ADDRESS;
 
 export default yup.object({
   email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),
-  password: yup.string().typeError(PASSWORD.TYPE).min(8, PASSWORD.MIN).max(255, PASSWORD.MAX).required(PASSWORD.REQUIRED),
   firstName: yup.string().typeError(FIRSTNAME.TYPE).min(2, FIRSTNAME.MIN).max(75, FIRSTNAME.MAX).required(FIRSTNAME.REQUIRED),
   lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
   company: yup.string().typeError(COMPANY.TYPE).min(5, COMPANY.MIN).max(75, COMPANY.MAX),
