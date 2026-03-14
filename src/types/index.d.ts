@@ -468,3 +468,9 @@ interface ISidebarItem {
   action?: () => void;
   children?: ISidebarItem[];
 }
+
+interface IZoneTable {
+  number: number;
+  prices: ZonePriceRow[];
+  than: number;
+}

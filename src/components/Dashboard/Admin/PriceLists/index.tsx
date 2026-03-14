@@ -11,6 +11,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import getPricingLists from '@/app/actions/admin/getPricingLists';
 import { messages } from '@/constants';
 import columns from './columns';
+import CreateList from './CreateList';
 
 interface PricingListFilters {
   search?: string;
@@ -201,6 +202,14 @@ const PriceLists = () => {
           />
         </Box>
       </Box>
+      <CreateList
+        open={modalState.type === 'create' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          setFilters(prev => ({ ...prev }));
+          handleCloseModal();
+        }}
+      />
     </Box>
   );
 };
