@@ -12,6 +12,7 @@ import getPricingLists from '@/app/actions/admin/getPricingLists';
 import { messages } from '@/constants';
 import columns from './columns';
 import CreateList from './CreateList';
+import UpdateList from './UpdateList';
 
 interface PricingListFilters {
   search?: string;
@@ -187,7 +188,7 @@ const PriceLists = () => {
             autoHeight
             paginationMode="server"
             rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[5, 10, 50]}
+            pageSizeOptions={[1, 5, 10, 50]}
             paginationModel={{ page: page - 1, pageSize: limit }}
             onPaginationModelChange={model => {
               const isPageSizeChanged = model.pageSize !== limit;
@@ -204,6 +205,15 @@ const PriceLists = () => {
       </Box>
       <CreateList
         open={modalState.type === 'create' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          setFilters(prev => ({ ...prev }));
+          handleCloseModal();
+        }}
+      />
+      <UpdateList
+        list={selectedRow}
+        open={modalState.type === 'edit' && modalState.open}
         onClose={handleCloseModal}
         onSuccess={() => {
           setFilters(prev => ({ ...prev }));
