@@ -6,6 +6,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import SecurityIcon from '@mui/icons-material/Security';
 import { Grid, IconButton, List, ListItemButton, ListItemText, useTheme } from '@mui/material';
 
+import ChangePasswordForm from './ChangePassword';
 import EditUser from './EditUser';
 
 const Account = () => {
@@ -91,7 +92,7 @@ const Account = () => {
         }}
       >
         {active === 0 && <EditUser />}
-        {/* {active === 1 && <ChangePassword />} */}
+        {active === 1 && <ChangePasswordForm />}
       </Grid>
     </Grid>
   );

@@ -116,6 +116,10 @@ interface IChangePasswordPayload {
   newPassword: string;
 }
 
+interface IChangePasswordFormUI extends IChangePasswordPayload {
+  newPasswordRepeat: string;
+}
+
 interface IUser {
   _id: string;
   email: string;
