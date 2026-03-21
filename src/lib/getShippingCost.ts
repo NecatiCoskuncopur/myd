@@ -25,21 +25,54 @@ type ShippingCostResponse = { status: 'OK'; data: number } | { status: 'ERROR'; 
  * Kullanıcının bağlı olduğu fiyat listesi ve hedef ülkeye göre
  * kargo ücretini hesaplar.
  *
- * İşleyiş:
- * - Ülke koduna göre ülkenin zone bilgisi alınır
- * - İlgili pricing list içinde matching zone bulunur
- * - Ağırlık, zone içindeki fiyat tablosuna göre hesaplanır
- * - Eğer ağırlık tabloda bulunan maksimum değeri aşarsa,
- *   zone.than katsayısı ile çarpılarak ücret hesaplanır
- * - Ağırlık doğrudan eşleşmezse 0.5 kg artışlarla en yakın üst değere bakılır
+ * 📦 Hesaplama Mantığı:
+ * 1. Ülke koduna göre ülkenin zone bilgisi alınır
+ * 2. Kullanıcının pricing list'inde ilgili zone bulunur
+ * 3. Ağırlık 0.5 kg adımlarına göre yukarı yuvarlanır (ceil)
+ *    Örn:
+ *      2.1 → 2.5
+ *      2.5 → 2.5
+ *      2.6 → 3
+ *
+ * 4. Eğer ağırlık tabloda birebir varsa → direkt fiyat döner
+ *
+ * 5. Eğer ağırlık tabloda yoksa:
+ *    → 0.5 artışlarla en yakın ÜST değere bakılır
+ *    Örn:
+ *      tablo: [1, 2]
+ *      input: 1.3 → 1.5 → 2 → fiyat
+ *
+ * 6. Eğer ağırlık maksimum weight'i aşarsa:
+ *    → lineer fiyatlandırma uygulanır:
+ *
+ *      total = maxPrice + (extraWeight × than)
+ *
+ *    Örn:
+ *      tablo:
+ *        1 kg → 25
+ *        2 kg → 30
+ *        than → 5
+ *
+ *      input: 5 kg
+ *
+ *      maxWeight = 2
+ *      maxPrice = 30
+ *      extra = 5 - 2 = 3
+ *
+ *      total = 30 + (3 × 5) = 45
+ *
+ * ⚠️ Notlar:
+ * - than, maksimum ağırlık sonrası kg başına ek ücret anlamına gelir
+ * - Hesaplama tamamen deterministic ve backend tarafında yapılmalıdır
+ * - Floating point hatalarını önlemek için exact match kullanılır (===)
  *
  * @param pricingListId - Kullanıcının bağlı olduğu fiyat listesi ID'si
- * @param weight - Paket ağırlığı (kg)
+ * @param weight - Paket ağırlığı (kg cinsinden, decimal olabilir)
  * @param countryCode - ISO ülke kodu (örn: TR, US)
  *
  * @returns
  * - { status: 'OK', data: number } → Hesaplanan kargo ücreti
- * - { status: 'ERROR', message: string } → Hata durumu
+ * - { status: 'ERROR', message: string } → Hata mesajı
  */
 
 const getShippingCost = async (pricingListId: string, weight: number, countryCode: string): Promise<ShippingCostResponse> => {
@@ -72,20 +105,38 @@ const getShippingCost = async (pricingListId: string, weight: number, countryCod
 
     const [{ than, prices }] = pricing.zone;
 
-    const weights = prices.map((item: PriceItem) => item.weight);
-    const maxWeight = Math.max(...weights);
-
-    if (weight > maxWeight) {
+    if (!prices.length) {
       return {
-        status: 'OK',
-        data: weight * than,
+        status: 'ERROR',
+        message: PRICE.NOT_FOUND,
       };
     }
 
-    let currentWeight = weight;
+    // 🔹 küçükten büyüğe sırala
+    const sortedPrices = [...prices].sort((a, b) => a.weight - b.weight);
 
-    while (currentWeight <= maxWeight) {
-      const result = prices.find((item: PriceItem) => Math.abs(item.weight - currentWeight) < 0.0001);
+    const maxItem = sortedPrices[sortedPrices.length - 1];
+
+    // 🔹 0.5 step normalize
+    const normalizeWeight = (w: number) => Math.ceil(w * 2) / 2;
+
+    const normalizedWeight = normalizeWeight(weight);
+
+    // 🔥 max üstü durum
+    if (normalizedWeight > maxItem.weight) {
+      const extra = normalizedWeight - maxItem.weight;
+
+      return {
+        status: 'OK',
+        data: maxItem.price + extra * than,
+      };
+    }
+
+    // 🔹 tabloda arama
+    let currentWeight = normalizedWeight;
+
+    while (currentWeight <= maxItem.weight) {
+      const result = sortedPrices.find(item => item.weight === currentWeight);
 
       if (result) {
         return {

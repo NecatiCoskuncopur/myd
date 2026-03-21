@@ -7,3 +7,4 @@ export { default as Account } from './Dashboard/Account';
 export { default as PriceLists } from './Dashboard/Admin/PriceLists';
 export { default as Users } from './Dashboard/Admin/Users';
 export { default as UserBalanceTable } from './Dashboard/UserBalanceTable';
+export { default as UserPriceList } from './Dashboard/UserPriceList';
