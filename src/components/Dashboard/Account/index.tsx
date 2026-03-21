@@ -6,6 +6,8 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import SecurityIcon from '@mui/icons-material/Security';
 import { Grid, IconButton, List, ListItemButton, ListItemText, useTheme } from '@mui/material';
 
+import EditUser from './EditUser';
+
 const Account = () => {
   const [active, setActive] = useState<number>(0);
   const theme = useTheme();
@@ -88,8 +90,8 @@ const Account = () => {
           color: theme.palette.dashboard.textSidebar,
         }}
       >
-        {/* {active === 0 && <EditUser />}
-        {active === 1 && <ChangePassword />} */}
+        {active === 0 && <EditUser />}
+        {/* {active === 1 && <ChangePassword />} */}
       </Grid>
     </Grid>
   );
