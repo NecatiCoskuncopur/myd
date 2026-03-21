@@ -6,6 +6,7 @@ const getDashboardTheme = (mode: 'light' | 'dark') => {
   const contentColor = mode === 'light' ? '#F4F4F7' : '#161618';
   const scrollThumbColor = mode === 'light' ? '#D1D1D1' : '#4A4A4E';
   const scrollHoverColor = mode === 'light' ? '#A1A1A1' : '#606065';
+  const borderColor = mode === 'light' ? '#EFEFEF' : '#FFFFFF1A';
 
   return createTheme(
     {
@@ -15,12 +16,32 @@ const getDashboardTheme = (mode: 'light' | 'dark') => {
           sidebar: sidebarColor,
           content: contentColor,
           textSidebar: mode === 'light' ? '#57575A' : '#A6A5B2',
+          border: borderColor,
         },
       },
       typography: {
         fontFamily: 'Inter, sans-serif',
       },
       components: {
+        MuiTextField: {
+          defaultProps: {
+            size: 'small',
+          },
+        },
+        MuiSelect: {
+          defaultProps: {
+            size: 'small',
+          },
+        },
+        MuiInputAdornment: {
+          styleOverrides: {
+            root: {
+              '& .MuiSvgIcon-root': {
+                fontSize: 18,
+              },
+            },
+          },
+        },
         MuiCssBaseline: {
           styleOverrides: {
             '*::-webkit-scrollbar': {

@@ -6,6 +6,7 @@ declare module '@mui/material/styles' {
       sidebar: string;
       content: string;
       textSidebar: string;
+      border: string;
     };
   }
 
@@ -14,6 +15,7 @@ declare module '@mui/material/styles' {
       sidebar?: string;
       content?: string;
       textSidebar?: string;
+      border: string;
     };
   }
 }

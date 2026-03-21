@@ -3,6 +3,7 @@ export { default as HCaptcha } from './Auth/HCaptcha';
 export { default as ResetPasswordForm } from './Auth/ResetPasswordForm';
 export { default as SignInForm } from './Auth/SignInForm';
 export { default as SignUpForm } from './Auth/SignUpForm';
+export { default as Account } from './Dashboard/Account';
 export { default as PriceLists } from './Dashboard/Admin/PriceLists';
 export { default as Users } from './Dashboard/Admin/Users';
 export { default as UserBalanceTable } from './Dashboard/UserBalanceTable';
