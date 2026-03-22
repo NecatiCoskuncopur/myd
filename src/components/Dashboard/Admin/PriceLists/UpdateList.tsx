@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useTransition } from 'react';
 
-import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField, useTheme } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Snackbar, Stack, TextField, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -44,39 +44,58 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
   });
 
   useEffect(() => {
-    if (list) {
+    if (list && list.zone && list.zone.length > 0) {
       reset({ name: list.name });
 
       const newRows: GridRow[] = [];
-      const maxPricesLength = Math.max(...list.zone.map(z => z.prices.length));
+      const pricesLength = list.zone[0].prices.length;
 
-      for (let i = 0; i < maxPricesLength; i++) {
-        const row: GridRow = { id: i.toString(), weight: 0 };
+      for (let i = 0; i < pricesLength; i++) {
+        const row: GridRow = {
+          id: i.toString(),
+          weight: list.zone[0].prices[i]?.weight ?? 0,
+        };
+
         for (let z = 0; z < list.zone.length; z++) {
           const priceObj = list.zone[z].prices[i];
-          if (i === 0) row.weight = priceObj?.weight ?? null;
           row[`zone${z + 1}`] = priceObj?.price ?? null;
         }
+
         newRows.push(row);
       }
 
+      const lastWeight = list.zone[0].prices[pricesLength - 1]?.weight ?? 0;
       const thanRow: GridRow = {
         id: 'than',
-        weight: `>${list.zone[0].prices[list.zone[0].prices.length - 1]?.weight ?? 0}`,
+        weight: `>${lastWeight}`,
       };
+
       for (let z = 0; z < list.zone.length; z++) {
         thanRow[`zone${z + 1}`] = list.zone[z].than ?? null;
       }
 
       setRows([...newRows, thanRow]);
     }
-  }, [list, reset, matrix]);
+  }, [list, reset]);
 
   const addRow = () => {
     setRows(prev => {
       const thanRow = prev.find(r => r.id === 'than');
       const others = prev.filter(r => r.id !== 'than');
       return [...others, matrix.createEmptyRow(), thanRow!];
+    });
+  };
+
+  const removeLastRow = () => {
+    setRows(prev => {
+      const thanRow = prev.find(r => r.id === 'than');
+      const others = prev.filter(r => r.id !== 'than');
+
+      if (others.length <= 1) return prev;
+
+      const updated = others.slice(0, -1);
+
+      return [...updated, thanRow!];
     });
   };
 
@@ -146,9 +165,14 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
               render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
             />
 
-            <Button variant="outlined" onClick={addRow}>
-              Ağırlık Satırı Ekle
-            </Button>
+            <Grid container spacing={3} display="flex">
+              <Button variant="outlined" onClick={addRow}>
+                Ağırlık Satırı Ekle
+              </Button>
+              <Button variant="outlined" color="error" onClick={removeLastRow}>
+                Son Satırı Sil
+              </Button>
+            </Grid>
 
             <DataGrid
               rows={rows}
@@ -158,7 +182,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
               hideFooter
               disableColumnMenu
               sx={{
-                '& .MuiDataGrid-cell': { fontSize: 12, border: '1px solid black' },
+                '& .MuiDataGrid-cell': { fontSize: 12, border: `1px solid ${theme.palette.dashboard.border}` },
                 '& .MuiDataGrid-columnHeader': { fontSize: 12 },
               }}
               processRowUpdate={newRow => {
@@ -171,7 +195,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
               <Button onClick={handleClose} disabled={pending}>
                 İptal
               </Button>
-              <Button type="submit" variant="contained" disabled={pending} startIcon={pending ? <CircularProgress size={18} /> : undefined}>
+              <Button type="submit" variant="contained" disabled={pending}>
                 Güncelle
               </Button>
             </DialogActions>

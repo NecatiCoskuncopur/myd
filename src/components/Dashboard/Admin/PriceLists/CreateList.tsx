@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useTransition } from 'react';
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField, useTheme } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -52,6 +51,19 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
       const others = prev.filter(r => r.id !== 'than');
 
       return [...others, matrix.createEmptyRow(), thanRow!];
+    });
+  };
+
+  const removeLastRow = () => {
+    setRows(prev => {
+      const thanRow = prev.find(r => r.id === 'than');
+      const others = prev.filter(r => r.id !== 'than');
+
+      if (others.length <= 1) return prev;
+
+      const updated = others.slice(0, -1);
+
+      return [...updated, thanRow!];
     });
   };
 
@@ -129,10 +141,14 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
               render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
             />
 
-            <Button variant="outlined" onClick={addRow}>
-              Ağırlık Satırı Ekle
-            </Button>
-
+            <Stack direction="row" spacing={2}>
+              <Button variant="outlined" onClick={addRow}>
+                Ağırlık Satırı Ekle
+              </Button>
+              <Button variant="outlined" color="error" onClick={removeLastRow}>
+                Son Satırı Sil
+              </Button>
+            </Stack>
             <DataGrid
               rows={rows}
               columns={matrix.columns}
@@ -143,7 +159,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
               sx={{
                 '& .MuiDataGrid-cell': {
                   fontSize: 12,
-                  border: '1px solid black',
+                  border: `1px solid ${theme.palette.dashboard.border}`,
                 },
                 '& .MuiDataGrid-columnHeader': {
                   fontSize: 12,
@@ -161,8 +177,8 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
                 İptal
               </Button>
 
-              <Button type="submit" variant="contained" disabled={pending} startIcon={pending ? <CircularProgress size={18} /> : <AddCircleOutlineIcon />}>
-                Ekle
+              <Button type="submit" variant="contained" disabled={pending}>
+                Oluştur
               </Button>
             </DialogActions>
           </Stack>

@@ -25,7 +25,7 @@ const getUser = async (): Promise<IActionResponse<IUser>> => {
 
     return {
       status: 'OK',
-      data: userDoc as IUser,
+      data: JSON.parse(JSON.stringify(userDoc)),
     };
   } catch (error) {
     if (error instanceof Error) {
