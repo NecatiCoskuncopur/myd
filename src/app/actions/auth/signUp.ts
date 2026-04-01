@@ -21,7 +21,10 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       stripUnknown: true,
     });
 
-    await validateRecaptcha(validatedData.recaptchaToken);
+    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+    if (!captchaResult.success) {
+      return { status: 'ERROR', message: captchaResult.message };
+    }
 
     const existingUser = await User.findOne({ email: validatedData.email });
     if (existingUser) {

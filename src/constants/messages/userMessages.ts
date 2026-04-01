@@ -1,6 +1,7 @@
 const userMessages = {
   EXIST: 'Kullanıcı zaten mevcut.',
   NOT_FOUND: 'Kullanıcı bulunamadı.',
+  DEACTIVATED: 'Hesabınız askıya alınmıştır.',
   BARCODE_PERMITS: {
     INVALID: 'Barkod izni geçersiz.',
   },
