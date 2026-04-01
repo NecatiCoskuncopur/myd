@@ -9,6 +9,7 @@ const authMessages = {
   RESETPASSWORD: {
     ERROR: 'Şifre sıfırlama işlemi başarısız.',
     SUCCESS: 'Şifre başarıyla değiştirildi.',
+    EXPIRED: 'Şifre sıfırlama bağlantısının süresi dolmuş.',
   },
   FORGOTPASSWORD: {
     ERROR: 'Parola sıfırlama isteği gönderilemedi',

@@ -31,4 +31,9 @@ declare namespace AuthTypes {
     email: string;
     recaptchaToken: string;
   }
+
+  interface IResetPasswordPayload {
+    newPassword: string;
+    token: string;
+  }
 }
