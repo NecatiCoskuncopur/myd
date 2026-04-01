@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
   {
     email: {
       type: String,
@@ -37,7 +37,10 @@ const UserSchema = new mongoose.Schema(
       maxlength: 75,
     },
     phone: String,
-    priceListId: mongoose.Types.ObjectId, // priceList sonra ref
+    priceListId: {
+      type: Schema.Types.ObjectId,
+      ref: 'PricingList',
+    },
     address: {
       line1: String,
       line2: String,
