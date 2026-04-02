@@ -17,6 +17,7 @@
     "@mui/x-data-grid": "^8.28.2",
     "@sentry/nextjs": "^10.47.0",
     "bcryptjs": "^3.0.3",
+    "jose": "^6.2.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3",
     "mongoose-paginate-v2": "^1.9.4",
