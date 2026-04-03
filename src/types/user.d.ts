@@ -31,4 +31,14 @@ declare namespace UserTypes {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface ISidebarItem {
+    key: string;
+    label: string;
+    icon?: ReactNode;
+    path?: string;
+    external?: boolean;
+    action?: () => void;
+    children?: ISidebarItem[];
+  }
 }
