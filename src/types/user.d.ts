@@ -47,6 +47,10 @@ declare namespace UserTypes {
     newPassword: string;
   }
 
+  interface IChangePasswordFormUI extends IChangePasswordPayload {
+    newPasswordRepeat: string;
+  }
+
   interface IEditUserPayload {
     email: string;
     firstName: string;
