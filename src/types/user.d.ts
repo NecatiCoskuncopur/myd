@@ -41,4 +41,9 @@ declare namespace UserTypes {
     action?: () => void;
     children?: ISidebarItem[];
   }
+
+  interface IChangePasswordPayload {
+    currentPassword: string;
+    newPassword: string;
+  }
 }
