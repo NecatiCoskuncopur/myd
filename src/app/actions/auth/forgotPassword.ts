@@ -26,7 +26,7 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
       return { status: 'ERROR', message: captchaResult.message };
     }
 
-    const user = await User.findOne({ email: validatedData.email.toLowerCase() });
+    const user = await User.findOne({ email: validatedData.email.toLowerCase() }).select('+password');
 
     if (!user) return { status: 'OK' };
 
