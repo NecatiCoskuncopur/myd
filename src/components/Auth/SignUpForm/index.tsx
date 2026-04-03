@@ -3,7 +3,7 @@
 import React, { useState, useTransition } from 'react';
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Alert, Box, Button, Link, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import signUp from '@/app/actions/auth/signUp';
@@ -84,8 +84,16 @@ const SignUpForm = () => {
       </Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
-        <Button type="submit" variant="contained" size="large" fullWidth sx={{ mt: 4 }} startIcon={<PlayArrowIcon />} disabled={pending}>
-          Kayıt Ol
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          fullWidth
+          sx={{ mt: 4 }}
+          startIcon={pending ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+          disabled={pending}
+        >
+          {pending ? '' : 'Kayıt Ol'}
         </Button>
       </Box>
     </>

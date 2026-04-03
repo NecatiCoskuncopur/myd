@@ -36,4 +36,8 @@ declare namespace AuthTypes {
     newPassword: string;
     token: string;
   }
+
+  interface IResetPasswordForm extends IResetPasswordPayload {
+    newPasswordRepeat: string;
+  }
 }

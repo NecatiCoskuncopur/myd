@@ -15,7 +15,7 @@ import resetPasswordSchema from '@/schemas/resetPassword.schema';
 const { INVALID_TOKEN, RESETPASSWORD } = authMessages;
 
 interface ResetTokenPayload extends JwtPayload {
-  userId: string;
+  sub: string;
   type: 'PASSWORD_RESET';
 }
 
@@ -28,21 +28,16 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
       stripUnknown: true,
     });
 
-    const decoded = jwt.verify(validatedData.token, env.JWT_SECRET) as ResetTokenPayload;
+    const decoded = jwt.decode(validatedData.token) as ResetTokenPayload;
 
-    if (!decoded.userId || decoded.type !== 'PASSWORD_RESET') {
-      return {
-        status: 'ERROR',
-        message: INVALID_TOKEN,
-      };
+    if (!decoded || !decoded.sub || decoded.type !== 'PASSWORD_RESET') {
+      return { status: 'ERROR', message: INVALID_TOKEN };
     }
 
-    const user = await User.findById(decoded.userId);
+    const user = await User.findById(decoded.sub).select('+password');
+
     if (!user) {
-      return {
-        status: 'ERROR',
-        message: INVALID_TOKEN,
-      };
+      return { status: 'ERROR', message: INVALID_TOKEN };
     }
 
     const dynamicSecret = env.JWT_SECRET + user.password.slice(-10);
@@ -53,8 +48,6 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
       if (verifyError instanceof jwt.TokenExpiredError) {
         return { status: 'ERROR', message: RESETPASSWORD.EXPIRED };
       }
-
-      Sentry.captureException(verifyError);
       return { status: 'ERROR', message: INVALID_TOKEN };
     }
 
@@ -65,7 +58,7 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
       await MydMail.sendMail({
         to: user.email,
         subject: 'Parolanız Sıfırlandı',
-        html: 'Parolanız başarıyla sıfırlandı. Eğer bu işlemi siz yapmadıysanız hemen bizimle iletişime geçin.',
+        html: 'Parolanız başarıyla sıfırlandı. Bu işlemi siz yapmadıysanız iletişime geçin.',
       });
     } catch (mailError) {
       Sentry.captureException(mailError);

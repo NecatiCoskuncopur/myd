@@ -83,10 +83,10 @@ const ForgotPasswordForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 3 }}
-          startIcon={pending ? <CircularProgress /> : <PlayArrowIcon />}
+          startIcon={pending ? <CircularProgress size={20} /> : <PlayArrowIcon />}
           disabled={pending}
         >
-          {pending ? 'Gönderiliyor...' : 'Sıfırlama Linkini Gönder'}
+          {pending ? '' : 'Sıfırlama Linkini Gönder'}
         </Button>
       </Box>
     </>

@@ -73,10 +73,10 @@ const SignInForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 3 }}
-          startIcon={pending ? <CircularProgress /> : <LoginOutlinedIcon />}
+          startIcon={pending ? <CircularProgress size={20} /> : <LoginOutlinedIcon />}
           disabled={pending}
         >
-          Giriş Yap
+          {pending ? '' : 'Giriş Yap'}
         </Button>
         <Box mt={2}>
           <Link href="/kullanici/parolami-unuttum">Parolamı Unuttum</Link>
