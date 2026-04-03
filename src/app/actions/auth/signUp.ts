@@ -38,6 +38,7 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
 
     const newUser = await User.create({
       ...validatedData,
+      email: validatedData.email.toLowerCase(),
       password: hashedPassword,
     });
 

@@ -27,7 +27,7 @@ const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IAc
       return { status: 'ERROR', message: captchaResult.message };
     }
 
-    const user = await User.findOne({ email: validatedData.email });
+    const user = await User.findOne({ email: validatedData.email.toLowerCase() }).select('+password');
 
     const hashedPassword = user?.password ?? '$2a$12$invalidsaltinvalidsaltinv';
 
