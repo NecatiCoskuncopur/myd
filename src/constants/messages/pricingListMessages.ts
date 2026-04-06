@@ -38,6 +38,6 @@ const pricingListMessages = {
     NOT_FOUND: 'Fiyatlandırma bulunamadı.',
     USER_NOT_FOUND: 'Fiyatlandırma kullanıcısı bulunamadı',
   },
-};
+} as const;
 
 export default pricingListMessages;
