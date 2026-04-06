@@ -11,4 +11,11 @@ declare namespace AdminTypes {
     phone?: string;
     email?: string;
   }
+
+  interface IAddTransactionUserBalancePayload {
+    userId: string;
+    amount: number;
+    type: 'PAY' | 'SPEND';
+    note?: string;
+  }
 }
