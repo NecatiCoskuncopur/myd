@@ -5,4 +5,5 @@ export { default as SignUpForm } from './Auth/SignUpForm';
 export { default as Account } from './Dashboard/Account';
 export { default as DashboardShell } from './Dashboard/DashboardShell';
 export { default as UserBalanceTable } from './Dashboard/UserBalanceTable';
+export { default as UserPriceList } from './Dashboard/UserPriceList';
 export { default as StyledButton } from './StyledButton';
