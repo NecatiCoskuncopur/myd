@@ -4,4 +4,13 @@ declare namespace ResponseTypes {
     data?: T;
     message?: string;
   }
+
+  interface IPaginationResponse {
+    totalCount: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+  }
 }
