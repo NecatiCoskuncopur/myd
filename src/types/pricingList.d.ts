@@ -37,4 +37,8 @@ declare namespace PricingListTypes {
   interface IPricingListData extends ResponseTypes.IPaginationResponse {
     pricingLists: IPricingList[];
   }
+
+  interface IUpdatePricingListPayload extends ICreatePricingListPayload {
+    pricingListId: string;
+  }
 }
