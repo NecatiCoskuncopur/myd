@@ -69,5 +69,6 @@ export default yup.object({
     width: yup.number().typeError(WIDTH.TYPE).min(0.5, WIDTH.MIN).max(500, WIDTH.MAX).required(WIDTH.REQUIRED),
     height: yup.number().typeError(HEIGHT.TYPE).min(0.5, HEIGHT.MIN).max(500, HEIGHT.MAX).required(HEIGHT.REQUIRED),
     length: yup.number().typeError(LENGTH.TYPE).min(0.5, LENGTH.MIN).max(500, LENGTH.MAX).required(LENGTH.REQUIRED),
+    volumetricWeight: yup.number().required(),
   }),
 });

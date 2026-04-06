@@ -50,6 +50,7 @@ declare namespace ShippingTypes {
       width: number;
       height: number;
       length: number;
+      volumetricWeight: number;
     };
   }
 
