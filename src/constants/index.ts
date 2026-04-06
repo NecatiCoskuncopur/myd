@@ -9,4 +9,5 @@ export { default as captchaMessages } from './messages/captchaMessages';
 export { default as generalMessages } from './messages/generalMessages';
 export { default as pricingListMessages } from './messages/pricingListMessages';
 export { default as shippingMessages } from './messages/shippingMessages';
+export { default as transactionMessages } from './messages/transactionMessages';
 export { default as userMessages } from './messages/userMessages';
