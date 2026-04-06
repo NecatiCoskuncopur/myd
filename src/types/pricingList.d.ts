@@ -17,4 +17,12 @@ declare namespace PricingListTypes {
     createdAt: string;
     updatedAt: string;
   }
+
+  interface IPricingListsParams extends ParamsTypes.IPaginationParams {
+    name?: string;
+  }
+
+  interface IPricingListData extends ResponseTypes.IPaginationResponse {
+    pricingLists: IPricingList[];
+  }
 }
