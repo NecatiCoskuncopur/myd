@@ -18,4 +18,24 @@ declare namespace AdminTypes {
     type: 'PAY' | 'SPEND';
     note?: string;
   }
+
+  interface ISetUserPayload {
+    email: string;
+    firstName: string;
+    lastName: string;
+    company?: string;
+    phone: string;
+    address: {
+      line1: string;
+      line2?: string;
+      district: string;
+      city: string;
+      postalCode: string;
+    };
+    userId: string;
+    priceListId: string;
+    role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
+    isActive: boolean;
+    barcodePermits: string[];
+  }
 }
