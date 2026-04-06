@@ -1,4 +1,16 @@
 declare namespace PricingListTypes {
+  interface ICreatePricingListPayload {
+    name: string;
+    zone: {
+      number: number;
+      prices: {
+        weight: number;
+        price: number;
+      }[];
+      than: number;
+    }[];
+  }
+
   interface IPrice {
     weight?: number;
     price?: number;
