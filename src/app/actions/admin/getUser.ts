@@ -1,22 +1,23 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import { Types } from 'mongoose';
 
 import { generalMessages, userMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
-import { getCurrentUser } from '@/lib/getCurrentUser';
 import { User } from '@/models';
 
-const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.IUser>> => {
+const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<UserTypes.IUser>> => {
   try {
+    if (!Types.ObjectId.isValid(userId)) {
+      return {
+        status: 'ERROR',
+        message: userMessages.NOT_FOUND,
+      };
+    }
     await connectMongoDB();
 
-    const currentUser = await getCurrentUser();
-    if (!currentUser) {
-      return { status: 'ERROR', message: generalMessages.UNAUTHORIZED };
-    }
-
-    const userDoc = await User.findById(currentUser.id).select('-password').lean();
+    const userDoc = await User.findById(userId).select('-password').lean();
 
     if (!userDoc) {
       return { status: 'ERROR', message: userMessages.NOT_FOUND };
