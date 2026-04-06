@@ -28,8 +28,19 @@ declare namespace UserTypes {
     role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
     barcodePermits?: string[];
     isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  interface IUserWithPopulatedBalance extends Omit<IUser, 'balance'> {
+    balance: {
+      _id: string;
+      total: number;
+    };
+    pricingList?: {
+      _id: string;
+      name: string;
+    };
   }
 
   interface ISidebarItem {
