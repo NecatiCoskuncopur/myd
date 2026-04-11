@@ -7,6 +7,7 @@ export { default as PricingLists } from './Dashboard/Admin/PricingLists';
 export { default as Users } from './Dashboard/Admin/Users';
 export { default as DashboardShell } from './Dashboard/DashboardShell';
 export { default as CreateShippingForm } from './Dashboard/Shipping/CreateShippingForm';
+export { default as ShippingDetail } from './Dashboard/Shipping/ShippingDetail';
 export { default as UserBalanceTable } from './Dashboard/UserBalanceTable';
 export { default as UserPriceList } from './Dashboard/UserPriceList';
 export { default as StyledButton } from './StyledButton';
