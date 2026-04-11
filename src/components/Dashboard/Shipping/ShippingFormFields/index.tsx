@@ -6,7 +6,11 @@ import PackageDetailSection from './PackageDetailSection';
 import SenderSection from './SenderSection';
 import ShippingDetailSection from './ShippingDetailSection';
 
-const ShippingFormFields = () => {
+type ShippingFormFieldsProps = {
+  user: UserTypes.IUser | null;
+};
+
+const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
   return (
     <Grid container spacing={2}>
       <Grid container size={{ xs: 12, md: 6 }} spacing={2}>
@@ -15,7 +19,7 @@ const ShippingFormFields = () => {
       </Grid>
 
       <Grid container size={{ xs: 12, md: 6 }} spacing={2}>
-        <SenderSection />
+        {user?.role !== 'CUSTOMER' && <SenderSection />}
         <PackageContentSection />
         <PackageDetailSection />
       </Grid>

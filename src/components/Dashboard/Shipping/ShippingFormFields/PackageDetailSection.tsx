@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CalculateIcon from '@mui/icons-material/Calculate';
 import { Button, Grid, Popover, TextField } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { shippingMessages } from '@/constants';
-import DesiKgCalculator from './DesiKgCalculator'; // Yukarıdaki dosya
+import DesiKgCalculator from './DesiKgCalculator';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
 
@@ -17,10 +17,28 @@ const PackageDetailSection = () => {
   const {
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext<ShippingTypes.ICreateShippingPayload>();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const width = watch('package.width');
+  const height = watch('package.height');
+  const length = watch('package.length');
+  const piece = watch('package.numberOfPackage');
+
+  useEffect(() => {
+    if (width && height && length) {
+      const w = Number(width);
+      const h = Number(height);
+      const l = Number(length);
+      const p = Number(piece) || 1;
+
+      const calculatedVolumetric = ((w * h * l) / 5000) * p;
+      setValue('package.volumetricWeight', Number(calculatedVolumetric.toFixed(2)));
+    }
+  }, [width, height, length, piece, setValue]);
 
   const handleOpenCalc = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -48,7 +66,7 @@ const PackageDetailSection = () => {
             control={control}
             render={({ field }) => (
               <ErrorTooltip message={errors.package?.weight?.message}>
-                <TextField {...field} type="number" label="Kg/Desi *" fullWidth error={!!errors.package?.weight} />
+                <TextField {...field} type="number" label="Kg *" fullWidth error={!!errors.package?.weight} />
               </ErrorTooltip>
             )}
           />
@@ -60,7 +78,6 @@ const PackageDetailSection = () => {
             rules={{
               required: WIDTH.REQUIRED,
               min: { value: 0.5, message: WIDTH.MIN },
-              max: { value: 500, message: WIDTH.MAX },
             }}
             control={control}
             render={({ field }) => (
@@ -78,7 +95,6 @@ const PackageDetailSection = () => {
             rules={{
               required: HEIGHT.REQUIRED,
               min: { value: 0.5, message: HEIGHT.MIN },
-              max: { value: 500, message: HEIGHT.MAX },
             }}
             render={({ field }) => (
               <ErrorTooltip message={errors.package?.height?.message}>
@@ -87,15 +103,13 @@ const PackageDetailSection = () => {
             )}
           />
         </Grid>
-
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 2 }}>
           <Controller
             name="package.length"
             control={control}
             rules={{
               required: LENGTH.REQUIRED,
               min: { value: 0.5, message: LENGTH.MIN },
-              max: { value: 500, message: LENGTH.MAX },
             }}
             render={({ field }) => (
               <ErrorTooltip message={errors.package?.length?.message}>
@@ -104,7 +118,6 @@ const PackageDetailSection = () => {
             )}
           />
         </Grid>
-
         <Grid size={{ xs: 12, md: 2 }}>
           <Controller
             name="package.numberOfPackage"
@@ -112,7 +125,6 @@ const PackageDetailSection = () => {
             rules={{
               required: NUMBEROFPACKAGE.REQUIRED,
               min: { value: 1, message: NUMBEROFPACKAGE.MIN },
-              max: { value: 55, message: NUMBEROFPACKAGE.MAX },
             }}
             render={({ field }) => (
               <ErrorTooltip message={errors.package?.numberOfPackage?.message}>

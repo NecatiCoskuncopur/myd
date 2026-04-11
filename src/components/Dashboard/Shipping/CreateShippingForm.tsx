@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Alert, Box, Checkbox, FormControlLabel, Snackbar, Typography, useTheme } from '@mui/material';
@@ -8,12 +8,14 @@ import cleanDeep from 'clean-deep';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import createShipping from '@/app/actions/shipping/createShipping';
+import getUser from '@/app/actions/user/getUser';
 import StyledButton from '@/components/StyledButton';
-import { generalMessages, shippingMessages } from '@/constants';
+import { generalMessages, shippingMessages, userMessages } from '@/constants';
 import ShippingFormFields from './ShippingFormFields';
 
 const { CREATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
+const { NOT_FOUND } = userMessages;
 
 const CreateShippingForm = () => {
   const theme = useTheme();
@@ -22,6 +24,7 @@ const CreateShippingForm = () => {
   const [pending, startTransition] = useTransition();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBatchMode, setIsBatchMode] = useState(false);
+  const [user, setUser] = useState<UserTypes.IUser | null>(null);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -31,6 +34,22 @@ const CreateShippingForm = () => {
     message: '',
     severity: 'success',
   });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const result = await getUser();
+      if (result.status === 'OK' && result.data) {
+        setUser(result.data);
+      } else {
+        setSnackbar({
+          open: true,
+          message: result.message || NOT_FOUND,
+          severity: 'error',
+        });
+      }
+    };
+    fetchUser();
+  }, []);
 
   const methods = useForm<ShippingTypes.ICreateShippingPayload>({
     defaultValues: {
@@ -78,6 +97,7 @@ const CreateShippingForm = () => {
         width: '' as unknown as number,
         height: '' as unknown as number,
         length: '' as unknown as number,
+        volumetricWeight: '' as unknown as number,
       },
     },
   });
@@ -162,7 +182,7 @@ const CreateShippingForm = () => {
             opacity: pending ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields />
+          <ShippingFormFields user={user} />
           <StyledButton type="submit" fullWidth sx={{ marginTop: '12px' }}>
             Gönderi Oluştur
           </StyledButton>
