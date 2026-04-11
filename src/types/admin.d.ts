@@ -51,4 +51,20 @@ declare namespace AdminTypes {
     lastName?: string;
     company?: string;
   }
+
+  interface ICreateUser {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    company?: string;
+    phone: string;
+    address: {
+      line1: string;
+      line2?: string;
+      district: string;
+      city: string;
+      postalCode: string;
+    };
+  }
 }
