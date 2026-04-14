@@ -15,7 +15,7 @@ const PackageContentSection = () => {
   const {
     control,
     formState: { errors },
-  } = useFormContext<ShippingTypes.ICreateShippingPayload>();
+  } = useFormContext<ShippingTypes.ICreateShippingPayload | ShippingTypes.IUpdateShippingPayload>();
 
   const { fields, append, remove } = useFieldArray({
     control,

@@ -61,7 +61,15 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       }
     }
 
-    await Shipping.updateOne({ _id: shippingId, userId }, { $set: rest });
+    await Shipping.updateOne(
+      { _id: shippingId, userId },
+      {
+        $set: {
+          ...rest,
+          consignee: consignee,
+        },
+      },
+    );
 
     return { status: 'OK', message: UPDATESHIPPING.SUCCESS };
   } catch (error: unknown) {

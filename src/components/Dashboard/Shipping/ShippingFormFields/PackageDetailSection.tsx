@@ -19,7 +19,7 @@ const PackageDetailSection = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useFormContext<ShippingTypes.ICreateShippingPayload>();
+  } = useFormContext<ShippingTypes.ICreateShippingPayload | ShippingTypes.IUpdateShippingPayload>();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

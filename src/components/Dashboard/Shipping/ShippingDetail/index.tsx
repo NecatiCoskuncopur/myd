@@ -31,7 +31,7 @@ const ShippingDetail = () => {
         } else {
           setError(response.message || NOT_FOUND);
         }
-      } catch (err) {
+      } catch {
         setError(UNEXPECTED_ERROR);
       } finally {
         setLoading(false);

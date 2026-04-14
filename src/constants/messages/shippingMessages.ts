@@ -101,6 +101,7 @@ const shippingMessages = {
   },
   UPDATESHIPPING: {
     SUCCESS: 'Gönderi başarıyla güncellendi.',
+    ERROR: 'Gönderi güncellenemedi.',
   },
   WEIGHT: {
     REQUIRED: 'Ağırlık zorunludur.',

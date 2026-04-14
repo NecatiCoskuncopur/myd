@@ -16,7 +16,7 @@ const ConsigneeSection = () => {
     control,
     setValue,
     formState: { errors },
-  } = useFormContext<ShippingTypes.ICreateShippingPayload>();
+  } = useFormContext<ShippingTypes.ICreateShippingPayload | ShippingTypes.IUpdateShippingPayload>();
 
   const selectedCountry = useWatch({
     control,

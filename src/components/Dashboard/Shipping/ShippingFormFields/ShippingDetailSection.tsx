@@ -13,7 +13,7 @@ const ShippingDetailSection = () => {
   const {
     control,
     formState: { errors },
-  } = useFormContext<ShippingTypes.ICreateShippingPayload>();
+  } = useFormContext<ShippingTypes.ICreateShippingPayload | ShippingTypes.IUpdateShippingPayload>();
 
   return (
     <Wrapper title="Gönderi Detayı">
