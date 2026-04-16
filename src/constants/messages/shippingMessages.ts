@@ -29,6 +29,7 @@ const shippingMessages = {
   },
   DELETE: {
     SUCCESS: 'Göndeeri başarıyla silindi.',
+    ERROR: 'Gönderi silinirken hata oluştu.',
   },
   DESCRIPTION: {
     TYPE: 'Açıklama dizi tipinde olmalı',
