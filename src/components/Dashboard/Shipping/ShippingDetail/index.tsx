@@ -91,6 +91,28 @@ const ShippingDetail = () => {
           }}
           size={{ xs: 12, md: 6 }}
         >
+          Taşıyıcı: {shipping?.carrier?.name || 'Henüz barkod oluşturulmadı.'}
+        </Grid>
+        <Grid
+          sx={{
+            borderRadius: '12px',
+            backgroundColor: theme.palette.dashboard.sidebar,
+            color: theme.palette.dashboard.textSidebar,
+            p: '24px',
+          }}
+          size={{ xs: 12, md: 6 }}
+        >
+          Takip Numarası: {shipping?.carrier?.trackingNumber || 'Henüz barkod oluşturulmadı.'}
+        </Grid>
+        <Grid
+          sx={{
+            borderRadius: '12px',
+            backgroundColor: theme.palette.dashboard.sidebar,
+            color: theme.palette.dashboard.textSidebar,
+            p: '24px',
+          }}
+          size={{ xs: 12, md: 6 }}
+        >
           <SenderSection sender={shipping?.sender} />
         </Grid>
         <Grid
