@@ -111,7 +111,7 @@ const Header = ({ hasTrackingNumber, id }: HeaderProps) => {
       <Typography variant="h5">Gönderi Detayı</Typography>
 
       {!hasTrackingNumber && (
-        <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+        <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ width: { xs: '100%', sm: 'auto' } }}>
           <Button
             variant="outlined"
             color="error"
