@@ -53,25 +53,24 @@ const listShipping = async (
     if (consigneeCompany) match['consignee.company'] = createRegex(consigneeCompany);
     if (consigneePhone) match['consignee.phone'] = createRegex(consigneePhone);
 
-    const isDownload = Boolean(download);
-
-    if (isDownload) {
+    if (download) {
       const shipping = await Shipping.find(match).select('sender consignee content package carrier createdAt').limit(10000).lean<ShippingTypes.IShipping[]>();
 
       const excelData = shipping.map(item => {
         const totalProductValue = item.content?.products?.reduce((prev, { piece = 0, unitPrice = 0 }) => prev + piece * unitPrice, 0) ?? 0;
+
         const productNames = item.content?.products?.map(p => p.name).join(', ') ?? '';
 
         return {
-          'Gönderici Adı': item.sender?.name,
-          'Gönderici Firma': item.sender?.company,
-          'Alıcı Adı': item.consignee?.name,
-          'Alıcı Adres': `${item.consignee?.address?.line1 ?? ''} ${item.consignee?.address?.line2 ?? ''} ${item.consignee?.address?.city ?? ''}`,
-          'Alıcı Ülke': item.consignee?.address?.country,
+          'Gönderici Adı': item.sender?.name || '',
+          'Gönderici Firma': item.sender?.company || '',
+          'Alıcı Adı': item.consignee?.name || '',
+          'Alıcı Adres': `${item.consignee?.address?.line1 ?? ''} ${item.consignee?.address?.line2 ?? ''} ${item.consignee?.address?.city ?? ''}`.trim(),
+          'Alıcı Ülke': item.consignee?.address?.country || '',
           'Alıcı Eyalet': item.consignee?.address?.state ?? '',
-          'Alıcı Posta Kodu': item.consignee?.address?.postalCode,
+          'Alıcı Posta Kodu': item.consignee?.address?.postalCode || '',
           'Takip Kodu': item.carrier?.trackingNumber ?? '',
-          'Ağırlık/Desi': item.package?.weight,
+          'Ağırlık/Desi': item.package?.weight || 0,
           Tutar: item.carrier?.amount ?? '',
           İçerik: productNames,
           'İçerik Toplam Tutarı': totalProductValue,
@@ -79,11 +78,14 @@ const listShipping = async (
         };
       });
 
+      const excelBuffer = json2xls(excelData);
+      const base64Content = Buffer.isBuffer(excelBuffer) ? excelBuffer.toString('base64') : Buffer.from(excelBuffer, 'binary').toString('base64');
+
       return {
         status: 'OK',
         data: {
           fileName: `gonderiler_${moment().format('DD-MM-YYYY')}.xls`,
-          content: Buffer.from(json2xls(excelData)).toString('base64'),
+          content: base64Content,
         },
       };
     }
@@ -108,10 +110,12 @@ const listShipping = async (
       },
     });
 
+    const serializedShippings = JSON.parse(JSON.stringify(result.docs));
+
     return {
       status: 'OK',
       data: {
-        shippings: result.docs,
+        shippings: serializedShippings,
         totalCount: result.totalDocs,
         limit: result.limit ?? safeLimit,
         page: result.page ?? safePage,

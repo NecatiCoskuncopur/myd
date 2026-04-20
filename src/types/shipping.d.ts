@@ -97,16 +97,18 @@ declare namespace ShippingTypes {
     purpose?: 'GIFT' | 'PERSONAL' | 'SAMPLE' | 'REPAIR_OR_RETURN' | 'COMMERICAL';
   }
 
+  interface IProduct {
+    name?: string;
+    unitPrice?: number;
+    piece?: number;
+    gtip?: string;
+  }
+
   interface IShippingContent {
     currency?: 'USD' | 'EUR' | 'GBP';
     description?: string;
     freight?: number;
-    products?: {
-      name?: string;
-      unitPrice?: number;
-      piece?: number;
-      gtip?: string;
-    }[];
+    products?: IProduct[];
   }
 
   interface IPackage {
