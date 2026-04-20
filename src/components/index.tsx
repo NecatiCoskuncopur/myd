@@ -9,6 +9,7 @@ export { default as DashboardShell } from './Dashboard/DashboardShell';
 export { default as CreateShippingForm } from './Dashboard/Shipping/CreateShippingForm';
 export { default as EditShippingForm } from './Dashboard/Shipping/EditShippingForm';
 export { default as ShippingDetail } from './Dashboard/Shipping/ShippingDetail';
+export { default as ShippingList } from './Dashboard/Shipping/ShippingList';
 export { default as UserBalanceTable } from './Dashboard/UserBalanceTable';
 export { default as UserPriceList } from './Dashboard/UserPriceList';
 export { default as StyledButton } from './StyledButton';
