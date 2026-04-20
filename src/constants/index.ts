@@ -7,6 +7,7 @@ export { default as welcomeMail } from './mailTemplates/welcome.mail';
 export { default as addressMessages } from './messages/addressMessages';
 export { default as authMessages } from './messages/authMessages';
 export { default as captchaMessages } from './messages/captchaMessages';
+export { default as carrierMessages } from './messages/carrierMessages';
 export { default as generalMessages } from './messages/generalMessages';
 export { default as pricingListMessages } from './messages/pricingListMessages';
 export { default as shippingMessages } from './messages/shippingMessages';
