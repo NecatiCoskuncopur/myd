@@ -1,5 +1,6 @@
 const shippingMessages = {
   ALREADY_LABELED: 'Gönderi zaten etiketlenmiş',
+  COST_NOT_CALCULATED: 'Kargo ücreti hesaplanamadı.',
   COUNTRYCODE: {
     TYPE: 'Ülke kodu metin tipinde olmalı',
     LENGTH: 'Ülke kodu 2 karakter olmalıdır.',

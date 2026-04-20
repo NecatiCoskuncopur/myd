@@ -165,4 +165,10 @@ declare namespace ShippingTypes {
     startDate?: string;
     endDate?: string;
   }
+
+  interface ICreateBarcodeParams {
+    shippingId: string;
+    firm: 'UPS' | 'FEDEX';
+    accountNumber: string;
+  }
 }
