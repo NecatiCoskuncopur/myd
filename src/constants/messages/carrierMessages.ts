@@ -5,6 +5,31 @@ const carrierMessages = {
   TRACKING_NUMBER_NOT_FOUND: 'Takip numarası bulunamadı.',
   UNAUTHORIZED: 'Bu kargo firması/hesap için yetkiniz yok.',
   UNSUPPORTED: 'Desteklenmeyen taşıyıcı firma.',
+  CREATE: {
+    SUCCESS: 'Kargo hesabı başarıyla oluşturuldu.',
+  },
+  NAME: {
+    TYPE: 'Hesap adı metin tipinde olmalı.',
+    MIN: 'Hesap adı en az 2 karakter olmalıdır.',
+    MAX: 'Hesap adı en fazla 75 karakter olmalıdır.',
+    REQUIRED: 'Hesap adı zorunludur.',
+  },
+  CARRIER: {
+    TYPE_INVALID: 'Geçersiz taşıyıcı firma.',
+    REQUIRED: 'Taşıyıcı firma zorunludur',
+  },
+  ACCOUNTNUMBER: {
+    TYPE: 'Hesap numarası metin tipinde olmalı.',
+    MIN: 'Hesap numarası en az 1 karakter olmalıdır',
+    REQUIRED: 'Hesap numarası zorunludur.',
+    ALREADY_EXISTS: 'Bu hesap numarası zaten kayıtlı',
+  },
+  CREDENTIALS: {
+    KEY_REQUIRED: 'Anahtar (Key) adı boş olamaz',
+    VALUE_REQUIRED: 'Değer (Value) boş olamaz',
+    MIN: 'Kargo entegrasyonu için en az 2 adet kimlik bilgisi (Key/Secret) gereklidir',
+    REQUIRED: 'Kimlik bilgileri zorunludur',
+  },
 } as const;
 
 export default carrierMessages;
