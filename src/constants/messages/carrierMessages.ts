@@ -8,6 +8,11 @@ const carrierMessages = {
   CREATE: {
     SUCCESS: 'Kargo hesabı başarıyla oluşturuldu.',
   },
+  UPDATE: {
+    ID_TYPE: 'Taşıyıcı firma id metin tipinde olmalıdır',
+    ID_REQUIRED: 'Taşıyıcı firma id zorunludur.',
+    SUCCESS: 'Kargo hesabı başarıyla güncellendi.',
+  },
   NAME: {
     TYPE: 'Hesap adı metin tipinde olmalı.',
     MIN: 'Hesap adı en az 2 karakter olmalıdır.',

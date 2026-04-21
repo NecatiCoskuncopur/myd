@@ -11,4 +11,9 @@ declare namespace CarrierAccountTypes {
     credentials: ICarrierCredential[];
     meta?: Record<string, unknown>;
   }
+
+  interface IUpdateCarrierAccountPayload extends Partial<ICreateCarrierAccountPayload> {
+    id: string;
+    isActive?: boolean;
+  }
 }

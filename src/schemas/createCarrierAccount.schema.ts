@@ -19,4 +19,6 @@ export default yup.object({
     )
     .min(2, CREDENTIALS.MIN)
     .required(CREDENTIALS.REQUIRED),
+  isActive: yup.boolean().default(true),
+  meta: yup.object().optional(),
 });
