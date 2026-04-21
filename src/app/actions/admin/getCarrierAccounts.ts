@@ -39,7 +39,10 @@ const getCarrierAccounts = async (
     return {
       status: 'OK',
       data: {
-        carrierAccounts: carrierAccounts as CarrierAccountTypes.ICarrierAccount[],
+        carrierAccounts: carrierAccounts.map((account: CarrierAccountTypes.ICarrierAccount) => ({
+          ...account,
+          _id: account._id.toString(),
+        })) as CarrierAccountTypes.ICarrierAccount[],
         totalCount,
         page,
         limit,
