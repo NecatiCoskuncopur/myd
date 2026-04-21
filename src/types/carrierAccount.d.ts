@@ -28,4 +28,15 @@ declare namespace CarrierAccountTypes {
     createdAt?: string | Date;
     updatedAt?: string | Date;
   }
+
+  interface ICarrierAccountData extends ResponseTypes.IPaginationResponse {
+    carrierAccounts: ICarrierAccount[];
+  }
+
+  interface ICarrierAcccountsParams extends ParamsTypes.IPaginationParams {
+    name?: string;
+    carrier?: 'FEDEX' | 'UPS';
+    accountNumber?: string;
+    isActive?: boolean;
+  }
 }
