@@ -5,6 +5,7 @@ const carrierMessages = {
   TRACKING_NUMBER_NOT_FOUND: 'Takip numarası bulunamadı.',
   UNAUTHORIZED: 'Bu kargo firması/hesap için yetkiniz yok.',
   UNSUPPORTED: 'Desteklenmeyen taşıyıcı firma.',
+  INVALID_ID: 'Geçersiz hesap ID formatı.',
   CREATE: {
     SUCCESS: 'Kargo hesabı başarıyla oluşturuldu.',
   },
@@ -22,6 +23,7 @@ const carrierMessages = {
   CARRIER: {
     TYPE_INVALID: 'Geçersiz taşıyıcı firma.',
     REQUIRED: 'Taşıyıcı firma zorunludur',
+    NOT_FOUND: 'Kargo hesabı bulunamadı.',
   },
   ACCOUNTNUMBER: {
     TYPE: 'Hesap numarası metin tipinde olmalı.',

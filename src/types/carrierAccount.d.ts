@@ -16,4 +16,16 @@ declare namespace CarrierAccountTypes {
     id: string;
     isActive?: boolean;
   }
+
+  export interface ICarrierAccount {
+    _id: string;
+    name: string;
+    carrier: 'FEDEX' | 'UPS';
+    accountNumber: string;
+    isActive: boolean;
+    credentials: ICarrierCredential[];
+    meta?: Record<string, unknown>;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+  }
 }
