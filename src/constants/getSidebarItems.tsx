@@ -1,4 +1,4 @@
-import { AddBox, AttachMoney, Build, Dashboard, FormatListNumbered, GroupRemove, ListAlt, Person, RocketLaunch } from '@mui/icons-material';
+import { AddBox, AttachMoney, Build, Dashboard, FormatListNumbered, GroupRemove, ListAlt, LocalShipping, Person, RocketLaunch } from '@mui/icons-material';
 
 const getSidebarItems = (role: UserTypes.ICurrentUser['role'] | ''): UserTypes.ISidebarItem[] => [
   {
@@ -68,6 +68,12 @@ const getSidebarItems = (role: UserTypes.ICurrentUser['role'] | ''): UserTypes.I
               label: 'Fiyat Listeleri',
               icon: <AttachMoney />,
               path: '/panel/yonetim/fiyat-listeleri',
+            },
+            {
+              key: 'kargo-hesapları',
+              label: 'Kargo Hesapları',
+              icon: <LocalShipping />,
+              path: '/panel/yonetim/kargo-hesaplari',
             },
           ],
         },
