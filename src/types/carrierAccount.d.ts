@@ -17,7 +17,7 @@ declare namespace CarrierAccountTypes {
     isActive?: boolean;
   }
 
-  export interface ICarrierAccount {
+  interface ICarrierAccount {
     _id: string;
     name: string;
     carrier: 'FEDEX' | 'UPS';
