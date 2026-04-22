@@ -25,7 +25,7 @@ const CarrierAccountSchema = new Schema(
       type: String,
       required: true,
     },
-
+    accountNumber: { type: String, required: true },
     isActive: {
       type: Boolean,
       default: true,

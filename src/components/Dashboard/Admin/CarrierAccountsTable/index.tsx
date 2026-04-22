@@ -11,6 +11,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
 import { generalMessages } from '@/constants';
 import columns from './columns';
+import CreateCarrierAccount from './CreateCarrierAccount';
 import FilterSection from './FilterSection';
 
 const CarrierAccountsTable = () => {
@@ -43,7 +44,7 @@ const CarrierAccountsTable = () => {
     let isMounted = true;
     const requestId = ++requestIdRef.current;
 
-    const fetchUsers = async () => {
+    const fetchCarrierAccounts = async () => {
       try {
         setLoading(true);
 
@@ -72,7 +73,7 @@ const CarrierAccountsTable = () => {
       }
     };
 
-    fetchUsers();
+    fetchCarrierAccounts();
 
     return () => {
       isMounted = false;
@@ -207,6 +208,14 @@ const CarrierAccountsTable = () => {
           />
         </Box>
       </Box>
+      <CreateCarrierAccount
+        open={modalState.type === 'create' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          handleCloseModal();
+          router.refresh();
+        }}
+      />
     </Box>
   );
 };
