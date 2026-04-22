@@ -13,6 +13,7 @@ import { generalMessages } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccount from './CreateCarrierAccount';
 import FilterSection from './FilterSection';
+import UpdateCarrierAccount from './UpdateCarrierAccount';
 
 const CarrierAccountsTable = () => {
   const router = useRouter();
@@ -210,6 +211,16 @@ const CarrierAccountsTable = () => {
       </Box>
       <CreateCarrierAccount
         open={modalState.type === 'create' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          handleCloseModal();
+          router.refresh();
+        }}
+      />
+
+      <UpdateCarrierAccount
+        open={modalState.type === 'edit' && modalState.open}
+        account={selectedRow}
         onClose={handleCloseModal}
         onSuccess={() => {
           handleCloseModal();
