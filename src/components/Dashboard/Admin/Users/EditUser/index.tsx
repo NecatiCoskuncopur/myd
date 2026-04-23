@@ -5,6 +5,7 @@ import { startTransition, useEffect, useState } from 'react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
+import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
 import getPricingLists from '@/app/actions/admin/getPricingLists';
 import setUser from '@/app/actions/admin/setUser';
 import StyledButton from '@/components/StyledButton';
@@ -24,6 +25,7 @@ interface Props {
 const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pricingLists, setPricingLists] = useState<PricingListTypes.IPricingList[]>([]);
+  const [carrierAccountsData, setCarrierAccountsData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
   const theme = useTheme();
 
   const [snackbar, setSnackbar] = useState<{
@@ -141,6 +143,17 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
     });
   };
 
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const response = await getCarrierAccounts({ limit: 100, isActive: true });
+
+      if (response.status === 'OK' && response.data) {
+        setCarrierAccountsData(response.data);
+      }
+    };
+    fetchAccounts();
+  }, []);
+
   return (
     <>
       <Dialog
@@ -164,7 +177,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
             </Alert>
           )}
 
-          <FormItems control={control} errors={errors} pricingLists={pricingLists} />
+          <FormItems control={control} errors={errors} pricingLists={pricingLists} carrierAccounts={carrierAccountsData?.carrierAccounts || []} />
         </DialogContent>
 
         <DialogActions sx={{ m: 2 }}>

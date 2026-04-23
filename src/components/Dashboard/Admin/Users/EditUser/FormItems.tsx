@@ -8,15 +8,14 @@ import { addressMessages, userMessages } from '@/constants';
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
-const barcodeOptions: string[] = ['FEDEX-1', 'FEDEX-2', 'UPS-1', 'UPS-2'];
-
 type FormItemsProps = {
   control: Control<AdminTypes.ISetUserPayload, AdminTypes.ISetUserPayload>;
   errors: FieldErrors<AdminTypes.ISetUserPayload>;
   pricingLists: PricingListTypes.IPricingList[];
+  carrierAccounts: CarrierAccountTypes.ICarrierAccount[] | [];
 };
 
-const FormItems = ({ control, errors, pricingLists }: FormItemsProps) => {
+const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItemsProps) => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6, lg: 4 }}>
@@ -202,10 +201,23 @@ const FormItems = ({ control, errors, pricingLists }: FormItemsProps) => {
           render={({ field }) => (
             <Autocomplete
               multiple
-              options={barcodeOptions}
-              value={field.value ?? []}
-              onChange={(_, value) => field.onChange(value)}
-              renderInput={params => <TextField {...params} label="Barkod Yetkileri" />}
+              options={carrierAccounts}
+              getOptionLabel={option => option.name || ''}
+              value={carrierAccounts.filter(acc => field.value?.includes(acc._id))}
+              onChange={(_, newValue) => {
+                const selectedIds = newValue.map(item => item._id);
+                field.onChange(selectedIds);
+              }}
+              isOptionEqualToValue={(option, value) => option._id === value._id}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="Barkod Yetkileri"
+                  placeholder="Hesap Seçin"
+                  error={!!errors.barcodePermits}
+                  helperText={errors.barcodePermits?.message}
+                />
+              )}
             />
           )}
         />
