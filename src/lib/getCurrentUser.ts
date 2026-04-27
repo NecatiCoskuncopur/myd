@@ -31,10 +31,11 @@ export const getCurrentUser = async (): Promise<UserTypes.ICurrentUser | null> =
     return null;
   }
 
-  const user = await User.findById(decoded.sub).select('_id role email').lean<{
+  const user = await User.findById(decoded.sub).select('_id role email barcodePermits').lean<{
     _id: unknown;
     role: UserTypes.JwtPayload['role'];
     email: string;
+    barcodePermits?: string[];
   }>();
 
   if (!user) return null;
@@ -43,5 +44,6 @@ export const getCurrentUser = async (): Promise<UserTypes.ICurrentUser | null> =
     id: String(user._id),
     role: user.role,
     email: user.email,
+    barcodePermits: user.barcodePermits || [],
   };
 };

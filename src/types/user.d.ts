@@ -8,7 +8,7 @@ declare namespace UserTypes {
     id: string;
     role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
     email: string;
-    barcodePermits?: string[];
+    barcodePermits: string[];
   }
 
   interface IUser {
