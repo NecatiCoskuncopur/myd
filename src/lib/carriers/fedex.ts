@@ -33,7 +33,7 @@ const createFedexLabel = async ({
   trackingNumber: string;
   label: string;
 }> => {
-  const authRes = await fetch('https://apis.fedex.com/oauth/token', {
+  const authRes = await fetch('https://apis-sandbox.fedex.com/ship/v1/shipments', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,6 +82,7 @@ const createFedexLabel = async ({
               city: shippingInstance.recipient.city,
               postalCode: shippingInstance.recipient.postalCode,
               countryCode: shippingInstance.recipient.countryCode,
+              state: shippingInstance.recipient.stateCode || undefined,
             },
           },
         ],

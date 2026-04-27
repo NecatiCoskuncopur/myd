@@ -33,7 +33,7 @@ const createUpsLabel = async ({
   trackingNumber: string;
   label: string;
 }> => {
-  const authRes = await fetch('https://onlinetools.ups.com/security/v1/oauth/token', {
+  const authRes = await fetch('https://wwwcie.ups.com/security/v1/oauth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +50,7 @@ const createUpsLabel = async ({
 
   const accessToken = authData.access_token;
 
-  const shipmentRes = await fetch('https://onlinetools.ups.com/api/shipments/v1/ship', {
+  const shipmentRes = await fetch('https://wwwcie.ups.com/api/shipments/v1/shipments', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -74,6 +74,7 @@ const createUpsLabel = async ({
             Address: {
               AddressLine: [shippingInstance.recipient.address],
               City: shippingInstance.recipient.city,
+              State: shippingInstance.recipient.stateCode || '',
               PostalCode: shippingInstance.recipient.postalCode,
               CountryCode: shippingInstance.recipient.countryCode,
             },

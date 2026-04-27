@@ -54,7 +54,27 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const shippingInstance = JSON.parse(JSON.stringify(shipping));
+    const shippingInstance = {
+      shipper: {
+        name: shipping.sender?.name,
+        address: `${shipping.sender?.address?.line1}, ${shipping.sender?.address?.line2 || ''}`,
+        city: shipping.sender?.address?.city,
+        postalCode: shipping.sender?.address?.postalCode,
+        countryCode: 'TR',
+      },
+      recipient: {
+        name: shipping.consignee.name,
+        address: `${shipping.consignee?.address?.line1}, ${shipping.consignee?.address?.line2 || ''}`,
+        stateCode: shipping.consignee.address.state || '',
+        city: shipping.consignee.address.city,
+        postalCode: shipping.consignee.address.postalCode,
+        countryCode: shipping.consignee.address.country,
+      },
+      package: {
+        weight: Math.max(shipping.package.weight, shipping.package.volumetricWeight),
+        unit: 'KG',
+      },
+    };
 
     const carrierAccount = await CarrierAccount.findOne({
       carrier: firm,
@@ -75,10 +95,11 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     }, {});
 
     let carrierResult: { trackingNumber: string; label: string } | null = null;
+    const safeShippingInstance = JSON.parse(JSON.stringify(shippingInstance));
 
     if (firm === 'UPS') {
       carrierResult = await createUpsLabel({
-        shippingInstance,
+        shippingInstance: safeShippingInstance,
         accountNumber,
         credentials: {
           clientId: credentials.clientId,
@@ -87,7 +108,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       });
     } else if (firm === 'FEDEX') {
       carrierResult = await createFedexLabel({
-        shippingInstance,
+        shippingInstance: safeShippingInstance,
         accountNumber,
         credentials: {
           apiKey: credentials.apiKey,
