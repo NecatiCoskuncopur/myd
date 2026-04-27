@@ -7,8 +7,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import SearchIcon from '@mui/icons-material/Search';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -34,10 +34,7 @@ const ShippingList = () => {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  const [modalState, setModalState] = useState<{
-    type: 'barcode' | 'delete' | '';
-    open: boolean;
-  }>({ type: '', open: false });
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [inputs, setInputs] = useState({
     consigneeName: searchParams.get('consigneeName') || '',
@@ -156,14 +153,14 @@ const ShippingList = () => {
   };
   const rows = useMemo(() => data?.shippings ?? [], [data]);
 
-  const handleOpenModal = (type: 'barcode' | 'delete') => {
-    setModalState({ type, open: true });
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
     setMenuAnchorEl(null);
   };
 
   const handleCloseModal = () => {
     setSelectedRow(null);
-    setModalState({ type: '', open: false });
+    setIsModalOpen(false);
   };
 
   const shippingColumns: GridColDef[] = [
@@ -177,14 +174,6 @@ const ShippingList = () => {
       filterable: false,
       renderCell: params => {
         const hasTrackingNumber = !!params.row.carrier?.trackingNumber;
-
-        if (hasTrackingNumber) {
-          return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', height: '100%' }}>
-              <Typography color="text.secondary">-</Typography>
-            </Box>
-          );
-        }
 
         return (
           <>
@@ -206,29 +195,40 @@ const ShippingList = () => {
                 setSelectedRow(null);
               }}
             >
-              <MenuItem onClick={() => router.push(`/panel/gonderilerim/${selectedRow?._id}/duzenle`)}>
+              <MenuItem onClick={() => router.push(`/panel/gonderilerim/${selectedRow?._id}`)}>
                 <ListItemIcon>
-                  <EditIcon fontSize="small" />
+                  <VisibilityOutlinedIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Düzenle</ListItemText>
+                <ListItemText>İncele</ListItemText>
               </MenuItem>
 
-              {(user?.barcodePermits?.length ?? 0) > 0 && (
-                <MenuItem onClick={() => handleOpenModal('barcode')}>
+              {!hasTrackingNumber && [
+                <MenuItem key="edit" onClick={() => router.push(`/panel/gonderilerim/${selectedRow?._id}/duzenle`)}>
                   <ListItemIcon>
-                    <QrCode2OutlinedIcon fontSize="small" />
+                    <EditIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText>Barkod Ekle</ListItemText>
-                </MenuItem>
-              )}
-
-              <MenuItem onClick={() => handleOpenModal('delete')}>
-                <ListItemIcon>
-                  <DeleteOutlineIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Sil</ListItemText>
-              </MenuItem>
+                  <ListItemText>Düzenle</ListItemText>
+                </MenuItem>,
+                <MenuItem key="delete" onClick={() => handleOpenModal()}>
+                  <ListItemIcon>
+                    <DeleteOutlineIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Sil</ListItemText>
+                </MenuItem>,
+              ]}
             </Menu>
+
+            {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && (
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => {
+                  setSelectedRow(params.row);
+                }}
+              >
+                Barkod Oluştur
+              </Button>
+            )}
           </>
         );
       },
@@ -327,7 +327,7 @@ const ShippingList = () => {
         </Box>
         <DeleteShipping
           id={selectedRow?._id ?? ''}
-          open={modalState.type === 'delete' && modalState.open}
+          open={isModalOpen}
           onClose={handleCloseModal}
           onSuccess={() => {
             handleCloseModal();
