@@ -17,6 +17,7 @@ import moment from 'moment';
 
 import listShipping from '@/app/actions/shipping/listShipping';
 import getUser from '@/app/actions/user/getUser';
+import { CreateBarcodeButton } from '@/components';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages } from '@/constants';
 import columns from './columns';
@@ -169,7 +170,7 @@ const ShippingList = () => {
       field: 'actions',
       headerName: 'İşlemler',
       flex: 1,
-      minWidth: 100,
+      minWidth: 250,
       sortable: false,
       filterable: false,
       renderCell: params => {
@@ -218,17 +219,7 @@ const ShippingList = () => {
               ]}
             </Menu>
 
-            {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && (
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => {
-                  setSelectedRow(params.row);
-                }}
-              >
-                Barkod Oluştur
-              </Button>
-            )}
+            {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={params.row} />}
           </>
         );
       },

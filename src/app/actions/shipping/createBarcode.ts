@@ -32,13 +32,6 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       return { status: 'ERROR', message: userMessages.NOT_FOUND };
     }
 
-    if (!user.barcodePermits.includes(`${firm}-${accountNumber}`)) {
-      return {
-        status: 'ERROR',
-        message: carrierMessages.UNAUTHORIZED,
-      };
-    }
-
     const query = role === 'ADMIN' || role === 'OPERATOR' ? { _id: shippingId } : { _id: shippingId, userId };
 
     const shipping = await Shipping.findOne(query);
@@ -54,27 +47,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const shippingInstance = {
-      shipper: {
-        name: shipping.sender?.name,
-        address: `${shipping.sender?.address?.line1}, ${shipping.sender?.address?.line2 || ''}`,
-        city: shipping.sender?.address?.city,
-        postalCode: shipping.sender?.address?.postalCode,
-        countryCode: 'TR',
-      },
-      recipient: {
-        name: shipping.consignee.name,
-        address: `${shipping.consignee?.address?.line1}, ${shipping.consignee?.address?.line2 || ''}`,
-        stateCode: shipping.consignee.address.state || '',
-        city: shipping.consignee.address.city,
-        postalCode: shipping.consignee.address.postalCode,
-        countryCode: shipping.consignee.address.country,
-      },
-      package: {
-        weight: Math.max(shipping.package.weight, shipping.package.volumetricWeight),
-        unit: 'KG',
-      },
-    };
+    const shippingInstance = JSON.parse(JSON.stringify(shipping));
 
     const carrierAccount = await CarrierAccount.findOne({
       carrier: firm,
@@ -89,17 +62,22 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
+    const hasPermission = user.barcodePermits?.some((permitId: string) => permitId.toString() === carrierAccount._id.toString());
+
+    if (!hasPermission) {
+      return { status: 'ERROR', message: carrierMessages.UNAUTHORIZED };
+    }
+
     const credentials = carrierAccount.credentials.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
       acc[item.key] = item.value;
       return acc;
     }, {});
 
     let carrierResult: { trackingNumber: string; label: string } | null = null;
-    const safeShippingInstance = JSON.parse(JSON.stringify(shippingInstance));
 
     if (firm === 'UPS') {
       carrierResult = await createUpsLabel({
-        shippingInstance: safeShippingInstance,
+        shippingInstance,
         accountNumber,
         credentials: {
           clientId: credentials.clientId,
@@ -108,7 +86,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       });
     } else if (firm === 'FEDEX') {
       carrierResult = await createFedexLabel({
-        shippingInstance: safeShippingInstance,
+        shippingInstance,
         accountNumber,
         credentials: {
           apiKey: credentials.apiKey,

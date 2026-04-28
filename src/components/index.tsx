@@ -1,3 +1,4 @@
+export { default as CreateBarcodeButton } from '././Dashboard/Shipping/CreateBarcodeButton';
 export { default as ForgotPasswordForm } from './Auth/ForgotPasswordForm';
 export { default as ResetPasswordForm } from './Auth/ResetPasswordForm';
 export { default as SignInForm } from './Auth/SignInForm';

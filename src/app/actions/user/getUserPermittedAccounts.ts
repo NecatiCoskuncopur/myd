@@ -1,6 +1,7 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import { Types } from 'mongoose';
 
 import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
@@ -21,13 +22,16 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
     }
 
     const permittedAccounts = await CarrierAccount.find({
-      _id: { $in: currentUser.barcodePermits },
+      _id: { $in: currentUser.barcodePermits.map(permit => new Types.ObjectId(permit)) },
       isActive: true,
-    }).select('name carrier accountNumber _id');
+    })
+      .select('name carrier accountNumber _id')
+      .lean();
 
+    const serializedData = JSON.parse(JSON.stringify(permittedAccounts));
     return {
       status: 'OK',
-      data: permittedAccounts,
+      data: serializedData,
     };
   } catch (error) {
     if (error instanceof Error) {
