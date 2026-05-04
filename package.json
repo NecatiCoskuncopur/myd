@@ -16,7 +16,10 @@
     "@mui/material-nextjs": "^9.0.0",
     "@mui/x-data-grid": "^9.0.4",
     "@mui/x-date-pickers": "^9.0.4",
+    "@sentry/nextjs": "^10.51.0",
+    "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.1",
     "mongoose-paginate-v2": "^1.9.4",
     "next": "16.2.4",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.2.4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
