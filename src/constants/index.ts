@@ -6,3 +6,4 @@ export { default as company } from './company';
 export { default as forgotPasswordMail } from './mailTemplates/forgotPassword.mail';
 export { default as welcomeMail } from './mailTemplates/welcome.mail';
 export { default as addressMessages } from './messages/addressMessages';
+export { default as getSidebarItems } from './getSidebarItems';
