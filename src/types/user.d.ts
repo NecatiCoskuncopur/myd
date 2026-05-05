@@ -36,4 +36,20 @@ declare namespace UserTypes {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface ICleanUser {
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    company?: string;
+    phone: string;
+    priceListId?: string;
+    address: IAddress;
+    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
+    barcodePermits: string[];
+    isActive: boolean;
+    createdAt: Date | string;
+    updatedAt: Date | string;
+  }
 }
