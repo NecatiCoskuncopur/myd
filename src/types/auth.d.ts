@@ -36,4 +36,8 @@ declare namespace AuthTypes {
       postalCode: string;
     };
   }
+
+  interface IResetPasswordForm extends IResetPasswordPayload {
+    newPasswordRepeat: string;
+  }
 }

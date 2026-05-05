@@ -63,7 +63,7 @@ const SignInForm = () => {
           {errorMessage}
         </Alert>
       )}
-      <Typography variant="body2" mb={3}>
+      <Typography variant="body2" sx={{ mb: 3 }}>
         Henüz kayıt olmadın mı? <Link href="/kullanici/kayit">Kayıt Ol</Link>
       </Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -79,7 +79,7 @@ const SignInForm = () => {
         >
           {pending ? '' : 'Giriş Yap'}
         </Button>
-        <Box mt={2}>
+        <Box sx={{ mt: 2 }}>
           <Link href="/kullanici/parolami-unuttum">Parolamı Unuttum</Link>
         </Box>
       </Box>
