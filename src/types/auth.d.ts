@@ -9,4 +9,9 @@ declare namespace AuthTypes {
     role: string;
     barcodePermits: number;
   }
+
+  interface IForgotPasswordPayload {
+    email: string;
+    recaptchaToken: string;
+  }
 }
