@@ -2,3 +2,6 @@ export { default as captchaMessages } from './messages/captchaMessages';
 export { default as authMessages } from './messages/authMessages';
 export { default as generalMessages } from './messages/generalMessages';
 export { default as userMessages } from './messages/userMessages';
+export { default as company } from './company';
+export { default as forgotPasswordMail } from './mailTemplates/forgotPassword.mail';
+export { default as welcomeMail } from './mailTemplates/welcome.mail';
