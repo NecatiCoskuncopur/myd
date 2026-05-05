@@ -10,3 +10,4 @@ export { default as getSidebarItems } from './getSidebarItems';
 export { default as pricingListMessages } from './messages/pricingListMessages';
 export { default as countries } from './countries';
 export { default as countryStates } from './countryStates';
+export { default as shippingMessages } from './messages/shippingMessages';
