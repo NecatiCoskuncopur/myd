@@ -1,6 +1,18 @@
 import { Document, Types } from 'mongoose';
 
 declare namespace UserTypes {
+  interface JwtPayload {
+    sub: string;
+    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
+  }
+
+  interface ICurrentUser {
+    id: string;
+    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
+    email: string;
+    barcodePermits: string[];
+  }
+
   interface IAddress {
     line1: string;
     line2?: string;
