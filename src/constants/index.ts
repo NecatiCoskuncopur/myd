@@ -7,3 +7,4 @@ export { default as forgotPasswordMail } from './mailTemplates/forgotPassword.ma
 export { default as welcomeMail } from './mailTemplates/welcome.mail';
 export { default as addressMessages } from './messages/addressMessages';
 export { default as getSidebarItems } from './getSidebarItems';
+export { default as pricingListMessages } from './messages/pricingListMessages';
