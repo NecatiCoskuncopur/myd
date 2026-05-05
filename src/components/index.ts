@@ -5,3 +5,4 @@ export { default as ForgotPasswordForm } from './ForgotPasswordForm';
 export { default as ResetPasswordForm } from './ResetPasswordForm';
 export { default as DashboardShell } from './DashboardShell';
 export { default as UserBalanceTable } from './UserBalanceTable';
+export { default as StyledButton } from './StyledButton';
