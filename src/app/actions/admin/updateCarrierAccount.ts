@@ -7,41 +7,34 @@ import { carrierMessages, generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
-import createCarrierAccountSchema from '@/schemas/createCarrierAccount.schema';
+import updateCarrierAccountSchema from '@/schemas/updateCarrierAccount.schema';
 
-const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
+const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles(['ADMIN', 'OPERATOR']);
     if (authError) return authError;
 
     await connectMongoDB();
 
-    const validatedData = await createCarrierAccountSchema.validate(data, {
+    const validatedData = await updateCarrierAccountSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
 
-    const existingAccount = await CarrierAccount.findOne({
-      carrier: validatedData.carrier,
-      accountNumber: validatedData.accountNumber,
-    });
+    const { id, ...updateFields } = validatedData;
 
-    if (existingAccount) {
+    const updatedAccount = await CarrierAccount.findByIdAndUpdate(id, { $set: updateFields }, { new: true, runValidators: true });
+    if (!updatedAccount) {
       return {
         status: 'ERROR',
-        message: carrierMessages.ACCOUNTNUMBER.ALREADY_EXISTS,
+        message: carrierMessages.NOT_FOUND,
       };
     }
-
-    await CarrierAccount.create({
-      ...validatedData,
-      isActive: true,
-    });
 
     revalidatePath('/panel/yonetim/kargo-hesaplari');
     return {
       status: 'OK',
-      message: carrierMessages.CREATE.SUCCESS,
+      message: carrierMessages.UPDATE.SUCCESS,
     };
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
@@ -69,4 +62,4 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
   }
 };
 
-export default createCarrierAccount;
+export default updateCarrierAccount;
