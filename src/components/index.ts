@@ -8,3 +8,4 @@ export { default as UserBalanceTable } from './UserBalanceTable';
 export { default as StyledButton } from './StyledButton';
 export { default as UserPriceList } from './UserPriceList';
 export { default as Account } from './Account';
+export { default as CarrierAccountTable } from './Admin/CarrierAccountTable';
