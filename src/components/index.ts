@@ -10,3 +10,4 @@ export { default as UserPriceList } from './UserPriceList';
 export { default as Account } from './Account';
 export { default as CarrierAccountTable } from './Admin/CarrierAccountTable';
 export { default as UsersTable } from './Admin/UsersTable';
+export { default as PricingLists } from './Admin/PricingLists';
