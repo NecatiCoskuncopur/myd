@@ -12,3 +12,4 @@ export { default as countries } from './countries';
 export { default as countryStates } from './countryStates';
 export { default as shippingMessages } from './messages/shippingMessages';
 export { default as carrierMessages } from './messages/carrierMessages';
+export { default as transactionMessages } from './messages/transactionMessages';
