@@ -28,4 +28,12 @@ declare namespace PricingListTypes {
       than: number;
     }[];
   }
+
+  interface IPricingListsParams extends ParamsTypes.IPaginationParams {
+    name?: string;
+  }
+
+  interface IPricingListData extends ResponseTypes.IPaginationResponse {
+    pricingLists: IPricingList[];
+  }
 }
