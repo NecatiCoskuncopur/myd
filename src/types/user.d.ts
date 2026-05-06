@@ -80,4 +80,15 @@ declare namespace UserTypes {
     phone: string;
     address: IAddress;
   }
+
+  interface IUserWithPopulatedBalance extends Omit<ICleanUser, 'balance'> {
+    balance: {
+      _id: string;
+      total: number;
+    };
+    pricingList?: {
+      _id: string;
+      name: string;
+    };
+  }
 }
