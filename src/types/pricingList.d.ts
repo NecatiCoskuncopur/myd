@@ -17,4 +17,15 @@ declare namespace PricingListTypes {
     createdAt: string;
     updatedAt: string;
   }
+  interface ICreatePricingListPayload {
+    name: string;
+    zone: {
+      number: number;
+      prices: {
+        weight: number;
+        price: number;
+      }[];
+      than: number;
+    }[];
+  }
 }
