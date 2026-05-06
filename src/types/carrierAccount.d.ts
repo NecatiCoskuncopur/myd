@@ -34,4 +34,9 @@ declare namespace CarrierAccountTypes {
     accountNumber?: string;
     isActive?: boolean;
   }
+
+  interface IUpdateCarrierAccountPayload extends Partial<ICreateCarrierAccountPayload> {
+    id: string;
+    isActive?: boolean;
+  }
 }
