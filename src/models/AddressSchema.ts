@@ -10,8 +10,6 @@ const AddressSchema = new Schema(
     },
     line2: {
       type: String,
-      required: true,
-      minLength: 5,
       maxLength: 255,
     },
     district: {

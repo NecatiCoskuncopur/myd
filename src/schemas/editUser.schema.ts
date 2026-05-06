@@ -2,12 +2,10 @@ import * as yup from 'yup';
 
 import { addressMessages, userMessages } from '@/constants';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD, TOKEN } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 export default yup.object({
-  recaptchaToken: yup.string().typeError(TOKEN.TYPE).required(TOKEN.REQUIRED),
-  password: yup.string().typeError(PASSWORD.TYPE).min(8, PASSWORD.MIN).max(255, PASSWORD.MAX).required(PASSWORD.REQUIRED),
   email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),
   firstName: yup.string().typeError(FIRSTNAME.TYPE).min(2, FIRSTNAME.MIN).max(75, FIRSTNAME.MAX).required(FIRSTNAME.REQUIRED),
   lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
