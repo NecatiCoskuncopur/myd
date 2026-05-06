@@ -23,4 +23,15 @@ declare namespace CarrierAccountTypes {
     credentials: ICarrierCredential[];
     meta?: Record<string, unknown>;
   }
+
+  interface ICarrierAccountData extends ResponseTypes.IPaginationResponse {
+    carrierAccounts: ICarrierAccount[];
+  }
+
+  interface ICarrierAcccountsParams extends ParamsTypes.IPaginationParams {
+    name?: string;
+    carrier?: 'FEDEX' | 'UPS';
+    accountNumber?: string;
+    isActive?: boolean;
+  }
 }
