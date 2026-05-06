@@ -18,4 +18,18 @@ declare namespace AdminTypes {
     phone?: string;
     email?: string;
   }
+
+  interface ISetUserPayload {
+    email: string;
+    firstName: string;
+    lastName: string;
+    company?: string;
+    phone: string;
+    address: UserTypes.IAddress;
+    userId: string;
+    priceListId: string;
+    role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
+    isActive: boolean;
+    barcodePermits: string[];
+  }
 }
