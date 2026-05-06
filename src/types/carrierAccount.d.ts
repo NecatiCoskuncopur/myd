@@ -15,4 +15,12 @@ declare namespace CarrierAccountTypes {
     createdAt?: string | Date;
     updatedAt?: string | Date;
   }
+
+  interface ICreateCarrierAccountPayload {
+    name: string;
+    carrier: 'FEDEX' | 'UPS';
+    accountNumber: string;
+    credentials: ICarrierCredential[];
+    meta?: Record<string, unknown>;
+  }
 }
