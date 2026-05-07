@@ -6,9 +6,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-
+import FilterSection from './FilterSection';
 import getAllUsers from '@/app/actions/admin/getAllUsers';
 import { generalMessages } from '@/constants';
 import AddTransaction from './AddTransaction';
@@ -18,33 +18,13 @@ import { UserTypes } from '@/types/user';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-interface UserFilters {
-  firstName?: string;
-  lastName?: string;
-  company?: string;
-  phone?: string;
-  email?: string;
-  balanceSorting?: '1' | '-1';
-}
-
 const Users = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const theme = useTheme();
-
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<AdminTypes.IUsersData | null>(null);
-  const [filters, setFilters] = useState<UserFilters>({});
   const [loading, setLoading] = useState(false);
-
-  const [searchInputs, setSearchInputs] = useState({
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    email: '',
-  });
-
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<UserTypes.IUserWithPopulatedBalance | null>(null);
 
@@ -63,22 +43,6 @@ const Users = () => {
   useEffect(() => {
     if (!isClient) return;
 
-    const timer = setTimeout(() => {
-      setFilters({
-        firstName: searchInputs.firstName || undefined,
-        lastName: searchInputs.lastName || undefined,
-        company: searchInputs.company || undefined,
-        phone: searchInputs.phone || undefined,
-        email: searchInputs.email || undefined,
-      });
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchInputs, isClient]);
-
-  useEffect(() => {
-    if (!isClient) return;
-
     let isMounted = true;
     const requestId = ++requestIdRef.current;
 
@@ -89,7 +53,11 @@ const Users = () => {
         const response = await getAllUsers({
           page,
           limit,
-          ...filters,
+          firstName: searchParams.get('firstName') || '',
+          lastName: searchParams.get('lastName') || '',
+          company: searchParams.get('company') || '',
+          phone: searchParams.get('phone') || '',
+          email: searchParams.get('email') || '',
         });
 
         if (!isMounted || requestId !== requestIdRef.current) return;
@@ -113,7 +81,7 @@ const Users = () => {
     return () => {
       isMounted = false;
     };
-  }, [page, limit, filters, isClient]);
+  }, [page, limit, searchParams, isClient]);
 
   const rows = useMemo(
     () =>
@@ -211,75 +179,7 @@ const Users = () => {
         Üyeler
       </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
-          mb: 3,
-        }}
-      >
-        <TextField
-          label="Ad"
-          size="small"
-          value={searchInputs.firstName}
-          onChange={e =>
-            setSearchInputs(prev => ({
-              ...prev,
-              firstName: e.target.value,
-            }))
-          }
-        />
-
-        <TextField
-          label="Soyad"
-          size="small"
-          value={searchInputs.lastName}
-          onChange={e =>
-            setSearchInputs(prev => ({
-              ...prev,
-              lastName: e.target.value,
-            }))
-          }
-        />
-
-        <TextField
-          label="Şirket"
-          size="small"
-          value={searchInputs.company}
-          onChange={e =>
-            setSearchInputs(prev => ({
-              ...prev,
-              company: e.target.value,
-            }))
-          }
-        />
-
-        <TextField
-          label="Telefon"
-          size="small"
-          value={searchInputs.phone}
-          onChange={e =>
-            setSearchInputs(prev => ({
-              ...prev,
-              phone: e.target.value,
-            }))
-          }
-        />
-
-        <TextField
-          label="Email"
-          size="small"
-          value={searchInputs.email}
-          onChange={e =>
-            setSearchInputs(prev => ({
-              ...prev,
-              email: e.target.value,
-            }))
-          }
-        />
-      </Box>
-
+      <FilterSection searchParams={searchParams} />
       <Box sx={{ width: '100%', overflowX: 'auto' }}>
         <Box sx={{ minWidth: 'max-content', width: '100%' }}>
           <DataGrid
@@ -310,7 +210,6 @@ const Users = () => {
         open={modalState.type === 'balance' && modalState.open}
         onClose={handleCloseModal}
         onSuccess={() => {
-          setFilters(prev => ({ ...prev }));
           handleCloseModal();
         }}
       />
@@ -320,7 +219,6 @@ const Users = () => {
         onClose={handleCloseModal}
         user={selectedRow}
         onSuccess={() => {
-          setFilters(prev => ({ ...prev }));
           handleCloseModal();
         }}
       />
