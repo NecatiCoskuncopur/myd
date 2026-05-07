@@ -1,8 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField, Box } from '@mui/material';
 
 import { StyledButton } from '@/components';
 
@@ -13,6 +16,13 @@ type FilterSectionProps = {
 const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const router = useRouter();
 
+  const initialFilters = {
+    name: '',
+    accountNumber: '',
+    carrier: '',
+    isActive: '',
+  };
+
   const [filters, setFilters] = useState({
     name: searchParams.get('name') || '',
     accountNumber: searchParams.get('accountNumber') || '',
@@ -21,15 +31,22 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   });
 
   const handleSearch = () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams();
+
     Object.entries(filters).forEach(([key, value]) => {
-      if (value) params.set(key, value.toString());
-      else params.delete(key);
+      if (value !== '') params.set(key, value.toString());
     });
 
     params.set('sayfa', '1');
     router.push(`?${params.toString()}`);
   };
+
+  const handleReset = () => {
+    setFilters(initialFilters);
+    router.push('?sayfa=1');
+  };
+
+  const isDirty = Object.keys(initialFilters).some(key => filters[key as keyof typeof initialFilters] !== '');
 
   return (
     <Grid
@@ -40,6 +57,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         flexWrap: 'wrap',
         gap: 2,
         mb: 3,
+        alignItems: 'center',
       }}
     >
       <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
@@ -50,8 +68,10 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           fullWidth
           value={filters.name}
           onChange={e => setFilters(prev => ({ ...prev, name: e.target.value }))}
+          onKeyDown={e => e.key === 'Enter' && handleSearch()}
         />
       </Grid>
+
       <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
         <TextField
           label="Hesap No"
@@ -60,8 +80,10 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           fullWidth
           value={filters.accountNumber}
           onChange={e => setFilters(prev => ({ ...prev, accountNumber: e.target.value }))}
+          onKeyDown={e => e.key === 'Enter' && handleSearch()}
         />
       </Grid>
+
       <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Kargo Firması</InputLabel>
@@ -72,6 +94,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           </Select>
         </FormControl>
       </Grid>
+
       <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Durum</InputLabel>
@@ -82,10 +105,19 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-        <StyledButton variant="contained" startIcon={<SearchIcon />} onClick={handleSearch}>
-          Ara
-        </StyledButton>
+
+      <Grid size={{ xs: 12, sm: 12, md: 2.4 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
+            Ara
+          </StyledButton>
+
+          {isDirty && (
+            <StyledButton variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
+              Sıfırla
+            </StyledButton>
+          )}
+        </Box>
       </Grid>
     </Grid>
   );
