@@ -115,10 +115,12 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
         onClose={handleClose}
         maxWidth="lg"
         fullWidth
-        PaperProps={{
-          sx: {
-            backgroundImage: 'none',
-            backgroundColor: theme.palette.dashboard.sidebar,
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundImage: 'none',
+              backgroundColor: theme.palette.dashboard.sidebar,
+            },
           },
         }}
       >
@@ -131,7 +133,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
         )}
 
         <DialogContent>
-          <Stack marginTop={1} spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Stack sx={{ marginTop: 1 }} spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="name"
               control={control}

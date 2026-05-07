@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import getPricingLists from '@/app/actions/admin/getPricingLists';
@@ -13,10 +13,7 @@ import { generalMessages } from '@/constants';
 import columns from './columns';
 import CreateList from './CreateList';
 import UpdateList from './UpdateList';
-
-interface PricingListFilters {
-  name?: string;
-}
+import FilterSection from './FilterSection';
 
 const PriceLists = () => {
   const router = useRouter();
@@ -25,8 +22,6 @@ const PriceLists = () => {
 
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<PricingListTypes.IPricingListData | null>(null);
-  const [filters, setFilters] = useState<PricingListFilters>({});
-  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
@@ -40,23 +35,13 @@ const PriceLists = () => {
 
   useEffect(() => {
     if (!isClient) return;
-
-    const timer = setTimeout(() => {
-      setFilters(prev => ({ ...prev, name: searchTerm || undefined }));
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm, isClient]);
-
-  useEffect(() => {
-    if (!isClient) return;
     let isMounted = true;
     const requestId = ++requestIdRef.current;
 
     const fetchPricingLists = async () => {
       try {
         setLoading(true);
-        const response = await getPricingLists({ page, limit, ...filters });
+        const response = await getPricingLists({ page, limit, name: searchParams.get('name') || undefined });
         if (!isMounted || requestId !== requestIdRef.current) return;
         if (response.status === 'OK' && response.data) setData(response.data);
       } catch (error) {
@@ -71,7 +56,7 @@ const PriceLists = () => {
     return () => {
       isMounted = false;
     };
-  }, [page, limit, filters, isClient]);
+  }, [page, limit, searchParams, isClient]);
 
   const rows = useMemo(
     () =>
@@ -162,13 +147,6 @@ const PriceLists = () => {
         }}
       >
         <Typography variant="h5">Fiyat Listeleri</Typography>
-        <TextField
-          label="Ara (Liste Adı)"
-          size="small"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          sx={{ width: { xs: '100%', sm: 'auto' }, minWidth: { sm: '300px' } }}
-        />
         <Link
           onClick={() => {
             handleOpenModal('create');
@@ -177,7 +155,7 @@ const PriceLists = () => {
           Yeni Liste Oluştur
         </Link>
       </Box>
-
+      <FilterSection searchParams={searchParams} />
       <Box
         sx={{
           width: '100%',
@@ -211,7 +189,6 @@ const PriceLists = () => {
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}
         onSuccess={() => {
-          setFilters(prev => ({ ...prev }));
           handleCloseModal();
         }}
       />
@@ -220,7 +197,6 @@ const PriceLists = () => {
         open={modalState.type === 'edit' && modalState.open}
         onClose={handleCloseModal}
         onSuccess={() => {
-          setFilters(prev => ({ ...prev }));
           handleCloseModal();
         }}
       />
