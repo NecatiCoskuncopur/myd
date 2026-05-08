@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { AddressSchema } from '@/models';
 
 const ShippingSchema = new mongoose.Schema(
   {
@@ -12,13 +11,11 @@ const ShippingSchema = new mongoose.Schema(
       phone: String,
       email: String,
       address: {
-        ...AddressSchema.obj,
-        district: {
-          type: String,
-          required: true,
-          minLength: 2,
-          maxLength: 25,
-        },
+        line1: String,
+        line2: String,
+        district: String,
+        postalCode: String,
+        city: String,
       },
     },
     consignee: {
@@ -28,20 +25,12 @@ const ShippingSchema = new mongoose.Schema(
       email: String,
       taxId: String,
       address: {
-        ...AddressSchema.obj,
-        state: {
-          type: String,
-          required: false,
-          minLength: 2,
-          maxLength: 50,
-        },
-        country: {
-          type: String,
-          required: true,
-          uppercase: true,
-          minLength: 2,
-          maxLength: 45,
-        },
+        line1: { type: String, minLength: 5, maxlength: 35 },
+        line2: { type: String, maxlength: 35 },
+        country: { type: String, length: 2 },
+        state: { type: String, length: 2 },
+        city: { type: String, minLength: 2, maxlength: 35 },
+        postalCode: { type: String, maxlength: 10 },
       },
     },
     detail: {
@@ -55,7 +44,7 @@ const ShippingSchema = new mongoose.Schema(
           enum: ['SENDER', 'CONSIGNEE'],
         },
       },
-      iossNumber: { type: String, maxLength: 12 },
+      iossNumber: { type: String, length: 12 },
       purpose: {
         type: String,
         enum: ['GIFT', 'PERSONAL', 'SAMPLE', 'REPAIR_OR_RETURN', 'COMMERICAL'],

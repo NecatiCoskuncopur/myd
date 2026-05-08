@@ -126,4 +126,10 @@ declare namespace ShippingTypes {
   interface IUpdateShippingPayload extends ICreateShippingPayload {
     shippingId: string;
   }
+
+  interface ICreateBarcodeParams {
+    shippingId: string;
+    firm: 'UPS' | 'FEDEX';
+    accountNumber: string;
+  }
 }
