@@ -15,7 +15,7 @@ declare namespace ShippingTypes {
     district: string;
   }
 
-  interface IConsigneeAddress extends UserType.IBaseAddress {
+  interface IConsigneeAddress extends IBaseAddress {
     country: string;
     state?: string;
   }
@@ -93,5 +93,25 @@ declare namespace ShippingTypes {
     }[];
     createdAt: string;
     updatedAt: string;
+  }
+
+  interface IShippingData extends ResponseTypes.IPaginationResponse {
+    shippings: IShipping[];
+  }
+
+  interface IShippingExcel {
+    fileName: string;
+    content: string;
+  }
+
+  interface IListShippingParams extends ParamsTypes.IPaginationParams {
+    senderName?: string;
+    consigneeName?: string;
+    consigneeCompany?: string;
+    consigneePhone?: string;
+    download?: boolean;
+    trackingNumber?: string;
+    startDate?: string;
+    endDate?: string;
   }
 }
