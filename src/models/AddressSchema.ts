@@ -21,11 +21,8 @@ const AddressSchema = new Schema(
     postalCode: {
       type: String,
       required: true,
-      length: 5,
-      validate: {
-        validator: (v: string) => /^\d{5}$/.test(v),
-        message: 'Postal code must be exactly 5 digits',
-      },
+      minLength: 3,
+      maxLength: 15,
     },
   },
   { _id: false },
