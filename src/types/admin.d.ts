@@ -32,4 +32,14 @@ declare namespace AdminTypes {
     isActive: boolean;
     barcodePermits: string[];
   }
+
+  interface ISearchSenderUserParams {
+    firstName?: string;
+    lastName?: string;
+    company?: string;
+  }
+
+  interface ISearchSenderResult extends ISearchSenderUserParams {
+    _id: string;
+  }
 }
