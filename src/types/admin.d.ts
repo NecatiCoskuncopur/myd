@@ -42,4 +42,14 @@ declare namespace AdminTypes {
   interface ISearchSenderResult extends ISearchSenderUserParams {
     _id: string;
   }
+
+  interface ICreateUser {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    company?: string;
+    phone: string;
+    address: UserTypes.IAddress;
+  }
 }

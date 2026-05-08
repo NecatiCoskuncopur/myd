@@ -28,13 +28,7 @@ declare namespace AuthTypes {
     recaptchaToken: string;
     company?: string;
     phone: string;
-    address: {
-      line1: string;
-      line2?: string;
-      district: string;
-      city: string;
-      postalCode: string;
-    };
+    address: UserTypes.Address;
   }
 
   interface IResetPasswordForm extends IResetPasswordPayload {
