@@ -122,4 +122,8 @@ declare namespace ShippingTypes {
     content: IShippingContent;
     package: IPackage;
   }
+
+  interface IUpdateShippingPayload extends ICreateShippingPayload {
+    shippingId: string;
+  }
 }

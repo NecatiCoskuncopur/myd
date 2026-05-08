@@ -1,8 +1,7 @@
 import * as yup from 'yup';
 
 import { shippingMessages } from '@/constants';
-import createShippingSchema from '../../../test2/src/schemas/createShipping.schema';
-
+import createShippingSchema from '@/schemas/createShipping.schema';
 const { ID } = shippingMessages;
 
 const updateShippingSchema = createShippingSchema.shape({
