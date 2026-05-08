@@ -38,12 +38,12 @@ declare namespace ShippingTypes {
   }
 
   interface IShippingDetail {
-    payor?: {
-      shipping?: 'SENDER' | 'CONSIGNEE';
-      customs?: 'SENDER' | 'CONSIGNEE';
+    payor: {
+      shipping: 'SENDER' | 'CONSIGNEE';
+      customs: 'SENDER' | 'CONSIGNEE';
     };
     iossNumber?: string;
-    purpose?: 'GIFT' | 'PERSONAL' | 'SAMPLE' | 'REPAIR_OR_RETURN' | 'COMMERCIAL';
+    purpose: 'GIFT' | 'PERSONAL' | 'SAMPLE' | 'REPAIR_OR_RETURN' | 'COMMERCIAL';
   }
 
   interface IProduct {
@@ -54,19 +54,19 @@ declare namespace ShippingTypes {
   }
 
   interface IShippingContent {
-    currency?: 'USD' | 'EUR' | 'GBP';
+    currency: 'USD' | 'EUR' | 'GBP';
     description?: string;
     freight?: number;
-    products?: IProduct[];
+    products: IProduct[];
   }
 
   interface IPackage {
-    weight?: number;
-    numberOfPackage?: number;
-    width?: number;
-    height?: number;
-    length?: number;
-    volumetricWeight?: number;
+    weight: number;
+    numberOfPackage: number;
+    width: number;
+    height: number;
+    length: number;
+    volumetricWeight: number;
   }
 
   interface IShipping {
@@ -113,5 +113,13 @@ declare namespace ShippingTypes {
     trackingNumber?: string;
     startDate?: string;
     endDate?: string;
+  }
+
+  interface ICreateShippingPayload {
+    senderId: string;
+    consignee: IConsignee;
+    detail: IShippingDetail;
+    content: IShippingContent;
+    package: IPackage;
   }
 }
