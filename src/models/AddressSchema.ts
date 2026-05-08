@@ -12,12 +12,6 @@ const AddressSchema = new Schema(
       type: String,
       maxLength: 255,
     },
-    district: {
-      type: String,
-      required: true,
-      minLength: 2,
-      maxLength: 25,
-    },
     city: {
       type: String,
       required: true,

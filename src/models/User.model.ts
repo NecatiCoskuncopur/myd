@@ -54,7 +54,15 @@ const UserSchema = new Schema<UserTypes.IUser>(
       type: Schema.Types.ObjectId,
       ref: 'PricingList',
     },
-    address: AddressSchema,
+    address: {
+      ...AddressSchema.obj,
+      district: {
+        type: String,
+        required: true,
+        minLength: 2,
+        maxLength: 25,
+      },
+    },
     role: {
       type: String,
       required: true,
