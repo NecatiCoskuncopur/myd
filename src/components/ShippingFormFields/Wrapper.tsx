@@ -19,8 +19,10 @@ const Wrapper = ({ children, title }: WrapperProps) => {
     >
       <CardHeader
         title={title}
-        titleTypographyProps={{
-          fontSize: '18px',
+        slotProps={{
+          title: {
+            fontSize: '18px',
+          },
         }}
         sx={{ p: 1, borderBottom: `1px solid ${theme.palette.dashboard.border}` }}
       />
