@@ -11,3 +11,4 @@ export { default as Account } from './Account';
 export { default as CarrierAccountTable } from './Admin/CarrierAccountTable';
 export { default as UsersTable } from './Admin/UsersTable';
 export { default as PricingLists } from './Admin/PricingLists';
+export { default as ShippingDetail } from './ShippingDetail';
