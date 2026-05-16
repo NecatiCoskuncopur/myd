@@ -4,7 +4,6 @@ import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import {
   Alert,
   Button,
@@ -24,6 +23,7 @@ import deleteShipping from '@/app/actions/shipping/deleteShipping';
 import getUser from '@/app/actions/user/getUser';
 import { generalMessages, shippingMessages, userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
+import { CreateBarcodeButton } from '@/components';
 
 const { DELETE } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -32,9 +32,10 @@ const { NOT_FOUND } = userMessages;
 type HeaderProps = {
   hasTrackingNumber: boolean;
   id: string;
+  shipping: ShippingTypes.IShipping;
 };
 
-const Header = ({ hasTrackingNumber, id }: HeaderProps) => {
+const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
   const router = useRouter();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
@@ -126,11 +127,7 @@ const Header = ({ hasTrackingNumber, id }: HeaderProps) => {
             Düzenle
           </Button>
 
-          {(user?.barcodePermits?.length ?? 0) > 0 && (
-            <Button variant="outlined" startIcon={<QrCode2OutlinedIcon />}>
-              Barkod oluştur
-            </Button>
-          )}
+          {(user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={shipping} />}
         </Stack>
       )}
 

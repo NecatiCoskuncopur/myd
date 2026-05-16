@@ -15,3 +15,4 @@ export { default as ShippingDetail } from './ShippingDetail';
 export { default as ShippingList } from './ShippingList';
 export { default as CreateShippingForm } from './CreateShippingForm';
 export { default as EditShippingForm } from './EditShippingForm';
+export { default as CreateBarcodeButton } from './CreateBarcodeButton';

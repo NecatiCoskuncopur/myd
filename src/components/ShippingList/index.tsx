@@ -17,7 +17,7 @@ import moment from 'moment';
 
 import listShipping from '@/app/actions/shipping/listShipping';
 import getUser from '@/app/actions/user/getUser';
-// import { CreateBarcodeButton } from '@/components';
+import { CreateBarcodeButton } from '@/components';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages } from '@/constants';
 import columns from './columns';
@@ -220,7 +220,7 @@ const ShippingList = () => {
               ]}
             </Menu>
 
-            {/*   {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={params.row} />}*/}
+            {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={params.row} />}
           </>
         );
       },

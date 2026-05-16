@@ -128,7 +128,7 @@ const createFedexLabel = async ({
             length: Math.ceil(shippingInstance.package.length),
             width: Math.ceil(shippingInstance.package.width),
             height: Math.ceil(shippingInstance.package.height),
-            units: 'CENTIMETERS',
+            units: 'CM',
           },
         },
       ],

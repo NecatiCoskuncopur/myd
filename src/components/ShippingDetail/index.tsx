@@ -46,6 +46,7 @@ const ShippingDetail = () => {
     fetchShipping();
   }, [id]);
 
+  if (!shipping) return null;
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -78,7 +79,7 @@ const ShippingDetail = () => {
           gap: 2,
         }}
       >
-        <Header hasTrackingNumber={!!shipping?.carrier?.trackingNumber} id={id} />
+        <Header hasTrackingNumber={!!shipping?.carrier?.trackingNumber} id={id} shipping={shipping} />
       </Box>
 
       <Grid container spacing={2} sx={{ mt: '24px' }}>
