@@ -11,6 +11,7 @@ const createFedexLabel = async ({
 }: CarrierTypes.ICreateFedexLabelParams): Promise<{
   trackingNumber: string;
   label: string;
+  invoice: string;
 }> => {
   const authRes = await fetch(`${BASE_URL}/oauth/token`, {
     method: 'POST',
@@ -33,7 +34,7 @@ const createFedexLabel = async ({
   const productCount = shippingInstance.content.products.length || 1;
   const weightPerProduct = Number((shippingInstance.package.weight / productCount).toFixed(2));
   const payload = {
-    labelResponseOptions: 'LABEL',
+    labelResponseOptions: 'LABEL_AND_COMMERCIAL_INVOICE',
     accountNumber: {
       value: formattedAccountNumber,
     },
@@ -153,11 +154,17 @@ const createFedexLabel = async ({
   const shipmentData = await shipmentRes.json();
   const output = shipmentData?.output?.transactionShipments?.[0];
   const trackingNumber = output?.pieceResponses?.[0]?.trackingNumber;
-  const label = output?.pieceResponses?.[0]?.packageDocuments?.[0]?.encodedLabel;
+  const documents = output?.pieceResponses?.[0]?.packageDocuments || [];
+
+  const labelObj = documents.find((doc: any) => doc.documentType === 'LABEL');
+  const invoiceObj = documents.find((doc: any) => doc.documentType === 'COMMERCIAL_INVOICE');
+
+  const label = labelObj?.encodedLabel || '';
+  const invoice = invoiceObj?.encodedLabel || '';
 
   if (!trackingNumber) throw new Error(TRACKING_NUMBER_NOT_FOUND);
 
-  return { trackingNumber, label };
+  return { trackingNumber, label, invoice };
 };
 
 export default createFedexLabel;

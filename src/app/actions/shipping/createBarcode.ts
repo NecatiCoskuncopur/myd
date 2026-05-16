@@ -10,7 +10,7 @@ import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { CarrierAccount, Shipping, User } from '@/models';
-
+import { Storage } from '@/lib/storage';
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
 const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string }>> => {
@@ -73,7 +73,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       return acc;
     }, {});
 
-    let carrierResult: { trackingNumber: string; label: string } | null = null;
+    let carrierResult: { trackingNumber: string; label: string; invoice: string } | null = null;
 
     if (firm === 'UPS') {
       /*  carrierResult = await createUpsLabel({
@@ -86,7 +86,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       })*/
       console.log('UPS');
     } else if (firm === 'FEDEX') {
-      carrierResult = await createFedexLabel({
+      const fedexResult = await createFedexLabel({
         shippingInstance: {
           shipper: {
             name: shippingInstance.sender.name,
@@ -116,6 +116,27 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
           secretKey: credentials.secretKey,
         },
       });
+
+      if (fedexResult) {
+        const { trackingNumber, label, invoice } = fedexResult;
+
+        if (label) {
+          await Storage.putObject({
+            Bucket: 'labels',
+            Key: `${shipping._id}.pdf`,
+            Body: Buffer.from(label, 'base64'),
+          });
+        }
+
+        if (invoice) {
+          await Storage.putObject({
+            Bucket: 'invoices',
+            Key: `${shipping._id}.pdf`,
+            Body: Buffer.from(invoice, 'base64'),
+          });
+        }
+        carrierResult = { trackingNumber, label, invoice };
+      }
     }
 
     if (!carrierResult) {
