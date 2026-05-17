@@ -132,4 +132,9 @@ declare namespace ShippingTypes {
     firm: 'UPS' | 'FEDEX';
     accountNumber: string;
   }
+
+  interface IGetPaperParams {
+    shippingId: string;
+    type: 'labels' | 'invoices';
+  }
 }

@@ -116,6 +116,10 @@ const shippingMessages = {
     MIN: 'Genişlik en az 0.5 cm olmalıdır.',
     MAX: 'Genişlik en fazla 500 cm olabilir.',
   },
+  PAPER: {
+    NOT_FOUND: 'İstenen evrak bulunamadı.',
+    INVALID_TYPE: 'Geçersiz evrak türü',
+  },
 } as const;
 
 export default shippingMessages;
