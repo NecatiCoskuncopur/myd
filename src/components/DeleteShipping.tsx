@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, useTheme } from '@mui/material';
 
-import deleteShipping from '@/app/actions/shipping/deleteShipping';
+import deleteShipping from '../app/actions/shipping/deleteShipping';
 
 type DeleteShippingProps = {
   open: boolean;

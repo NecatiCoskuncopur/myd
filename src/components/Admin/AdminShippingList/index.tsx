@@ -4,11 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { DeleteOutlined } from '@mui/icons-material';
-import EditIcon from '@mui/icons-material/Edit';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -23,10 +21,11 @@ import { generalMessages } from '@/constants';
 import columns from './columns';
 import { DeleteShipping } from '@/components';
 import { UserTypes } from '@/types/user';
+import listAllShipping from '@/app/actions/admin/listAllShipping';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const ShippingList = () => {
+const AdminShippingList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const theme = useTheme();
@@ -58,7 +57,7 @@ const ShippingList = () => {
     if (!isClient) return;
     try {
       setLoading(true);
-      const response = await listShipping({
+      const response = await listAllShipping({
         page,
         limit,
         consigneeName: searchParams.get('consigneeName') || undefined,
@@ -179,15 +178,17 @@ const ShippingList = () => {
 
         return (
           <>
-            <IconButton
-              size="small"
-              onClick={e => {
-                setSelectedRow(params.row);
-                setMenuAnchorEl(e.currentTarget);
-              }}
-            >
-              <MoreVertIcon />
-            </IconButton>
+            {!hasTrackingNumber && (
+              <IconButton
+                size="small"
+                onClick={e => {
+                  setSelectedRow(params.row);
+                  setMenuAnchorEl(e.currentTarget);
+                }}
+              >
+                <MoreVertIcon />
+              </IconButton>
+            )}
 
             <Menu
               anchorEl={menuAnchorEl}
@@ -197,20 +198,7 @@ const ShippingList = () => {
                 setSelectedRow(null);
               }}
             >
-              <MenuItem onClick={() => router.push(`/panel/gonderilerim/${selectedRow?._id}`)}>
-                <ListItemIcon>
-                  <VisibilityOutlinedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>İncele</ListItemText>
-              </MenuItem>
-
               {!hasTrackingNumber && [
-                <MenuItem key="edit" onClick={() => router.push(`/panel/gonderilerim/${selectedRow?._id}/duzenle`)}>
-                  <ListItemIcon>
-                    <EditIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Düzenle</ListItemText>
-                </MenuItem>,
                 <MenuItem key="delete" onClick={() => handleOpenModal()}>
                   <ListItemIcon>
                     <DeleteOutlined fontSize="small" />
@@ -331,4 +319,4 @@ const ShippingList = () => {
   );
 };
 
-export default ShippingList;
+export default AdminShippingList;
