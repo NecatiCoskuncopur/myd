@@ -1,14 +1,22 @@
 import { carrierMessages } from '@/constants';
+import { Storage } from '@/lib/storage';
 
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
 
-const createFedexLabel = async ({
+const splitAddress = (addressStr: string): string[] => {
+  if (!addressStr) return ['Missing Address'];
+  const chunks = addressStr.match(/.{1,35}/g) || [];
+  return chunks.slice(0, 3);
+};
+
+const createFedexPaper = async ({
   shippingInstance,
   accountNumber,
   credentials,
-}: CarrierTypes.ICreateFedexLabelParams): Promise<{
+  shippingId,
+}: CarrierTypes.ICreateFedexPaper): Promise<{
   trackingNumber: string;
   label: string;
   invoice: string;
@@ -32,43 +40,48 @@ const createFedexLabel = async ({
   const formattedAccountNumber = String(accountNumber).trim();
   const totalProductValue = shippingInstance.content.products.reduce((acc, p) => acc + p.unitPrice * p.piece, 0);
   const productCount = shippingInstance.content.products.length || 1;
-  const weightPerProduct = Number((shippingInstance.package.weight / productCount).toFixed(2));
+
+  let weightPerProduct = Number((shippingInstance.package.weight / productCount).toFixed(2));
+  if (weightPerProduct <= 0) weightPerProduct = 0.01;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const payload = {
-    labelResponseOptions: 'LABEL_AND_COMMERCIAL_INVOICE',
+    labelResponseOptions: 'LABEL',
     accountNumber: {
       value: formattedAccountNumber,
     },
     requestedShipment: {
-      shipDatestamp: new Date().toISOString().split('T')[0],
+      shipDatestamp: todayStr,
       pickupType: 'USE_SCHEDULED_PICKUP',
       serviceType: 'INTERNATIONAL_PRIORITY',
       packagingType: 'YOUR_PACKAGING',
       shipper: {
         contact: {
-          personName: shippingInstance.shipper.name,
-          phoneNumber: shippingInstance.shipper.phoneNumber,
+          personName: shippingInstance.sender.name,
+          phoneNumber: shippingInstance.sender.phone,
         },
         address: {
-          streetLines: [shippingInstance.shipper.address.substring(0, 35)],
-          city: shippingInstance.shipper.city,
-          postalCode: shippingInstance.shipper.postalCode,
+          streetLines: splitAddress(`${shippingInstance.sender.address.line1} ${shippingInstance.sender.address.line2 || ''}`.trim()),
+          city: shippingInstance.sender.address.city,
+          postalCode: shippingInstance.sender.address.postalCode,
           countryCode: 'TR',
         },
       },
       recipients: [
         {
           contact: {
-            personName: shippingInstance.recipient.name,
-            phoneNumber: shippingInstance.recipient.phoneNumber,
+            personName: shippingInstance.consignee.name,
+            phoneNumber: shippingInstance.consignee.phone,
           },
           address: {
-            streetLines: [shippingInstance.recipient.address.substring(0, 35)],
-            city: shippingInstance.recipient.city,
-            ...(['US', 'CA', 'IN'].includes(shippingInstance.recipient.countryCode) && {
-              stateOrProvinceCode: shippingInstance.recipient.stateOrProvinceCode,
+            streetLines: splitAddress(`${shippingInstance.consignee.address.line1} ${shippingInstance.consignee.address.line2 || ''}`.trim()),
+            city: shippingInstance.consignee.address.city,
+            ...(['US', 'CA', 'IN'].includes(shippingInstance.consignee.address.country) && {
+              stateOrProvinceCode: shippingInstance.consignee.address.state || 'NY',
             }),
-            postalCode: shippingInstance.recipient.postalCode.replace(/\s/g, ''),
-            countryCode: shippingInstance.recipient.countryCode,
+            postalCode: shippingInstance.consignee.address.postalCode.replace(/\s/g, ''),
+            countryCode: shippingInstance.consignee.address.country,
           },
         },
       ],
@@ -83,6 +96,8 @@ const createFedexLabel = async ({
       customsClearanceDetail: {
         commercialInvoice: {
           shipmentPurpose: shippingInstance.detail.purpose === 'REPAIR_OR_RETURN' ? 'REPAIR_AND_RETURN' : shippingInstance.detail.purpose || 'COMMERCIAL',
+          invoiceNumber: `INV-${Date.now().toString().slice(-6)}`,
+          invoiceDate: todayStr,
         },
         dutiesPayment: {
           paymentType: shippingInstance?.detail?.payor?.customs === 'CONSIGNEE' ? 'RECIPIENT' : 'SENDER',
@@ -96,26 +111,33 @@ const createFedexLabel = async ({
           amount: Number(totalProductValue.toFixed(2)),
           currency: shippingInstance.content.currency || 'USD',
         },
-        commodities: shippingInstance.content?.products?.map((product: ShippingTypes.IProduct) => ({
-          description: product.name || 'Product',
-          countryOfManufacture: 'TR',
-          quantity: product.piece || 1,
-          quantityUnits: 'PCS',
-          unitPrice: {
-            amount: Number((product.unitPrice || 0).toFixed(2)),
-            currency: shippingInstance.content.currency || 'USD',
-          },
-          customsValue: {
-            amount: Number(((product.unitPrice || 0) * (product.piece || 0)).toFixed(2)),
-            currency: shippingInstance.content.currency || 'USD',
-          },
-          weight: {
-            units: 'KG',
-            value: weightPerProduct,
-          },
-        })),
+        commodities: shippingInstance.content?.products?.map((product: any) => {
+          const cleanDescription = (product.name || '').trim();
+          const safeDescription = cleanDescription.length > 2 && cleanDescription.toLowerCase() !== 'product' ? cleanDescription : 'Textile Fabric Sample';
+
+          return {
+            description: safeDescription.substring(0, 45),
+            countryOfManufacture: 'TR',
+            quantity: product.piece || 1,
+            quantityUnits: 'PCS',
+            unitPrice: {
+              amount: Number((product.unitPrice || 0).toFixed(2)),
+              currency: shippingInstance.content.currency || 'USD',
+            },
+            customsValue: {
+              amount: Number(((product.unitPrice || 0) * (product.piece || 0)).toFixed(2)),
+              currency: shippingInstance.content.currency || 'USD',
+            },
+            weight: {
+              units: 'KG',
+              value: weightPerProduct,
+            },
+          };
+        }),
       },
+
       labelSpecification: {
+        labelFormatType: 'COMMON2D',
         imageType: 'PDF',
         labelStockType: 'PAPER_4X6',
       },
@@ -126,9 +148,9 @@ const createFedexLabel = async ({
             value: Number(shippingInstance.package.weight.toFixed(2)),
           },
           dimensions: {
-            length: Math.ceil(shippingInstance.package.length),
-            width: Math.ceil(shippingInstance.package.width),
-            height: Math.ceil(shippingInstance.package.height),
+            length: Math.ceil(shippingInstance.package.length || 10),
+            width: Math.ceil(shippingInstance.package.width || 10),
+            height: Math.ceil(shippingInstance.package.height || 10),
             units: 'CM',
           },
         },
@@ -154,17 +176,29 @@ const createFedexLabel = async ({
   const shipmentData = await shipmentRes.json();
   const output = shipmentData?.output?.transactionShipments?.[0];
   const trackingNumber = output?.pieceResponses?.[0]?.trackingNumber;
-  const documents = output?.pieceResponses?.[0]?.packageDocuments || [];
-
-  const labelObj = documents.find((doc: any) => doc.documentType === 'LABEL');
-  const invoiceObj = documents.find((doc: any) => doc.documentType === 'COMMERCIAL_INVOICE');
-
-  const label = labelObj?.encodedLabel || '';
-  const invoice = invoiceObj?.encodedLabel || '';
 
   if (!trackingNumber) throw new Error(TRACKING_NUMBER_NOT_FOUND);
 
+  const documents = output?.pieceResponses?.[0]?.packageDocuments || [];
+  const labelObj = documents.find((doc: any) => doc.contentType?.includes('LABEL') || doc.documentType?.includes('LABEL'));
+  const label = labelObj?.encodedLabel || labelObj?.parts?.[0]?.image || '';
+
+  if (label) {
+    try {
+      await Storage.putObject({
+        Bucket: 'labels',
+        Key: `${shippingId}.pdf`,
+        Body: Buffer.from(label, 'base64'),
+      });
+      console.log(`[Storage] FedEx Barkodu (${shippingId}.pdf) başarıyla kaydedildi.`);
+    } catch (err) {
+      console.error('[Storage Error] FedEx barkodu yazılırken hata çıktı:', err);
+      throw err;
+    }
+  }
+
+  const invoice = '';
   return { trackingNumber, label, invoice };
 };
 
-export default createFedexLabel;
+export default createFedexPaper;

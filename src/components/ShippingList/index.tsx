@@ -17,7 +17,7 @@ import moment from 'moment';
 
 import listShipping from '@/app/actions/shipping/listShipping';
 import getUser from '@/app/actions/user/getUser';
-import { CreateBarcodeButton } from '@/components';
+import { CreateBarcodeButton, PaperDownload } from '@/components';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages } from '@/constants';
 import columns from './columns';
@@ -219,7 +219,7 @@ const ShippingList = () => {
                 </MenuItem>,
               ]}
             </Menu>
-
+            {hasTrackingNumber && <PaperDownload shippingId={params.row._id} />}
             {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={params.row} />}
           </>
         );

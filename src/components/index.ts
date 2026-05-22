@@ -16,3 +16,4 @@ export { default as ShippingList } from './ShippingList';
 export { default as CreateShippingForm } from './CreateShippingForm';
 export { default as EditShippingForm } from './EditShippingForm';
 export { default as CreateBarcodeButton } from './CreateBarcodeButton';
+export { default as PaperDownload } from './PaperDownload';
