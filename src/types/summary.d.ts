@@ -10,4 +10,10 @@ declare namespace SummaryTypes {
     monthly: ITransactionStats;
     yearly: ITransactionStats;
   }
+
+  interface IGetTopFiveCountry {
+    country: string;
+    totalShippings: number;
+    value: number;
+  }
 }
