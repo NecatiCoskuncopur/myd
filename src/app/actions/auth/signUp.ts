@@ -58,7 +58,6 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       };
     }
 
-
     try {
       await MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',
