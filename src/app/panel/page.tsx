@@ -1,5 +1,7 @@
+import { Overview } from '@/components';
+
 const DashboardPage = () => {
-  return <div>Overview</div>;
+  return <Overview />;
 };
 
 export default DashboardPage;
