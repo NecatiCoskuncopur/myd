@@ -16,4 +16,10 @@ declare namespace SummaryTypes {
     totalShippings: number;
     value: number;
   }
+
+  interface IGetTopFiveUser {
+    name: string;
+    surname: string;
+    value: number;
+  }
 }

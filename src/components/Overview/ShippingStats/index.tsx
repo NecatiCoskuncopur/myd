@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { countries, generalMessages, transactionMessages } from '@/constants';
 import getTopFiveCountry from '@/app/actions/summary/getTopFiveCountry';
 import Chart from './Chart';
+import UserTable from '@/components/Overview/ShippingStats/UserTable';
 
 const { BALANCE } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -97,6 +98,20 @@ const ShippingStats = () => {
           En Çok Gönderim Yapılan Ülkeler (Top 5)
         </Typography>
         <Chart data={formattedData ?? []} />
+      </Grid>
+      <Grid
+        size={{ sm: 12, md: 6 }}
+        sx={{
+          backgroundColor: theme.palette.dashboard.sidebar,
+          color: theme.palette.dashboard.textSidebar,
+          borderRadius: '12px',
+          padding: { xs: '12px', sm: '20px' },
+        }}
+      >
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
+          En Çok Gönderim Yapan Kullanıcılar (Top 5)
+        </Typography>
+        <UserTable />
       </Grid>
     </Grid>
   );
