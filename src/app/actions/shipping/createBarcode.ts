@@ -88,6 +88,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       amount: shippingCost,
     };
 
+    shipping.status = 'LABELED';
+
     await shipping.save();
 
     return {
