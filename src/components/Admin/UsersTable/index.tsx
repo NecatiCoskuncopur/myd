@@ -189,7 +189,7 @@ const Users = () => {
             autoHeight
             paginationMode="server"
             rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[5, 10, 50]}
+            pageSizeOptions={[1, 5, 10, 50]}
             paginationModel={{ page: page - 1, pageSize: limit }}
             onPaginationModelChange={model => {
               const isPageSizeChanged = model.pageSize !== limit;

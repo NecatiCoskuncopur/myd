@@ -12,7 +12,7 @@ const columns: GridColDef[] = [
       const isSpend = params.row.transactionType === 'SPEND';
       return (
         <Typography sx={{ fontWeight: 'bold', color: isSpend ? 'error.main' : 'success.main' }}>
-          {isSpend ? '-' : '+'} {params.value} $
+          {isSpend ? '' : '+'} {params.value} $
         </Typography>
       );
     },
