@@ -4,4 +4,8 @@ declare namespace SummaryTypes {
     spend: number;
     total: number;
   }
+
+  interface IHeatMap {
+    [countryCode: string]: number;
+  }
 }
