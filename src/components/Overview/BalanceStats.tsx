@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import getBalanceStats from '@/app/actions/summary/getBalanceStats';
+import getBalanceDashboardData, { YearlyStatsResponse } from '@/app/actions/summary/getBalanceStats';
 import { generalMessages, transactionMessages } from '@/constants';
-import { Alert, Box, CircularProgress, Grid, Typography, useTheme, Paper, Divider } from '@mui/material';
+import { Alert, Box, CircularProgress, Grid, Typography, useTheme, Select, MenuItem, FormControl, Paper } from '@mui/material';
+import { BarChart } from '@mui/x-charts/BarChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -11,46 +12,55 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 const { BALANCE } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
+const MONTHS_TR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
 const formatNumber = (value: number) => {
   const absValue = Math.abs(value);
   const formatted = new Intl.NumberFormat('tr-TR', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(absValue);
-
-  return value < 0 ? `$${formatted}` : `$${formatted}`;
+  return `$${formatted}`;
 };
+
 const BalanceStats = () => {
   const theme = useTheme();
 
-  const [stats, setStats] = useState<SummaryTypes.IBalanceStats | null>(null);
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [yearsList, setYearsList] = useState<number[]>([]);
+  const [chartData, setChartData] = useState<YearlyStatsResponse | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      setLoading(true);
-      try {
-        const response = await getBalanceStats();
+  const fetchDashboardData = async (year: number) => {
+    setLoading(true);
+    try {
+      const response = await getBalanceDashboardData(year);
+      if (response.status === 'OK' && response.data) {
+        setChartData(response.data.monthlyStats);
+        setYearsList(response.data.availableYears);
 
-        if (response.status === 'OK' && response.data) {
-          setStats(response.data);
-        } else {
-          setError(response.message || BALANCE.NOT_FOUND);
+        if (!response.data.availableYears.includes(year)) {
+          setYearsList(prev => [...prev, year].sort((a, b) => b - a));
         }
-      } catch {
-        setError(UNEXPECTED_ERROR);
-      } finally {
-        setLoading(false);
+      } else {
+        setError(response.message || BALANCE.NOT_FOUND);
       }
-    };
+    } catch {
+      setError(UNEXPECTED_ERROR);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchStats();
-  }, []);
+  useEffect(() => {
+    fetchDashboardData(currentYear);
+  }, [currentYear]);
 
-  if (loading) {
+  if (loading && !chartData) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
         <CircularProgress />
       </Box>
     );
@@ -64,77 +74,168 @@ const BalanceStats = () => {
     );
   }
 
-  if (!stats) return null;
+  const paySeries: number[] = [];
+  const spendSeries: number[] = [];
+  const totalSeries: number[] = [];
 
-  const cardItems = [
-    { title: 'Günlük Bakiye', data: stats.daily },
-    { title: 'Aylık Bakiye', data: stats.monthly },
-    { title: 'Yıllık Bakiye', data: stats.yearly },
+  if (chartData) {
+    for (let m = 1; m <= 12; m++) {
+      paySeries.push(chartData[m]?.pay || 0);
+      spendSeries.push(chartData[m]?.spend || 0);
+      totalSeries.push(chartData[m]?.total || 0);
+    }
+  }
+
+  const totalYearlyPay = paySeries.reduce((sum, val) => sum + val, 0);
+  const totalYearlySpend = spendSeries.reduce((sum, val) => sum + val, 0);
+  const totalYearlyNet = totalSeries.reduce((sum, val) => sum + val, 0);
+
+  const summaryCards = [
+    {
+      title: 'Yıllık Toplam Ödeme',
+      value: totalYearlyPay,
+      color: theme.palette.success.main,
+      icon: <TrendingUpIcon sx={{ color: theme.palette.success.main, fontSize: '28px' }} />,
+    },
+    {
+      title: 'Yıllık Toplam Harcama',
+      value: totalYearlySpend,
+      color: theme.palette.error.main,
+      icon: <TrendingDownIcon sx={{ color: theme.palette.error.main, fontSize: '28px' }} />,
+      isSpend: true,
+    },
+    {
+      title: 'Yıllık Net Durum',
+      value: totalYearlyNet,
+      color: totalYearlyNet >= 0 ? theme.palette.success.light : theme.palette.error.light,
+      icon: (
+        <AccountBalanceWalletIcon
+          sx={{ opacity: 0.8, fontSize: '28px', color: totalYearlyNet >= 0 ? theme.palette.success.light : theme.palette.error.light }}
+        />
+      ),
+    },
   ];
 
   return (
     <Grid container spacing={3}>
-      {cardItems.map((item, index) => (
-        <Grid
-          size={{ xs: 12, md: 4 }}
-          key={index}
+      <Grid size={{ xs: 12 }}>
+        <Paper
+          elevation={0}
           sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             backgroundColor: theme.palette.dashboard.sidebar,
             color: theme.palette.dashboard.textSidebar,
+            padding: '16px 24px',
             borderRadius: '12px',
-            padding: '20px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
           }}
         >
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {item.title}
+          <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '0.5px' }}>
+            Bakiye ve Harcama Analizi
           </Typography>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <TrendingUpIcon sx={{ color: theme.palette.success.main }} />
-                <Typography variant="body2">Ödemeler</Typography>
-              </Box>
-              <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.success.main }}>
-                {formatNumber(item.data.pay)}
+          <FormControl
+            size="small"
+            sx={{
+              minWidth: 120,
+              '& .MuiOutlinedInput-root': {
+                color: theme.palette.dashboard.textSidebar,
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.2)' },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.4)' },
+                '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
+              },
+              '& .MuiSelect-icon': { color: theme.palette.dashboard.textSidebar },
+            }}
+          >
+            <Select value={currentYear} onChange={e => setCurrentYear(Number(e.target.value))} disabled={loading}>
+              {yearsList.map(year => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Paper>
+      </Grid>
+      {summaryCards.map((card, idx) => (
+        <Grid size={{ xs: 12, md: 4 }} key={idx}>
+          <Paper
+            elevation={0}
+            sx={{
+              backgroundColor: theme.palette.dashboard.sidebar,
+              color: theme.palette.dashboard.textSidebar,
+              borderRadius: '12px',
+              padding: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderLeft: `4px solid ${card.color}`,
+            }}
+          >
+            <Box>
+              <Typography variant="caption" sx={{ fontWeight: 600, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {card.title}
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: card.isSpend && card.value > 0 ? theme.palette.error.main : card.color }}>
+                {card.isSpend && card.value > 0 ? `-${formatNumber(card.value)}` : formatNumber(card.value)}
               </Typography>
             </Box>
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <TrendingDownIcon sx={{ color: theme.palette.error.main }} />
-                <Typography variant="body2">Harcamalar</Typography>
-              </Box>
-              <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.error.main }}>
-                {item.data.spend > 0 ? `-${formatNumber(item.data.spend)}` : formatNumber(item.data.spend)}
-              </Typography>
-            </Box>
-          </Box>
-
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', my: 0.5 }} />
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <AccountBalanceWalletIcon sx={{ opacity: 0.7 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                Net Toplam
-              </Typography>
-            </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                color: item.data.total >= 0 ? theme.palette.success.light : theme.palette.error.light,
-              }}
-            >
-              {formatNumber(item.data.total)}
-            </Typography>
-          </Box>
+            {card.icon}
+          </Paper>
         </Grid>
       ))}
+      <Grid size={{ xs: 12 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            backgroundColor: theme.palette.dashboard.sidebar,
+            borderRadius: '12px',
+            padding: '24px',
+            position: 'relative',
+            minHeight: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {loading && (
+            <Box
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                bgcolor: 'rgba(0,0,0,0.1)',
+                zIndex: 2,
+                borderRadius: '12px',
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+
+          <Box sx={{ width: '100%', height: 400, overflowX: 'auto' }}>
+            <BarChart
+              xAxis={[{ scaleType: 'band', data: MONTHS_TR }]}
+              series={[
+                { data: paySeries, label: 'Ödemeler', color: theme.palette.success.main },
+                { data: spendSeries, label: 'Harcamalar', color: theme.palette.error.main },
+                { data: totalSeries, label: 'Net Toplam', color: theme.palette.info.main },
+              ]}
+              margin={{ top: 50, bottom: 30, left: 60, right: 20 }}
+              sx={{
+                '& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel': { fill: theme.palette.dashboard.textSidebar, opacity: 0.8 },
+                '& .MuiChartsAxis-left .MuiChartsAxis-tickLabel': { fill: theme.palette.dashboard.textSidebar, opacity: 0.8 },
+                '& .MuiChartsAxis-line': { stroke: 'rgba(255, 255, 255, 0.1)' },
+                '& .MuiChartsAxis-tick': { stroke: 'rgba(255, 255, 255, 0.1)' },
+                '& .MuiChartsGrid-line': { stroke: 'rgba(255, 255, 255, 0.05)' },
+              }}
+            />
+          </Box>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };

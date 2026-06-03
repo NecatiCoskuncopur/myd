@@ -5,21 +5,24 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import mongoose from 'mongoose';
-
 import { Balance } from '@/models';
 
-const getBalanceStats = async (): Promise<ResponseTypes.IActionResponse<SummaryTypes.IBalanceStats>> => {
+export type YearlyStatsResponse = Record<number, SummaryTypes.ITransactionStats>;
+
+interface ICombinedBalanceResponse {
+  availableYears: number[];
+  monthlyStats: YearlyStatsResponse;
+}
+
+const getBalanceDashboardData = async (selectedYear: number): Promise<ResponseTypes.IActionResponse<ICombinedBalanceResponse>> => {
   try {
     await connectMongoDB();
     const currentUser = await getCurrentUser();
 
-    const now = new Date();
+    const startOfYear = new Date(selectedYear, 0, 1);
+    const endOfYear = new Date(selectedYear + 1, 0, 1);
 
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
-
-    const pipeline = [];
+    const pipeline: any[] = [];
 
     if (currentUser?.role !== 'ADMIN' && currentUser?.role !== 'OPERATOR') {
       pipeline.push({
@@ -30,98 +33,69 @@ const getBalanceStats = async (): Promise<ResponseTypes.IActionResponse<SummaryT
     pipeline.push({ $unwind: '$transactions' });
 
     pipeline.push({
-      $match: {
-        'transactions.createdAt': { $gte: startOfYear },
+      $facet: {
+        allYears: [
+          {
+            $group: {
+              _id: { $year: '$transactions.createdAt' },
+            },
+          },
+          { $sort: { _id: -1 } },
+        ],
+        filteredMonthlyStats: [
+          {
+            $match: {
+              'transactions.createdAt': {
+                $gte: startOfYear,
+                $lt: endOfYear,
+              },
+            },
+          },
+          {
+            $group: {
+              _id: { $month: '$transactions.createdAt' },
+              pay: {
+                $sum: {
+                  $cond: [{ $eq: ['$transactions.transactionType', 'PAY'] }, '$transactions.amount', 0],
+                },
+              },
+              spend: {
+                $sum: {
+                  $cond: [{ $eq: ['$transactions.transactionType', 'SPEND'] }, '$transactions.amount', 0],
+                },
+              },
+            },
+          },
+        ],
       },
     });
 
-    pipeline.push({
-      $group: {
-        _id: null,
+    const [facetResult] = await Balance.aggregate(pipeline);
+    let availableYears: number[] = facetResult?.allYears?.map((item: any) => item._id) || [];
 
-        dailyPay: {
-          $sum: {
-            $cond: [
-              { $and: [{ $eq: ['$transactions.transactionType', 'PAY'] }, { $gte: ['$transactions.createdAt', startOfDay] }] },
-              '$transactions.amount',
-              0,
-            ],
-          },
-        },
-        dailySpend: {
-          $sum: {
-            $cond: [
-              { $and: [{ $eq: ['$transactions.transactionType', 'SPEND'] }, { $gte: ['$transactions.createdAt', startOfDay] }] },
-              '$transactions.amount',
-              0,
-            ],
-          },
-        },
-
-        monthlyPay: {
-          $sum: {
-            $cond: [
-              { $and: [{ $eq: ['$transactions.transactionType', 'PAY'] }, { $gte: ['$transactions.createdAt', startOfMonth] }] },
-              '$transactions.amount',
-              0,
-            ],
-          },
-        },
-        monthlySpend: {
-          $sum: {
-            $cond: [
-              { $and: [{ $eq: ['$transactions.transactionType', 'SPEND'] }, { $gte: ['$transactions.createdAt', startOfMonth] }] },
-              '$transactions.amount',
-              0,
-            ],
-          },
-        },
-
-        yearlyPay: {
-          $sum: {
-            $cond: [{ $eq: ['$transactions.transactionType', 'PAY'] }, '$transactions.amount', 0],
-          },
-        },
-        yearlySpend: {
-          $sum: {
-            $cond: [{ $eq: ['$transactions.transactionType', 'SPEND'] }, '$transactions.amount', 0],
-          },
-        },
-      },
+    if (availableYears.length === 0) {
+      availableYears.push(new Date().getFullYear());
+    }
+    const monthlyStats: YearlyStatsResponse = {};
+    for (let m = 1; m <= 12; m++) {
+      monthlyStats[m] = { pay: 0, spend: 0, total: 0 };
+    }
+    facetResult?.filteredMonthlyStats?.forEach((item: any) => {
+      if (item._id >= 1 && item._id <= 12) {
+        monthlyStats[item._id] = {
+          pay: item.pay,
+          spend: item.spend,
+          total: item.pay + item.spend,
+        };
+      }
     });
-
-    pipeline.push({
-      $project: {
-        _id: 0,
-        daily: {
-          pay: '$dailyPay',
-          spend: '$dailySpend',
-          total: { $add: ['$dailyPay', '$dailySpend'] },
-        },
-        monthly: {
-          pay: '$monthlyPay',
-          spend: '$monthlySpend',
-          total: { $add: ['$monthlyPay', '$monthlySpend'] },
-        },
-        yearly: {
-          pay: '$yearlyPay',
-          spend: '$yearlySpend',
-          total: { $add: ['$yearlyPay', '$yearlySpend'] },
-        },
-      },
-    });
-
-    const stats = await Balance.aggregate(pipeline);
-
-    const defaultStats: SummaryTypes.IBalanceStats = {
-      daily: { pay: 0, spend: 0, total: 0 },
-      monthly: { pay: 0, spend: 0, total: 0 },
-      yearly: { pay: 0, spend: 0, total: 0 },
-    };
 
     return {
       status: 'OK',
-      data: stats.length > 0 ? stats[0] : defaultStats,
+      data: {
+        availableYears,
+        monthlyStats,
+      },
     };
   } catch (error) {
     if (error instanceof Error) Sentry.captureException(error);
@@ -129,4 +103,4 @@ const getBalanceStats = async (): Promise<ResponseTypes.IActionResponse<SummaryT
   }
 };
 
-export default getBalanceStats;
+export default getBalanceDashboardData;

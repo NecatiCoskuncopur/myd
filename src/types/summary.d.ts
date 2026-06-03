@@ -4,10 +4,4 @@ declare namespace SummaryTypes {
     spend: number;
     total: number;
   }
-
-  interface IBalanceStats {
-    daily: ITransactionStats;
-    monthly: ITransactionStats;
-    yearly: ITransactionStats;
-  }
 }
