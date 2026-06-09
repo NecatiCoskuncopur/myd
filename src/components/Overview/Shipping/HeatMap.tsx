@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import getShippingMapStats from '@/app/actions/summary/getShippingMapStats';
 import { countries, generalMessages } from '@/constants';
-import { Alert, Box, CircularProgress, Paper, useTheme, Typography, Grid, IconButton, useMediaQuery } from '@mui/material';
+import { Alert, Box, CircularProgress, Paper, useTheme, Typography, IconButton, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -99,7 +99,7 @@ const HeatMap = () => {
         animation: false,
         reflow: true,
         pinchType: 'xy',
-        aspectRatio: isMobile ? 0.7 : 0.3,
+        aspectRatio: isMobile ? 0.7 : 0.45,
       },
       title: { text: null },
       credits: { enabled: false },
@@ -141,7 +141,7 @@ const HeatMap = () => {
 
   if (loading || !mapTopology) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '500px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '500px', width: '100%' }}>
         <CircularProgress />
       </Box>
     );
@@ -149,76 +149,69 @@ const HeatMap = () => {
 
   if (error) {
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
+      <Alert severity="error" sx={{ m: 2, width: '100%' }}>
         {error}
       </Alert>
     );
   }
 
   return (
-    <Grid container spacing={3} sx={{ width: '100%', m: 0 }}>
-      <Grid size={{ xs: 12 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: theme.palette.dashboard?.sidebar || '#1e1e2f',
-            color: theme.palette.dashboard?.textSidebar || '#fff',
-            padding: '16px 24px',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '0.5px' }}>
-            Ülkelere Göre Kargo Dağılımı
-          </Typography>
-        </Paper>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            borderRadius: '12px',
-            overflow: 'hidden',
-            backgroundColor: theme.palette.dashboard?.sidebar || '#1e1e2f',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            p: 2,
-            position: 'relative',
-          }}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 32,
-              right: 32,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
-              zIndex: 10,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              padding: '6px',
-              borderRadius: '8px',
-              backdropFilter: 'blur(4px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            }}
-          >
-            <IconButton onClick={handleZoomIn} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
-              <AddIcon fontSize="small" />
-            </IconButton>
-            <IconButton onClick={handleZoomOut} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
-              <RemoveIcon fontSize="small" />
-            </IconButton>
-            <IconButton onClick={handleResetZoom} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
-              <RestartAltIcon fontSize="small" />
-            </IconButton>
-          </Box>
-          <Box sx={{ width: '100%' }}>
-            <HighchartsReact ref={chartRef} highcharts={Highcharts} constructorType={'mapChart'} options={chartOptions} />
-          </Box>
-        </Paper>
-      </Grid>
-    </Grid>
+    <Paper
+      elevation={0}
+      sx={{
+        borderRadius: '12px',
+        overflow: 'hidden',
+        backgroundColor: theme.palette.dashboard?.sidebar || '#1e1e2f',
+        border: '1px solid rgba(255, 255, 255, 0.05)',
+        p: 3,
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
+      }}
+    >
+      <Box>
+        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: '0.5px', color: theme.palette.dashboard?.textSidebar || '#fff', mb: '5px' }}>
+          Ülkelere Göre Kargo Dağılımı
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 32,
+          right: 32,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          zIndex: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          padding: '6px',
+          borderRadius: '8px',
+          backdropFilter: 'blur(4px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+        }}
+      >
+        <IconButton onClick={handleZoomIn} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
+          <AddIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={handleZoomOut} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
+          <RemoveIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={handleResetZoom} size="small" sx={{ color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}>
+          <RestartAltIcon fontSize="small" />
+        </IconButton>
+      </Box>
+
+      <Box sx={{ width: '100%', flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%' }}>
+          <HighchartsReact ref={chartRef} highcharts={Highcharts} constructorType={'mapChart'} options={chartOptions} />
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 
