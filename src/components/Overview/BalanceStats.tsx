@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import getBalanceDashboardData, { YearlyStatsResponse } from '@/app/actions/summary/getBalanceStats';
 import { generalMessages, transactionMessages } from '@/constants';
-import { Alert, Box, CircularProgress, Grid, Typography, useTheme, Select, MenuItem, FormControl, Paper } from '@mui/material';
+import { Alert, Box, CircularProgress, Grid, Typography, useTheme, Select, MenuItem, FormControl, Paper, Divider } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
@@ -117,7 +117,7 @@ const BalanceStats = () => {
   ];
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} sx={{ alignItems: 'strech' }}>
       <Grid size={{ xs: 12 }}>
         <Paper
           elevation={0}
@@ -158,34 +158,50 @@ const BalanceStats = () => {
           </FormControl>
         </Paper>
       </Grid>
-      {summaryCards.map((card, idx) => (
-        <Grid size={{ xs: 12, md: 4 }} key={idx}>
-          <Paper
-            elevation={0}
-            sx={{
-              backgroundColor: theme.palette.dashboard.sidebar,
-              color: theme.palette.dashboard.textSidebar,
-              borderRadius: '12px',
-              padding: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderLeft: `4px solid ${card.color}`,
-            }}
-          >
-            <Box>
-              <Typography variant="caption" sx={{ fontWeight: 600, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                {card.title}
-              </Typography>
-              <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: card.isSpend && card.value > 0 ? theme.palette.error.main : card.color }}>
-                {card.isSpend && card.value > 0 ? `-${formatNumber(card.value)}` : formatNumber(card.value)}
-              </Typography>
-            </Box>
-            {card.icon}
-          </Paper>
-        </Grid>
-      ))}
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12, md: 4 }} sx={{ display: 'flex' }}>
+        <Paper
+          elevation={0}
+          sx={{
+            backgroundColor: theme.palette.dashboard.sidebar,
+            color: theme.palette.dashboard.textSidebar,
+            borderRadius: '12px',
+            padding: '24px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {summaryCards.map((card, idx) => (
+            <React.Fragment key={idx}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  py: 1,
+                  borderLeft: `4px solid ${card.color}`,
+                  pl: 2,
+                }}
+              >
+                <Box>
+                  <Typography variant="caption" sx={{ fontWeight: 600, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {card.title}
+                  </Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: card.isSpend && card.value > 0 ? theme.palette.error.main : card.color }}>
+                    {card.isSpend && card.value > 0 ? `-${formatNumber(card.value)}` : formatNumber(card.value)}
+                  </Typography>
+                </Box>
+                {card.icon}
+              </Box>
+              {idx < summaryCards.length - 1 && <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', my: 2 }} />}
+            </React.Fragment>
+          ))}
+        </Paper>
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 8 }} sx={{ display: 'flex' }}>
         <Paper
           elevation={0}
           sx={{
@@ -193,10 +209,11 @@ const BalanceStats = () => {
             borderRadius: '12px',
             padding: '24px',
             position: 'relative',
-            minHeight: '400px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            width: '100%',
+            height: '100%',
           }}
         >
           {loading && (
