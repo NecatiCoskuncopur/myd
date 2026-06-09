@@ -38,6 +38,12 @@ const pricingListMessages = {
     NOT_FOUND: 'Fiyatlandırma bulunamadı.',
     USER_NOT_FOUND: 'Fiyatlandırma kullanıcısı bulunamadı',
   },
+  DEFAULT_UNDEFINED: 'Varsayılan fiyat listesi tanımlanmamış. Lütfen yönetici ile iletişime geçin.',
+  DELETE: {
+    SUCCESS: 'Fiyat listesi başarıyla silindi.',
+    DEFAULT_ERROR: 'Varsayılan fiyat listesi silinemez.',
+    DEFAULT_NOT_FOUND: 'Sistemde aktif bir varsayılan fiyat listesi bulunamadı. Lütfen önce bir varsayılan liste belirleyin.',
+  },
 } as const;
 
 export default pricingListMessages;

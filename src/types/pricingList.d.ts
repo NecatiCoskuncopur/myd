@@ -13,6 +13,7 @@ declare namespace PricingListTypes {
   interface IPricingList {
     _id: string;
     name: string;
+    isDefault: boolean;
     zone: IZone[];
     createdAt: string;
     updatedAt: string;

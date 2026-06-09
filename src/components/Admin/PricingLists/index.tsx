@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -13,6 +14,7 @@ import { generalMessages } from '@/constants';
 import columns from './columns';
 import CreateList from './CreateList';
 import UpdateList from './UpdateList';
+import DeleteList from './DeleteList'; // ⬇️ Yeni yazacağın silme modal bileşeni
 import FilterSection from './FilterSection';
 
 const PriceLists = () => {
@@ -25,7 +27,7 @@ const PriceLists = () => {
   const [loading, setLoading] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
-  const [modalState, setModalState] = useState<{ type: 'edit' | 'create' | ''; open: boolean }>({ type: '', open: false });
+  const [modalState, setModalState] = useState<{ type: 'edit' | 'create' | 'delete' | ''; open: boolean }>({ type: '', open: false });
 
   const requestIdRef = useRef(0);
   const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
@@ -65,13 +67,14 @@ const PriceLists = () => {
         _id: pricingList._id,
         name: pricingList.name,
         zone: pricingList.zone,
+        isDefault: pricingList.isDefault,
         createdAt: pricingList.createdAt,
         updatedAt: pricingList.updatedAt,
       })) ?? [],
     [data],
   );
 
-  const handleOpenModal = (type: 'edit' | 'create') => {
+  const handleOpenModal = (type: 'edit' | 'create' | 'delete') => {
     setModalState({ type, open: true });
     setMenuAnchorEl(null);
   };
@@ -115,6 +118,17 @@ const PriceLists = () => {
                 <EditIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Düzenle</ListItemText>
+            </MenuItem>
+
+            <MenuItem
+              onClick={() => handleOpenModal('delete')}
+              disabled={params.row.isDefault}
+              sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }}
+            >
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }} />
+              </ListItemIcon>
+              <ListItemText>{params.row.isDefault ? 'Varsayılan (Silinemez)' : 'Sil'}</ListItemText>
             </MenuItem>
           </Menu>
         </>
@@ -195,6 +209,14 @@ const PriceLists = () => {
       <UpdateList
         list={selectedRow}
         open={modalState.type === 'edit' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          handleCloseModal();
+        }}
+      />
+      <DeleteList
+        list={selectedRow}
+        open={modalState.type === 'delete' && modalState.open}
         onClose={handleCloseModal}
         onSuccess={() => {
           handleCloseModal();

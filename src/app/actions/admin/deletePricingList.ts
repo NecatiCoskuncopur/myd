@@ -6,12 +6,13 @@ import { Types } from 'mongoose';
 import { generalMessages, pricingListMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
-import { PricingList } from '@/models';
+import { PricingList, User } from '@/models';
+import { revalidatePath } from 'next/cache';
 
 const { NOT_FOUND } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResponse<PricingListTypes.IPricingList>> => {
+const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles(['OPERATOR', 'ADMIN']);
     if (authError) return authError;
@@ -24,7 +25,7 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     }
     await connectMongoDB();
 
-    const pricingListDoc = await PricingList.findById(listId).lean<PricingListTypes.IPricingList>();
+    const pricingListDoc = await PricingList.findById(listId);
 
     if (!pricingListDoc) {
       return {
@@ -33,22 +34,30 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
       };
     }
 
-    const pricingList: PricingListTypes.IPricingList = {
-      _id: pricingListDoc._id.toString(),
-      name: pricingListDoc.name,
-      isDefault: pricingListDoc.isDefault,
-      zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
-        number: z.number,
-        prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight, price: p.price })),
-        than: z.than,
-      })),
-      createdAt: pricingListDoc.createdAt,
-      updatedAt: pricingListDoc.updatedAt,
-    };
+    if (pricingListDoc.isDefault) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.DELETE?.DEFAULT_ERROR,
+      };
+    }
 
+    const defaultPricingList = await PricingList.findOne({ isDefault: true });
+
+    if (!defaultPricingList) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.DELETE.DEFAULT_NOT_FOUND,
+      };
+    }
+
+    await User.updateMany({ priceListId: listId }, { priceListId: defaultPricingList._id });
+
+    await pricingListDoc.deleteOne();
+
+    revalidatePath('/panel/yonetim/fiyat-listeleri');
     return {
       status: 'OK',
-      data: pricingList,
+      message: pricingListMessages.DELETE.SUCCESS,
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -62,4 +71,4 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
   }
 };
 
-export default getPricingList;
+export default deletePricingList;

@@ -4,12 +4,12 @@ import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { authMessages, generalMessages, userMessages, welcomeMail } from '@/constants';
+import { authMessages, generalMessages, pricingListMessages, userMessages, welcomeMail } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
 import validateRecaptcha from '@/lib/validateRecaptcha';
-import { Balance, User } from '@/models';
+import { Balance, User, PricingList } from '@/models';
 import createUserSchema from '@/schemas/createUser.schema';
 
 const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IActionResponse> => {
@@ -35,12 +35,21 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       };
     }
 
+    const defaultPricingList = await PricingList.findOne({ isDefault: true });
+    if (!defaultPricingList) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.DEFAULT_UNDEFINED,
+      };
+    }
+
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
     const newUser = await User.create({
       ...validatedData,
       email: emailLower,
       password: hashedPassword,
+      priceListId: defaultPricingList._id,
     });
 
     try {

@@ -42,6 +42,7 @@ const getPricingLists = async (
     const pricingLists = result.docs.map((item: PricingListTypes.IPricingList) => ({
       _id: item._id.toString(),
       name: item.name,
+      isDefault: item.isDefault,
       zone: item.zone.map(z => ({
         number: z.number,
         prices: z.prices.map(p => ({

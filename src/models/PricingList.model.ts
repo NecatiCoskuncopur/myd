@@ -7,6 +7,10 @@ const PricingListSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
     zone: [
       {
         _id: false,
