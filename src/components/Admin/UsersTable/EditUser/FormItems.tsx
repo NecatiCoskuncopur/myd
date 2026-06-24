@@ -182,6 +182,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
           render={({ field }) => (
             <FormControl fullWidth>
               <InputLabel>Fiyat Listesi</InputLabel>
+
               <Select {...field} label="Fiyat Listesi" value={field.value || ''}>
                 {pricingLists.map(list => (
                   <MenuItem key={list._id} value={list._id}>

@@ -71,6 +71,7 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
           address: 1,
           role: 1,
           isActive: 1,
+          barcodePermits: 1,
           createdAt: { $dateToString: { format: '%Y-%m-%dT%H:%M:%S.%LZ', date: '$createdAt' } },
           balance: {
             _id: { $toString: '$balance._id' },

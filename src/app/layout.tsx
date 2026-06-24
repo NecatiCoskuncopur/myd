@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google';
 
 import Providers from './providers';
 
-const inter = Inter({ subsets: ['Latin'] });
+const inter = Inter({ subsets: ['latin'] });
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
