@@ -7,8 +7,10 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import NightlightRoundIcon from '@mui/icons-material/NightlightRound';
-import { Box, Button, IconButton, useTheme } from '@mui/material';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import { Box, Button, IconButton, Tooltip, useTheme } from '@mui/material';
 
+import SupportMenu from './SupportMenu';
 import UserMenu from './UserMenu';
 import { UserTypes } from '@/types/user';
 
@@ -21,14 +23,22 @@ type HeaderProps = {
 const Header = ({ toggleTheme, toggleDrawer, mode, user }: HeaderProps) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [supportAnchorEl, setSupportAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
+  const supportOpen = Boolean(supportAnchorEl);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => setAnchorEl(null);
+
+  const handleSupportOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSupportAnchorEl(event.currentTarget);
+  };
+
+  const handleSupportClose = () => setSupportAnchorEl(null);
 
   return (
     <Box
@@ -45,6 +55,14 @@ const Header = ({ toggleTheme, toggleDrawer, mode, user }: HeaderProps) => {
         <MenuIcon />
       </StyledIconButton>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Tooltip title="Destek / İletişim">
+          <StyledIconButton onClick={handleSupportOpen}>
+            <SupportAgentIcon />
+          </StyledIconButton>
+        </Tooltip>
+
+        <SupportMenu handleClose={handleSupportClose} open={supportOpen} anchorEl={supportAnchorEl} />
+
         <StyledIconButton onClick={toggleTheme}>{mode === 'light' ? <NightlightRoundIcon /> : <LightModeIcon />}</StyledIconButton>
 
         <Button

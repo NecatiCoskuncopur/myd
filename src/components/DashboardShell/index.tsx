@@ -8,7 +8,6 @@ import getUser from '@/app/actions/user/getUser';
 import getDashboardTheme from '@/theme';
 import Header from './Header';
 import SideMenu from './SideMenu';
-import SupportFab from './SupportFab';
 import { UserTypes } from '@/types/user';
 
 type Props = {
@@ -83,7 +82,6 @@ const DashboardShell = ({ children }: Props) => {
           >
             {children}
           </Box>
-          <SupportFab />
         </Box>
       </Box>
     </ThemeProvider>
