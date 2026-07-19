@@ -6,7 +6,6 @@ import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 
 import getUser from '@/app/actions/user/getUser';
 import getDashboardTheme from '@/theme';
-import Header from './Header';
 import SideMenu from './SideMenu';
 import { UserTypes } from '@/types/user';
 
@@ -61,7 +60,14 @@ const DashboardShell = ({ children }: Props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <SideMenu role={user?.role || ''} open={isDrawerOpen} toggleDrawer={toggleDrawer} />
+        <SideMenu
+          role={user?.role || ''}
+          open={isDrawerOpen}
+          toggleDrawer={toggleDrawer}
+          toggleTheme={toggleTheme}
+          mode={mode}
+          userName={`${user?.firstName} ${user?.lastName?.charAt(0)}.`}
+        />
         <Box
           component="main"
           sx={{
@@ -70,12 +76,12 @@ const DashboardShell = ({ children }: Props) => {
             minWidth: 0,
           }}
         >
-          <Header toggleDrawer={toggleDrawer} toggleTheme={toggleTheme} mode={mode} user={user || null} />
           <Box
             sx={{
               flex: 1,
               minWidth: 0,
-              p: 3,
+              py: 3,
+              px: { xs: 1, sm: 2, md: 3 },
               display: 'flex',
               flexDirection: 'column',
             }}
