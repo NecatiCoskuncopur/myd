@@ -38,5 +38,14 @@ export default function HCaptchaField({ onVerify, onExpire }: Props) {
     };
   }, []);
 
-  return <div ref={containerRef} />;
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+      }}
+    />
+  );
 }

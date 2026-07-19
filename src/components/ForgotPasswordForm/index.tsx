@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -61,7 +60,7 @@ const ForgotPasswordForm = () => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ textAlign: 'center', fontWeight: '500' }}>
         Parolamı Unuttum
       </Typography>
       {errorMessage && (
@@ -69,10 +68,6 @@ const ForgotPasswordForm = () => {
           {errorMessage}
         </Alert>
       )}
-
-      <Typography variant="body2" gutterBottom sx={{ mb: 4 }}>
-        Parolanı hatırladın mı? <Link href="/kullanici/giris">Giriş Yap</Link>
-      </Typography>
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
@@ -83,11 +78,23 @@ const ForgotPasswordForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 3 }}
-          startIcon={pending ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+          startIcon={pending && <CircularProgress size={20} />}
           disabled={pending}
         >
           {pending ? '' : 'Sıfırlama Linkini Gönder'}
         </Button>
+        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
+          <Link
+            href="/kullanici/giris"
+            sx={{
+              textDecoration: 'none',
+              color: 'text.secondary',
+              '&:hover': { color: 'text.secondary', textDecoration: 'underline' },
+            }}
+          >
+            Giriş Yap
+          </Link>
+        </Box>
       </Box>
     </>
   );

@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -55,7 +54,7 @@ const SignInForm = () => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ textAlign: 'center', fontWeight: '500' }}>
         Giriş Yap
       </Typography>
       {errorMessage && (
@@ -63,9 +62,6 @@ const SignInForm = () => {
           {errorMessage}
         </Alert>
       )}
-      <Typography variant="body2" sx={{ mb: 3 }}>
-        Henüz kayıt olmadın mı? <Link href="/kullanici/kayit">Kayıt Ol</Link>
-      </Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
         <Button
@@ -74,13 +70,35 @@ const SignInForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 3 }}
-          startIcon={pending ? <CircularProgress size={20} /> : <LoginOutlinedIcon />}
+          startIcon={pending && <CircularProgress size={20} />}
           disabled={pending}
         >
           {pending ? '' : 'Giriş Yap'}
         </Button>
-        <Box sx={{ mt: 2 }}>
-          <Link href="/kullanici/parolami-unuttum">Parolamı Unuttum</Link>
+        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, fontSize: 14 }}>
+          <Link
+            href="/kullanici/kayit"
+            sx={{
+              textDecoration: 'none',
+              color: 'text.secondary',
+              '&:hover': { color: 'text.secondary', textDecoration: 'underline' },
+            }}
+          >
+            Kayıt Ol
+          </Link>
+
+          <Box sx={{ color: 'text.disabled', userSelect: 'none' }}>•</Box>
+
+          <Link
+            href="/kullanici/parolami-unuttum"
+            sx={{
+              textDecoration: 'none',
+              color: 'text.secondary',
+              '&:hover': { color: 'text.secondary', textDecoration: 'underline' },
+            }}
+          >
+            Parolamı Unuttum
+          </Link>
         </Box>
       </Box>
     </>

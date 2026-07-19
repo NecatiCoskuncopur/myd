@@ -52,7 +52,7 @@ const Wrapper = styled(Grid)`
   min-height: 100vh;
   width: 100%;
 
-  background-image: url('/images/auth-image.jpg');
+  background-image: url('/images/authBg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
