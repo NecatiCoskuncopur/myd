@@ -3,12 +3,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
+import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
 import { generalMessages } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccountForm from './CreateCarrierAccountForm';
@@ -18,7 +20,6 @@ import UpdateCarrierAccountForm from './UpdateCarrierAccountForm';
 const CarrierAccountTable = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const theme = useTheme();
 
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
@@ -152,63 +153,45 @@ const CarrierAccountTable = () => {
   if (!isClient) return null;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.dashboard.sidebar,
-        color: theme.palette.dashboard.textSidebar,
-        p: 5,
-        borderRadius: '12px',
-        overflow: 'hidden',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2,
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          mb: 3,
-        }}
-      >
-        <Typography variant="h5">Kargo Hesapları</Typography>
-
-        <Link
-          onClick={() => {
-            handleOpenModal('create');
-          }}
+    <Wrapper>
+      <TableHeader title="Kargo Hesapları" subTitle="Entegre taşıyıcı firma hesaplarınızın listesi ve bağlantı detayları.">
+        <StyledButton
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenModal('create')}
+          sx={{ flexShrink: 0, whiteSpace: 'nowrap', alignSelf: { xs: 'stretch', sm: 'center' } }}
         >
           Yeni Hesap Oluştur
-        </Link>
-      </Box>
+        </StyledButton>
+      </TableHeader>
       <FilterSection searchParams={searchParams} />
-
-      <Box sx={{ width: '100%', overflowX: 'auto' }}>
-        <Box sx={{ minWidth: 'max-content', width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={accountColumns}
-            loading={loading}
-            autoHeight
-            paginationMode="server"
-            rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[1, 5, 10, 50]}
-            paginationModel={{ page: page - 1, pageSize: limit }}
-            onPaginationModelChange={model => {
-              const isPageSizeChanged = model.pageSize !== limit;
-              router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-            }}
-            sx={{
-              '& .MuiDataGrid-main': {
-                overflowX: 'hidden',
-              },
-              minWidth: 1200,
-            }}
-          />
-        </Box>
-      </Box>
+      <TableWrapper>
+        <DataGrid
+          rows={rows}
+          columns={accountColumns}
+          loading={loading}
+          autoHeight
+          paginationMode="server"
+          rowCount={data?.totalCount ?? 0}
+          pageSizeOptions={[1, 5, 10, 50]}
+          paginationModel={{ page: page - 1, pageSize: limit }}
+          onPaginationModelChange={model => {
+            const isPageSizeChanged = model.pageSize !== limit;
+            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+          }}
+          slotProps={{
+            noRowsOverlay: {
+              children: 'Sistemde tanımlı kargo hesabı bulunamadı. Yeni bir taşıyıcı firma hesabı ekleyerek başlayabilirsiniz.',
+            },
+          }}
+          sx={{
+            '& .MuiDataGrid-main': {
+              overflowX: 'hidden',
+            },
+            minWidth: 1200,
+          }}
+        />
+      </TableWrapper>
       <CreateCarrierAccountForm
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}
@@ -225,7 +208,7 @@ const CarrierAccountTable = () => {
           handleCloseModal();
         }}
       />
-    </Box>
+    </Wrapper>
   );
 };
 
