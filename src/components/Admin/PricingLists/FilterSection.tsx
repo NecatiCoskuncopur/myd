@@ -15,8 +15,6 @@ type FilterSectionProps = {
 
 const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const router = useRouter();
-
-  // Tek bir state yeterli
   const [name, setName] = useState(searchParams.get('name') || '');
 
   const updateURL = (value: string | null) => {
@@ -37,8 +35,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   };
 
   const handleClear = () => {
-    setName(''); // Inputu temizle
-    updateURL(null); // URL'den sil
+    setName('');
+    updateURL(null);
   };
 
   return (

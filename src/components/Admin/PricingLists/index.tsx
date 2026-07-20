@@ -3,18 +3,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
+import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
 import getPricingLists from '@/app/actions/admin/getPricingLists';
 import { generalMessages } from '@/constants';
 import columns from './columns';
 import CreateList from './CreateList';
 import UpdateList from './UpdateList';
-import DeleteList from './DeleteList'; // ⬇️ Yeni yazacağın silme modal bileşeni
+import DeleteList from './DeleteList';
 import FilterSection from './FilterSection';
 
 const PriceLists = () => {
@@ -139,66 +141,45 @@ const PriceLists = () => {
   if (!isClient) return null;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.dashboard.sidebar,
-        color: theme.palette.dashboard.textSidebar,
-        p: 5,
-        borderRadius: '12px',
-        overflow: 'hidden',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2,
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          mb: 3,
-        }}
-      >
-        <Typography variant="h5">Fiyat Listeleri</Typography>
-        <Link
-          onClick={() => {
-            handleOpenModal('create');
-          }}
+    <Wrapper>
+      <TableHeader title="Kargo Hesapları" subTitle="Entegre taşıyıcı firma hesaplarınızın listesi ve bağlantı detayları.">
+        <StyledButton
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenModal('create')}
+          sx={{ flexShrink: 0, whiteSpace: 'nowrap', alignSelf: { xs: 'stretch', sm: 'center' } }}
         >
           Yeni Liste Oluştur
-        </Link>
-      </Box>
+        </StyledButton>
+      </TableHeader>
       <FilterSection searchParams={searchParams} />
-      <Box
-        sx={{
-          width: '100%',
-          overflowX: 'auto',
-        }}
-      >
-        <Box sx={{ minWidth: 'max-content', width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={priceListsColumns}
-            loading={loading}
-            autoHeight
-            paginationMode="server"
-            rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[1, 5, 10, 50]}
-            paginationModel={{ page: page - 1, pageSize: limit }}
-            onPaginationModelChange={model => {
-              const isPageSizeChanged = model.pageSize !== limit;
-              router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-            }}
-            sx={{
-              '& .MuiDataGrid-main': {
-                overflowX: 'hidden',
-              },
-              minWidth: 1200,
-            }}
-          />
-        </Box>
-      </Box>
+      <TableWrapper>
+        <DataGrid
+          rows={rows}
+          columns={priceListsColumns}
+          loading={loading}
+          autoHeight
+          paginationMode="server"
+          rowCount={data?.totalCount ?? 0}
+          pageSizeOptions={[1, 5, 10, 50]}
+          paginationModel={{ page: page - 1, pageSize: limit }}
+          onPaginationModelChange={model => {
+            const isPageSizeChanged = model.pageSize !== limit;
+            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+          }}
+          slotProps={{
+            noRowsOverlay: {
+              children: 'Sistemde tanımlı fiyat listesi bulunamadı.',
+            },
+          }}
+          sx={{
+            '& .MuiDataGrid-main': {
+              overflowX: 'hidden',
+            },
+            minWidth: 1200,
+          }}
+        />
+      </TableWrapper>
       <CreateList
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}
@@ -222,7 +203,7 @@ const PriceLists = () => {
           handleCloseModal();
         }}
       />
-    </Box>
+    </Wrapper>
   );
 };
 
