@@ -6,8 +6,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+import { Wrapper, TableHeader, TableWrapper } from '@/components';
 import FilterSection from './FilterSection';
 import getAllUsers from '@/app/actions/admin/getAllUsers';
 import { generalMessages } from '@/constants';
@@ -21,7 +23,6 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const Users = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const theme = useTheme();
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<AdminTypes.IUsersData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -155,7 +156,7 @@ const Users = () => {
               <ListItemIcon>
                 <AccountBalanceWalletIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Bakiye Ekle</ListItemText>
+              <ListItemText> Bakiye Hareketi Ekle</ListItemText>
             </MenuItem>
           </Menu>
         </>
@@ -166,47 +167,37 @@ const Users = () => {
   if (!isClient) return null;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.dashboard.sidebar,
-        color: theme.palette.dashboard.textSidebar,
-        p: 5,
-        borderRadius: '12px',
-        overflow: 'hidden',
-      }}
-    >
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        Üyeler
-      </Typography>
-
-      <FilterSection searchParams={searchParams} />
-      <Box sx={{ width: '100%', overflowX: 'auto' }}>
-        <Box sx={{ minWidth: 'max-content', width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={usersColumns}
-            loading={loading}
-            autoHeight
-            paginationMode="server"
-            rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[1, 5, 10, 50]}
-            paginationModel={{ page: page - 1, pageSize: limit }}
-            onPaginationModelChange={model => {
-              const isPageSizeChanged = model.pageSize !== limit;
-              router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-            }}
-            sx={{
-              '& .MuiDataGrid-main': {
-                overflowX: 'hidden',
-              },
-              minWidth: 1200,
-            }}
-          />
-        </Box>
-      </Box>
-
+    <Wrapper>
+      <TableHeader title="Üyeler" subTitle="Kullanıcı hesapları, erişim izinleri ve üyelik hareketleri özeti." stacked={true}>
+        <FilterSection searchParams={searchParams} />
+      </TableHeader>
+      <TableWrapper>
+        <DataGrid
+          rows={rows}
+          columns={usersColumns}
+          loading={loading}
+          autoHeight
+          paginationMode="server"
+          rowCount={data?.totalCount ?? 0}
+          pageSizeOptions={[1, 5, 10, 50]}
+          paginationModel={{ page: page - 1, pageSize: limit }}
+          onPaginationModelChange={model => {
+            const isPageSizeChanged = model.pageSize !== limit;
+            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+          }}
+          slotProps={{
+            noRowsOverlay: {
+              children: 'Henüz kayıtlı bir üye bulunmuyor.',
+            },
+          }}
+          sx={{
+            '& .MuiDataGrid-main': {
+              overflowX: 'hidden',
+            },
+            minWidth: 1200,
+          }}
+        />
+      </TableWrapper>
       <AddTransaction
         userId={selectedRow?._id ?? ''}
         open={modalState.type === 'balance' && modalState.open}
@@ -224,7 +215,7 @@ const Users = () => {
           handleCloseModal();
         }}
       />
-    </Box>
+    </Wrapper>
   );
 };
 

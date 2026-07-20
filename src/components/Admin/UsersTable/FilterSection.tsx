@@ -123,7 +123,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 12, md: 2 }}>
+      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
             Ara
