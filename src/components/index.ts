@@ -20,3 +20,6 @@ export { default as PaperDownload } from './PaperDownload';
 export { default as DeleteShipping } from './DeleteShipping';
 export { default as AdminShippingList } from './Admin/AdminShippingList';
 export { default as Overview } from './Overview';
+export { default as Wrapper } from './Table/Wrapper';
+export { default as TableWrapper } from './Table/TableWrapper';
+export { default as TableHeader } from './Table/TableHeader';
