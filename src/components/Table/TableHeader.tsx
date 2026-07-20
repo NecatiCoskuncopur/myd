@@ -5,17 +5,18 @@ type TableHeaderProps = {
   children: React.ReactNode;
   title: string;
   subTitle: string;
+  stacked?: boolean;
 };
 
-const TableHeader = ({ children, title, subTitle }: TableHeaderProps) => {
+const TableHeader = ({ children, title, subTitle, stacked = false }: TableHeaderProps) => {
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
-        gap: 2,
+        flexDirection: stacked ? 'column' : { xs: 'column', sm: 'row' },
+        gap: stacked ? 2.5 : 2,
         justifyContent: 'space-between',
-        alignItems: { xs: 'flex-start', sm: 'center' },
+        alignItems: stacked ? 'stretch' : { xs: 'flex-start', sm: 'center' },
         mb: 3,
         pb: 2.5,
         borderBottom: '1px solid',

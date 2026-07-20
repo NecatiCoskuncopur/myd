@@ -66,6 +66,11 @@ const UserBalanceTable = () => {
             const isPageSizeChanged = model.pageSize !== limit;
             router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
           }}
+          slotProps={{
+            noRowsOverlay: {
+              children: 'Bu hesaba ait ödeme ve harcama geçmişi bulunmamaktadır.',
+            },
+          }}
           sx={{
             flex: 1,
             width: '100%',

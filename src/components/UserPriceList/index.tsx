@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { Box, Typography, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
+import { TableHeader, TableWrapper, Wrapper } from '@/components';
 import getUserPricingList from '@/app/actions/user/getUserPricingList';
 import PriceCalculator from './PriceCalculator';
 
@@ -101,59 +102,37 @@ const UserPriceList = () => {
   if (!isMounted) return null;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.dashboard.sidebar,
-        color: theme.palette.dashboard.textSidebar,
-        p: 5,
-        borderRadius: '12px',
-        overflow: 'hidden',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column' },
-          gap: 2,
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          mb: 3,
-        }}
-      >
-        <Typography variant="h5">Fiyat Listem</Typography>
-
+    <Wrapper>
+      <TableHeader title="Fiyat Listem" subTitle="Anlaşmanıza ve bölgenize göre tanımlanan özel fiyatlandırma" stacked={true}>
         <PriceCalculator />
-      </Box>
-      <Box
-        sx={{
-          width: '100%',
-          overflowX: 'auto',
-        }}
-      >
-        <Box sx={{ minWidth: 700 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            loading={loading}
-            hideFooter
-            editMode="cell"
-            rowHeight={24}
-            disableColumnMenu
-            getRowClassName={params => (params.row.weight === 'Paket Aşımı' ? 'than-row' : '')}
-            sx={{
-              '& .MuiDataGrid-cell': { fontSize: 14, border: `1px solid ${theme.palette.dashboard.border}` },
-              '& .MuiDataGrid-columnHeader': { fontSize: 14 },
-              '& .than-row': {
-                fontWeight: 'bold',
-                backgroundColor: theme.palette.action.hover,
-              },
-            }}
-          />
-        </Box>
-      </Box>
-    </Box>
+      </TableHeader>
+
+      <TableWrapper>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          loading={loading}
+          hideFooter
+          editMode="cell"
+          rowHeight={24}
+          disableColumnMenu
+          getRowClassName={params => (params.row.weight === 'Paket Aşımı' ? 'than-row' : '')}
+          slotProps={{
+            noRowsOverlay: {
+              children: 'Hesabınıza tanımlı fiyat listesi bulunamadı.',
+            },
+          }}
+          sx={{
+            '& .MuiDataGrid-cell': { fontSize: 14, border: `1px solid ${theme.palette.dashboard.border}` },
+            '& .MuiDataGrid-columnHeader': { fontSize: 14 },
+            '& .than-row': {
+              fontWeight: 'bold',
+              backgroundColor: theme.palette.action.hover,
+            },
+          }}
+        />
+      </TableWrapper>
+    </Wrapper>
   );
 };
 
