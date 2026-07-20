@@ -4,50 +4,67 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { DeleteOutlined } from '@mui/icons-material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Typography, useTheme } from '@mui/material';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  Divider,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import moment from 'moment';
 
-import listShipping from '@/app/actions/shipping/listShipping';
+import listAllShipping from '@/app/actions/admin/listAllShipping';
 import getUser from '@/app/actions/user/getUser';
-import { CreateBarcodeButton, PaperDownload } from '@/components';
-import StyledButton from '@/components/StyledButton';
+import createBarcode from '@/app/actions/shipping/createBarcode';
+import getPaper from '@/app/actions/shipping/getPaper';
+import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
+import { TableHeader, TableWrapper, Wrapper } from '@/components';
 import { generalMessages } from '@/constants';
 import columns from './columns';
 import { DeleteShipping } from '@/components';
 import { UserTypes } from '@/types/user';
-import listAllShipping from '@/app/actions/admin/listAllShipping';
+import FilterSection from './FilterSection';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const AdminShippingList = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const theme = useTheme();
 
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [downloading, setDownloading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const [inputs, setInputs] = useState({
-    consigneeName: searchParams.get('consigneeName') || '',
-    consigneePhone: searchParams.get('consigneePhone') || '',
-    trackingNumber: searchParams.get('trackingNumber') || '',
-    startDate: searchParams.get('startDate') ? moment(searchParams.get('startDate')) : null,
-    endDate: searchParams.get('endDate') ? moment(searchParams.get('endDate')) : null,
-  });
-
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
+
+  const [barcodeAnchorEl, setBarcodeAnchorEl] = useState<null | HTMLElement>(null);
+  const [paperAnchorEl, setPaperAnchorEl] = useState<null | HTMLElement>(null);
+  const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
+
+  const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
+  const [barcodeLoading, setBarcodeLoading] = useState(false);
+  const [barcodeError, setBarcodeError] = useState<string | null>(null);
+
+  const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
 
   const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
   const limit = useMemo(() => Number(searchParams.get('limit')) || 10, [searchParams]);
@@ -91,72 +108,22 @@ const AdminShippingList = () => {
     fetchUser();
   }, []);
 
-  const handleSearch = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('sayfa', '1');
+  useEffect(() => {
+    if (!canCreateBarcode) return;
 
-    if (inputs.consigneeName) params.set('consigneeName', inputs.consigneeName);
-    else params.delete('consigneeName');
-    if (inputs.consigneePhone) params.set('consigneePhone', inputs.consigneePhone);
-    else params.delete('consigneePhone');
-    if (inputs.trackingNumber) params.set('trackingNumber', inputs.trackingNumber);
-    else params.delete('trackingNumber');
-    if (inputs.startDate) params.set('startDate', inputs.startDate.toISOString());
-    else params.delete('startDate');
-    if (inputs.endDate) params.set('endDate', inputs.endDate.toISOString());
-    else params.delete('endDate');
-
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleDownloadExcel = async () => {
-    try {
-      setDownloading(true);
-
-      const response = await listShipping({
-        download: true,
-        consigneeName: inputs.consigneeName || undefined,
-        consigneePhone: inputs.consigneePhone || undefined,
-        trackingNumber: inputs.trackingNumber || undefined,
-        startDate: inputs.startDate?.toISOString(),
-        endDate: inputs.endDate?.toISOString(),
-      });
-
-      if (response.status === 'OK' && response.data && 'content' in response.data) {
-        const { content, fileName } = response.data;
-
-        const byteCharacters = atob(content);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], {
-          type: 'application/vnd.ms-excel',
-        });
-
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+    const fetchAccounts = async () => {
+      const res = await getUserPermittedAccounts();
+      if (res.status === 'OK' && res.data) {
+        setAccounts(res.data);
       }
-    } catch (error) {
-      console.error('Excel indirilirken bir hata oluştu:', error);
-    } finally {
-      setDownloading(false);
-    }
-  };
-  const rows = useMemo(() => data?.shippings ?? [], [data]);
+    };
+
+    fetchAccounts();
+  }, [canCreateBarcode]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    setMenuAnchorEl(null);
+    closeActionsMenu();
   };
 
   const handleCloseModal = () => {
@@ -164,147 +131,269 @@ const AdminShippingList = () => {
     setIsModalOpen(false);
   };
 
-  const shippingColumns: GridColDef[] = [
-    ...columns,
-    {
-      field: 'actions',
-      headerName: 'İşlemler',
-      flex: 1,
-      minWidth: 250,
-      sortable: false,
-      filterable: false,
-      renderCell: params => {
-        const hasTrackingNumber = !!params.row.carrier?.trackingNumber;
+  const closeActionsMenu = () => {
+    setMenuAnchorEl(null);
+    setBarcodeAnchorEl(null);
+    setPaperAnchorEl(null);
+  };
 
-        return (
-          <>
-            {!hasTrackingNumber && (
-              <IconButton
-                size="small"
-                onClick={e => {
-                  setSelectedRow(params.row);
-                  setMenuAnchorEl(e.currentTarget);
-                }}
-              >
-                <MoreVertIcon />
-              </IconButton>
-            )}
+  const closeSubMenus = () => {
+    setBarcodeAnchorEl(null);
+    setPaperAnchorEl(null);
+  };
 
-            <Menu
-              anchorEl={menuAnchorEl}
-              open={menuAnchorEl !== null && selectedRow?._id === params.row._id}
-              onClose={() => {
-                setMenuAnchorEl(null);
-                setSelectedRow(null);
-              }}
-            >
-              {!hasTrackingNumber && [
-                <MenuItem key="delete" onClick={() => handleOpenModal()}>
-                  <ListItemIcon>
-                    <DeleteOutlined fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Sil</ListItemText>
-                </MenuItem>,
-              ]}
-            </Menu>
-            {hasTrackingNumber && <PaperDownload shippingId={params.row._id} />}
-            {!hasTrackingNumber && (user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={params.row} />}
-          </>
-        );
+  const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
+    const shippingId = selectedRow?._id;
+    if (!shippingId || !account.carrier || !account.accountNumber) return;
+
+    closeActionsMenu();
+    setBarcodeDialogOpen(true);
+    setBarcodeLoading(true);
+    setBarcodeError(null);
+
+    try {
+      const res = await createBarcode({
+        shippingId,
+        firm: account.carrier as 'UPS' | 'FEDEX',
+        accountNumber: account.accountNumber,
+      });
+
+      if (res.status === 'OK') {
+        fetchList();
+      } else {
+        setBarcodeError(res.message || 'Barkod oluşturulamadı');
+      }
+    } catch {
+      setBarcodeError('Sistem hatası oluştu');
+    } finally {
+      setBarcodeLoading(false);
+    }
+  };
+
+  const handleDownloadPaper = async (type: 'labels' | 'invoices') => {
+    const shippingId = selectedRow?._id;
+    closeActionsMenu();
+    if (!shippingId) return;
+
+    try {
+      const res = await getPaper({ shippingId, type });
+
+      if (res.status === 'OK' && res.data?.file) {
+        const pdfUrl = `data:application/pdf;base64,${res.data.file}`;
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(
+            `<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none; margin:0; padding:0; overflow:hidden;"></iframe>`,
+          );
+          newWindow.document.title = type === 'labels' ? 'Kargo Barkodu' : 'Proforma Fatura';
+        }
+      } else {
+        alert(res.message || 'Evrak indirilirken bir hata oluştu.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Beklenmedik bir hata oluştu.');
+    }
+  };
+
+  const rows = useMemo(() => data?.shippings ?? [], [data]);
+
+  const shippingColumns: GridColDef[] = useMemo(
+    () => [
+      ...columns,
+      {
+        field: 'actions',
+        headerName: 'İşlemler',
+        flex: 1,
+        minWidth: 120,
+        sortable: false,
+        filterable: false,
+        renderCell: params => (
+          <IconButton
+            size="small"
+            onClick={e => {
+              setSelectedRow(params.row);
+              setMenuAnchorEl(e.currentTarget);
+            }}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        ),
       },
-    },
-  ];
+    ],
+    [],
+  );
 
   if (!isClient) return null;
 
+  const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
+  const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Box
-        sx={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: theme.palette.dashboard.sidebar,
-          color: theme.palette.dashboard.textSidebar,
-          p: 5,
-          borderRadius: '12px',
-          overflow: 'hidden',
-        }}
-      >
-        <Typography variant="h5" sx={{ mb: 3, color: theme.palette.dashboard.textSidebar }}>
-          Gönderiler
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 2,
-            mb: 3,
+      <Wrapper>
+        <TableHeader title="Gönderiler" subTitle="Tüm kullanıcılara ait gönderilerin detayları ve güncel durum bilgileri." stacked={true}>
+          <FilterSection searchParams={searchParams} />
+        </TableHeader>
+        <TableWrapper>
+          <DataGrid
+            rows={rows}
+            columns={shippingColumns}
+            loading={loading}
+            autoHeight
+            paginationMode="server"
+            rowCount={data?.totalCount ?? 0}
+            pageSizeOptions={[1, 5, 10, 50]}
+            paginationModel={{ page: page - 1, pageSize: limit }}
+            onPaginationModelChange={model => {
+              const isPageSizeChanged = model.pageSize !== limit;
+              router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+            }}
+            slotProps={{
+              noRowsOverlay: {
+                children: 'Henüz kayıtlı bir gönderi bulunmuyor.',
+              },
+            }}
+            sx={{
+              '& .MuiDataGrid-main': {
+                overflowX: 'hidden',
+              },
+              minWidth: 1200,
+            }}
+          />
+        </TableWrapper>
+        <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={closeActionsMenu}>
+          {!hasTrackingNumber && (
+            <MenuItem
+              onMouseEnter={closeSubMenus}
+              onClick={() => {
+                const id = selectedRow?._id;
+                closeActionsMenu();
+                router.push(`/panel/gonderilerim/${id}/duzenle`);
+              }}
+            >
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Düzenle</ListItemText>
+            </MenuItem>
+          )}
+          {!hasTrackingNumber && (
+            <MenuItem onMouseEnter={closeSubMenus} onClick={handleOpenModal}>
+              <ListItemIcon>
+                <DeleteOutlined fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Sil</ListItemText>
+            </MenuItem>
+          )}
+
+          {showBarcodeItem && <Divider />}
+          {showBarcodeItem && (
+            <MenuItem
+              onMouseEnter={e => {
+                setPaperAnchorEl(null);
+                setBarcodeAnchorEl(e.currentTarget);
+              }}
+            >
+              <ListItemIcon>
+                <QrCode2OutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Barkod Oluştur</ListItemText>
+              <ChevronRightIcon fontSize="small" sx={{ ml: 2, opacity: 0.6 }} />
+            </MenuItem>
+          )}
+
+          {hasTrackingNumber && (
+            <MenuItem
+              onMouseEnter={e => {
+                setBarcodeAnchorEl(null);
+                setPaperAnchorEl(e.currentTarget);
+              }}
+            >
+              <ListItemIcon>
+                <FileDownloadOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Evraklar</ListItemText>
+              <ChevronRightIcon fontSize="small" sx={{ ml: 2, opacity: 0.6 }} />
+            </MenuItem>
+          )}
+        </Menu>
+        <Menu
+          anchorEl={barcodeAnchorEl}
+          open={Boolean(barcodeAnchorEl)}
+          onClose={() => setBarcodeAnchorEl(null)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          disableAutoFocus
+          disableEnforceFocus
+          disableRestoreFocus
+          sx={{ pointerEvents: 'none' }}
+          slotProps={{
+            paper: {
+              onMouseLeave: () => setBarcodeAnchorEl(null),
+              sx: { pointerEvents: 'auto' },
+            },
           }}
         >
-          <TextField
-            label="Alıcı Adı"
-            size="small"
-            value={inputs.consigneeName}
-            onChange={e => setInputs(prev => ({ ...prev, consigneeName: e.target.value }))}
-          />
-          <TextField
-            label="Alıcı Telefon"
-            size="small"
-            value={inputs.consigneePhone}
-            onChange={e => setInputs(prev => ({ ...prev, consigneePhone: e.target.value }))}
-          />
-          <TextField
-            label="Takip No"
-            size="small"
-            value={inputs.trackingNumber}
-            onChange={e => setInputs(prev => ({ ...prev, trackingNumber: e.target.value }))}
-          />
-          <DatePicker
-            label="Başlangıç"
-            slotProps={{ textField: { size: 'small' } }}
-            value={inputs.startDate}
-            onChange={val => setInputs(prev => ({ ...prev, startDate: val }))}
-          />
-          <DatePicker
-            label="Bitiş"
-            slotProps={{ textField: { size: 'small' } }}
-            value={inputs.endDate}
-            onChange={val => setInputs(prev => ({ ...prev, endDate: val }))}
-          />
+          {accounts.length === 0 ? (
+            <MenuItem disabled>Uygun hesap bulunamadı</MenuItem>
+          ) : (
+            accounts.map(acc => (
+              <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
+                {acc.name}
+              </MenuItem>
+            ))
+          )}
+        </Menu>
+        <Menu
+          anchorEl={paperAnchorEl}
+          open={Boolean(paperAnchorEl)}
+          onClose={() => setPaperAnchorEl(null)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          disableAutoFocus
+          disableEnforceFocus
+          disableRestoreFocus
+          sx={{ pointerEvents: 'none' }}
+          slotProps={{
+            paper: {
+              onMouseLeave: () => setPaperAnchorEl(null),
+              sx: { pointerEvents: 'auto' },
+            },
+          }}
+        >
+          <MenuItem onClick={() => handleDownloadPaper('labels')}>
+            <ListItemIcon>
+              <DescriptionOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Barkod (Label)</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={() => handleDownloadPaper('invoices')}>
+            <ListItemIcon>
+              <ReceiptLongOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Proforma Fatura</ListItemText>
+          </MenuItem>
+        </Menu>
+        <Dialog open={barcodeDialogOpen} onClose={() => !barcodeLoading && setBarcodeDialogOpen(false)}>
+          <DialogContent sx={{ minWidth: 300, textAlign: 'center' }}>
+            {barcodeLoading && (
+              <Box>
+                <CircularProgress />
+                <Typography sx={{ mt: 2 }}>Barkod oluşturuluyor...</Typography>
+              </Box>
+            )}
 
-          <StyledButton variant="contained" startIcon={<SearchIcon />} onClick={handleSearch} sx={{ height: 40 }}>
-            Ara
-          </StyledButton>
+            {!barcodeLoading && barcodeError && (
+              <Alert severity="error" onClose={() => setBarcodeError(null)}>
+                {barcodeError}
+              </Alert>
+            )}
 
-          <Button variant="outlined" color="success" startIcon={<FileDownloadIcon />} onClick={handleDownloadExcel} disabled={downloading} sx={{ height: 40 }}>
-            {downloading ? 'Hazırlanıyor...' : 'Excele Aktar'}
-          </Button>
-        </Box>
+            {!barcodeLoading && !barcodeError && <Typography>Barkod başarıyla oluşturuldu</Typography>}
+          </DialogContent>
+        </Dialog>
 
-        <Box sx={{ width: '100%', overflowX: 'auto' }}>
-          <Box sx={{ minWidth: 'max-content', width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={shippingColumns}
-              loading={loading}
-              autoHeight
-              paginationMode="server"
-              rowCount={data?.totalCount ?? 0}
-              pageSizeOptions={[1, 5, 10, 50]}
-              paginationModel={{ page: page - 1, pageSize: limit }}
-              onPaginationModelChange={model => {
-                const isPageSizeChanged = model.pageSize !== limit;
-                router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-              }}
-              sx={{
-                '& .MuiDataGrid-main': {
-                  overflowX: 'hidden',
-                },
-                minWidth: 1200,
-              }}
-            />
-          </Box>
-        </Box>
         <DeleteShipping
           id={selectedRow?._id ?? ''}
           open={isModalOpen}
@@ -314,7 +403,7 @@ const AdminShippingList = () => {
             fetchList();
           }}
         />
-      </Box>
+      </Wrapper>
     </LocalizationProvider>
   );
 };

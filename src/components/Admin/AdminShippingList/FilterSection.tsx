@@ -7,7 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
-import listShipping from '@/app/actions/shipping/listShipping';
+import listAllShipping from '@/app/actions/admin/listAllShipping';
 import StyledButton from '@/components/StyledButton';
 import moment from 'moment';
 import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
@@ -73,7 +73,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     try {
       setDownloading(true);
 
-      const response = await listShipping({
+      const response = await listAllShipping({
         download: true,
         consigneeName: inputs.consigneeName || undefined,
         consigneePhone: inputs.consigneePhone || undefined,
