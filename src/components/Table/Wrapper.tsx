@@ -12,7 +12,7 @@ const Wrapper = ({ children }: WrapperProps) => {
     <Box
       sx={{
         width: '100%',
-        height: 'calc(100vh - 48px)',
+        minHeight: { xs: '100vh', sm: 'calc(100vh - 32px)', md: 'calc(100vh - 48px)' },
         backgroundColor: theme.palette.dashboard.sidebar,
         color: theme.palette.dashboard.textSidebar,
         p: { xs: 2.5, md: 4 },
