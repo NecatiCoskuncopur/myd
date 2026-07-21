@@ -4,6 +4,7 @@ import { MenuItem, TextField } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { transactionMessages } from '@/constants';
+import { AdminTypes } from '@/types/admin';
 
 const { AMOUNT, NOTE, TYPE } = transactionMessages;
 

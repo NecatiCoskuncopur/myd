@@ -12,6 +12,7 @@ import env from '@/lib/env';
 import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import loginSchema from '@/schemas/login.schema';
+import { UserTypes } from '@/types/user';
 
 const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IActionResponse<AuthTypes.ISignInResponse>> => {
   try {

@@ -8,6 +8,7 @@ import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import addTransactionSchema from '@/schemas/addTransaction.schema';
+import { AdminTypes } from '@/types/admin';
 
 const { SUCCESS } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

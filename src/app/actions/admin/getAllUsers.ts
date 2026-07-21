@@ -6,7 +6,7 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { Balance, PricingList, User } from '@/models';
-
+import { AdminTypes } from '@/types/admin';
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<ResponseTypes.IActionResponse<AdminTypes.IUsersData>> => {

@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 declare namespace AdminTypes {
   interface IAddTransactionUserBalancePayload {
     userId: string;
@@ -40,7 +42,7 @@ declare namespace AdminTypes {
   }
 
   interface ISearchSenderResult extends ISearchSenderUserParams {
-    _id: string;
+    _id: Types.ObjectId;
   }
 
   interface ICreateUser {

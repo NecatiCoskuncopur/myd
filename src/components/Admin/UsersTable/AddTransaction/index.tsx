@@ -10,6 +10,7 @@ import addTransactionUserBalance from '@/app/actions/admin/addTransactionUserBal
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, transactionMessages } from '@/constants';
 import FormItems from './FormItems';
+import { AdminTypes } from '@/types/admin';
 
 const { SUCCESS } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

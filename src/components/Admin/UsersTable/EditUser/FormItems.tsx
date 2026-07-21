@@ -4,6 +4,7 @@ import { Autocomplete, FormControl, Grid, InputLabel, MenuItem, Select, TextFiel
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { addressMessages, userMessages } from '@/constants';
+import { AdminTypes } from '@/types/admin';
 
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;

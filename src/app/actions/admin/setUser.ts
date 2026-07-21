@@ -9,7 +9,7 @@ import requireRoles from '@/lib/requireRoles';
 import { User } from '@/models';
 import setUserSchema from '@/schemas/setUser.schema';
 import { revalidatePath } from 'next/cache';
-
+import { AdminTypes } from '@/types/admin';
 const { NOT_FOUND, EDITUSER, EMAIL } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 

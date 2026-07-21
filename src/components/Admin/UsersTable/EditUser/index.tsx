@@ -12,6 +12,7 @@ import StyledButton from '@/components/StyledButton';
 import { generalMessages, userMessages } from '@/constants';
 import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
+import { AdminTypes } from '@/types/admin';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { EDITUSER } = userMessages;

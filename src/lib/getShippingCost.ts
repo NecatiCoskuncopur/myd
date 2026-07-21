@@ -1,6 +1,7 @@
 import { addressMessages, generalMessages, pricingListMessages } from '@/constants';
 import { PricingList } from '@/models';
 import getCountry from './getCountry';
+import { Types } from 'mongoose';
 
 const { COUNTRY } = addressMessages;
 const { PRICE, PRICING } = pricingListMessages;
@@ -77,7 +78,7 @@ type ShippingCostResponse = { status: 'OK'; data: number } | { status: 'ERROR'; 
  * - { status: 'ERROR', message: string } → Hata mesajı
  */
 
-const getShippingCost = async (pricingListId: string, weight: number, countryCode: string): Promise<ShippingCostResponse> => {
+const getShippingCost = async (pricingListId: Types.ObjectId, weight: number, countryCode: string): Promise<ShippingCostResponse> => {
   try {
     const country = await getCountry(countryCode);
 

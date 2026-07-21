@@ -7,7 +7,7 @@ declare namespace AuthTypes {
 
   interface ISignInResponse {
     role: string;
-    barcodePermits: number;
+    barcodePermits: string[];
   }
 
   interface IForgotPasswordPayload {

@@ -9,6 +9,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import searchSenderUser from '@/app/actions/admin/searchSenderUser';
 import Wrapper from './Wrapper';
 import CreateUserForm from '@/components/CreateUserForm';
+import { AdminTypes } from '@/types/admin';
 
 const SenderSection = () => {
   const theme = useTheme();
@@ -50,7 +51,7 @@ const SenderSection = () => {
   const handleUserCreated = (newUser: AdminTypes.ISearchSenderResult) => {
     setOptions(prev => [newUser, ...prev]);
     setSelectedUser(newUser);
-    setValue('senderId', newUser._id);
+    setValue('senderId', newUser._id.toString());
     setIsDrawerOpen(false);
     setSnackbar({ open: true, message: 'Kullanıcı başarıyla oluşturuldu ve seçildi.' });
   };
@@ -75,7 +76,7 @@ const SenderSection = () => {
                 getOptionLabel={option => `${option.firstName ?? ''} ${option.lastName ?? ''} ${option.company ? `(${option.company})` : ''}`}
                 isOptionEqualToValue={(option, value) => option._id === value._id}
                 renderOption={(props, option) => (
-                  <li {...props} key={option._id}>
+                  <li {...props} key={option._id.toString()}>
                     <Grid container>
                       <Grid size={{ xs: 12 }}>
                         <Typography variant="body1">

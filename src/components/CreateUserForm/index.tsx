@@ -10,6 +10,7 @@ import adminCreateUser from '@/app/actions/admin/adminCreateUser';
 import { StyledButton } from '@/components';
 import { authMessages, generalMessages } from '@/constants';
 import FormItems from './FormItems';
+import { AdminTypes } from '@/types/admin';
 
 interface CreateUserFormProps {
   onSuccess?: (user: AdminTypes.ISearchSenderResult) => void;

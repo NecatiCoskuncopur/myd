@@ -11,6 +11,7 @@ import requireRoles from '@/lib/requireRoles';
 import sendSms from '@/lib/sendSms';
 import { Balance, User } from '@/models';
 import adminCreateUserSchema from '@/schemas/adminCreateUser.schema';
+import { AdminTypes } from '@/types/admin';
 
 const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTypes.IActionResponse<AdminTypes.ISearchSenderResult>> => {
   try {
@@ -66,7 +67,7 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
       status: 'OK',
       message: authMessages.SIGNUP.SUCCESS,
       data: {
-        _id: newUser._id.toString(),
+        _id: newUser._id,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         company: newUser.company,

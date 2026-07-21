@@ -1,8 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import paginate from 'mongoose-paginate-v2';
 import { AddressSchema } from '@/models';
 import { UserTypes } from '@/types/user';
-import { PaginateModel } from 'mongoose-paginate-v2';
 
 const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
@@ -80,8 +79,9 @@ const UserSchema = new Schema<UserTypes.IUser>(
   { timestamps: true },
 );
 
-UserSchema.plugin(mongoosePaginate);
+UserSchema.plugin(paginate);
 
-const User = (mongoose.models.User || mongoose.model<UserTypes.IUser, PaginateModel<UserTypes.IUser>>('User', UserSchema)) as PaginateModel<UserTypes.IUser>;
+const User = (mongoose.models.User ||
+  mongoose.model<UserTypes.IUser, mongoose.PaginateModel<UserTypes.IUser>>('User', UserSchema)) as mongoose.PaginateModel<UserTypes.IUser>;
 
 export default User;

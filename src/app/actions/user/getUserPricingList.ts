@@ -43,6 +43,7 @@ const getUserPricingList = async (): Promise<ResponseTypes.IActionResponse<Prici
       })),
       createdAt: pricingListDoc.createdAt.toISOString(),
       updatedAt: pricingListDoc.updatedAt.toISOString(),
+      isDefault: pricingListDoc.isDefault,
     };
 
     return { status: 'OK', data: pricingList };

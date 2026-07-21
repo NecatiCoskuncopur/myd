@@ -17,6 +17,7 @@ import AddTransaction from './AddTransaction';
 import columns from './columns';
 import EditUser from './EditUser';
 import { UserTypes } from '@/types/user';
+import { AdminTypes } from '@/types/admin';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 

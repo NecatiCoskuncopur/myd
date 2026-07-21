@@ -9,6 +9,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { User } from '@/models';
 import calculateShippingSchema from '@/schemas/calculateShipping.schema';
+import { Types } from 'mongoose';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND } = pricingListMessages;
@@ -30,7 +31,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
       };
     }
 
-    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId: string }>();
+    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId: Types.ObjectId }>();
 
     if (!user?.priceListId) {
       return {

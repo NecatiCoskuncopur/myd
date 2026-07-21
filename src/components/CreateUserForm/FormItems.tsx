@@ -6,6 +6,7 @@ import { Grid, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { addressMessages, userMessages } from '@/constants';
+import { AdminTypes } from '@/types/admin';
 
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;

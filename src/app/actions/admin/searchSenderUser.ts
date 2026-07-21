@@ -6,10 +6,11 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { User } from '@/models';
+import { AdminTypes } from '@/types/admin';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams): Promise<ResponseTypes.IActionResponse<AdminTypes.ISearchSenderResult[]>> => {
+const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
   try {
     const authError = await requireRoles(['OPERATOR', 'ADMIN']);
     if (authError) return authError;
@@ -33,16 +34,9 @@ const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams): Pro
 
     const result = await User.find(query).select('_id firstName lastName company').limit(5).lean();
 
-    const formattedResult: AdminTypes.ISearchSenderResult[] = result.map((user: AdminTypes.ISearchSenderResult) => ({
-      _id: user._id.toString(),
-      firstName: user.firstName,
-      lastName: user.lastName,
-      company: user.company,
-    }));
-
     return {
       status: 'OK',
-      data: formattedResult,
+      data: result,
     };
   } catch (error: unknown) {
     if (error instanceof Error) {

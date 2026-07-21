@@ -23,12 +23,12 @@ declare namespace UserTypes {
 
   interface IUser extends Document {
     email: string;
-    password?: string;
+    password: string;
     firstName: string;
     lastName: string;
     company?: string;
     phone: string;
-    priceListId?: Types.ObjectId | string;
+    priceListId: Types.ObjectId;
     address: IAddress;
     role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
     barcodePermits: string[];
