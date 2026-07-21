@@ -27,7 +27,7 @@ const SignInForm = () => {
     defaultValues: {
       email: '',
       password: '',
-      recaptchaToken: '',
+      // recaptchaToken: '',
     },
   });
 
@@ -37,7 +37,7 @@ const SignInForm = () => {
         const response = await signIn(values);
 
         if (response.status === 'ERROR') {
-          resetField('recaptchaToken');
+          // resetField('recaptchaToken');
           resetField('password');
           setCaptchaKey(prev => prev + 1);
           setErrorMessage(response.message ?? authMessages.SIGNIN.ERROR);
@@ -63,7 +63,7 @@ const SignInForm = () => {
         </Alert>
       )}
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
+        <FormItems errors={errors} control={control} setValue={setValue} />
         <Button
           type="submit"
           variant="contained"

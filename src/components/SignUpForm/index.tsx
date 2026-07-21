@@ -37,7 +37,7 @@ const SignUpForm = () => {
         city: '',
         postalCode: '',
       },
-      recaptchaToken: '',
+      // recaptchaToken: '',
     },
   });
 
@@ -49,7 +49,7 @@ const SignUpForm = () => {
         const response = await signUp(values);
 
         if (response.status === 'ERROR') {
-          resetField('recaptchaToken');
+          // resetField('recaptchaToken');
           resetField('password');
           setCaptchaKey(prev => prev + 1);
           setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
@@ -80,7 +80,7 @@ const SignUpForm = () => {
       )}
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
+        <FormItems errors={errors} control={control} setValue={setValue} />
         <Button
           type="submit"
           variant="contained"

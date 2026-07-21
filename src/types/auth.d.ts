@@ -2,7 +2,7 @@ declare namespace AuthTypes {
   interface ISignInPayload {
     email: string;
     password: string;
-    recaptchaToken: string;
+    // recaptchaToken: string;
   }
 
   interface ISignInResponse {
@@ -12,7 +12,7 @@ declare namespace AuthTypes {
 
   interface IForgotPasswordPayload {
     email: string;
-    recaptchaToken: string;
+    // recaptchaToken: string;
   }
 
   interface IResetPasswordPayload {
@@ -25,7 +25,7 @@ declare namespace AuthTypes {
     firstName: string;
     lastName: string;
     password: string;
-    recaptchaToken: string;
+    // recaptchaToken: string;
     company?: string;
     phone: string;
     address: UserTypes.Address;

@@ -4,22 +4,22 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
-import { captchaMessages, userMessages } from '@/constants';
-import HCaptchaField from '../HCaptcha';
+import { userMessages } from '@/constants';
+// import HCaptchaField from '../HCaptcha';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.ISignInPayload>;
   control: Control<AuthTypes.ISignInPayload, AuthTypes.ISignInPayload>;
   setValue: UseFormSetValue<AuthTypes.ISignInPayload>;
-  captchaKey: number;
+  // captchaKey: number;
 };
 
 const { EMAIL, PASSWORD } = userMessages;
 
-const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) => {
+const FormItems = ({ errors, control, setValue }: FormItemsProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <>
@@ -99,7 +99,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
         )}
       />
 
-      <Controller
+      {/*  <Controller
         name="recaptchaToken"
         control={control}
         rules={{ required: captchaMessages.REQUIRED }}
@@ -125,7 +125,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
             )}
           </Box>
         )}
-      />
+      />*/}
     </>
   );
 };

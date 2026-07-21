@@ -1,20 +1,20 @@
 import React from 'react';
 
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
-import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
-import { captchaMessages, userMessages } from '@/constants';
-import HCaptchaField from '../HCaptcha';
+import { userMessages } from '@/constants';
+// import HCaptchaField from '../HCaptcha';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.IForgotPasswordPayload>;
   control: Control<AuthTypes.IForgotPasswordPayload, AuthTypes.IForgotPasswordPayload>;
   setValue: UseFormSetValue<AuthTypes.IForgotPasswordPayload>;
-  captchaKey: number;
+  // captchaKey: number;
 };
 
-const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) => {
+const FormItems = ({ errors, control, setValue }: FormItemsProps) => {
   return (
     <>
       <Controller
@@ -49,7 +49,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
         )}
       />
 
-      <Controller
+      {/*      <Controller
         name="recaptchaToken"
         control={control}
         rules={{ required: captchaMessages.REQUIRED }}
@@ -75,7 +75,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
             )}
           </Box>
         )}
-      />
+      />*/}
     </>
   );
 };

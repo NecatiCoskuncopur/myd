@@ -10,8 +10,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
-import { addressMessages, captchaMessages, userMessages } from '@/constants';
-import HCaptchaField from '../HCaptcha';
+import { addressMessages, userMessages } from '@/constants';
+// import HCaptchaField from '../HCaptcha';
 
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
@@ -20,10 +20,10 @@ type FormItemsProps = {
   errors: FieldErrors<AuthTypes.ISignUpPayload>;
   control: Control<AuthTypes.ISignUpPayload, AuthTypes.ISignUpPayload>;
   setValue: UseFormSetValue<AuthTypes.ISignUpPayload>;
-  captchaKey: number;
+  // captchaKey: number;
 };
 
-const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) => {
+const FormItems = ({ errors, control, setValue }: FormItemsProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <Grid container spacing={2}>
@@ -280,7 +280,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
+      {/*     <Grid size={{ xs: 12 }}>
         <Controller
           key={captchaKey}
           name="recaptchaToken"
@@ -288,7 +288,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
           rules={{ required: captchaMessages.REQUIRED }}
           render={() => <HCaptchaField onVerify={token => setValue('recaptchaToken', token)} onExpire={() => setValue('recaptchaToken', '')} />}
         />
-      </Grid>
+      </Grid>*/}
     </Grid>
   );
 };

@@ -21,10 +21,10 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
       stripUnknown: true,
     });
 
-    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+    /*    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
-    }
+    }*/
 
     const user = await User.findOne({ email: validatedData.email.toLowerCase() }).select('+password');
 
