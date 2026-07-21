@@ -1,6 +1,6 @@
 import React, { useState, useTransition } from 'react';
 
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Typography, Box, useTheme } from '@mui/material';
+import { Alert, Box, Button, Popover, Typography, useTheme } from '@mui/material';
 
 import deletePricingList from '@/app/actions/admin/deletePricingList';
 import StyledButton from '@/components/StyledButton';
@@ -8,120 +8,90 @@ import { generalMessages, pricingListMessages } from '@/constants';
 
 type DeleteListProps = {
   open: boolean;
+  anchorEl: HTMLElement | null;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (message: string) => void;
   list: PricingListTypes.IPricingList | null;
 };
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const DeleteList = ({ open, onClose, onSuccess, list }: DeleteListProps) => {
+const DeleteList = ({ open, anchorEl, onClose, onSuccess, list }: DeleteListProps) => {
   const theme = useTheme();
   const [pending, startTransition] = useTransition();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
-
   const handleDelete = () => {
     if (!list?._id) return;
     setErrorMessage(null);
+    onClose();
 
     startTransition(async () => {
       try {
         const res = await deletePricingList(list._id);
 
         if (res.status === 'ERROR') {
-          setErrorMessage(res.message ?? UNEXPECTED_ERROR);
+          console.error(res.message ?? UNEXPECTED_ERROR);
           return;
         }
 
-        setSnackbar({
-          open: true,
-          message: res.message ?? pricingListMessages.DELETE?.SUCCESS,
-          severity: 'success',
-        });
-
-        setTimeout(() => {
-          onSuccess?.();
-        }, 1000);
+        const successMsg = res.message ?? pricingListMessages.DELETE?.SUCCESS;
+        onSuccess?.(successMsg);
       } catch (error) {
         console.error('Delete pricing list failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
       }
     });
   };
 
-  const handleClose = () => {
-    setErrorMessage(null);
-    onClose?.();
-  };
-
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="xs"
-        fullWidth
-        slotProps={{
-          paper: {
-            sx: { backgroundImage: 'none', backgroundColor: theme.palette.dashboard.sidebar },
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      slotProps={{
+        paper: {
+          sx: {
+            p: 2,
+            maxWidth: 300,
+            backgroundImage: 'none',
+            backgroundColor: theme.palette.dashboard.sidebar,
+            border: `1px solid ${theme.palette.dashboard.border}`,
+            boxShadow: theme.shadows[8],
           },
-        }}
-      >
-        <DialogTitle>Fiyat Listesini Sil</DialogTitle>
+        },
+      }}
+    >
+      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+        Fiyat Listesini Sil
+      </Typography>
 
-        <DialogContent>
-          {errorMessage && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {errorMessage}
-            </Alert>
-          )}
-
-          <DialogContentText sx={{ color: theme.palette.dashboard.textSidebar }}>
-            <Typography component="span" variant="body1" sx={{ display: 'block', mb: 1 }}>
-              <strong>"{list?.name}"</strong> isimli fiyat listesini silmek istediğinize emin misiniz?
-            </Typography>
-
-            <Box
-              component="span"
-              sx={{
-                color: theme.palette.warning.main,
-                display: 'block',
-                mt: 2,
-                fontSize: '0.85rem',
-                backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                p: 1.5,
-                borderRadius: '6px',
-                border: `1px dashed ${theme.palette.warning.main}`,
-              }}
-            >
-              <strong>Not:</strong> Bu işlem geri alınamaz. Bu listeye atanmış olan tüm kullanıcılar otomatik olarak sistemin{' '}
-              <strong>Varsayılan Fiyat Listesine</strong> geçirilecektir.
-            </Box>
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={handleClose} disabled={pending}>
-            İptal
-          </Button>
-          <StyledButton onClick={handleDelete} variant="contained" color="error" disabled={pending}>
-            {pending ? 'Siliniyor...' : 'Evet, Sil'}
-          </StyledButton>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 1.5 }}>
+          {errorMessage}
         </Alert>
-      </Snackbar>
-    </>
+      )}
+
+      <Typography variant="body2" sx={{ color: theme.palette.dashboard.textSidebar, mb: 1.5 }}>
+        <strong>"{list?.name}"</strong> isimli listeyi silmek istediğinize emin misiniz?
+      </Typography>
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+        <Button size="small" onClick={onClose} disabled={pending}>
+          İptal
+        </Button>
+        <StyledButton size="small" onClick={handleDelete} variant="contained" color="error" disabled={pending}>
+          Evet, Sil
+        </StyledButton>
+      </Box>
+    </Popover>
   );
 };
 

@@ -127,13 +127,13 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
         <DialogTitle>Fiyat Listesi Oluştur</DialogTitle>
 
         {errorMessage && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ mb: 2, mx: 3 }}>
             {errorMessage}
           </Alert>
         )}
 
         <DialogContent>
-          <Stack sx={{ marginTop: 1 }} spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Stack sx={{ marginTop: 1 }} spacing={2}>
             <Controller
               name="name"
               control={control}
@@ -176,12 +176,12 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
               }}
             />
 
-            <DialogActions sx={{ px: 3, pb: 2 }}>
-              <Button onClick={onClose} disabled={pending}>
+            <DialogActions sx={{ px: 0, pb: 0 }}>
+              <Button onClick={handleClose} disabled={pending}>
                 İptal
               </Button>
 
-              <StyledButton type="submit" variant="contained" disabled={pending}>
+              <StyledButton type="button" onClick={handleSubmit(onSubmit)} variant="contained" disabled={pending}>
                 Oluştur
               </StyledButton>
             </DialogActions>

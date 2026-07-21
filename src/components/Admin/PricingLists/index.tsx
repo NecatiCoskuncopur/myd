@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
+import { Alert, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Snackbar, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
@@ -27,9 +27,13 @@ const PriceLists = () => {
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<PricingListTypes.IPricingListData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
   const [modalState, setModalState] = useState<{ type: 'edit' | 'create' | 'delete' | ''; open: boolean }>({ type: '', open: false });
+
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
   const requestIdRef = useRef(0);
   const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
@@ -37,29 +41,25 @@ const PriceLists = () => {
 
   useEffect(() => setIsClient(true), []);
 
-  useEffect(() => {
-    if (!isClient) return;
+  const fetchPricingLists = async () => {
     let isMounted = true;
     const requestId = ++requestIdRef.current;
 
-    const fetchPricingLists = async () => {
-      try {
-        setLoading(true);
-        const response = await getPricingLists({ page, limit, name: searchParams.get('name') || undefined });
-        if (!isMounted || requestId !== requestIdRef.current) return;
-        if (response.status === 'OK' && response.data) setData(response.data);
-      } catch (error) {
-        if (isMounted && requestId === requestIdRef.current) console.error(error || generalMessages.UNEXPECTED_ERROR);
-      } finally {
-        if (isMounted && requestId === requestIdRef.current) setLoading(false);
-      }
-    };
+    try {
+      setLoading(true);
+      const response = await getPricingLists({ page, limit, name: searchParams.get('name') || undefined });
+      if (!isMounted || requestId !== requestIdRef.current) return;
+      if (response.status === 'OK' && response.data) setData(response.data);
+    } catch (error) {
+      if (isMounted && requestId === requestIdRef.current) console.error(error || generalMessages.UNEXPECTED_ERROR);
+    } finally {
+      if (isMounted && requestId === requestIdRef.current) setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    if (!isClient) return;
     fetchPricingLists();
-
-    return () => {
-      isMounted = false;
-    };
   }, [page, limit, searchParams, isClient]);
 
   const rows = useMemo(
@@ -77,12 +77,13 @@ const PriceLists = () => {
   );
 
   const handleOpenModal = (type: 'edit' | 'create' | 'delete') => {
+    setMenuOpen(false); // Menüyü kapat ama 3 nokta buton referansını tut
     setModalState({ type, open: true });
-    setMenuAnchorEl(null);
   };
 
   const handleCloseModal = () => {
     setSelectedRow(null);
+    setActionIconButton(null);
     setModalState({ type: '', open: false });
   };
 
@@ -101,17 +102,19 @@ const PriceLists = () => {
             size="small"
             onClick={e => {
               setSelectedRow(params.row);
-              setMenuAnchorEl(e.currentTarget);
+              setActionIconButton(e.currentTarget); // Doğrudan 3 nokta butonunu hedefler
+              setMenuOpen(true);
             }}
           >
             <MoreVertIcon />
           </IconButton>
 
           <Menu
-            anchorEl={menuAnchorEl}
-            open={menuAnchorEl !== null && selectedRow?._id === params.row.id}
+            anchorEl={actionIconButton}
+            open={menuOpen && selectedRow?._id === params.row.id}
             onClose={() => {
-              setMenuAnchorEl(null);
+              setMenuOpen(false);
+              setActionIconButton(null);
               setSelectedRow(null);
             }}
           >
@@ -180,29 +183,27 @@ const PriceLists = () => {
           }}
         />
       </TableWrapper>
-      <CreateList
-        open={modalState.type === 'create' && modalState.open}
-        onClose={handleCloseModal}
-        onSuccess={() => {
-          handleCloseModal();
-        }}
-      />
-      <UpdateList
-        list={selectedRow}
-        open={modalState.type === 'edit' && modalState.open}
-        onClose={handleCloseModal}
-        onSuccess={() => {
-          handleCloseModal();
-        }}
-      />
+
+      <CreateList open={modalState.type === 'create' && modalState.open} onClose={handleCloseModal} onSuccess={handleCloseModal} />
+      <UpdateList list={selectedRow} open={modalState.type === 'edit' && modalState.open} onClose={handleCloseModal} onSuccess={handleCloseModal} />
+
       <DeleteList
         list={selectedRow}
+        anchorEl={actionIconButton}
         open={modalState.type === 'delete' && modalState.open}
         onClose={handleCloseModal}
-        onSuccess={() => {
+        onSuccess={msg => {
           handleCloseModal();
+          setSnackbar({ open: true, message: msg });
+          fetchPricingLists();
         }}
       />
+
+      <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
+        <Alert severity="success" variant="filled">
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Wrapper>
   );
 };

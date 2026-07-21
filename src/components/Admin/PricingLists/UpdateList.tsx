@@ -162,7 +162,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
         )}
 
         <DialogContent>
-          <Stack spacing={2} component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+          <Stack spacing={2} sx={{ mt: 1 }}>
             <Controller
               name="name"
               control={control}
@@ -199,7 +199,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
               <Button onClick={handleClose} disabled={pending}>
                 İptal
               </Button>
-              <StyledButton type="submit" variant="contained" disabled={pending}>
+              <StyledButton type="button" onClick={handleSubmit(onSubmit)} variant="contained" disabled={pending}>
                 Güncelle
               </StyledButton>
             </DialogActions>
