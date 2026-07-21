@@ -96,7 +96,7 @@ const PackageContentSection = () => {
         />
       </Grid>
       {fields.map((fieldItem, index) => (
-        <Grid container spacing={2} key={fieldItem.id} sx={{ mt: 3 }}>
+        <Grid container spacing={2} key={fieldItem.id}>
           <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.name`}

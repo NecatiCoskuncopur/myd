@@ -56,7 +56,7 @@ const PackageDetailSection = () => {
   return (
     <Wrapper title="Paket Bilgileri">
       <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Controller
             name="package.weight"
             rules={{
@@ -72,7 +72,7 @@ const PackageDetailSection = () => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 2 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Controller
             name="package.width"
             rules={{
@@ -88,7 +88,7 @@ const PackageDetailSection = () => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 2 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Controller
             name="package.height"
             control={control}
@@ -103,7 +103,7 @@ const PackageDetailSection = () => {
             )}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 2 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Controller
             name="package.length"
             control={control}
@@ -118,7 +118,7 @@ const PackageDetailSection = () => {
             )}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 2 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Controller
             name="package.numberOfPackage"
             control={control}
@@ -134,9 +134,9 @@ const PackageDetailSection = () => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
-          <Button variant="outlined" startIcon={<CalculateIcon />} onClick={handleOpenCalc} sx={{ textTransform: 'none' }}>
-            Kg/Desi Hesaplayıcı
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Button variant="outlined" startIcon={<CalculateIcon />} onClick={handleOpenCalc} sx={{ textTransform: 'none', width: '100%' }}>
+            Hesapla
           </Button>
 
           <Popover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleCloseCalc} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>

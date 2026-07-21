@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, Grid, useTheme } from '@mui/material';
+import React from 'react';
+import { Box, Typography, useTheme, Grid } from '@mui/material';
 
 type WrapperProps = {
   children: React.ReactNode;
@@ -9,29 +10,39 @@ const Wrapper = ({ children, title }: WrapperProps) => {
   const theme = useTheme();
 
   return (
-    <Card
-      variant="elevation"
+    <Box
       sx={{
-        borderRadius: 2,
         width: '100%',
-        border: `1px solid ${theme.palette.dashboard.border}`,
+        borderBottom: `1px solid ${theme.palette.dashboard.border}`,
+        '&:last-child': {
+          borderBottom: 'none',
+        },
       }}
     >
-      <CardHeader
-        title={title}
-        slotProps={{
-          title: {
-            fontSize: '18px',
-          },
+      <Box
+        sx={{
+          py: 1.5,
+          px: 2,
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.035)',
+          borderBottom: `1px solid ${theme.palette.dashboard.border}`,
         }}
-        sx={{ p: 1, borderBottom: `1px solid ${theme.palette.dashboard.border}` }}
-      />
-      <CardContent sx={{ p: 1, mt: 1 }}>
-        <Grid container size={{ xs: 12 }} spacing={2}>
-          {children}
-        </Grid>
-      </CardContent>
-    </Card>
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: '16px',
+            fontWeight: 600,
+            color: theme.palette.text.primary,
+          }}
+        >
+          {title}
+        </Typography>
+      </Box>
+
+      <Grid container spacing={2} sx={{ p: 2, m: 0, width: '100%' }}>
+        {children}
+      </Grid>
+    </Box>
   );
 };
 

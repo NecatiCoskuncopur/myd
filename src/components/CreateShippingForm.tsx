@@ -13,6 +13,7 @@ import StyledButton from '@/components/StyledButton';
 import { generalMessages, shippingMessages, userMessages } from '@/constants';
 import ShippingFormFields from '@/components/ShippingFormFields';
 import { UserTypes } from '@/types/user';
+import { TableHeader } from '@/components';
 
 const { CREATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -143,28 +144,16 @@ const CreateShippingForm = () => {
     <Box
       sx={{
         width: '100%',
-        height: '100%',
+        minHeight: 'calc(100vh - 48px)',
         backgroundColor: theme.palette.dashboard.sidebar,
         color: theme.palette.dashboard.textSidebar,
         p: '12px',
         borderRadius: '12px',
-        overflow: 'hidden',
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2,
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          mb: 1,
-        }}
-      >
-        <Typography variant="h5">Gönderi Oluştur</Typography>
-
+      <TableHeader title="Gönderi Oluştur" subTitle="Alıcı, paket ve gönderi detaylarını girerek yeni bir sevkiyat oluşturun.">
         <FormControlLabel control={<Checkbox checked={isBatchMode} onChange={e => setIsBatchMode(e.target.checked)} />} label="Seri giriş" />
-      </Box>
+      </TableHeader>
 
       {errorMessage && (
         <Typography color="error" sx={{ mb: 2 }}>
@@ -183,11 +172,32 @@ const CreateShippingForm = () => {
           }}
         >
           <ShippingFormFields user={user} />
-          <StyledButton type="submit" fullWidth sx={{ marginTop: '12px' }}>
-            Gönderi Oluştur
-          </StyledButton>
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              mt: 2,
+            }}
+          >
+            <StyledButton
+              type="submit"
+              disabled={pending}
+              sx={{
+                minWidth: { xs: '100%', md: '220px' },
+                px: 4,
+                py: 1.2,
+                fontSize: '15px',
+                fontWeight: 600,
+              }}
+            >
+              Gönderi Oluştur
+            </StyledButton>
+          </Box>
         </Box>
       </FormProvider>
+
       <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
         <Alert severity={snackbar.severity} variant="filled">
           {snackbar.message}
