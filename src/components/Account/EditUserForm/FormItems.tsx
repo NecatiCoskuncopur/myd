@@ -1,5 +1,10 @@
 import React from 'react';
 
+import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailboxOutlined';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import BankOutlinedIcon from '@mui/icons-material/AccountBalance';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -29,6 +34,13 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
             inputLabel: {
               shrink: true,
             },
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutlinedIcon />
+                </InputAdornment>
+              ),
+            },
           }}
           fullWidth
           disabled={pending}
@@ -47,6 +59,14 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
           slotProps={{
             inputLabel: {
               shrink: true,
+            },
+
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <BadgeOutlinedIcon />
+                </InputAdornment>
+              ),
             },
           }}
           fullWidth
@@ -197,6 +217,14 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
             inputLabel: {
               shrink: true,
             },
+
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MapOutlinedIcon />
+                </InputAdornment>
+              ),
+            },
           }}
           fullWidth
           disabled={pending}
@@ -217,6 +245,14 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
             inputLabel: {
               shrink: true,
             },
+
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationCityOutlinedIcon />
+                </InputAdornment>
+              ),
+            },
           }}
           fullWidth
           disabled={pending}
@@ -236,6 +272,13 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
           slotProps={{
             inputLabel: {
               shrink: true,
+            },
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MarkunreadMailboxOutlinedIcon />
+                </InputAdornment>
+              ),
             },
           }}
           fullWidth

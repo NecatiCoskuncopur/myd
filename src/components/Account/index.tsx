@@ -1,98 +1,42 @@
 'use client';
 
-import { useState } from 'react';
-
-import { PersonOutlined } from '@mui/icons-material';
-import SecurityIcon from '@mui/icons-material/Security';
-import { Grid, IconButton, List, ListItemButton, ListItemText, useTheme } from '@mui/material';
+import { Divider, Grid, useMediaQuery, useTheme } from '@mui/material';
 
 import ChangePasswordForm from './ChangePasswordForm';
 import EditUserForm from './EditUserForm';
 
 const Account = () => {
-  const [active, setActive] = useState<number>(0);
   const theme = useTheme();
-
-  const menuItems = [
-    {
-      name: 'Kişisel Bilgiler',
-      icon: <PersonOutlined />,
-    },
-    {
-      name: 'Güvenlik',
-      icon: <SecurityIcon />,
-    },
-  ];
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Grid container spacing={3} sx={{ alignItems: 'flex-start' }}>
-      <Grid
-        size={{ xs: 12, md: 3 }}
-        sx={{
-          borderRadius: '12px',
-          backgroundColor: theme.palette.dashboard.sidebar,
-          color: theme.palette.dashboard.textSidebar,
-          alignSelf: 'flex-start',
-        }}
-      >
-        <List
-          sx={{
-            p: '8px 28px',
-          }}
-        >
-          {menuItems.map((item, index) => (
-            <ListItemButton
-              key={item.name}
-              onClick={() => setActive(index)}
-              disableRipple
-              disableTouchRipple
-              sx={{
-                p: 0,
-                color: active === index ? '#6c5ce7' : 'inherit',
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                },
-                '&:not(:last-child)': {
-                  borderBottom: `1px solid ${theme.palette.dashboard.border}`,
-                },
-              }}
-            >
-              <IconButton
-                sx={{
-                  color: active === index ? '#6c5ce7' : 'inherit',
-                  '& svg': {
-                    fontSize: 18,
-                  },
-                }}
-              >
-                {item.icon}
-              </IconButton>
-              <ListItemText
-                primary={item.name}
-                sx={{
-                  p: '16px 0',
-                  m: 0,
-                  '& .MuiListItemText-primary': {
-                    fontSize: '14px',
-                    fontWeight: 500,
-                  },
-                }}
-              />
-            </ListItemButton>
-          ))}
-        </List>
+    <Grid
+      container
+      spacing={3}
+      sx={{
+        alignItems: 'stretch',
+        minHeight: { xs: '100vh', sm: 'calc(100vh - 32px)', md: 'calc(100vh - 48px)' },
+        p: { xs: 2, sm: 3, md: 4 },
+        borderRadius: '12px',
+        backgroundColor: theme.palette.dashboard.sidebar,
+        color: theme.palette.dashboard.textSidebar,
+      }}
+    >
+      <Grid size={{ xs: 12, md: 7.5 }}>
+        <EditUserForm />
       </Grid>
-      <Grid
-        size={{ xs: 12, md: 9 }}
+
+      <Divider
+        orientation={isMobile ? 'horizontal' : 'vertical'}
+        flexItem
         sx={{
-          p: 5,
-          borderRadius: '12px',
-          backgroundColor: theme.palette.dashboard.sidebar,
-          color: theme.palette.dashboard.textSidebar,
+          borderColor: theme.palette.divider,
+          my: 1,
         }}
-      >
-        {active === 0 && <EditUserForm />}
-        {active === 1 && <ChangePasswordForm />}
+      />
+
+      <Grid size={{ xs: 12, md: 4 }}>
+        <ChangePasswordForm />
       </Grid>
     </Grid>
   );

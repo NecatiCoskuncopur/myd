@@ -21,12 +21,11 @@ const FormItems = ({ register, errors, pending }: FormItemProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={12}>
         <TextField
           label="Mevcut Parola"
           type={showPassword ? 'text' : 'password'}
           fullWidth
-          margin="normal"
           disabled={pending}
           {...register('currentPassword', {
             required: PASSWORD.REQUIRED,
@@ -53,12 +52,11 @@ const FormItems = ({ register, errors, pending }: FormItemProps) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={12}>
         <TextField
           label="Yeni Parola"
           type={showPassword ? 'text' : 'password'}
           fullWidth
-          margin="normal"
           disabled={pending}
           {...register('newPassword', {
             required: PASSWORD.REQUIRED,
@@ -85,12 +83,11 @@ const FormItems = ({ register, errors, pending }: FormItemProps) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={12}>
         <TextField
           label="Yeni Parola (Tekrar)"
           type={showPassword ? 'text' : 'password'}
           fullWidth
-          margin="normal"
           disabled={pending}
           {...register('newPasswordRepeat', {
             required: PASSWORD.REPEAT,

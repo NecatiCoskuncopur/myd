@@ -69,10 +69,11 @@ const ChangePasswordForm = () => {
         Parola Değiştir
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Box component="form" noValidate>
         <FormItems register={register} errors={errors} pending={pending} />
         <StyledButton
-          type="submit"
+          type="button"
+          onClick={handleSubmit(onSubmit)}
           variant="contained"
           sx={{
             mt: 3,

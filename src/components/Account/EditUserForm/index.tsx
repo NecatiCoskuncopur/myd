@@ -86,10 +86,11 @@ const EditUserForm = () => {
           Hesabımı Düzenle
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box component="form" noValidate>
           <FormItems errors={errors} register={register} pending={pending} />
           <StyledButton
-            type="submit"
+            type="button"
+            onClick={handleSubmit(onSubmit)}
             variant="contained"
             sx={{
               mt: 6,
