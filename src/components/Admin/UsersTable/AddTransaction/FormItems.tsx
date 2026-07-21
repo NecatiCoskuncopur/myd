@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { MenuItem, TextField } from '@mui/material';
+import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
+import SwapVertOutlinedIcon from '@mui/icons-material/SwapVertOutlined';
+import { InputAdornment, MenuItem, TextField } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { transactionMessages } from '@/constants';
@@ -23,12 +26,30 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
           required: TYPE.REQUIRED,
         }}
         render={({ field }) => (
-          <TextField {...field} select label="İşlem Tipi" fullWidth error={!!errors.type} helperText={errors.type?.message}>
+          <TextField
+            {...field}
+            select
+            label="İşlem Tipi"
+            fullWidth
+            error={!!errors.type}
+            helperText={errors.type?.message}
+            slotProps={{
+              inputLabel: { shrink: true },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SwapVertOutlinedIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          >
             <MenuItem value="PAY">Ödeme</MenuItem>
             <MenuItem value="SPEND">Harcama</MenuItem>
           </TextField>
         )}
       />
+
       <Controller
         name="amount"
         control={control}
@@ -36,15 +57,53 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
           required: AMOUNT.REQUIRED,
           min: { value: 0.1, message: AMOUNT.MIN },
         }}
-        render={({ field }) => <TextField {...field} label="Miktar" type="number" fullWidth error={!!errors.amount} helperText={errors.amount?.message} />}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Miktar"
+            type="number"
+            fullWidth
+            error={!!errors.amount}
+            helperText={errors.amount?.message}
+            slotProps={{
+              inputLabel: { shrink: true },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoneyOutlinedIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        )}
       />
+
       <Controller
         name="note"
         control={control}
         rules={{
           maxLength: { value: 35, message: NOTE.MAX },
         }}
-        render={({ field }) => <TextField {...field} label="Not" fullWidth error={!!errors.note} helperText={errors.note?.message} />}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            label="Not"
+            fullWidth
+            error={!!errors.note}
+            helperText={errors.note?.message}
+            slotProps={{
+              inputLabel: { shrink: true },
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <NotesOutlinedIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        )}
       />
     </>
   );

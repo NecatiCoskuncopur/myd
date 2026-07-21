@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { trTR } from '@mui/x-data-grid/locales';
+import type {} from '@mui/x-data-grid/themeAugmentation';
 
 const theme = (mode: 'light' | 'dark') => {
   const sidebarColor = mode === 'light' ? '#ffffff' : '#1F1F21';
@@ -30,6 +31,12 @@ const theme = (mode: 'light' | 'dark') => {
         fontFamily: 'Inter, sans-serif',
       },
       components: {
+        MuiDataGrid: {
+          defaultProps: {
+            disableColumnSorting: true,
+            disableColumnMenu: true,
+          },
+        },
         MuiTextField: {
           defaultProps: {
             size: 'small',

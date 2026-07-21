@@ -116,7 +116,7 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box component="form" noValidate>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>
               <FormItems control={control} errors={errors} />
@@ -128,7 +128,13 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
               İptal
             </Button>
 
-            <StyledButton type="submit" variant="contained" disabled={pending} startIcon={pending ? <CircularProgress size={18} /> : <AddCircleOutlined />}>
+            <StyledButton
+              type="button"
+              onClick={handleSubmit(onSubmit)}
+              variant="contained"
+              disabled={pending}
+              startIcon={pending ? <CircularProgress size={18} /> : <AddCircleOutlined />}
+            >
               Ekle
             </StyledButton>
           </DialogActions>

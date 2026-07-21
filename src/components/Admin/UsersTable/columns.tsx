@@ -4,6 +4,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Chip } from '@mui/material';
 import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
+import { currency } from '@/constants';
 
 const columns: GridColDef[] = [
   { field: 'firstName', headerName: 'Ad', flex: 1, minWidth: 100 },
@@ -48,8 +49,8 @@ const columns: GridColDef[] = [
     sortable: true,
     renderCell: params => {
       const balance = params.row.balance;
-      if (!balance) return 0;
-      return `${balance}`;
+      if (!balance) return `${0}${currency}`;
+      return `${balance}${currency}`;
     },
   },
   { field: 'priceList', headerName: 'Fiyat Listesi', flex: 1, minWidth: 100 },
