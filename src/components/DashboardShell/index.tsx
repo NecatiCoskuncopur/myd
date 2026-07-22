@@ -80,7 +80,9 @@ const DashboardShell = ({ children }: Props) => {
             sx={{
               flex: 1,
               minWidth: 0,
-              p: { xs: 0, sm: 2, md: 3 },
+              paddingBottom: { xs: '56px', sm: '70px', md: 3 },
+              px: { xs: 0, sm: 2, md: 3 },
+              paddingTop: { xs: 0, sm: 2, md: 3 },
               display: 'flex',
               flexDirection: 'column',
             }}
