@@ -112,11 +112,9 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             Ara
           </StyledButton>
 
-          {isDirty && (
-            <StyledButton variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
-              Sıfırla
-            </StyledButton>
-          )}
+          <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
+            Sıfırla
+          </StyledButton>
         </Box>
       </Grid>
     </Grid>
