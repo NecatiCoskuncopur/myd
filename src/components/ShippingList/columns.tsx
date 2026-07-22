@@ -12,6 +12,13 @@ const columns: GridColDef[] = [
     valueGetter: (value, row) => row.consignee?.name || '-',
   },
   {
+    field: 'senderName',
+    headerName: 'Gönderen',
+    flex: 1,
+    minWidth: 150,
+    valueGetter: (value, row) => row.sender?.name || '-',
+  },
+  {
     field: 'destination',
     headerName: 'Varış Bölgesi',
     flex: 1,

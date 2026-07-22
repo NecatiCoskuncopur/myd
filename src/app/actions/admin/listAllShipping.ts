@@ -74,7 +74,7 @@ const listShippingAdmin = async (
         const productNames = item.content?.products?.map((p: any) => p.name).join(', ') ?? '';
 
         return {
-          'Müşteri Bilgisi': item.userId ? `${item.userId.name} (${item.userId.email})` : 'Bilinmeyen Kullanıcı',
+          // 'Müşteri Bilgisi': item.userId ? `${item.userId.name} (${item.userId.email})` : 'Bilinmeyen Kullanıcı',
           'Gönderici Adı': item.sender?.name || '',
           'Gönderici Firma': item.sender?.company || '',
           'Alıcı Adı': item.consignee?.name || '',

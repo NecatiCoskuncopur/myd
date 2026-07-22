@@ -164,11 +164,16 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         Ara
       </StyledButton>
 
-      {isFiltered && (
-        <StyledButton type="button" variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} sx={{ height: 40, width: { xs: '100%', lg: 'auto' } }}>
-          Sıfırla
-        </StyledButton>
-      )}
+      <StyledButton
+        disabled={!isFiltered}
+        type="button"
+        variant="outlined"
+        startIcon={<RestartAltIcon />}
+        onClick={handleReset}
+        sx={{ height: 40, width: { xs: '100%', lg: 'auto' } }}
+      >
+        Sıfırla
+      </StyledButton>
 
       <Button
         type="button"
@@ -177,9 +182,9 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         startIcon={<FileDownloadIcon />}
         onClick={handleDownloadExcel}
         disabled={downloading}
-        sx={{ height: 40, fontSize: 12, width: { xs: '100%', lg: 'auto' }, ml: { lg: 'auto' } }}
+        sx={{ height: 40, fontSize: 12, width: { xs: '100%', lg: 'auto' }, ml: { lg: 'auto' }, lineHeight: 1 }}
       >
-        {downloading ? 'Hazırlanıyor...' : 'Excele Aktar'}
+        {downloading ? 'Hazırlanıyor...' : 'Dışa Aktar'}
       </Button>
     </Box>
   );

@@ -2,14 +2,13 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getCarrierIcon } from '@/constants/carrierIcons';
 
 import { DeleteOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import {
@@ -35,10 +34,9 @@ import getUser from '@/app/actions/user/getUser';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
-import { TableHeader, TableWrapper, Wrapper } from '@/components';
+import { TableHeader, TableWrapper, Wrapper, DeleteShipping } from '@/components';
 import { generalMessages } from '@/constants';
 import columns from './columns';
-import { DeleteShipping } from '@/components';
 import { UserTypes } from '@/types/user';
 import FilterSection from './FilterSection';
 
@@ -52,13 +50,13 @@ const ShippingList = () => {
   const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
 
-  const [barcodeAnchorEl, setBarcodeAnchorEl] = useState<null | HTMLElement>(null);
-  const [paperAnchorEl, setPaperAnchorEl] = useState<null | HTMLElement>(null);
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
 
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
@@ -71,6 +69,7 @@ const ShippingList = () => {
   const limit = useMemo(() => Number(searchParams.get('limit')) || 10, [searchParams]);
 
   useEffect(() => setIsClient(true), []);
+
   const fetchList = async () => {
     if (!isClient) return;
     try {
@@ -122,25 +121,25 @@ const ShippingList = () => {
     fetchAccounts();
   }, [canCreateBarcode]);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-    closeActionsMenu();
-  };
-
-  const handleCloseModal = () => {
-    setSelectedRow(null);
-    setIsModalOpen(false);
-  };
-
   const closeActionsMenu = () => {
-    setMenuAnchorEl(null);
-    setBarcodeAnchorEl(null);
-    setPaperAnchorEl(null);
+    setMenuOpen(false);
+    setTimeout(() => {
+      if (!deleteOpen) {
+        setActionIconButton(null);
+        setSelectedRow(null);
+      }
+    }, 200);
   };
 
-  const closeSubMenus = () => {
-    setBarcodeAnchorEl(null);
-    setPaperAnchorEl(null);
+  const handleOpenDeletePopup = () => {
+    setMenuOpen(false);
+    setDeleteOpen(true);
+  };
+
+  const handleCloseDeletePopup = () => {
+    setDeleteOpen(false);
+    setActionIconButton(null);
+    setSelectedRow(null);
   };
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
@@ -183,9 +182,7 @@ const ShippingList = () => {
         const pdfUrl = `data:application/pdf;base64,${res.data.file}`;
         const newWindow = window.open();
         if (newWindow) {
-          newWindow.document.write(
-            `<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none; margin:0; padding:0; overflow:hidden;"></iframe>`,
-          );
+          newWindow.document.write(`<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none; margin:0; padding:0; overflow:hidden;"></iframe>`);
           newWindow.document.title = type === 'labels' ? 'Kargo Barkodu' : 'Proforma Fatura';
         }
       } else {
@@ -214,7 +211,8 @@ const ShippingList = () => {
             size="small"
             onClick={e => {
               setSelectedRow(params.row);
-              setMenuAnchorEl(e.currentTarget);
+              setActionIconButton(e.currentTarget);
+              setMenuOpen(true);
             }}
           >
             <MoreVertIcon />
@@ -263,9 +261,8 @@ const ShippingList = () => {
             }}
           />
         </TableWrapper>
-        <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={closeActionsMenu}>
+        <Menu anchorEl={actionIconButton} open={menuOpen} onClose={closeActionsMenu}>
           <MenuItem
-            onMouseEnter={closeSubMenus}
             onClick={() => {
               const id = selectedRow?._id;
               closeActionsMenu();
@@ -281,7 +278,6 @@ const ShippingList = () => {
           {!hasTrackingNumber && <Divider />}
           {!hasTrackingNumber && (
             <MenuItem
-              onMouseEnter={closeSubMenus}
               onClick={() => {
                 const id = selectedRow?._id;
                 closeActionsMenu();
@@ -294,103 +290,55 @@ const ShippingList = () => {
               <ListItemText>Düzenle</ListItemText>
             </MenuItem>
           )}
+
           {!hasTrackingNumber && (
-            <MenuItem onMouseEnter={closeSubMenus} onClick={handleOpenModal}>
+            <MenuItem onClick={handleOpenDeletePopup}>
               <ListItemIcon>
-                <DeleteOutlined fontSize="small" />
+                <DeleteOutlined fontSize="small" color="error" />
               </ListItemIcon>
-              <ListItemText>Sil</ListItemText>
+              <ListItemText sx={{ color: 'error.main' }}>Sil</ListItemText>
             </MenuItem>
           )}
 
           {showBarcodeItem && <Divider />}
-          {showBarcodeItem && (
-            <MenuItem
-              onMouseEnter={e => {
-                setPaperAnchorEl(null);
-                setBarcodeAnchorEl(e.currentTarget);
-              }}
-            >
-              <ListItemIcon>
-                <QrCode2OutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Barkod Oluştur</ListItemText>
-              <ChevronRightIcon fontSize="small" sx={{ ml: 2, opacity: 0.6 }} />
-            </MenuItem>
-          )}
+          {showBarcodeItem &&
+            (accounts.length === 0 ? (
+              <MenuItem disabled>
+                <ListItemIcon>
+                  <QrCode2OutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Barkod Hesabı Bulunamadı</ListItemText>
+              </MenuItem>
+            ) : (
+              accounts.map(acc => {
+                const carrierInfo = getCarrierIcon(acc.carrier);
+
+                return (
+                  <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
+                    <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{carrierInfo.icon}</ListItemIcon>
+                    <ListItemText> {acc.name}</ListItemText>
+                  </MenuItem>
+                );
+              })
+            ))}
 
           {hasTrackingNumber && <Divider />}
           {hasTrackingNumber && (
-            <MenuItem
-              onMouseEnter={e => {
-                setBarcodeAnchorEl(null);
-                setPaperAnchorEl(e.currentTarget);
-              }}
-            >
+            <MenuItem onClick={() => handleDownloadPaper('labels')}>
               <ListItemIcon>
-                <FileDownloadOutlinedIcon fontSize="small" />
+                <DescriptionOutlinedIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Evraklar</ListItemText>
-              <ChevronRightIcon fontSize="small" sx={{ ml: 2, opacity: 0.6 }} />
+              <ListItemText>Barkod İndir (Label)</ListItemText>
             </MenuItem>
           )}
-        </Menu>
-        <Menu
-          anchorEl={barcodeAnchorEl}
-          open={Boolean(barcodeAnchorEl)}
-          onClose={() => setBarcodeAnchorEl(null)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          disableAutoFocus
-          disableEnforceFocus
-          disableRestoreFocus
-          sx={{ pointerEvents: 'none' }}
-          slotProps={{
-            paper: {
-              onMouseLeave: () => setBarcodeAnchorEl(null),
-              sx: { pointerEvents: 'auto' },
-            },
-          }}
-        >
-          {accounts.length === 0 ? (
-            <MenuItem disabled>Uygun hesap bulunamadı</MenuItem>
-          ) : (
-            accounts.map(acc => (
-              <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                {acc.name}
-              </MenuItem>
-            ))
+          {hasTrackingNumber && (
+            <MenuItem onClick={() => handleDownloadPaper('invoices')}>
+              <ListItemIcon>
+                <ReceiptLongOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Proforma Fatura İndir</ListItemText>
+            </MenuItem>
           )}
-        </Menu>
-        <Menu
-          anchorEl={paperAnchorEl}
-          open={Boolean(paperAnchorEl)}
-          onClose={() => setPaperAnchorEl(null)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          disableAutoFocus
-          disableEnforceFocus
-          disableRestoreFocus
-          sx={{ pointerEvents: 'none' }}
-          slotProps={{
-            paper: {
-              onMouseLeave: () => setPaperAnchorEl(null),
-              sx: { pointerEvents: 'auto' },
-            },
-          }}
-        >
-          <MenuItem onClick={() => handleDownloadPaper('labels')}>
-            <ListItemIcon>
-              <DescriptionOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Barkod (Label)</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={() => handleDownloadPaper('invoices')}>
-            <ListItemIcon>
-              <ReceiptLongOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Proforma Fatura</ListItemText>
-          </MenuItem>
         </Menu>
         <Dialog open={barcodeDialogOpen} onClose={() => !barcodeLoading && setBarcodeDialogOpen(false)}>
           <DialogContent sx={{ minWidth: 300, textAlign: 'center' }}>
@@ -410,13 +358,13 @@ const ShippingList = () => {
             {!barcodeLoading && !barcodeError && <Typography>Barkod başarıyla oluşturuldu</Typography>}
           </DialogContent>
         </Dialog>
-
         <DeleteShipping
           id={selectedRow?._id ?? ''}
-          open={isModalOpen}
-          onClose={handleCloseModal}
+          open={deleteOpen}
+          anchorEl={actionIconButton}
+          onClose={handleCloseDeletePopup}
           onSuccess={() => {
-            handleCloseModal();
+            handleCloseDeletePopup();
             fetchList();
           }}
         />
