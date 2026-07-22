@@ -13,24 +13,24 @@ const Wrapper = ({ children, title }: WrapperProps) => {
     <Box
       sx={{
         width: '100%',
-        borderBottom: `1px solid ${theme.palette.dashboard.border}`,
-        '&:last-child': {
-          borderBottom: 'none',
-        },
+        border: `1px solid ${theme.palette.dashboard.border}`,
+        borderRadius: '10px',
+        overflow: 'hidden',
+        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.01)' : '#fff',
       }}
     >
       <Box
         sx={{
-          py: 1.5,
+          py: 1.2,
           px: 2,
-          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.035)',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.035)',
           borderBottom: `1px solid ${theme.palette.dashboard.border}`,
         }}
       >
         <Typography
           variant="h6"
           sx={{
-            fontSize: '16px',
+            fontSize: '15px',
             fontWeight: 600,
             color: theme.palette.text.primary,
           }}

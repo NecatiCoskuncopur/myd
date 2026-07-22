@@ -28,7 +28,7 @@ const ConsigneeSection = () => {
 
   return (
     <Wrapper title="Alıcı Bilgileri">
-      <Grid size={{ xs: 12, md: 5 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.name"
           control={control}
@@ -48,7 +48,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 7 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.address.line1"
           rules={{
@@ -69,7 +69,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 5 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.company"
           rules={{
@@ -92,7 +92,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 7 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.address.line2"
           rules={{
@@ -116,7 +116,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: states ? 4 : 6 }}>
         <Controller
           name="consignee.phone"
           rules={{
@@ -138,7 +138,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: states ? 4 : 8 }}>
+      <Grid size={{ xs: 12, md: states ? 4 : 6 }}>
         <Controller
           name="consignee.address.country"
           control={control}

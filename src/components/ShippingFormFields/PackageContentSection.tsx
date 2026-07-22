@@ -21,6 +21,8 @@ const PackageContentSection = () => {
     name: 'content.products',
   });
 
+  const hasMultipleProducts = fields.length > 1;
+
   return (
     <Wrapper title="Gönderi İçeriği">
       <Grid size={{ xs: 12, md: 3 }}>
@@ -95,8 +97,9 @@ const PackageContentSection = () => {
           }}
         />
       </Grid>
+
       {fields.map((fieldItem, index) => (
-        <Grid container spacing={2} key={fieldItem.id}>
+        <Grid container spacing={2} key={fieldItem.id} size={{ xs: 12 }}>
           <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.name`}
@@ -157,7 +160,7 @@ const PackageContentSection = () => {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: hasMultipleProducts ? 3 : 5 }}>
             <Controller
               name={`content.products.${index}.gtip`}
               control={control}
@@ -168,7 +171,7 @@ const PackageContentSection = () => {
                   <ErrorTooltip message={errorMessage}>
                     <TextField
                       {...field}
-                      label="GTIP"
+                      label="GTİP"
                       fullWidth
                       error={!!errorMessage}
                       slotProps={{
@@ -191,9 +194,9 @@ const PackageContentSection = () => {
             />
           </Grid>
 
-          {fields.length > 1 && (
+          {hasMultipleProducts && (
             <Grid size={{ xs: 12, md: 2 }}>
-              <Button color="error" onClick={() => remove(index)} fullWidth>
+              <Button color="error" onClick={() => remove(index)} fullWidth sx={{ height: '100%' }}>
                 <RemoveCircleOutlined />
               </Button>
             </Grid>
@@ -201,20 +204,22 @@ const PackageContentSection = () => {
         </Grid>
       ))}
 
-      <Button
-        variant="outlined"
-        fullWidth
-        onClick={() =>
-          append({
-            name: '',
-            piece: 1,
-            unitPrice: 0,
-            gtip: '',
-          })
-        }
-      >
-        + Farklı Ürün Ekle
-      </Button>
+      <Grid size={{ xs: 12 }}>
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() =>
+            append({
+              name: '',
+              piece: 1,
+              unitPrice: 0,
+              gtip: '',
+            })
+          }
+        >
+          + Farklı Ürün Ekle
+        </Button>
+      </Grid>
     </Wrapper>
   );
 };

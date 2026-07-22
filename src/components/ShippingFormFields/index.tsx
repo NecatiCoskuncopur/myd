@@ -1,5 +1,5 @@
 import { usePathname } from 'next/navigation';
-import { Box, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 
 import ConsigneeSection from './ConsigneeSection';
 import PackageContentSection from './PackageContentSection';
@@ -14,7 +14,6 @@ type ShippingFormFieldsProps = {
 
 const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
   const pathname = usePathname();
-  const theme = useTheme();
   const isEditMode = pathname.includes('duzenle');
 
   return (
@@ -23,25 +22,29 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
         width: '100%',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        border: `1px solid ${theme.palette.dashboard.border}`,
-        borderRadius: 1,
-        overflow: 'hidden',
+        gap: 2, // Sol ve Sağ ana sütunlar arası boşluk
       }}
     >
       <Box
         sx={{
           flex: 1,
           width: { xs: '100%', md: '50%' },
-          borderRight: { md: `1px solid ${theme.palette.dashboard.border}` },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
         }}
       >
         <ConsigneeSection />
         <ShippingDetailSection />
       </Box>
+
       <Box
         sx={{
           flex: 1,
           width: { xs: '100%', md: '50%' },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
         }}
       >
         {user?.role !== 'CUSTOMER' && !isEditMode && <SenderSection />}
