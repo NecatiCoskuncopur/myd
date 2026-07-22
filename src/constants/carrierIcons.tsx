@@ -1,6 +1,5 @@
 import React from 'react';
-import { SiFedex, SiUps } from 'react-icons/si';
-import { FaShippingFast } from 'react-icons/fa';
+import Image from 'next/image';
 
 export interface ICarrierIcon {
   name: string;
@@ -10,21 +9,21 @@ export interface ICarrierIcon {
 export const carrierIcons: Record<string, ICarrierIcon> = {
   FEDEX: {
     name: 'FedEx',
-    icon: <SiFedex size={24} />,
+    icon: <Image src="/images/fedex.svg" alt="FedEx" width={24} height={24} style={{ objectFit: 'contain' }} />,
   },
   UPS: {
     name: 'UPS',
-    icon: <SiUps size={24} />,
+    icon: <Image src="/images/ups.svg" alt="UPS" width={24} height={24} style={{ objectFit: 'contain' }} />,
   },
 };
 
 /**
  * Carrier adına göre isim ve ikon bilgisini güvenli bir şekilde döndürür.
- * Eşleşme yoksa varsayılan kargo ikonunu basar.
+ * Eşleşme yoksa ikon alanını null döner.
  */
 export const getCarrierIcon = (carrierKey?: string): ICarrierIcon => {
   if (!carrierKey) {
-    return { name: '-', icon: <FaShippingFast size={18} /> };
+    return { name: '-', icon: null };
   }
 
   const key = carrierKey.trim().toUpperCase();
@@ -32,7 +31,7 @@ export const getCarrierIcon = (carrierKey?: string): ICarrierIcon => {
   return (
     carrierIcons[key] || {
       name: carrierKey,
-      icon: <FaShippingFast size={18} />,
+      icon: null,
     }
   );
 };

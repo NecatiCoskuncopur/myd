@@ -2,6 +2,9 @@
 
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
+import Link from 'next/link';
+import { getCarrierTrackingUrl } from '@/constants/carrierTracking';
+import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 
 const columns: GridColDef[] = [
   {
@@ -27,8 +30,31 @@ const columns: GridColDef[] = [
       const address = params.row.consignee?.address;
       if (!address) return '-';
 
-      const parts = [address.country, address.city].filter(Boolean);
-      return parts.length > 0 ? parts.join(' / ') : '-';
+      const countryCode = address.country?.trim();
+      const city = address.city;
+
+      if (!countryCode && !city) return '-';
+
+      const flagUrl = getCountryFlagUrl(countryCode);
+
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {flagUrl && (
+            <img
+              src={flagUrl}
+              alt={countryCode}
+              style={{
+                width: '20px',
+                height: '14px',
+                objectFit: 'cover',
+                borderRadius: '2px',
+                display: 'block',
+              }}
+            />
+          )}
+          <span>{[countryCode, city].filter(Boolean).join(' / ')}</span>
+        </div>
+      );
     },
   },
   {
@@ -36,7 +62,33 @@ const columns: GridColDef[] = [
     headerName: 'Takip No',
     flex: 1,
     minWidth: 150,
-    valueGetter: (value, row) => row.carrier?.trackingNumber || '-',
+    renderCell: params => {
+      const carrierName = params.row.carrier?.name;
+      const trackingNo = params.row.carrier?.trackingNumber;
+
+      if (!trackingNo) return '-';
+
+      const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNo);
+
+      if (hasLink && url) {
+        return (
+          <Link
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#1976d2',
+              textDecoration: 'underline',
+              fontWeight: 500,
+            }}
+          >
+            {trackingNo}
+          </Link>
+        );
+      }
+
+      return <span>{trackingNo}</span>;
+    },
   },
   {
     field: 'numberOfPackage',
