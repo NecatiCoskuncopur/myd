@@ -1,32 +1,17 @@
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Snackbar,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Alert, Button, Snackbar, Stack, Typography } from '@mui/material';
 
-import deleteShipping from '@/app/actions/shipping/deleteShipping';
 import getUser from '@/app/actions/user/getUser';
-import { generalMessages, shippingMessages, userMessages } from '@/constants';
+import { shippingMessages, userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
-import { CreateBarcodeButton } from '@/components';
+import { CreateBarcodeButton, DeleteShipping } from '@/components';
 
 const { DELETE } = shippingMessages;
-const { UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND } = userMessages;
 
 type HeaderProps = {
@@ -37,9 +22,8 @@ type HeaderProps = {
 
 const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
   const router = useRouter();
-  const theme = useTheme();
-  const [isPending, startTransition] = useTransition();
-  const [openDialog, setOpenDialog] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
 
   const [snackbar, setSnackbar] = useState<{
@@ -52,44 +36,27 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
     severity: 'success',
   });
 
-  const handleOpenDialog = () => setOpenDialog(true);
-  const handleCloseDialog = () => setOpenDialog(false);
+  const handleOpenDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseDelete = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDeleteSuccess = () => {
+    setSnackbar({
+      open: true,
+      message: DELETE.SUCCESS,
+      severity: 'success',
+    });
+
+    setTimeout(() => {
+      router.replace('/panel/gonderilerim');
+    }, 1200);
+  };
 
   const handleCloseSnackbar = () => setSnackbar(prev => ({ ...prev, open: false }));
-
-  const handleDelete = () => {
-    startTransition(async () => {
-      try {
-        const response = await deleteShipping(id);
-
-        if (response.status === 'OK') {
-          setSnackbar({
-            open: true,
-            message: response.message || DELETE.SUCCESS,
-            severity: 'success',
-          });
-
-          handleCloseDialog();
-
-          setTimeout(() => {
-            router.replace('/panel/gonderilerim');
-          }, 1200);
-        } else {
-          setSnackbar({
-            open: true,
-            message: response.message || DELETE.ERROR,
-            severity: 'error',
-          });
-        }
-      } catch {
-        setSnackbar({
-          open: true,
-          message: UNEXPECTED_ERROR,
-          severity: 'error',
-        });
-      }
-    });
-  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -117,7 +84,7 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
             variant="outlined"
             color="error"
             startIcon={<DeleteOutlined />}
-            onClick={handleOpenDialog}
+            onClick={handleOpenDelete}
             sx={{ borderColor: 'error.main', color: 'error.main' }}
           >
             Sil
@@ -130,39 +97,8 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
           {(user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={shipping} />}
         </Stack>
       )}
+      <DeleteShipping open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={handleCloseDelete} onSuccess={handleDeleteSuccess} />
 
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundImage: 'none',
-              backgroundColor: theme.palette.dashboard.sidebar,
-              color: theme.palette.dashboard.textSidebar,
-            },
-          },
-        }}
-      >
-        <DialogTitle>Gönderiyi Sil?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleCloseDialog} disabled={isPending}>
-            Vazgeç
-          </Button>
-          <Button
-            onClick={handleDelete}
-            color="error"
-            variant="contained"
-            disabled={isPending}
-            startIcon={isPending && <CircularProgress size={16} color="inherit" />}
-          >
-            {isPending ? '' : 'Sil'}
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} variant="filled" sx={{ width: '100%' }}>
           {snackbar.message}

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography, useTheme } from '@mui/material';
+import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { UserTypes } from '@/types/user';
 
@@ -34,11 +34,10 @@ const MenuItems = ({ items, isExpanded, openKeys, pathname, onToggle, onNavigate
           justifyContent: isExpanded ? 'initial' : 'center',
           pl: isExpanded ? 2 + depth * 2 : 1.5,
           pr: isExpanded ? 2 : 1.5,
+          mb: depth === 0 ? 1 : 0.5,
           transition,
         };
 
-        // Kept mounted in both states so the label fades with the drawer instead of
-        // popping in/out; overflowX:hidden on the paper clips it while collapsed.
         const iconStyles = {
           minWidth: 0,
           justifyContent: 'center',
@@ -54,17 +53,30 @@ const MenuItems = ({ items, isExpanded, openKeys, pathname, onToggle, onNavigate
           />
         );
 
+        // Alt menüsü (children) olan elemanlar
         if (item.children) {
+          const parentButton = (
+            <ListItemButton onClick={() => onToggle(item.key)} sx={buttonStyles}>
+              {item.icon && <ListItemIcon sx={iconStyles}>{item.icon}</ListItemIcon>}
+              {label}
+              {isExpanded && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+            </ListItemButton>
+          );
+
           return (
             <React.Fragment key={item.key}>
-              <ListItemButton onClick={() => onToggle(item.key)} sx={buttonStyles}>
-                {item.icon && <ListItemIcon sx={iconStyles}>{item.icon}</ListItemIcon>}
-                {label}
-                {isExpanded && (isOpen ? <ExpandLess /> : <ExpandMore />)}
-              </ListItemButton>
+              {!isExpanded && depth === 0 ? (
+                <Tooltip title={item.label} placement="right" arrow>
+                  <Box component="span" sx={{ display: 'block' }}>
+                    {parentButton}
+                  </Box>
+                </Tooltip>
+              ) : (
+                parentButton
+              )}
 
               <Collapse in={isOpen && isExpanded} timeout="auto" unmountOnExit>
-                <List disablePadding>
+                <List disablePadding sx={{ pt: 0.5 }}>
                   <MenuItems
                     items={item.children}
                     isExpanded={isExpanded}
@@ -80,12 +92,24 @@ const MenuItems = ({ items, isExpanded, openKeys, pathname, onToggle, onNavigate
           );
         }
 
-        return (
-          <ListItemButton key={item.key} selected={isSelected} sx={buttonStyles} onClick={() => onNavigate(item)}>
+        const itemButton = (
+          <ListItemButton selected={isSelected} sx={buttonStyles} onClick={() => onNavigate(item)}>
             {item.icon && <ListItemIcon sx={iconStyles}>{item.icon}</ListItemIcon>}
             {label}
           </ListItemButton>
         );
+
+        if (!isExpanded && depth === 0) {
+          return (
+            <Tooltip key={item.key} title={item.label} placement="right" arrow>
+              <Box component="span" sx={{ display: 'block' }}>
+                {itemButton}
+              </Box>
+            </Tooltip>
+          );
+        }
+
+        return <React.Fragment key={item.key}>{itemButton}</React.Fragment>;
       })}
     </>
   );

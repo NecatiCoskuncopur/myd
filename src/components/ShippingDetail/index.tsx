@@ -7,6 +7,7 @@ import { Alert, Box, CircularProgress, Grid, useTheme } from '@mui/material';
 
 import getShipping from '@/app/actions/shipping/getShipping';
 import { generalMessages, shippingMessages } from '@/constants';
+import { getCarrierIcon } from '@/constants/carrierIcons';
 import ConsigneeSection from './ConsigneeSection';
 import ContentSection from './ContentSection';
 import Header from './Header';
@@ -89,10 +90,18 @@ const ShippingDetail = () => {
             backgroundColor: theme.palette.dashboard.sidebar,
             color: theme.palette.dashboard.textSidebar,
             p: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
           }}
           size={{ xs: 12, md: 6 }}
         >
           Taşıyıcı: {shipping?.carrier?.name || 'Henüz barkod oluşturulmadı.'}
+          {shipping?.carrier?.name && (
+            <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', ml: 0.5 }}>
+              {getCarrierIcon(shipping.carrier.name).icon}
+            </Box>
+          )}
         </Grid>
         <Grid
           sx={{
