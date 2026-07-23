@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 
 import styled from '@emotion/styled';
-import { Box, CssBaseline, Grid, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, Grid, ThemeProvider, Typography } from '@mui/material';
 
 import theme from '@/theme';
 
@@ -40,6 +40,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
           </Grid>
           {children}
         </Content>
+        <Typography sx={{ position: 'absolute', left: '50%', translate: '-50%', bottom: '20px', color: '#94A3B8' }}>MYD Export © 2026 </Typography>
       </Wrapper>
     </ThemeProvider>
   );

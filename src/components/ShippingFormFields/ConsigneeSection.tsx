@@ -47,28 +47,6 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-
-      <Grid size={{ xs: 12, md: 6 }}>
-        <Controller
-          name="consignee.address.line1"
-          rules={{
-            required: LINE.REQUIRED,
-            minLength: { value: 5, message: LINE.MIN },
-            maxLength: { value: 255, message: LINE.MAX },
-          }}
-          control={control}
-          render={({ field }) => {
-            const errorMessage = errors.consignee?.address?.line1?.message;
-
-            return (
-              <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} />
-              </ErrorTooltip>
-            );
-          }}
-        />
-      </Grid>
-
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.company"
@@ -94,6 +72,27 @@ const ConsigneeSection = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
+          name="consignee.address.line1"
+          rules={{
+            required: LINE.REQUIRED,
+            minLength: { value: 5, message: LINE.MIN },
+            maxLength: { value: 255, message: LINE.MAX },
+          }}
+          control={control}
+          render={({ field }) => {
+            const errorMessage = errors.consignee?.address?.line1?.message;
+
+            return (
+              <ErrorTooltip message={errorMessage}>
+                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} />
+              </ErrorTooltip>
+            );
+          }}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Controller
           name="consignee.address.line2"
           rules={{
             validate: value => {
@@ -116,7 +115,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: states ? 4 : 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="consignee.phone"
           rules={{
@@ -138,7 +137,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: states ? 4 : 6 }}>
+      <Grid size={{ xs: 12, md: states ? 3 : 6 }}>
         <Controller
           name="consignee.address.country"
           control={control}
@@ -170,7 +169,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
       {hasStates && (
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Controller
             name="consignee.address.state"
             control={control}

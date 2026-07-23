@@ -58,8 +58,8 @@ const SenderSection = () => {
 
   return (
     <Wrapper title="Gönderici Bilgileri">
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 12 }}>
+      <Grid container spacing={2} sx={{ width: '100%' }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Controller
             name="senderId"
             control={control}
@@ -116,7 +116,7 @@ const SenderSection = () => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => setIsDrawerOpen(true)} sx={{ fontWeight: 600 }}>
             Yeni Kullanıcı Oluştur
           </Button>

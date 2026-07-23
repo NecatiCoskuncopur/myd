@@ -1,6 +1,7 @@
 'use client';
 
-import { Grid, MenuItem, TextField } from '@mui/material';
+import HelpIcon from '@mui/icons-material/Help';
+import { Grid, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { shippingMessages } from '@/constants';
@@ -35,7 +36,30 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} select label="Kargo Ücreti *" fullWidth error={!!errorMessage}>
+                <TextField
+                  {...field}
+                  select
+                  label="Kargo Ücreti *"
+                  fullWidth
+                  error={!!errorMessage}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ marginRight: 2 }}>
+                          <Tooltip title="Kargonun gönderimi esnasında oluşlan masrafları kim ödeyecek?" arrow placement="top">
+                            <HelpIcon
+                              sx={{
+                                fontSize: 18,
+                                color: 'action.active',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                >
                   <MenuItem value="SENDER">Gönderici</MenuItem>
                   <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
                 </TextField>
@@ -44,6 +68,7 @@ const ShippingDetailSection = () => {
           }}
         />
       </Grid>
+
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="detail.payor.customs"
@@ -62,7 +87,30 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} select label="Gümrük Ücreti *" fullWidth error={!!errorMessage}>
+                <TextField
+                  {...field}
+                  select
+                  label="Gümrük Ücreti *"
+                  fullWidth
+                  error={!!errorMessage}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ marginRight: 2 }}>
+                          <Tooltip title="Alıcı ülkede oluşabilecek olan gümrük masraflarını kim ödeyecek?" arrow placement="top">
+                            <HelpIcon
+                              sx={{
+                                fontSize: 18,
+                                color: 'action.active',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                >
                   <MenuItem value="SENDER">Gönderici</MenuItem>
                   <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
                 </TextField>

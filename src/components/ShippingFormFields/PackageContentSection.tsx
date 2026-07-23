@@ -1,6 +1,7 @@
 'use client';
 
-import { HelpOutlined, RemoveCircleOutlined } from '@mui/icons-material';
+import HelpIcon from '@mui/icons-material/Help';
+import { RemoveCircleOutlined } from '@mui/icons-material';
 import { Button, Grid, IconButton, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 
@@ -25,7 +26,7 @@ const PackageContentSection = () => {
 
   return (
     <Wrapper title="Gönderi İçeriği">
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Controller
           name="content.currency"
           control={control}
@@ -53,7 +54,7 @@ const PackageContentSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <Controller
           name="content.freight"
           rules={{
@@ -69,13 +70,35 @@ const PackageContentSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Navlun Bedeli" fullWidth error={!!errorMessage} />
+                <TextField
+                  {...field}
+                  label="Navlun Bedeli"
+                  fullWidth
+                  error={!!errorMessage}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Tooltip title="Otomatik oluşturulan proforma faturaya eklenmek üzere navlun bedelini girebilirsiniz." arrow placement="top">
+                            <HelpIcon
+                              sx={{
+                                fontSize: 18,
+                                color: 'action.active',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
               </ErrorTooltip>
             );
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={12}>
         <Controller
           name="content.description"
           rules={{
@@ -180,7 +203,7 @@ const PackageContentSection = () => {
                             <InputAdornment position="end">
                               <Tooltip title="GTİP kodunu bulmak için tıkla">
                                 <IconButton component="a" href="https://uygulama.gtb.gov.tr/Tara" target="_blank" rel="noopener noreferrer">
-                                  <HelpOutlined fontSize="small" />
+                                  <HelpIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
                             </InputAdornment>

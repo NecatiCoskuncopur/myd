@@ -14,7 +14,7 @@ const MobileMenuHeader = ({ onClick }: Props) => {
       component="header"
       sx={theme => ({
         position: 'fixed',
-        bottom: 0,
+        top: 0,
         left: 0,
         right: 0,
         height: 56,

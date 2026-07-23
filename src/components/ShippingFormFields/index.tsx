@@ -22,7 +22,7 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
         width: '100%',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        gap: 2, // Sol ve Sağ ana sütunlar arası boşluk
+        gap: 2,
       }}
     >
       <Box
@@ -47,9 +47,9 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
           gap: 2,
         }}
       >
-        {user?.role !== 'CUSTOMER' && !isEditMode && <SenderSection />}
         <PackageContentSection />
         <PackageDetailSection />
+        {user?.role !== 'CUSTOMER' && !isEditMode && <SenderSection />}
       </Box>
     </Box>
   );

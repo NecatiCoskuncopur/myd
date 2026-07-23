@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 
+import HelpIcon from '@mui/icons-material/Help';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import { Button, Grid, Popover, TextField } from '@mui/material';
+import { Button, Grid, InputAdornment, Popover, TextField, Tooltip } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { shippingMessages } from '@/constants';
@@ -66,7 +67,30 @@ const PackageDetailSection = () => {
             control={control}
             render={({ field }) => (
               <ErrorTooltip message={errors.package?.weight?.message}>
-                <TextField {...field} type="number" label="Kg *" fullWidth error={!!errors.package?.weight} />
+                <TextField
+                  {...field}
+                  type="number"
+                  label="Kg *"
+                  fullWidth
+                  error={!!errors.package?.weight}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Tooltip title="Tüm paketlerin toplam ağırlığını giriniz." arrow placement="top">
+                            <HelpIcon
+                              sx={{
+                                fontSize: 18,
+                                color: 'action.active',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
               </ErrorTooltip>
             )}
           />
