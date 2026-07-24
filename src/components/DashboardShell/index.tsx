@@ -21,6 +21,24 @@ const DashboardShell = ({ children }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (target instanceof HTMLInputElement && target.type === 'number' && document.activeElement === target) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('wheel', handleWheel, {
+      passive: false,
+    });
+
+    return () => {
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
+  useEffect(() => {
     const initShell = async () => {
       setLoading(true);
       try {

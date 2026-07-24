@@ -1,7 +1,7 @@
 'use client';
 
 import HelpIcon from '@mui/icons-material/Help';
-import { Grid, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
+import { Grid, InputAdornment, MenuItem, TextField, Tooltip, Box } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { shippingMessages } from '@/constants';
@@ -36,33 +36,26 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField
-                  {...field}
-                  select
-                  label="Kargo Ücreti *"
-                  fullWidth
-                  error={!!errorMessage}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end" sx={{ marginRight: 2 }}>
-                          <Tooltip title="Kargonun gönderimi esnasında oluşlan masrafları kim ödeyecek?" arrow placement="top">
-                            <HelpIcon
-                              sx={{
-                                fontSize: 18,
-                                color: 'action.active',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                >
-                  <MenuItem value="SENDER">Gönderici</MenuItem>
-                  <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
-                </TextField>
+                <Box sx={{ position: 'relative' }}>
+                  <TextField {...field} select label="Kargo Ücreti *" fullWidth error={!!errorMessage}>
+                    <MenuItem value="SENDER">Gönderici</MenuItem>
+                    <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
+                  </TextField>
+                  <Tooltip title="Kargonun gönderimi esnasında oluşan masrafları kim ödeyecek?">
+                    <HelpIcon
+                      sx={{
+                        position: 'absolute',
+                        right: 32,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        fontSize: 18,
+                        cursor: 'pointer',
+                        color: 'action.active',
+                        zIndex: 2,
+                      }}
+                    />
+                  </Tooltip>
+                </Box>
               </ErrorTooltip>
             );
           }}
@@ -87,33 +80,26 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField
-                  {...field}
-                  select
-                  label="Gümrük Ücreti *"
-                  fullWidth
-                  error={!!errorMessage}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end" sx={{ marginRight: 2 }}>
-                          <Tooltip title="Alıcı ülkede oluşabilecek olan gümrük masraflarını kim ödeyecek?" arrow placement="top">
-                            <HelpIcon
-                              sx={{
-                                fontSize: 18,
-                                color: 'action.active',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                >
-                  <MenuItem value="SENDER">Gönderici</MenuItem>
-                  <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
-                </TextField>
+                <Box sx={{ position: 'relative' }}>
+                  <TextField {...field} select label="Gümrük Ücreti *" fullWidth error={!!errorMessage}>
+                    <MenuItem value="SENDER">Gönderici</MenuItem>
+                    <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
+                  </TextField>
+                  <Tooltip title="Alıcı ülkede oluşabilecek olan gümrük masraflarını kim ödeyecek?">
+                    <HelpIcon
+                      sx={{
+                        position: 'absolute',
+                        right: 32,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        fontSize: 18,
+                        cursor: 'pointer',
+                        color: 'action.active',
+                        zIndex: 2,
+                      }}
+                    />
+                  </Tooltip>
+                </Box>
               </ErrorTooltip>
             );
           }}

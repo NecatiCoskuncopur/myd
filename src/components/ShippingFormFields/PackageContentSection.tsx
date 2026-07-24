@@ -202,7 +202,7 @@ const PackageContentSection = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <Tooltip title="GTİP kodunu bulmak için tıkla">
-                                <IconButton component="a" href="https://uygulama.gtb.gov.tr/Tara" target="_blank" rel="noopener noreferrer">
+                                <IconButton component="a" href="https://uygulama.gtb.gov.tr/Tara" target="_blank" rel="noopener noreferrer" sx={{ padding: 0 }}>
                                   <HelpIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>

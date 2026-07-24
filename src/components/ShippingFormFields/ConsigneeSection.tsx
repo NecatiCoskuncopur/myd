@@ -28,7 +28,7 @@ const ConsigneeSection = () => {
 
   return (
     <Wrapper title="Alıcı Bilgileri">
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="consignee.name"
           control={control}
@@ -47,7 +47,28 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+
+      <Grid size={{ xs: 12, md: 7 }}>
+        <Controller
+          name="consignee.address.line1"
+          rules={{
+            required: LINE.REQUIRED,
+            minLength: { value: 5, message: LINE.MIN },
+            maxLength: { value: 255, message: LINE.MAX },
+          }}
+          control={control}
+          render={({ field }) => {
+            const errorMessage = errors.consignee?.address?.line1?.message;
+
+            return (
+              <ErrorTooltip message={errorMessage}>
+                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} />
+              </ErrorTooltip>
+            );
+          }}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="consignee.company"
           rules={{
@@ -70,28 +91,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <Controller
-          name="consignee.address.line1"
-          rules={{
-            required: LINE.REQUIRED,
-            minLength: { value: 5, message: LINE.MIN },
-            maxLength: { value: 255, message: LINE.MAX },
-          }}
-          control={control}
-          render={({ field }) => {
-            const errorMessage = errors.consignee?.address?.line1?.message;
-
-            return (
-              <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} />
-              </ErrorTooltip>
-            );
-          }}
-        />
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 7 }}>
         <Controller
           name="consignee.address.line2"
           rules={{
@@ -115,7 +115,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="consignee.phone"
           rules={{
@@ -137,7 +137,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: states ? 3 : 6 }}>
+      <Grid size={{ xs: 12, md: states ? 3.5 : 7 }}>
         <Controller
           name="consignee.address.country"
           control={control}
@@ -153,7 +153,7 @@ const ConsigneeSection = () => {
               <ErrorTooltip message={errorMessage}>
                 <Autocomplete
                   options={countries}
-                  getOptionLabel={option => option.turkishName}
+                  getOptionLabel={option => (option.turkishName ? `${option.name} (${option.turkishName})` : option.name)}
                   value={countries.find(c => c.code === field.value) || null}
                   onChange={(_, value) => {
                     const newCountryCode = value ? value.code : '';
@@ -169,7 +169,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
       {hasStates && (
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, md: 3.5 }}>
           <Controller
             name="consignee.address.state"
             control={control}
@@ -203,7 +203,7 @@ const ConsigneeSection = () => {
         </Grid>
       )}
 
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 2.5 }}>
         <Controller
           name="consignee.email"
           control={control}
@@ -228,7 +228,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 2.5 }}>
         <Controller
           name="consignee.taxId"
           control={control}
@@ -249,7 +249,7 @@ const ConsigneeSection = () => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 3.5 }}>
         <Controller
           name="consignee.address.city"
           control={control}
@@ -269,7 +269,7 @@ const ConsigneeSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 3 }}>
+      <Grid size={{ xs: 12, md: 3.5 }}>
         <Controller
           name="consignee.address.postalCode"
           control={control}

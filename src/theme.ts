@@ -31,6 +31,13 @@ const theme = (mode: 'light' | 'dark') => {
         fontFamily: 'Inter, sans-serif',
       },
       components: {
+        MuiTooltip: {
+          defaultProps: {
+            enterTouchDelay: 0,
+            leaveTouchDelay: 3000,
+          },
+        },
+
         MuiDataGrid: {
           defaultProps: {
             disableColumnSorting: true,
@@ -58,6 +65,17 @@ const theme = (mode: 'light' | 'dark') => {
         },
         MuiCssBaseline: {
           styleOverrides: {
+            'input[type=number]': {
+              // Chrome, Safari, Edge, Opera
+              '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                WebkitAppearance: 'none',
+                margin: 0,
+              },
+              // Firefox
+              '&[type=number]': {
+                MozAppearance: 'textfield',
+              },
+            },
             '*::-webkit-scrollbar': {
               width: '10px',
               height: '10px',
