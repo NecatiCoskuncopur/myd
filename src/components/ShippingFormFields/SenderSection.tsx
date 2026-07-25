@@ -59,7 +59,7 @@ const SenderSection = () => {
   return (
     <Wrapper title="Gönderici Bilgileri">
       <Grid container spacing={2} sx={{ width: '100%' }}>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="senderId"
             control={control}
@@ -75,49 +75,56 @@ const SenderSection = () => {
                 }}
                 getOptionLabel={option => `${option.firstName ?? ''} ${option.lastName ?? ''} ${option.company ? `(${option.company})` : ''}`}
                 isOptionEqualToValue={(option, value) => option._id === value._id}
-                renderOption={(props, option) => (
-                  <li {...props} key={option._id.toString()}>
-                    <Grid container>
-                      <Grid size={{ xs: 12 }}>
-                        <Typography variant="body1">
-                          {option.firstName} {option.lastName}
-                        </Typography>
-                        {option.company && (
-                          <Typography variant="caption" color="text.secondary">
-                            {option.company}
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props;
+                  return (
+                    <li key={option._id.toString()} {...optionProps}>
+                      <Grid container>
+                        <Grid size={{ xs: 12 }}>
+                          <Typography variant="body1">
+                            {option.firstName} {option.lastName}
                           </Typography>
-                        )}
+                          {option.company && (
+                            <Typography variant="caption" color="text.secondary">
+                              {option.company}
+                            </Typography>
+                          )}
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </li>
-                )}
+                    </li>
+                  );
+                }}
                 filterOptions={x => x}
                 noOptionsText={inputValue.length < 2 ? 'Aramak için en az 2 harf girin' : 'Kullanıcı bulunamadı'}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    label="Gönderici Ara"
-                    placeholder="Ad, Soyad veya Şirket..."
-                    slotProps={{
-                      input: {
-                        ...params.slotProps,
-                        endAdornment: (
-                          <>
-                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            {params.slotProps.input.endAdornment}
-                          </>
-                        ),
-                      },
-                    }}
-                  />
-                )}
+                renderInput={params => {
+                  const { slotProps, ...restParams } = params;
+                  return (
+                    <TextField
+                      {...restParams}
+                      label="Gönderici Ara"
+                      placeholder="Ad, Soyad veya Şirket..."
+                      slotProps={{
+                        ...slotProps,
+                        input: {
+                          ...slotProps?.input,
+                          endAdornment: (
+                            <>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {slotProps?.input?.endAdornment}
+                            </>
+                          ),
+                        },
+                      }}
+                    />
+                  );
+                }}
               />
             )}
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => setIsDrawerOpen(true)} sx={{ fontWeight: 600 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => setIsDrawerOpen(true)} sx={{ height: 40, width: '100%' }}>
             Yeni Kullanıcı Oluştur
           </Button>
         </Grid>

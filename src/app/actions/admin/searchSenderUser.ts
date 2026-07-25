@@ -36,7 +36,7 @@ const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
 
     return {
       status: 'OK',
-      data: result,
+      data: JSON.parse(JSON.stringify(result)),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
