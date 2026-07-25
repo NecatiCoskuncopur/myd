@@ -164,8 +164,6 @@ const CreateShippingForm = () => {
       <FormProvider {...methods}>
         <Box
           component="form"
-          onSubmit={methods.handleSubmit(onSubmit)}
-          noValidate
           sx={{
             pointerEvents: pending ? 'none' : 'auto',
             opacity: pending ? 0.6 : 1,
@@ -182,7 +180,8 @@ const CreateShippingForm = () => {
             }}
           >
             <StyledButton
-              type="submit"
+              type="button"
+              onClick={methods.handleSubmit(onSubmit)}
               disabled={pending}
               sx={{
                 minWidth: { xs: '100%', md: '220px' },
