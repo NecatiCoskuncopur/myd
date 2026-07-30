@@ -12,12 +12,13 @@ import MobileMenuTrigger from './MobileMenuTrigger';
 import MenuHeader from './MenuHeader';
 import MenuItems from './MenuItems';
 import MenuFooter from './MenuFooter';
+import { IUser } from '@/models/User.model';
 
 const DRAWER_WIDTH = 280;
 const MINI_DRAWER_WIDTH = 70;
 
 type Props = {
-  role: UserTypes.IUser['role'] | '';
+  role: IUser['role'] | '';
   open: boolean;
   toggleDrawer: () => void;
   toggleTheme: () => void;

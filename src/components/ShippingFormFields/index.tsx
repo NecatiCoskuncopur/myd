@@ -9,7 +9,7 @@ import ShippingDetailSection from './ShippingDetailSection';
 import { UserTypes } from '@/types/user';
 
 type ShippingFormFieldsProps = {
-  user?: UserTypes.ICleanUser | null;
+  user?: UserTypes.UserDto | null;
 };
 
 const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {

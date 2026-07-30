@@ -1,4 +1,5 @@
-import { Document, Types } from 'mongoose';
+import { UserRole } from '@/constants';
+import { IUser } from '@/models/User.model';
 
 declare namespace UserTypes {
   interface JwtPayload {
@@ -21,38 +22,6 @@ declare namespace UserTypes {
     postalCode: string;
   }
 
-  interface IUser extends Document {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    company?: string;
-    phone: string;
-    priceListId: Types.ObjectId;
-    address: IAddress;
-    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
-    barcodePermits: string[];
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface ICleanUser {
-    _id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    company?: string;
-    phone: string;
-    priceListId?: string;
-    address: IAddress;
-    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
-    barcodePermits: string[];
-    isActive: boolean;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-  }
-
   interface ISidebarItem {
     key: string;
     label: string;
@@ -72,16 +41,7 @@ declare namespace UserTypes {
     newPasswordRepeat: string;
   }
 
-  interface IEditUserPayload {
-    email: string;
-    firstName: string;
-    lastName: string;
-    company?: string;
-    phone: string;
-    address: IAddress;
-  }
-
-  interface IUserWithPopulatedBalance extends Omit<ICleanUser, 'balance'> {
+  interface IUserWithPopulatedBalance extends Omit<UserDto, 'balance'> {
     balance: {
       _id: string;
       total: number;
@@ -90,5 +50,23 @@ declare namespace UserTypes {
       _id: string;
       name: string;
     };
+  }
+
+  interface IEditUserPayload extends Pick<UserDto, 'email' | 'firstName' | 'lastName' | 'company' | 'phone' | 'address'> {}
+
+  interface UserDto {
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    company?: string;
+    phone: string;
+    role: UserRole;
+    isActive: boolean;
+    barcodePermits: string[];
+    address: IUser['address'];
+    priceListId?: string;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }

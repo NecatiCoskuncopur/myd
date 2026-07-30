@@ -70,7 +70,7 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
         _id: newUser._id,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
-        company: newUser.company,
+        company: newUser.company || '',
       },
     };
   } catch (error) {

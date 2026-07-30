@@ -283,7 +283,7 @@ const FormItems = ({ errors, register, pending }: FormItemsProps) => {
           }}
           fullWidth
           disabled={pending}
-          {...register('address.postalCode', { required: POSTALCODE.REQUIRED, validate: value => value.length === 5 || POSTALCODE.LENGTH })}
+          {...register('address.postalCode', { required: POSTALCODE.REQUIRED, validate: value => value?.length === 5 || POSTALCODE.LENGTH })}
           error={!!errors.address?.postalCode}
           helperText={errors.address?.postalCode?.message}
         />

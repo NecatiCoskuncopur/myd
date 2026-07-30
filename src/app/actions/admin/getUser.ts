@@ -8,7 +8,7 @@ import connectMongoDB from '@/lib/db';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
 
-const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<UserTypes.ICleanUser>> => {
+const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<UserTypes.UserDto>> => {
   try {
     if (!Types.ObjectId.isValid(userId)) {
       return {
@@ -24,14 +24,14 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
       return { status: 'ERROR', message: userMessages.NOT_FOUND };
     }
 
-    const cleanUser: UserTypes.ICleanUser = {
+    const cleanUser: UserTypes.UserDto = {
       _id: String(userDoc._id),
       email: userDoc.email,
       firstName: userDoc.firstName,
       lastName: userDoc.lastName,
-      company: userDoc.company,
+      company: userDoc.company || '',
       phone: userDoc.phone,
-      role: userDoc.role as UserTypes.ICleanUser['role'],
+      role: userDoc.role as UserTypes.UserDto['role'],
       isActive: userDoc.isActive,
       barcodePermits: userDoc.barcodePermits || [],
       address: userDoc.address,

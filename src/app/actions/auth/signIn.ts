@@ -12,7 +12,7 @@ import env from '@/lib/env';
 // import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import loginSchema from '@/schemas/login.schema';
-import { UserTypes } from '@/types/user';
+import { UserDocument } from '@/models/User.model';
 
 const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IActionResponse<AuthTypes.ISignInResponse>> => {
   try {
@@ -30,7 +30,7 @@ const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IAc
 
     const user = (await User.findOne({
       email: validatedData.email.toLowerCase(),
-    }).select('+password')) as UserTypes.IUser | null;
+    }).select('+password')) as UserDocument | null;
 
     const hashedPassword = user?.password ?? '$2y$12$L7W.IasE0A6hA9hYm8dMhuXGqVz5.Vq5vY6L7W.IasE0A6hA9hYm8dMhu';
     const isCorrectPassword = await bcrypt.compare(validatedData.password, hashedPassword);

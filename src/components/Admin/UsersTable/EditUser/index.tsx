@@ -20,7 +20,7 @@ const { EDITUSER } = userMessages;
 interface Props {
   open: boolean;
   onClose: () => void;
-  user: UserTypes.ICleanUser | null;
+  user: UserTypes.UserDto | null;
   onSuccess?: () => void;
 }
 

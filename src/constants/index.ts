@@ -14,3 +14,6 @@ export { default as shippingMessages } from './messages/shippingMessages';
 export { default as carrierMessages } from './messages/carrierMessages';
 export { default as transactionMessages } from './messages/transactionMessages';
 export { default as currency } from './currency';
+export { default as UserRole } from './enums/userRole';
+export { default as emailRegex } from './regex/email';
+export { default as phoneRegex } from './regex/phone';

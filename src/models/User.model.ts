@@ -1,11 +1,10 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Schema, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
-import { AddressSchema } from '@/models';
-import { UserTypes } from '@/types/user';
+import { emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
 
-const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+const { EMAIL, PHONE } = userMessages;
 
-const UserSchema = new Schema<UserTypes.IUser>(
+const UserSchema = new Schema(
   {
     email: {
       type: String,
@@ -14,8 +13,8 @@ const UserSchema = new Schema<UserTypes.IUser>(
       lowercase: true,
       trim: true,
       validate: {
-        validator: (v: string) => EMAIL_REGEX.test(v),
-        message: 'Invalid email format',
+        validator: value => emailRegex.test(value),
+        message: EMAIL.INVALID,
       },
     },
     password: {
@@ -45,8 +44,8 @@ const UserSchema = new Schema<UserTypes.IUser>(
       trim: true,
       required: true,
       validate: {
-        validator: (v: string) => /^[5]\d{9}$/.test(v),
-        message: 'Telefon numarası 5 ile başlamalı ve 10 hane olmalıdır',
+        validator: value => phoneRegex.test(value),
+        message: PHONE.INVALID,
       },
     },
     priceListId: {
@@ -54,7 +53,28 @@ const UserSchema = new Schema<UserTypes.IUser>(
       ref: 'PricingList',
     },
     address: {
-      ...AddressSchema.obj,
+      line1: {
+        type: String,
+        required: true,
+        minLength: 5,
+        maxLength: 255,
+      },
+      line2: {
+        type: String,
+        maxLength: 255,
+      },
+      city: {
+        type: String,
+        required: true,
+        minLength: 2,
+        maxLength: 35,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+        minLength: 3,
+        maxLength: 15,
+      },
       district: {
         type: String,
         required: true,
@@ -65,8 +85,8 @@ const UserSchema = new Schema<UserTypes.IUser>(
     role: {
       type: String,
       required: true,
-      enum: ['CUSTOMER', 'OPERATOR', 'ADMIN'],
-      default: 'CUSTOMER',
+      enum: Object.values(UserRole),
+      default: UserRole.CUSTOMER,
       index: true,
     },
     barcodePermits: [{ type: String }],
@@ -81,7 +101,12 @@ const UserSchema = new Schema<UserTypes.IUser>(
 
 UserSchema.plugin(paginate);
 
-const User = (mongoose.models.User ||
-  mongoose.model<UserTypes.IUser, mongoose.PaginateModel<UserTypes.IUser>>('User', UserSchema)) as mongoose.PaginateModel<UserTypes.IUser>;
+export type IUser = InferSchemaType<typeof UserSchema>;
+export type UserDocument = HydratedDocument<IUser> & {
+  _id: Types.ObjectId;
+};
+export type UserModel = PaginateModel<IUser>;
+
+const User: UserModel = (mongoose.models.User as UserModel) ?? mongoose.model<IUser, UserModel>('User', UserSchema);
 
 export default User;

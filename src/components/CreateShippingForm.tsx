@@ -26,7 +26,7 @@ const CreateShippingForm = () => {
   const [pending, startTransition] = useTransition();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBatchMode, setIsBatchMode] = useState(false);
-  const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
+  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;

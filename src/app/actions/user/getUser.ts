@@ -8,7 +8,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
 
-const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.ICleanUser>> => {
+const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.UserDto>> => {
   try {
     await connectMongoDB();
 
@@ -23,14 +23,14 @@ const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.IClean
       return { status: 'ERROR', message: userMessages.NOT_FOUND };
     }
 
-    const cleanUser: UserTypes.ICleanUser = {
+    const user: UserTypes.UserDto = {
       _id: String(userDoc._id),
       email: userDoc.email,
       firstName: userDoc.firstName,
       lastName: userDoc.lastName,
-      company: userDoc.company,
+      company: userDoc.company || '',
       phone: userDoc.phone,
-      role: userDoc.role as UserTypes.ICleanUser['role'],
+      role: userDoc.role as UserTypes.UserDto['role'],
       isActive: userDoc.isActive,
       barcodePermits: userDoc.barcodePermits || [],
       address: userDoc.address,
@@ -41,7 +41,7 @@ const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.IClean
 
     return {
       status: 'OK',
-      data: cleanUser,
+      data: user,
     };
   } catch (error) {
     if (error instanceof Error) {

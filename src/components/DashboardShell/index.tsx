@@ -17,7 +17,7 @@ const DashboardShell = ({ children }: Props) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [mode, setMode] = useState<'light' | 'dark' | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
-  const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
+  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

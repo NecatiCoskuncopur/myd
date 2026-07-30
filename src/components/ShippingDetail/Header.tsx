@@ -24,7 +24,7 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
   const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
+  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;

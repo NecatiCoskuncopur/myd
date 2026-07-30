@@ -54,7 +54,7 @@ const AdminShippingList = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
-  const [user, setUser] = useState<UserTypes.ICleanUser | null>(null);
+  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
 

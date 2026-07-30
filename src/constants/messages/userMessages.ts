@@ -47,6 +47,7 @@ const userMessages = {
     TYPE: 'Cep telefonu numarası metin tipinde olmalı.',
     LENGTH: 'Cep telefonu numarası 10 karakter olmalı.',
     REQUIRED: 'Cep telefonu numarası zorunludur.',
+    INVALID: 'Cep telefonu numarası 5 ile başlamalı ve 10 hane olmalıdır',
   },
   ROLE: {
     INVALID: 'Kullanıcı rolü geçersiz.',

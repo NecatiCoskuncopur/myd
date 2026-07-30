@@ -75,7 +75,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const userForPricing = await User.findById(shipping.userId).lean();
     if (!userForPricing) return { status: 'ERROR', message: pricingListMessages.PRICING.USER_NOT_FOUND };
 
-    const shippingCostRes = await getShippingCost(userForPricing.priceListId, shipping.package.weight, shipping.consignee.address.country);
+    const shippingCostRes = await getShippingCost(userForPricing!.priceListId!, shipping.package.weight, shipping.consignee.address.country);
     if (shippingCostRes.status !== 'OK') return { status: 'ERROR', message: shippingMessages.COST_NOT_CALCULATED };
 
     const shippingCost = shippingCostRes.data;
