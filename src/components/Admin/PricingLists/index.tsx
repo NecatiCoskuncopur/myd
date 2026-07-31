@@ -42,7 +42,7 @@ const PriceLists = () => {
   useEffect(() => setIsClient(true), []);
 
   const fetchPricingLists = async () => {
-    let isMounted = true;
+    const isMounted = true;
     const requestId = ++requestIdRef.current;
 
     try {

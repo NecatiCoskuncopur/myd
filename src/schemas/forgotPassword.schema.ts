@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { userMessages } from '@/constants';
 
-const { EMAIL, TOKEN } = userMessages;
+const { EMAIL } = userMessages;
 
 export default yup.object({
   // recaptchaToken: yup.string().typeError(TOKEN.TYPE).required(TOKEN.REQUIRED),

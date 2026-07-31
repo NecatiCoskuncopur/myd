@@ -1,16 +1,10 @@
-declare namespace BalanceTypes {
-  interface IUserTransaction {
-    transactionType: 'PAY' | 'SPEND';
-    amount?: number;
-    shippingId?: string;
-    note?: string;
-    createdAt: Date;
-  }
+import { ITransaction } from '@/models/Balance.model';
 
+declare namespace BalanceTypes {
   interface IUserBalanceData extends ResponseTypes.IPaginationResponse {
     balanceId: string;
     userId: string;
     total?: number;
-    transactions: IUserTransaction[];
+    transactions: ITransaction[];
   }
 }

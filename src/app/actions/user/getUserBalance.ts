@@ -7,6 +7,7 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Balance } from '@/models';
+import { BalanceTypes } from '@/types/balance';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
@@ -15,6 +16,7 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
+
     if (!currentUser?.id) {
       return { status: 'ERROR', message: UNAUTHORIZED };
     }
@@ -44,26 +46,21 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
       };
     }
 
-    const allTransactions = balanceDoc.transactions || [];
-    const sortedTransactions = [...allTransactions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const plain = JSON.parse(JSON.stringify(balanceDoc));
+
+    const sortedTransactions = [...(plain.transactions ?? [])].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     const totalCount = sortedTransactions.length;
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
-    const paginatedTransactions: BalanceTypes.IUserTransaction[] = sortedTransactions.slice(skip, skip + limit).map(tx => ({
-      transactionType: tx.transactionType,
-      amount: tx.amount || 0,
-      shippingId: tx.shippingId ? String(tx.shippingId) : undefined,
-      note: tx.note || '',
-      createdAt: new Date(tx.createdAt),
-    }));
+    const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
 
     return {
       status: 'OK',
       data: {
-        balanceId: String(balanceDoc._id),
-        userId: String(balanceDoc.userId),
-        total: balanceDoc.total || 0,
+        balanceId: plain._id,
+        userId: plain.userId,
+        total: plain.total ?? 0,
         transactions: paginatedTransactions,
         totalCount,
         page,
@@ -77,7 +74,11 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
     if (error instanceof Error) {
       Sentry.captureException(error);
     }
-    return { status: 'ERROR', message: UNEXPECTED_ERROR };
+
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { userMessages } from '@/constants';
 
-const { EMAIL, PASSWORD, TOKEN } = userMessages;
+const { EMAIL, PASSWORD } = userMessages;
 
 export default yup.object({
   email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),

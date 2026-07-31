@@ -71,7 +71,7 @@ const getBalanceDashboardData = async (selectedYear: number): Promise<ResponseTy
     });
 
     const [facetResult] = await Balance.aggregate(pipeline);
-    let availableYears: number[] = facetResult?.allYears?.map((item: any) => item._id) || [];
+    const availableYears: number[] = facetResult?.allYears?.map((item: any) => item._id) || [];
 
     if (availableYears.length === 0) {
       availableYears.push(new Date().getFullYear());

@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { addressMessages, userMessages } from '@/constants';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD, TOKEN } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 export default yup.object({

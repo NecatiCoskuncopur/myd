@@ -8,6 +8,7 @@ import { Wrapper, TableWrapper, TableHeader } from '@/components';
 import getUserBalance from '@/app/actions/user/getUserBalance';
 import columns from './columns';
 import CurrentBalance from './CurrentBalance';
+import { BalanceTypes } from '@/types/balance';
 
 const UserBalanceTable = () => {
   const router = useRouter();
