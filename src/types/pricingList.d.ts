@@ -1,13 +1,13 @@
 declare namespace PricingListTypes {
   interface IPrice {
-    weight?: number;
-    price?: number;
+    weight: number;
+    price: number;
   }
 
   interface IZone {
     number: number;
     prices: IPrice[];
-    than?: number;
+    than: number;
   }
 
   interface IPricingList {
@@ -18,16 +18,10 @@ declare namespace PricingListTypes {
     createdAt: string;
     updatedAt: string;
   }
+
   interface ICreatePricingListPayload {
     name: string;
-    zone: {
-      number: number;
-      prices: {
-        weight: number;
-        price: number;
-      }[];
-      than: number;
-    }[];
+    zone: IZone[];
   }
 
   interface IPricingListsParams extends ParamsTypes.IPaginationParams {

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const PricingListSchema = new mongoose.Schema(
@@ -23,11 +23,20 @@ const PricingListSchema = new mongoose.Schema(
         prices: [
           {
             _id: false,
-            weight: Number,
-            price: Number,
+            weight: {
+              type: Number,
+              required: true,
+            },
+            price: {
+              type: Number,
+              required: true,
+            },
           },
         ],
-        than: Number,
+        than: {
+          type: Number,
+          required: true,
+        },
       },
     ],
   },
@@ -36,6 +45,12 @@ const PricingListSchema = new mongoose.Schema(
 
 PricingListSchema.index({ name: 1 }, { unique: true });
 PricingListSchema.plugin(mongoosePaginate);
-const PricingList = mongoose.models.PricingList || mongoose.model('PricingList', PricingListSchema);
+export type IPricingList = InferSchemaType<typeof PricingListSchema>;
+export type PricingListDocument = HydratedDocument<IPricingList> & {
+  _id: Types.ObjectId;
+};
+export type PricingListModel = PaginateModel<IPricingList>;
 
+const PricingList: PricingListModel =
+  (mongoose.models.PricingList as PricingListModel) ?? mongoose.model<IPricingList, PricingListModel>('PricingList', PricingListSchema);
 export default PricingList;

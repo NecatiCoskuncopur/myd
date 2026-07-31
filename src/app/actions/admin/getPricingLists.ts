@@ -39,26 +39,10 @@ const getPricingLists = async (
       lean: true,
     });
 
-    const pricingLists = result.docs.map((item: PricingListTypes.IPricingList) => ({
-      _id: item._id.toString(),
-      name: item.name,
-      isDefault: item.isDefault,
-      zone: item.zone.map(z => ({
-        number: z.number,
-        prices: z.prices.map(p => ({
-          weight: p.weight,
-          price: p.price,
-        })),
-        than: z.than,
-      })),
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-    }));
-
     return {
       status: 'OK',
       data: {
-        pricingLists,
+        pricingLists: JSON.parse(JSON.stringify(result.docs)),
         totalCount: result.totalDocs,
         page: result.page ?? safePage,
         limit: result.limit,
