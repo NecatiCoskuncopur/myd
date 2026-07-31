@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import createShipping from '@/app/actions/shipping/createShipping';
 import getUser from '@/app/actions/user/getUser';
 import StyledButton from '@/components/StyledButton';
-import { generalMessages, shippingMessages, userMessages } from '@/constants';
+import { CurrencyEnum, generalMessages, shippingMessages, ShippingPayor, ShippingPurpose, userMessages } from '@/constants';
 import ShippingFormFields from '@/components/ShippingFormFields';
 import { UserTypes } from '@/types/user';
 import { TableHeader } from '@/components';
@@ -54,7 +54,7 @@ const CreateShippingForm = () => {
     fetchUser();
   }, []);
 
-  const methods = useForm<ShippingTypes.ICreateShippingPayload>({
+  const methods = useForm<ShippingTypes.ICreateShippingFormPayload>({
     defaultValues: {
       senderId: '',
       consignee: {
@@ -74,14 +74,14 @@ const CreateShippingForm = () => {
       },
       detail: {
         payor: {
-          shipping: 'SENDER',
-          customs: 'SENDER',
+          shipping: ShippingPayor.SENDER,
+          customs: ShippingPayor.SENDER,
         },
         iossNumber: '',
-        purpose: 'GIFT',
+        purpose: ShippingPurpose.GIFT,
       },
       content: {
-        currency: 'USD',
+        currency: CurrencyEnum.USD,
         description: '',
         freight: '' as unknown as number,
         products: [

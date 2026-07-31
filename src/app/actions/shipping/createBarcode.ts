@@ -2,7 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, userMessages } from '@/constants';
+import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingStatus, userMessages } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -76,11 +76,11 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const userForPricing = await User.findById(shipping.userId).lean();
     if (!userForPricing) return { status: 'ERROR', message: pricingListMessages.PRICING.USER_NOT_FOUND };
 
-    const shippingCostRes = await getShippingCost(userForPricing!.priceListId!, shipping.package.weight, shipping.consignee.address.country);
+    const shippingCostRes = await getShippingCost(userForPricing!.priceListId!, shipping!.package!.weight, shipping!.consignee!.address!.country);
     if (shippingCostRes.status !== 'OK') return { status: 'ERROR', message: shippingMessages.COST_NOT_CALCULATED };
 
     const shippingCost = shippingCostRes.data;
-    await applyBalanceTransaction('SPEND', shipping.userId, shippingCost, shipping._id);
+    await applyBalanceTransaction('SPEND', shipping.userId.toString(), shippingCost, shipping._id.toString());
 
     shipping.carrier = {
       trackingNumber,
@@ -89,7 +89,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       amount: shippingCost,
     };
 
-    shipping.status = 'LABELED';
+    shipping.status = ShippingStatus.LABELED;
 
     await shipping.save();
 

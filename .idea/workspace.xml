@@ -5,57 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/constants/enums/carrier.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLinters/eslint.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/prettier.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/currencyEnum.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/shippingActivities.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/shippingPayor.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/shippingPurpose.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/shippingStatus.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +27,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="244" />
+    <option name="cachedIndexableFilesCount" value="251" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -73,10 +37,10 @@
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="3HFaTD5atCNybheD41891I7Yklt" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -102,11 +66,19 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\constants" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\constants\enums" />
+    </key>
+  </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
@@ -136,7 +108,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1785466275932</updated>
-      <workItem from="1785466278678" duration="1916000" />
+      <workItem from="1785466278678" duration="2986000" />
+      <workItem from="1785482303896" duration="6271000" />
     </task>
     <servers />
   </component>

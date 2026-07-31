@@ -14,7 +14,7 @@ import { ShippingTypes } from '@/types/shipping';
 
 const SenderSection = () => {
   const theme = useTheme();
-  const { control, setValue } = useFormContext<ShippingTypes.ICreateShippingPayload>();
+  const { control, setValue } = useFormContext<ShippingTypes.ICreateShippingFormPayload>();
 
   const [options, setOptions] = useState<AdminTypes.ISearchSenderResult[]>([]);
   const [loading, setLoading] = useState(false);

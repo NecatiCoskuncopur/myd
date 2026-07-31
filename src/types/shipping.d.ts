@@ -1,4 +1,4 @@
-import { Carrier } from '@/constants';
+import { Carrier, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
 
 declare namespace ShippingTypes {
   interface ICalculateShippingPayload {
@@ -32,7 +32,7 @@ declare namespace ShippingTypes {
 
   interface IConsignee {
     name: string;
-    company: string;
+    company?: string;
     phone?: string;
     email?: string;
     taxId?: string;
@@ -41,11 +41,11 @@ declare namespace ShippingTypes {
 
   interface IShippingDetail {
     payor: {
-      shipping: 'SENDER' | 'CONSIGNEE';
-      customs: 'SENDER' | 'CONSIGNEE';
+      shipping: ShippingPayor;
+      customs: ShippingPayor;
     };
     iossNumber?: string;
-    purpose: 'GIFT' | 'PERSONAL' | 'SAMPLE' | 'REPAIR_OR_RETURN' | 'COMMERCIAL';
+    purpose: ShippingPurpose;
   }
 
   interface IProduct {
@@ -56,7 +56,7 @@ declare namespace ShippingTypes {
   }
 
   interface IShippingContent {
-    currency: 'USD' | 'EUR' | 'GBP';
+    currency: CurrencyEnum;
     description?: string;
     freight?: number;
     products: IProduct[];
@@ -68,31 +68,35 @@ declare namespace ShippingTypes {
     width: number;
     height: number;
     length: number;
-    volumetricWeight: number;
+    volumetricWeight?: number;
+  }
+
+  interface ICarrier {
+    name: Carrier;
+    account?: string;
+    trackingNumber?: string;
+    amount?: number;
+  }
+
+  interface IActivity {
+    userId: string;
+    type: ShippingActivities;
+    data?: string;
   }
 
   interface IShipping {
     _id: string;
-    userId: string;
-    consigneeId: string;
+    userId?: string;
+    consigneeId?: string;
     sender: ISender;
     consignee: IConsignee;
     detail: IShippingDetail;
     content: IShippingContent;
     package: IPackage;
-    status?: 'CREATED' | 'LABELED' | 'CANCELED';
-    carrier?: {
-      name?: 'FEDEX' | 'TNT' | 'UPS';
-      account?: string;
-      trackingNumber?: string;
-      amount?: number;
-    };
+    status: ShippingStatus;
+    carrier?: ICarrier;
     labelLink?: string;
-    activities?: {
-      userId?: string;
-      type?: 'EDIT' | 'LABELING';
-      data?: string;
-    }[];
+    activities?: IActivity[];
     createdAt: string;
     updatedAt: string;
   }
@@ -118,11 +122,15 @@ declare namespace ShippingTypes {
   }
 
   interface ICreateShippingPayload {
-    senderId: string;
+    sender: ISender;
     consignee: IConsignee;
     detail: IShippingDetail;
     content: IShippingContent;
     package: IPackage;
+  }
+
+  interface ICreateShippingFormPayload extends ICreateShippingPayload {
+    senderId: string;
   }
 
   interface IUpdateShippingPayload extends ICreateShippingPayload {

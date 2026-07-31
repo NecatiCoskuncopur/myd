@@ -4,7 +4,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import { Grid, InputAdornment, MenuItem, TextField, Tooltip, Box } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ShippingTypes } from '@/types/shipping';
-import { shippingMessages } from '@/constants';
+import { shippingMessages, ShippingPurpose } from '@/constants';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
 
@@ -135,12 +135,7 @@ const ShippingDetailSection = () => {
           control={control}
           rules={{
             required: PURPOSE.REQUIRED,
-            validate: value => {
-              if (value === 'SAMPLE' || value === 'COMMERCIAL' || value === 'GIFT' || value === 'PERSONAL' || value === 'REPAIR_OR_RETURN') {
-                return true;
-              }
-              return PURPOSE.INVALID;
-            },
+            validate: value => (Object.values(ShippingPurpose).includes(value) ? true : PURPOSE.INVALID),
           }}
           render={({ field }) => {
             const errorMessage = errors.detail?.purpose?.message;

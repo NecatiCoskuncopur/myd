@@ -111,19 +111,10 @@ const listShipping = async (
       },
     });
 
-    const serializedShippings: ShippingTypes.IShipping[] = result.docs.map((doc: ShippingTypes.IShipping) => ({
-      ...doc,
-      _id: doc._id.toString(),
-      userId: doc.userId?.toString(),
-      consigneeId: doc.consigneeId?.toString(),
-      createdAt: doc.createdAt?.toString(),
-      updatedAt: doc.updatedAt?.toString(),
-    }));
-
     return {
       status: 'OK',
       data: {
-        shippings: serializedShippings,
+        shippings: JSON.parse(JSON.stringify(result.docs)),
         totalCount: result.totalDocs,
         limit: result.limit ?? safeLimit,
         page: result.page ?? safePage,

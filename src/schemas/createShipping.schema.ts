@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { addressMessages, shippingMessages, userMessages } from '@/constants';
+import { addressMessages, Carrier, CurrencyEnum, shippingMessages, ShippingPayor, ShippingPurpose, userMessages } from '@/constants';
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;
@@ -34,8 +34,8 @@ export default yup.object({
   detail: yup.object({
     payor: yup
       .object({
-        shipping: yup.string().oneOf(['SENDER', 'CONSIGNEE'], PAYOR.SHIPMENT.TYPE_INVALID).required(PAYOR.SHIPMENT.TYPE_REQUIRED),
-        customs: yup.string().oneOf(['SENDER', 'CONSIGNEE'], PAYOR.CUSTOMS.TYPE_INVALID).required(PAYOR.CUSTOMS.TYPE_REQUIRED),
+        shipping: yup.string().oneOf(Object.values(ShippingPayor), PAYOR.SHIPMENT.TYPE_INVALID).required(PAYOR.SHIPMENT.TYPE_REQUIRED),
+        customs: yup.string().oneOf(Object.values(ShippingPayor), PAYOR.CUSTOMS.TYPE_INVALID).required(PAYOR.CUSTOMS.TYPE_REQUIRED),
       })
       .required(),
     iossNumber: yup
@@ -44,10 +44,10 @@ export default yup.object({
       .nullable()
       .notRequired()
       .length(12, IOSSNUMBER.LENGTH),
-    purpose: yup.string().oneOf(['GIFT', 'PERSONAL', 'SAMPLE', 'REPAIR_OR_RETURN', 'COMMERICAL'], PURPOSE.INVALID).required(PURPOSE.REQUIRED),
+    purpose: yup.string().oneOf(Object.values(ShippingPurpose), PURPOSE.INVALID).required(PURPOSE.REQUIRED),
   }),
   content: yup.object({
-    currency: yup.string().oneOf(['USD', 'EUR', 'GBP'], CURRENCY.INVALID).required(CURRENCY.REQUIRED),
+    currency: yup.string().oneOf(Object.values(CurrencyEnum), CURRENCY.INVALID).required(CURRENCY.REQUIRED),
     description: yup.string().typeError(DESCRIPTION.TYPE).max(50, DESCRIPTION.MAX),
     freight: yup.number().typeError(FREIGHT.TYPE).min(1, FREIGHT.MIN),
     products: yup

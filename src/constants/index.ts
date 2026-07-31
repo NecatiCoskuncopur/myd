@@ -18,3 +18,8 @@ export { default as UserRole } from './enums/userRole';
 export { default as emailRegex } from './regex/email';
 export { default as phoneRegex } from './regex/phone';
 export { default as Carrier } from './enums/carrier';
+export { default as ShippingPayor } from './enums/shippingPayor';
+export { default as ShippingPurpose } from './enums/shippingPurpose';
+export { default as CurrencyEnum } from './enums/currencyEnum';
+export { default as ShippingStatus } from './enums/shippingStatus';
+export { default as ShippingActivities } from './enums/shippingActivities';

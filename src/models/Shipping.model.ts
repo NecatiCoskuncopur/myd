@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
+import paginate from 'mongoose-paginate-v2';
+import { Carrier, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
 
 const ShippingSchema = new mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     consigneeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Consignee', index: true },
     sender: {
       name: String,
@@ -19,41 +20,41 @@ const ShippingSchema = new mongoose.Schema(
       },
     },
     consignee: {
-      name: { type: String, maxlength: 35 },
+      name: { type: String, maxlength: 35, required: true },
       company: { type: String, maxlength: 35 },
       phone: String,
       email: String,
       taxId: String,
       address: {
-        line1: { type: String, minLength: 5, maxlength: 35 },
+        line1: { type: String, minLength: 5, maxlength: 35, required: true },
         line2: { type: String, maxlength: 35 },
-        country: { type: String, length: 2 },
+        country: { type: String, length: 2, required: true },
         state: { type: String, length: 2 },
-        city: { type: String, minLength: 2, maxlength: 35 },
-        postalCode: { type: String, maxlength: 10 },
+        city: { type: String, minLength: 2, maxlength: 35, required: true },
+        postalCode: { type: String, maxlength: 10, required: true },
       },
     },
     detail: {
       payor: {
         shipping: {
           type: String,
-          enum: ['SENDER', 'CONSIGNEE'],
+          enum: Object.values(ShippingPayor),
         },
         customs: {
           type: String,
-          enum: ['SENDER', 'CONSIGNEE'],
+          enum: Object.values(ShippingPayor),
         },
       },
       iossNumber: { type: String, length: 12 },
       purpose: {
         type: String,
-        enum: ['GIFT', 'PERSONAL', 'SAMPLE', 'REPAIR_OR_RETURN', 'COMMERICAL'],
+        enum: Object.values(ShippingPurpose),
       },
     },
     content: {
       currency: {
         type: String,
-        enum: ['USD', 'EUR', 'GBP'],
+        enum: Object.values(CurrencyEnum),
       },
       description: { type: String, maxlength: 50 },
       freight: Number,
@@ -68,23 +69,23 @@ const ShippingSchema = new mongoose.Schema(
       ],
     },
     package: {
-      weight: { type: Number, min: 0.5 },
-      numberOfPackage: { type: Number, min: 1, max: 55 },
-      width: { type: Number, min: 0.5, max: 500 },
-      height: { type: Number, min: 0.5, max: 500 },
-      length: { type: Number, min: 0.5, max: 500 },
+      weight: { type: Number, min: 0.5, required: true },
+      numberOfPackage: { type: Number, min: 1, max: 55, required: true },
+      width: { type: Number, min: 0.5, max: 500, required: true },
+      height: { type: Number, min: 0.5, max: 500, required: true },
+      length: { type: Number, min: 0.5, max: 500, required: true },
       volumetricWeight: Number,
     },
     status: {
       type: String,
-      enum: ['CREATED', 'LABELED', 'CANCELED'],
-      default: 'CREATED',
+      enum: Object.values(ShippingStatus),
+      default: ShippingStatus.CREATED,
       index: true,
     },
     carrier: {
       name: {
         type: String,
-        enum: ['FEDEX', 'TNT', 'UPS'],
+        enum: Object.values(Carrier),
       },
       account: String,
       trackingNumber: String,
@@ -96,7 +97,7 @@ const ShippingSchema = new mongoose.Schema(
         userId: mongoose.Types.ObjectId,
         type: {
           type: String,
-          enum: ['EDIT', 'LABELING'],
+          enum: Object.values(ShippingActivities),
         },
         data: String,
       },
@@ -105,8 +106,14 @@ const ShippingSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-ShippingSchema.plugin(mongoosePaginate);
+ShippingSchema.plugin(paginate);
 
-const Shipping = mongoose.models.Shipping || mongoose.model('Shipping', ShippingSchema);
+export type IShipping = InferSchemaType<typeof ShippingSchema>;
+export type ShippingDocument = HydratedDocument<IShipping> & {
+  _id: Types.ObjectId;
+};
+export type ShippingModel = PaginateModel<IShipping>;
+
+const Shipping: ShippingModel = (mongoose.models.Shipping as ShippingModel) ?? mongoose.model<IShipping, ShippingModel>('Shipping', ShippingSchema);
 
 export default Shipping;
