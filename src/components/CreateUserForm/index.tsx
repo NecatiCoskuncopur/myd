@@ -41,12 +41,7 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
     },
   });
 
-  const onSubmit = (values: AdminTypes.ICreateUser, e?: React.BaseSyntheticEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
+  const onSubmit = (values: AdminTypes.ICreateUser) => {
     setErrorMessage(null);
 
     startTransition(async () => {
@@ -59,9 +54,10 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
         }
 
         if (onSuccess && response.data) {
-          onSuccess(response.data as AdminTypes.ISearchSenderResult);
+          onSuccess(response.data);
         }
-      } catch {
+      } catch (error) {
+        console.error('Create User Failed:', error);
         setErrorMessage(generalMessages.UNEXPECTED_ERROR);
       }
     });

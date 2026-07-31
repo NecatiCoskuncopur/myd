@@ -44,7 +44,10 @@ const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBal
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'addTransactionUserBalance');
+        scope.captureException(error);
+      });
     }
 
     return {

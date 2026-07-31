@@ -8,24 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/searchSenderUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/searchSenderUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCurrentUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCurrentUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +101,7 @@
       <workItem from="1785466278678" duration="2986000" />
       <workItem from="1785482303896" duration="7924000" />
       <workItem from="1785495848415" duration="2529000" />
-      <workItem from="1785509662801" duration="2640000" />
+      <workItem from="1785509662801" duration="3868000" />
     </task>
     <servers />
   </component>

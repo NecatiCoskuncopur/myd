@@ -18,12 +18,12 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
-    await connectMongoDB();
-
     const validatedData = await adminCreateUserSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
+    await connectMongoDB();
 
     const existingUser = await User.findOne({ email: validatedData.email.toLowerCase() });
     if (existingUser) {
@@ -44,22 +44,30 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
     await Balance.create({ userId: newUser._id, total: 0 });
 
     try {
-      await MydMail.sendMail({
+      void MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',
         to: newUser.email,
         subject: '🎉 Hesabınız Oluşturuldu!',
         html: welcomeMail,
       });
     } catch (mailError) {
-      Sentry.captureException(mailError);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'adminCreateUser');
+        scope.setExtra('email', newUser.email);
+        Sentry.captureException(mailError);
+      });
     }
 
     if (newUser.phone) {
       try {
         const smsText = `Sayın ${newUser.firstName} ${newUser.lastName}, MYD Export kaydınız admin tarafından tamamlanmıştır. Sisteme giriş yapabilirsiniz.`;
-        await sendSms(newUser.phone, smsText);
+        void sendSms(newUser.phone, smsText);
       } catch (smsError) {
-        Sentry.captureException(smsError);
+        Sentry.withScope(scope => {
+          scope.setTag('action', 'adminCreateUser');
+          scope.setExtra('phone', newUser.phone);
+          Sentry.captureException(smsError);
+        });
       }
     }
 
@@ -78,7 +86,10 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
       return { status: 'ERROR', message: error.errors.join(', ') };
     }
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'adminCreateUser');
+        scope.captureException(error);
+      });
     }
     return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };
   }
