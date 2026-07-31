@@ -23,25 +23,9 @@ const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.UserDt
       return { status: 'ERROR', message: userMessages.NOT_FOUND };
     }
 
-    const user: UserTypes.UserDto = {
-      _id: String(userDoc._id),
-      email: userDoc.email,
-      firstName: userDoc.firstName,
-      lastName: userDoc.lastName,
-      company: userDoc.company || '',
-      phone: userDoc.phone,
-      role: userDoc.role as UserTypes.UserDto['role'],
-      isActive: userDoc.isActive,
-      barcodePermits: userDoc.barcodePermits || [],
-      address: userDoc.address,
-      priceListId: userDoc.priceListId ? String(userDoc.priceListId) : undefined,
-      createdAt: userDoc.createdAt,
-      updatedAt: userDoc.updatedAt,
-    };
-
     return {
       status: 'OK',
-      data: user,
+      data: JSON.parse(JSON.stringify(userDoc)),
     };
   } catch (error) {
     if (error instanceof Error) {
