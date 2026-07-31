@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
+import { UserRole } from '@/constants';
 
 /**
  * Request cookie'sinde bulunan JWT token'ı doğrular
@@ -34,7 +35,7 @@ export const getCurrentUser = async (): Promise<UserTypes.ICurrentUser | null> =
 
   const user = await User.findById(decoded.sub).select('_id role email barcodePermits').lean<{
     _id: unknown;
-    role: UserTypes.JwtPayload['role'];
+    role: UserRole;
     email: string;
     barcodePermits?: string[];
   }>();

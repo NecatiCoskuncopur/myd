@@ -2,7 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { User } from '@/models';
@@ -12,7 +12,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
   try {
-    const authError = await requireRoles(['OPERATOR', 'ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     const { firstName, lastName, company } = params;

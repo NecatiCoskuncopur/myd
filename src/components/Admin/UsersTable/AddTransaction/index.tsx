@@ -24,7 +24,6 @@ interface Props {
 
 const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
   const [pending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const theme = useTheme();
 
   const {
@@ -61,14 +60,16 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
   });
 
   const onSubmit = (values: AdminTypes.IAddTransactionUserBalancePayload) => {
-    setErrorMessage(null);
-
     startTransition(async () => {
       try {
         const response = await addTransactionUserBalance(values);
 
         if (response.status === 'ERROR') {
-          setErrorMessage(response.message ?? UNEXPECTED_ERROR);
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: response.message ?? UNEXPECTED_ERROR,
+          });
           return;
         }
 
@@ -79,19 +80,24 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
         });
 
         onSuccess?.();
-        reset();
+        reset({
+          userId,
+          amount: 0,
+          type: 'PAY',
+          note: '',
+        });
+        onClose();
       } catch (error) {
         console.error('Add transaction failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
+
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: UNEXPECTED_ERROR,
+        });
       }
     });
   };
-
-  useEffect(() => {
-    if (open) {
-      setErrorMessage(null);
-    }
-  }, [open]);
 
   return (
     <>
@@ -110,11 +116,6 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
         }}
       >
         <DialogTitle>Bakiye Hareketi Ekle</DialogTitle>
-        {errorMessage && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMessage}
-          </Alert>
-        )}
 
         <Box component="form" noValidate>
           <DialogContent>
@@ -141,7 +142,17 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
         </Box>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={() =>
+          setSnackbar({
+            open: false,
+            message: '',
+            severity: 'success',
+          })
+        }
+      >
         <Alert severity={snackbar.severity} variant="filled">
           {snackbar.message}
         </Alert>

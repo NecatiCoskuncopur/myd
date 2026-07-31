@@ -5,7 +5,7 @@ import json2xls from 'json2xls';
 import moment from 'moment';
 import { PaginateModel } from 'mongoose';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { Shipping } from '@/models';
 import requireRoles from '@/lib/requireRoles';
@@ -17,7 +17,7 @@ const listShippingAdmin = async (
   params: ShippingTypes.IListShippingParams & { userId?: string },
 ): Promise<ResponseTypes.IActionResponse<ShippingTypes.IShippingData | ShippingTypes.IShippingExcel>> => {
   try {
-    const authError = await requireRoles(['ADMIN', 'OPERATOR']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

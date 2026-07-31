@@ -2,7 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
@@ -12,7 +12,7 @@ const getCarrierAccounts = async (
   params: CarrierAccountTypes.ICarrierAccountsParams,
 ): Promise<ResponseTypes.IActionResponse<CarrierAccountTypes.ICarrierAccountData>> => {
   try {
-    const authError = await requireRoles(['ADMIN', 'OPERATOR']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

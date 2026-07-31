@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -12,14 +12,11 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Wrapper, TableHeader, TableWrapper } from '@/components';
 import FilterSection from './FilterSection';
 import getAllUsers from '@/app/actions/admin/getAllUsers';
-import { generalMessages } from '@/constants';
 import AddTransaction from './AddTransaction';
 import columns from './columns';
 import EditUser from './EditUser';
 import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
-
-const { UNEXPECTED_ERROR } = generalMessages;
 
 const Users = () => {
   const router = useRouter();
@@ -35,55 +32,40 @@ const Users = () => {
     open: boolean;
   }>({ type: '', open: false });
 
-  const requestIdRef = useRef(0);
-
   const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
   const limit = useMemo(() => Number(searchParams.get('limit')) || 5, [searchParams]);
 
   useEffect(() => setIsClient(true), []);
 
-  useEffect(() => {
-    if (!isClient) return;
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true);
 
-    let isMounted = true;
-    const requestId = ++requestIdRef.current;
+      const response = await getAllUsers({
+        page,
+        limit,
+        firstName: searchParams.get('firstName') || '',
+        lastName: searchParams.get('lastName') || '',
+        company: searchParams.get('company') || '',
+        phone: searchParams.get('phone') || '',
+        email: searchParams.get('email') || '',
+      });
 
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-
-        const response = await getAllUsers({
-          page,
-          limit,
-          firstName: searchParams.get('firstName') || '',
-          lastName: searchParams.get('lastName') || '',
-          company: searchParams.get('company') || '',
-          phone: searchParams.get('phone') || '',
-          email: searchParams.get('email') || '',
-        });
-
-        if (!isMounted || requestId !== requestIdRef.current) return;
-
-        if (response.status === 'OK' && response.data) {
-          setData(response.data);
-        }
-      } catch (error) {
-        if (isMounted && requestId === requestIdRef.current) {
-          console.error(error || UNEXPECTED_ERROR);
-        }
-      } finally {
-        if (isMounted && requestId === requestIdRef.current) {
-          setLoading(false);
-        }
+      if (response.status === 'OK' && response.data) {
+        setData(response.data);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, limit, searchParams]);
 
-    fetchUsers();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [page, limit, searchParams, isClient]);
+  useEffect(() => {
+    if (isClient) {
+      fetchUsers();
+    }
+  }, [isClient, fetchUsers]);
 
   const rows = useMemo(
     () =>
@@ -203,7 +185,8 @@ const Users = () => {
         userId={selectedRow?._id ?? ''}
         open={modalState.type === 'balance' && modalState.open}
         onClose={handleCloseModal}
-        onSuccess={() => {
+        onSuccess={async () => {
+          await fetchUsers();
           handleCloseModal();
         }}
       />

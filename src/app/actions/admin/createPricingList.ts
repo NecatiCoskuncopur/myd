@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
-import { generalMessages, pricingListMessages } from '@/constants';
+import { generalMessages, pricingListMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
@@ -15,7 +15,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const createPricingList = async (data: PricingListTypes.ICreatePricingListPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles(['ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN]);
     if (authError) return authError;
 
     await connectMongoDB();

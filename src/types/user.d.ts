@@ -9,7 +9,7 @@ declare namespace UserTypes {
 
   interface ICurrentUser {
     id: string;
-    role: 'CUSTOMER' | 'OPERATOR' | 'ADMIN';
+    role: UserRole;
     email: string;
     barcodePermits: string[];
   }

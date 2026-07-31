@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { authMessages, generalMessages, userMessages, welcomeMail } from '@/constants';
+import { authMessages, generalMessages, userMessages, UserRole, welcomeMail } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import requireRoles from '@/lib/requireRoles';
@@ -15,7 +15,7 @@ import { AdminTypes } from '@/types/admin';
 
 const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTypes.IActionResponse<AdminTypes.ISearchSenderResult>> => {
   try {
-    const authError = await requireRoles(['ADMIN', 'OPERATOR']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

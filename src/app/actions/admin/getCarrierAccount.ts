@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { isValidObjectId } from 'mongoose';
 
-import { carrierMessages, generalMessages } from '@/constants';
+import { carrierMessages, generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
@@ -11,7 +11,7 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const getCarrierAccount = async (id: string): Promise<ResponseTypes.IActionResponse<CarrierAccountTypes.ICarrierAccount>> => {
   try {
-    const authError = await requireRoles(['ADMIN', 'OPERATOR']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     if (!isValidObjectId(id)) {

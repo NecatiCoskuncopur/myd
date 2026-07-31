@@ -2,7 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { Balance, PricingList, User } from '@/models';
@@ -11,7 +11,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<ResponseTypes.IActionResponse<AdminTypes.IUsersData>> => {
   try {
-    const authError = await requireRoles(['ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN]);
     if (authError) return authError;
 
     await connectMongoDB();

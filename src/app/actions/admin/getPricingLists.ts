@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import type { PaginateModel } from 'mongoose';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
@@ -12,7 +12,7 @@ const getPricingLists = async (
   params: PricingListTypes.IPricingListsParams = {},
 ): Promise<ResponseTypes.IActionResponse<PricingListTypes.IPricingListData>> => {
   try {
-    const authError = await requireRoles(['OPERATOR', 'ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

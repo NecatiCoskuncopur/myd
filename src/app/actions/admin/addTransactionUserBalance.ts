@@ -2,8 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
-import { revalidatePath } from 'next/cache';
-import { generalMessages, transactionMessages } from '@/constants';
+import { generalMessages, transactionMessages, UserRole } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
@@ -15,7 +14,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBalancePayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles(['ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN]);
     if (authError) return authError;
 
     await connectMongoDB();
@@ -35,7 +34,6 @@ const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBal
         message: result.message,
       };
     }
-    revalidatePath('/panel/yonetim/uyeler');
     return { status: 'OK', message: SUCCESS };
   } catch (error) {
     if (error instanceof ValidationError) {

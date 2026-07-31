@@ -6,11 +6,11 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { Storage } from '@/lib/storage';
 import { Shipping } from '@/models';
-import { generalMessages, shippingMessages } from '@/constants';
+import { generalMessages, shippingMessages, UserRole } from '@/constants';
 
 const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResponse<null>> => {
   try {
-    const authError = await requireRoles(['OPERATOR', 'ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     if (!shippingId) {

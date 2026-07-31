@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
-import { generalMessages, pricingListMessages } from '@/constants';
+import { generalMessages, pricingListMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList, User } from '@/models';
@@ -14,7 +14,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles(['OPERATOR', 'ADMIN']);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     if (!Types.ObjectId.isValid(listId)) {
