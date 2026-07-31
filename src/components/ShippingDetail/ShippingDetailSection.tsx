@@ -4,6 +4,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { Grid, Typography } from '@mui/material';
 
 import CardHeader from './CardHeader';
+import { ShippingTypes } from '@/types/shipping';
 
 type ShippingDetailSectionProps = {
   detail: ShippingTypes.IShippingDetail | undefined;

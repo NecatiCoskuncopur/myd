@@ -8,6 +8,7 @@ import NextLink from 'next/link';
 import { getCarrierTrackingUrl } from '@/constants/carrierTracking';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { Typography, Box } from '@mui/material';
+import { ShippingTypes } from '@/types/shipping';
 
 const columns: GridColDef[] = [
   {

@@ -7,6 +7,9 @@ import { Alert, Button, CircularProgress, Dialog, DialogContent, Menu, MenuItem,
 
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { ShippingTypes } from '@/types/shipping';
+import { Carrier } from '@/constants';
 
 interface Props {
   shipping: ShippingTypes.IShipping;
@@ -67,7 +70,7 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
       try {
         const res = await createBarcode({
           shippingId: shipping._id,
-          firm: selectedAccount.carrier as 'UPS' | 'FEDEX',
+          firm: selectedAccount.carrier as Carrier,
           accountNumber: selectedAccount.accountNumber,
         });
 

@@ -8,6 +8,7 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
 import updateCarrierAccountSchema from '@/schemas/updateCarrierAccount.schema';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {

@@ -1,5 +1,6 @@
 import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
+import { ShippingTypes } from '@/types/shipping';
 
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -38,7 +39,7 @@ const createFedexPaper = async ({
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const formattedAccountNumber = String(accountNumber).trim();
-  const totalProductValue = shippingInstance.content.products.reduce((acc, p) => acc + p.unitPrice * p.piece, 0);
+  const totalProductValue = shippingInstance.content.products.reduce((acc: number, p: ShippingTypes.IProduct) => acc + p.unitPrice * p.piece, 0);
   const productCount = shippingInstance.content.products.length || 1;
 
   let weightPerProduct = Number((shippingInstance.package.weight / productCount).toFixed(2));
@@ -111,7 +112,7 @@ const createFedexPaper = async ({
           amount: Number(totalProductValue.toFixed(2)),
           currency: shippingInstance.content.currency || 'USD',
         },
-        commodities: shippingInstance.content?.products?.map((product: any) => {
+        commodities: shippingInstance.content?.products?.map((product: ShippingTypes.IProduct) => {
           const cleanDescription = (product.name || '').trim();
           const safeDescription = cleanDescription.length > 2 && cleanDescription.toLowerCase() !== 'product' ? cleanDescription : 'Textile Fabric Sample';
 
@@ -180,7 +181,7 @@ const createFedexPaper = async ({
   if (!trackingNumber) throw new Error(TRACKING_NUMBER_NOT_FOUND);
 
   const documents = output?.pieceResponses?.[0]?.packageDocuments || [];
-  const labelObj = documents.find((doc: any) => doc.contentType?.includes('LABEL') || doc.documentType?.includes('LABEL'));
+  const labelObj = documents.find((doc: CarrierTypes.FedexPackageDocument) => doc.contentType?.includes('LABEL') || doc.documentType?.includes('LABEL'));
   const label = labelObj?.encodedLabel || labelObj?.parts?.[0]?.image || '';
 
   if (label) {

@@ -9,6 +9,7 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { Shipping } from '@/models';
 import requireRoles from '@/lib/requireRoles';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 

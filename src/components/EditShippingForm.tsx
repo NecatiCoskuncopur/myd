@@ -11,6 +11,7 @@ import updateShipping from '@/app/actions/shipping/updateShipping';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, shippingMessages } from '@/constants';
 import ShippingFormFields from '@/components/ShippingFormFields';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UPDATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

@@ -13,6 +13,7 @@ import { generalMessages, userMessages } from '@/constants';
 import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { EDITUSER } = userMessages;

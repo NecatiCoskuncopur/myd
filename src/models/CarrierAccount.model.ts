@@ -1,4 +1,5 @@
-import { type InferSchemaType, model, models, Schema } from 'mongoose';
+import mongoose, { HydratedDocument, InferSchemaType, Schema, Types } from 'mongoose';
+import { Carrier } from '@/constants';
 
 const CarrierCredentialSchema = new Schema(
   {
@@ -20,23 +21,24 @@ const CarrierAccountSchema = new Schema(
       type: String,
       required: true,
     },
-
     carrier: {
       type: String,
       required: true,
+      enum: Object.values(Carrier),
     },
-    accountNumber: { type: String, required: true },
+    accountNumber: {
+      type: String,
+      required: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
     },
-
     credentials: {
       type: [CarrierCredentialSchema],
       required: true,
-      validate: [(val: any[]) => val.length > 0, 'En az bir credential gereklidir.'],
+      validate: [(val: unknown[]) => val.length > 0, 'En az bir credential gereklidir.'],
     },
-
     meta: {
       type: Map,
       of: String,
@@ -47,8 +49,13 @@ const CarrierAccountSchema = new Schema(
   },
 );
 
-export type CarrierAccountDocument = InferSchemaType<typeof CarrierAccountSchema>;
+export type ICarrierAccount = InferSchemaType<typeof CarrierAccountSchema>;
 
-const CarrierAccount = models.CarrierAccount || model('CarrierAccount', CarrierAccountSchema);
+export type CarrierAccountDocument = HydratedDocument<ICarrierAccount> & {
+  _id: Types.ObjectId;
+};
+
+const CarrierAccount =
+  (mongoose.models.CarrierAccount as mongoose.Model<ICarrierAccount>) ?? mongoose.model<ICarrierAccount>('CarrierAccount', CarrierAccountSchema);
 
 export default CarrierAccount;

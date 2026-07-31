@@ -10,6 +10,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping } from '@/models';
 import updateShippingSchema from '@/schemas/updateShipping.schema';
 import { revalidatePath } from 'next/cache';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { ALREADY_LABELED, CONSIGNEE, ID, NOT_FOUND, UPDATESHIPPING } = shippingMessages;

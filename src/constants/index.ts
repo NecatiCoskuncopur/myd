@@ -17,3 +17,4 @@ export { default as currency } from './currency';
 export { default as UserRole } from './enums/userRole';
 export { default as emailRegex } from './regex/email';
 export { default as phoneRegex } from './regex/phone';
+export { default as Carrier } from './enums/carrier';

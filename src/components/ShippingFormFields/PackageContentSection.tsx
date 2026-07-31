@@ -8,6 +8,7 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { shippingMessages } from '@/constants';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
+import { ShippingTypes } from '@/types/shipping';
 
 const { CURRENCY, DESCRIPTION, FREIGHT, PRODUCT } = shippingMessages;
 

@@ -14,6 +14,7 @@ import { generalMessages, shippingMessages, userMessages } from '@/constants';
 import ShippingFormFields from '@/components/ShippingFormFields';
 import { UserTypes } from '@/types/user';
 import { TableHeader } from '@/components';
+import { ShippingTypes } from '@/types/shipping';
 
 const { CREATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

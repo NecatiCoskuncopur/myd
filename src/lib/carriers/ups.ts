@@ -1,5 +1,6 @@
 import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
+import { ShippingTypes } from '@/types/shipping';
 
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -31,7 +32,7 @@ const createUpsPaper = async ({
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const formattedAccountNumber = String(accountNumber).trim();
-  const totalProductValue = shippingInstance.content.products.reduce((acc, p) => acc + p.unitPrice * p.piece, 0);
+  const totalProductValue = shippingInstance.content.products.reduce((acc: number, p: ShippingTypes.IProduct) => acc + p.unitPrice * p.piece, 0);
   const currency = shippingInstance.content.currency || 'USD';
 
   const payload = {
@@ -97,7 +98,7 @@ const createUpsPaper = async ({
             InvoiceDate: new Date().toISOString().split('T')[0].replace(/-/g, ''),
             ReasonForExport: shippingInstance.detail.purpose || 'COMMERCIAL',
             CurrencyCode: currency,
-            Product: shippingInstance.content?.products?.map((product: any) => ({
+            Product: shippingInstance.content?.products?.map((product: ShippingTypes.IProduct) => ({
               Description: (product.name || 'Sample').substring(0, 35),
               Unit: {
                 Number: String(product.piece || 1),

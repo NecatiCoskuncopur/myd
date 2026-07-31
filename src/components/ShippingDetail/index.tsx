@@ -13,6 +13,7 @@ import ContentSection from './ContentSection';
 import Header from './Header';
 import SenderSection from './SenderSection';
 import ShippingDetailSection from './ShippingDetailSection';
+import { ShippingTypes } from '@/types/shipping';
 
 const { NOT_FOUND } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

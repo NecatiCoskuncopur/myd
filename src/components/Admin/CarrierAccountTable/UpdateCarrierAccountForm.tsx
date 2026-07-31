@@ -3,9 +3,10 @@ import React, { useEffect, useState, useTransition } from 'react';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Snackbar, TextField, useTheme } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 
-import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount'; // Action yolu
+import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
 import StyledButton from '@/components/StyledButton';
 import { carrierMessages, generalMessages } from '@/constants';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 type UpdateCarrierAccountProps = {
   open: boolean;

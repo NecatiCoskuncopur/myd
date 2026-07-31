@@ -4,6 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Grid, Typography } from '@mui/material';
 
 import CardHeader from './CardHeader';
+import { ShippingTypes } from '@/types/shipping';
 
 type SenderSectionProps = {
   sender: ShippingTypes.ISender | undefined;

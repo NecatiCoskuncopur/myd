@@ -6,6 +6,7 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { addressMessages, countries, countryStates, shippingMessages, userMessages } from '@/constants';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
+import { ShippingTypes } from '@/types/shipping';
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;

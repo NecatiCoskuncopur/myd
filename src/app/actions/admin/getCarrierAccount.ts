@@ -7,6 +7,7 @@ import { carrierMessages, generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const getCarrierAccount = async (id: string): Promise<ResponseTypes.IActionResponse<CarrierAccountTypes.ICarrierAccount>> => {
   try {
@@ -31,14 +32,9 @@ const getCarrierAccount = async (id: string): Promise<ResponseTypes.IActionRespo
       };
     }
 
-    const serializedAccount = {
-      ...account,
-      _id: account._id.toString(),
-    };
-
     return {
       status: 'OK',
-      data: serializedAccount as CarrierAccountTypes.ICarrierAccount,
+      data: JSON.parse(JSON.stringify(account)),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {

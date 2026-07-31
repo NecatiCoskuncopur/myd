@@ -11,11 +11,12 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
 import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
-import { generalMessages } from '@/constants';
+import { Carrier, generalMessages } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccountForm from './CreateCarrierAccountForm';
 import FilterSection from './FilterSection';
 import UpdateCarrierAccountForm from './UpdateCarrierAccountForm';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const CarrierAccountTable = () => {
   const router = useRouter();
@@ -55,7 +56,7 @@ const CarrierAccountTable = () => {
           limit,
           name: searchParams.get('name') || undefined,
           accountNumber: searchParams.get('accountNumber') || undefined,
-          carrier: (searchParams.get('carrier') as 'FEDEX' | 'UPS') || undefined,
+          carrier: (searchParams.get('carrier') as Carrier) || undefined,
           isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
         });
 

@@ -7,6 +7,7 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { CarrierAccount } from '@/models';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse<Partial<CarrierAccountTypes.ICarrierAccount>[]>> => {
   try {
@@ -28,16 +29,9 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
       .select('name carrier accountNumber _id')
       .lean();
 
-    const data = permittedAccounts.map(account => ({
-      _id: account._id.toString(),
-      name: account.name,
-      carrier: account.carrier as 'FEDEX' | 'UPS',
-      accountNumber: account.accountNumber,
-    }));
-
     return {
       status: 'OK',
-      data,
+      data: JSON.parse(JSON.stringify(permittedAccounts)),
     };
   } catch (error) {
     if (error instanceof Error) {

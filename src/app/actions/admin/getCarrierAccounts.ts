@@ -6,9 +6,10 @@ import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const getCarrierAccounts = async (
-  params: CarrierAccountTypes.ICarrierAcccountsParams,
+  params: CarrierAccountTypes.ICarrierAccountsParams,
 ): Promise<ResponseTypes.IActionResponse<CarrierAccountTypes.ICarrierAccountData>> => {
   try {
     const authError = await requireRoles(['ADMIN', 'OPERATOR']);
@@ -36,17 +37,10 @@ const getCarrierAccounts = async (
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
-    const serializedAccounts = carrierAccounts.map(account => {
-      return {
-        ...account,
-        _id: account._id.toString(),
-      };
-    }) as CarrierAccountTypes.ICarrierAccount[];
-
     return {
       status: 'OK',
       data: {
-        carrierAccounts: serializedAccounts,
+        carrierAccounts: JSON.parse(JSON.stringify(carrierAccounts)),
         totalCount,
         page,
         limit,

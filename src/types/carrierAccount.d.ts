@@ -1,36 +1,37 @@
+import { Carrier } from '@/constants';
+
 declare namespace CarrierAccountTypes {
-  interface ICarrierCredential {
+  export interface ICarrierCredential {
     key: string;
     value: string;
   }
-
   interface ICarrierAccount {
     _id: string;
     name: string;
-    carrier: 'FEDEX' | 'UPS';
+    carrier: Carrier;
     accountNumber: string;
     isActive: boolean;
     credentials: ICarrierCredential[];
-    meta?: Record<string, unknown>;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+    meta?: Record<string, string>;
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface ICreateCarrierAccountPayload {
     name: string;
-    carrier: 'FEDEX' | 'UPS';
+    carrier: Carrier;
     accountNumber: string;
     credentials: ICarrierCredential[];
-    meta?: Record<string, unknown>;
+    meta?: Record<string, string>;
   }
 
   interface ICarrierAccountData extends ResponseTypes.IPaginationResponse {
     carrierAccounts: ICarrierAccount[];
   }
 
-  interface ICarrierAcccountsParams extends ParamsTypes.IPaginationParams {
+  interface ICarrierAccountsParams extends ParamsTypes.IPaginationParams {
     name?: string;
-    carrier?: 'FEDEX' | 'UPS';
+    carrier?: Carrier;
     accountNumber?: string;
     isActive?: boolean;
   }

@@ -9,6 +9,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping, User } from '@/models';
 import createShippingSchema from '@/schemas/createShipping.schema';
 import { revalidatePath } from 'next/cache';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { CONSIGNEE, CREATESHIPPING } = shippingMessages;

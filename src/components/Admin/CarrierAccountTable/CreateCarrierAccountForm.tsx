@@ -6,6 +6,8 @@ import { Controller, useForm } from 'react-hook-form';
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
 import StyledButton from '@/components/StyledButton';
 import { carrierMessages, generalMessages } from '@/constants';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { Carrier } from '@/constants';
 
 type CreateCarrierAccountProps = {
   open: boolean;
@@ -41,7 +43,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
     defaultValues: {
       name: '',
       accountNumber: '',
-      carrier: 'FEDEX',
+      carrier: Carrier.FEDEX,
       credentials: [
         { key: 'apiKey', value: '' },
         { key: 'secretKey', value: '' },
@@ -52,12 +54,12 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const selectedCarrier = watch('carrier');
 
   useEffect(() => {
-    if (selectedCarrier === 'FEDEX') {
+    if (selectedCarrier === Carrier.FEDEX) {
       setValue('credentials', [
         { key: 'apiKey', value: '' },
         { key: 'secretKey', value: '' },
       ]);
-    } else if (selectedCarrier === 'UPS') {
+    } else if (selectedCarrier === Carrier.UPS) {
       setValue('credentials', [
         { key: 'clientId', value: '' },
         { key: 'clientSecret', value: '' },

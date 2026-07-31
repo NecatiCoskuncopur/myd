@@ -17,6 +17,7 @@ import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { addressMessages, userMessages } from '@/constants';
 import { AdminTypes } from '@/types/admin';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;

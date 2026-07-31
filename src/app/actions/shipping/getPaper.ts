@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Storage } from '@/lib/storage';
 import { Shipping } from '@/models';
 import { generalMessages, shippingMessages } from '@/constants';
+import { ShippingTypes } from '@/types/shipping';
 
 const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<ResponseTypes.IActionResponse<{ file: string }>> => {
   try {

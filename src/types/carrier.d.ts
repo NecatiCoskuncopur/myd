@@ -18,4 +18,13 @@ declare namespace CarrierTypes {
       secretKey: string;
     };
   }
+
+  interface FedexPackageDocument {
+    contentType?: string;
+    documentType?: string;
+    encodedLabel?: string;
+    parts?: {
+      image: string;
+    }[];
+  }
 }

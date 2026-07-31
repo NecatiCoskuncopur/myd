@@ -10,6 +10,7 @@ import getUser from '@/app/actions/user/getUser';
 import { shippingMessages, userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
 import { CreateBarcodeButton, DeleteShipping } from '@/components';
+import { ShippingTypes } from '@/types/shipping';
 
 const { DELETE } = shippingMessages;
 const { NOT_FOUND } = userMessages;

@@ -10,6 +10,7 @@ import getShippingCost from '@/lib/getShippingCost';
 import { User } from '@/models';
 import calculateShippingSchema from '@/schemas/calculateShipping.schema';
 import { Types } from 'mongoose';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND } = pricingListMessages;

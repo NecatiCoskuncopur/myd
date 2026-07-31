@@ -11,6 +11,7 @@ import { shippingMessages } from '@/constants';
 import DesiKgCalculator from './DesiKgCalculator';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
+import { ShippingTypes } from '@/types/shipping';
 
 const { HEIGHT, LENGTH, NUMBEROFPACKAGE, WEIGHT, WIDTH } = shippingMessages;
 

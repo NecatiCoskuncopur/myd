@@ -34,10 +34,12 @@ import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
 import { TableHeader, TableWrapper, Wrapper, DeleteShipping } from '@/components';
-import { generalMessages } from '@/constants';
+import { Carrier, generalMessages } from '@/constants';
 import columns from './columns';
 import { UserTypes } from '@/types/user';
 import FilterSection from './FilterSection';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -153,7 +155,7 @@ const AdminShippingList = () => {
     try {
       const res = await createBarcode({
         shippingId,
-        firm: account.carrier as 'UPS' | 'FEDEX',
+        firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
       });
 

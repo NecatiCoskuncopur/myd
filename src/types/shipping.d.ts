@@ -1,3 +1,5 @@
+import { Carrier } from '@/constants';
+
 declare namespace ShippingTypes {
   interface ICalculateShippingPayload {
     weight: number;
@@ -129,7 +131,7 @@ declare namespace ShippingTypes {
 
   interface ICreateBarcodeParams {
     shippingId: string;
-    firm: 'UPS' | 'FEDEX';
+    firm: Carrier;
     accountNumber: string;
   }
 

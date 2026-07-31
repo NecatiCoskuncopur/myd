@@ -10,6 +10,7 @@ import searchSenderUser from '@/app/actions/admin/searchSenderUser';
 import Wrapper from './Wrapper';
 import CreateUserForm from '@/components/CreateUserForm';
 import { AdminTypes } from '@/types/admin';
+import { ShippingTypes } from '@/types/shipping';
 
 const SenderSection = () => {
   const theme = useTheme();

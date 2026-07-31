@@ -10,6 +10,7 @@ import getShippingCost from '@/lib/getShippingCost';
 import { CarrierAccount, Shipping, User } from '@/models';
 import createFedexPaper from '@/lib/carriers/fedex';
 import createUpsPaper from '@/lib/carriers/ups';
+import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
