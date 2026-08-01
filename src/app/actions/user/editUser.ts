@@ -15,12 +15,11 @@ const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
 const editUser = async (data: UserTypes.IEditUserPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await editUserSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser?.id) {
@@ -34,7 +33,7 @@ const editUser = async (data: UserTypes.IEditUserPayload): Promise<ResponseTypes
         new: true,
         runValidators: true,
       },
-    ).lean();
+    );
 
     if (!updatedUser) {
       return { status: 'ERROR', message: NOT_FOUND };
@@ -60,7 +59,10 @@ const editUser = async (data: UserTypes.IEditUserPayload): Promise<ResponseTypes
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'editUser');
+        scope.captureException(error);
+      });
     }
 
     return {

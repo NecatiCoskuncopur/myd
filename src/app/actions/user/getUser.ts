@@ -29,7 +29,10 @@ const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.UserDt
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getUser');
+        scope.captureException(error);
+      });
     }
 
     return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };

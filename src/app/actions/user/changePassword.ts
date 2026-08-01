@@ -16,12 +16,11 @@ const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
 const changePassword = async (data: UserTypes.IChangePasswordPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await changePasswordSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser?.id) {
@@ -71,7 +70,10 @@ const changePassword = async (data: UserTypes.IChangePasswordPayload): Promise<R
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'changePassword');
+        scope.captureException(error);
+      });
     }
 
     return {

@@ -20,15 +20,13 @@ const getUserPricingList = async (): Promise<ResponseTypes.IActionResponse<Prici
       return { status: 'ERROR', message: UNAUTHORIZED };
     }
 
-    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId?: mongoose.Types.ObjectId }>();
+    const user = await User.findById(currentUser.id).populate('priceListId').lean();
 
-    const priceListId = user?.priceListId?.toString();
-
-    if (!priceListId) {
+    if (!user?.priceListId) {
       return { status: 'ERROR', message: USER_LIST_UNDEFINED };
     }
 
-    const pricingListDoc = await PricingList.findById(priceListId).lean();
+    const pricingListDoc = await PricingList.findById(user?.priceListId).lean();
     if (!pricingListDoc) {
       return { status: 'ERROR', message: NOT_FOUND };
     }
@@ -41,15 +39,18 @@ const getUserPricingList = async (): Promise<ResponseTypes.IActionResponse<Prici
         prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight ?? 0, price: p.price ?? 0 })),
         than: z.than,
       })),
-      createdAt: pricingListDoc.createdAt.toISOString(),
-      updatedAt: pricingListDoc.updatedAt.toISOString(),
+      createdAt: new Date(pricingListDoc.createdAt).toISOString(),
+      updatedAt: new Date(pricingListDoc.updatedAt).toISOString(),
       isDefault: pricingListDoc.isDefault,
     };
 
     return { status: 'OK', data: pricingList };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getUserPricingList');
+        scope.captureException(error);
+      });
     }
 
     return { status: 'ERROR', message: UNEXPECTED_ERROR };

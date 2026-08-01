@@ -1,21 +1,20 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import { Alert, Box, Snackbar, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import changePassword from '@/app/actions/user/changePassword';
 import StyledButton from '@/components/StyledButton';
-import { generalMessages, userMessages } from '@/constants';
+import { userMessages } from '@/constants';
 import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
 
 const { PASSWORD } = userMessages;
-const { UNEXPECTED_ERROR } = generalMessages;
 
 const ChangePasswordForm = () => {
-  const [pending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -33,34 +32,27 @@ const ChangePasswordForm = () => {
     formState: { errors },
   } = useForm<UserTypes.IChangePasswordFormUI>();
 
-  const onSubmit = (values: UserTypes.IChangePasswordFormUI) => {
-    if (values.newPassword !== values.newPasswordRepeat) {
-      setSnackbar({ open: true, message: PASSWORD.DO_NOT_MATCH, severity: 'error' });
-      return;
-    }
+  const onSubmit = async (values: UserTypes.IChangePasswordFormUI) => {
+    setLoading(true);
 
-    startTransition(async () => {
-      try {
-        const response = await changePassword({
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        });
+    try {
+      const response = await changePassword({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
 
-        if (response.status === 'ERROR') {
-          setSnackbar({
-            open: true,
-            message: response.message || UNEXPECTED_ERROR,
-            severity: 'error',
-          });
-          return;
-        }
-        setSnackbar({ open: true, message: PASSWORD.SUCCESS, severity: 'success' });
+      setSnackbar({
+        open: true,
+        message: response.message || PASSWORD.SUCCESS,
+        severity: response.status === 'OK' ? 'success' : 'error',
+      });
+
+      if (response.status === 'OK') {
         reset();
-      } catch (error: unknown) {
-        const err = error as Error;
-        setSnackbar({ open: true, message: err.message || UNEXPECTED_ERROR, severity: 'error' });
       }
-    });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,16 +62,17 @@ const ChangePasswordForm = () => {
       </Typography>
 
       <Box component="form" noValidate>
-        <FormItems register={register} errors={errors} pending={pending} />
+        <FormItems register={register} errors={errors} pending={loading} />
         <StyledButton
           type="button"
+          disabled={loading}
           onClick={handleSubmit(onSubmit)}
           variant="contained"
           sx={{
             mt: 3,
             float: 'right',
           }}
-          loading={pending}
+          loading={loading}
         >
           Parolayı Güncelle
         </StyledButton>

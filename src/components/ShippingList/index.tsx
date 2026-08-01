@@ -117,6 +117,8 @@ const ShippingList = () => {
       const res = await getUserPermittedAccounts();
       if (res.status === 'OK' && res.data) {
         setAccounts(res.data);
+      } else {
+        console.error(res.message || UNEXPECTED_ERROR);
       }
     };
 

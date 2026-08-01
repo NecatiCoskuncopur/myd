@@ -146,6 +146,8 @@ const AdminShippingList = () => {
       const res = await getUserPermittedAccounts();
       if (res.status === 'OK' && res.data) {
         setAccounts(res.data);
+      } else {
+        console.error(res.message || UNEXPECTED_ERROR);
       }
     };
 
@@ -373,7 +375,6 @@ const AdminShippingList = () => {
             )}
 
             {!barcodeLoading && barcodeError && (
-
               <Alert severity="error" onClose={() => setBarcodeError(null)}>
                 {barcodeError}
               </Alert>

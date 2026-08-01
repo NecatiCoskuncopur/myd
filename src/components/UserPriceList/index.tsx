@@ -8,6 +8,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { TableHeader, TableWrapper, Wrapper } from '@/components';
 import getUserPricingList from '@/app/actions/user/getUserPricingList';
 import PriceCalculator from './PriceCalculator';
+import { generalMessages } from '@/constants';
 
 type Row = {
   id: number;
@@ -34,6 +35,8 @@ const UserPriceList = () => {
         const result = await getUserPricingList();
         if (result.status === 'OK' && result.data) {
           setData(result.data);
+        } else {
+          console.error(result.message || generalMessages.UNEXPECTED_ERROR);
         }
       } finally {
         setLoading(false);

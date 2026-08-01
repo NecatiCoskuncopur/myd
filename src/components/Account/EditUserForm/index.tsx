@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { Alert, Box, Grid, Snackbar, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -17,7 +16,6 @@ const { EMAIL, EDITUSER, NOT_FOUND } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const EditUserForm = () => {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -55,27 +53,30 @@ const EditUserForm = () => {
 
   const onSubmit = (data: UserTypes.IEditUserPayload) => {
     startTransition(async () => {
-      try {
-        const result = await editUser(data);
-        if (result.status === 'ERROR') {
-          const message = result.message ?? '';
-          if (message.toLowerCase().includes('email')) {
-            setError('email', { type: 'manual', message: EMAIL.EXIST });
-            return;
-          }
-          setSnackbar({ open: true, message, severity: 'error' });
+      const result = await editUser(data);
+
+      if (result.status === 'ERROR') {
+        if (result.message === EMAIL.EXIST) {
+          setError('email', {
+            type: 'manual',
+            message: EMAIL.EXIST,
+          });
           return;
         }
-        setSnackbar({ open: true, message: EDITUSER.SUCCESS, severity: 'success' });
-        router.refresh();
-      } catch (error: unknown) {
-        const err = error as Error;
+
         setSnackbar({
           open: true,
-          message: err.message || UNEXPECTED_ERROR,
+          message: result.message || UNEXPECTED_ERROR,
           severity: 'error',
         });
+        return;
       }
+
+      setSnackbar({
+        open: true,
+        message: result.message || EDITUSER.SUCCESS,
+        severity: 'success',
+      });
     });
   };
 

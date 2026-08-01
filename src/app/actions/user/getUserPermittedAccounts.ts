@@ -18,7 +18,14 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
       return { status: 'ERROR', message: generalMessages.UNAUTHORIZED };
     }
 
-    if (!currentUser.barcodePermits || currentUser.barcodePermits.length === 0) {
+    const permittedIds = currentUser.barcodePermits.reduce<Types.ObjectId[]>((acc, id) => {
+      if (Types.ObjectId.isValid(id)) {
+        acc.push(new Types.ObjectId(id));
+      }
+      return acc;
+    }, []);
+
+    if (permittedIds.length === 0) {
       return { status: 'OK', data: [] };
     }
 
@@ -35,7 +42,10 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getUserPermittedAccounts');
+        scope.captureException(error);
+      });
     }
     return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };
   }

@@ -14,25 +14,45 @@ const UserBalanceTable = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
-  const limit = useMemo(() => Number(searchParams.get('limit')) || 5, [searchParams]);
+  const page = Number(searchParams.get('sayfa')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
 
   const [data, setData] = useState<BalanceTypes.IUserBalanceData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    let isActive = true;
+
     const fetchBalance = async () => {
       setLoading(true);
+
       try {
         const result = await getUserBalance({ page, limit });
+
+        if (!isActive) return;
+
         if (result.status === 'OK' && result.data) {
           setData(result.data);
+        } else {
+          setData(null);
         }
+      } catch (error) {
+        if (!isActive) return;
+
+        console.error(error);
+        setData(null);
       } finally {
-        setLoading(false);
+        if (isActive) {
+          setLoading(false);
+        }
       }
     };
+
     fetchBalance();
+
+    return () => {
+      isActive = false;
+    };
   }, [page, limit]);
 
   const rows = useMemo(() => {

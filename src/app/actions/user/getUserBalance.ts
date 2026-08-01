@@ -21,7 +21,9 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
       return { status: 'ERROR', message: UNAUTHORIZED };
     }
 
-    const { page = 1, limit = 5 } = params;
+    const page = Math.max(1, Number(params.page) || 1);
+    const limit = Math.max(1, Number(params.limit) || 5);
+
     const skip = (page - 1) * limit;
 
     const balanceDoc = await Balance.findOne({
@@ -58,8 +60,8 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
     return {
       status: 'OK',
       data: {
-        balanceId: plain._id,
-        userId: plain.userId,
+        balanceId: plain._id.toString(),
+        userId: plain.userId.toString(),
         total: plain.total ?? 0,
         transactions: paginatedTransactions,
         totalCount,
@@ -72,7 +74,10 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getUserBalance');
+        scope.captureException(error);
+      });
     }
 
     return {
