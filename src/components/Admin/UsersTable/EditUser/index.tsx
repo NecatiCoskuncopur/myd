@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -26,7 +26,6 @@ interface Props {
 }
 
 const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pricingLists, setPricingLists] = useState<PricingListTypes.IPricingList[]>([]);
   const [carrierAccountsData, setCarrierAccountsData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
   const theme = useTheme();
@@ -69,28 +68,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
   });
 
   useEffect(() => {
-    if (!open) return;
-
-    const fetchPricingLists = async () => {
-      try {
-        const result = await getPricingLists();
-
-        if (result.status === 'OK' && result.data) {
-          setPricingLists(result.data.pricingLists);
-        } else {
-          setErrorMessage(result.message ?? UNEXPECTED_ERROR);
-        }
-      } catch (error) {
-        console.error('Fetch pricing lists failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
-      }
-    };
-
-    fetchPricingLists();
-  }, [open]);
-
-  useEffect(() => {
-    if (!user || pricingLists.length === 0) return;
+    if (!user) return;
 
     reset({
       userId: user._id,
@@ -116,46 +94,77 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
   useEffect(() => {
     if (!open) {
       reset();
-      setErrorMessage(null);
     }
   }, [open, reset]);
 
-  const onSubmit = (values: AdminTypes.ISetUserPayload) => {
-    setErrorMessage(null);
+  const onSubmit = async (values: AdminTypes.ISetUserPayload) => {
+    const response = await setUser(values);
 
-    startTransition(async () => {
-      try {
-        const response = await setUser(values);
+    if (response.status === 'ERROR') {
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: response.message ?? UNEXPECTED_ERROR,
+      });
+      return;
+    }
 
-        if (response.status === 'ERROR') {
-          setErrorMessage(response.message ?? UNEXPECTED_ERROR);
-          return;
-        }
-
-        setSnackbar({
-          open: true,
-          message: response.message ?? EDITUSER.SUCCESS,
-          severity: 'success',
-        });
-        onSuccess?.();
-        reset();
-      } catch (error) {
-        console.error('Update user failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
-      }
+    setSnackbar({
+      open: true,
+      message: response.message ?? EDITUSER.SUCCESS,
+      severity: 'success',
     });
+
+    onSuccess?.();
+    onClose();
+    reset();
   };
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      const response = await getCarrierAccounts({ limit: 100, isActive: true });
+    if (!open) return;
 
-      if (response.status === 'OK' && response.data) {
-        setCarrierAccountsData(response.data);
+    const loadData = async () => {
+      try {
+        const [pricingResponse, carrierResponse] = await Promise.all([
+          getPricingLists(),
+          getCarrierAccounts({
+            limit: 100,
+            isActive: true,
+          }),
+        ]);
+
+        if (pricingResponse.status === 'OK' && pricingResponse.data) {
+          setPricingLists(pricingResponse.data.pricingLists);
+        } else {
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: pricingResponse.message ?? UNEXPECTED_ERROR,
+          });
+        }
+
+        if (carrierResponse.status === 'OK' && carrierResponse.data) {
+          setCarrierAccountsData(carrierResponse.data);
+        } else {
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: carrierResponse.message ?? UNEXPECTED_ERROR,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load edit user data:', error);
+
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: UNEXPECTED_ERROR,
+        });
       }
     };
-    fetchAccounts();
-  }, []);
+
+    loadData();
+  }, [open]);
 
   return (
     <>
@@ -176,12 +185,6 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
         <DialogTitle>Üyeyi Düzenle</DialogTitle>
 
         <DialogContent dividers>
-          {errorMessage && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {errorMessage}
-            </Alert>
-          )}
-
           <FormItems control={control} errors={errors} pricingLists={pricingLists} carrierAccounts={carrierAccountsData?.carrierAccounts || []} />
         </DialogContent>
 
@@ -194,7 +197,16 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snackbar.open}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
         <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
       </Snackbar>
     </>

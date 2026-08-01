@@ -12,6 +12,8 @@ import CreateUserForm from '@/components/CreateUserForm';
 import { AdminTypes } from '@/types/admin';
 import { ShippingTypes } from '@/types/shipping';
 
+import { generalMessages } from '@/constants';
+
 const SenderSection = () => {
   const theme = useTheme();
   const { control, setValue } = useFormContext<ShippingTypes.ICreateShippingFormPayload>();
@@ -22,31 +24,48 @@ const SenderSection = () => {
   const [selectedUser, setSelectedUser] = useState<AdminTypes.ISearchSenderResult | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (inputValue.length < 2) {
+    const timeout = setTimeout(async () => {
+      if (inputValue.trim().length < 2) {
         setOptions([]);
         return;
       }
+
       setLoading(true);
+
       try {
         const res = await searchSenderUser({
           firstName: inputValue,
           lastName: inputValue,
           company: inputValue,
         });
+
         if (res.status === 'OK') {
-          setOptions(res.data || []);
+          setOptions(res.data ?? []);
+        } else {
+          setOptions([]);
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: res.message ?? generalMessages.UNEXPECTED_ERROR,
+          });
         }
-      } catch (error) {
-        console.error('Search Error:', error);
       } finally {
         setLoading(false);
       }
     }, 300);
-    return () => clearTimeout(delayDebounceFn);
+
+    return () => clearTimeout(timeout);
   }, [inputValue]);
 
   const handleUserCreated = (newUser: AdminTypes.ISearchSenderResult) => {
@@ -54,7 +73,7 @@ const SenderSection = () => {
     setSelectedUser(newUser);
     setValue('senderId', newUser._id.toString());
     setIsDrawerOpen(false);
-    setSnackbar({ open: true, message: 'Kullanıcı başarıyla oluşturuldu ve seçildi.' });
+    setSnackbar({ open: true, severity: 'success', message: 'Kullanıcı başarıyla oluşturuldu ve seçildi.' });
   };
 
   return (
@@ -159,7 +178,7 @@ const SenderSection = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity="success" sx={{ width: '100%' }}>
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

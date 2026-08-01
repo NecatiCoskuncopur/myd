@@ -110,7 +110,10 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getAllUsers');
+        scope.captureException(error);
+      });
     }
     return {
       status: 'ERROR',

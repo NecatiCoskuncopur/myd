@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { Alert, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Snackbar } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { Wrapper, TableHeader, TableWrapper } from '@/components';
@@ -17,30 +17,28 @@ import columns from './columns';
 import EditUser from './EditUser';
 import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
+import { generalMessages } from '@/constants';
 
 const Users = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<AdminTypes.IUsersData | null>(null);
   const [loading, setLoading] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<UserTypes.IUserWithPopulatedBalance | null>(null);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
   const [modalState, setModalState] = useState<{
     type: 'edit' | 'balance' | '';
     open: boolean;
   }>({ type: '', open: false });
 
-  const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
-  const limit = useMemo(() => Number(searchParams.get('limit')) || 5, [searchParams]);
-
-  useEffect(() => setIsClient(true), []);
+  const page = Number(searchParams.get('sayfa')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
 
   const fetchUsers = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-
       const response = await getAllUsers({
         page,
         limit,
@@ -49,23 +47,27 @@ const Users = () => {
         company: searchParams.get('company') || '',
         phone: searchParams.get('phone') || '',
         email: searchParams.get('email') || '',
+        balanceSorting: searchParams.get('balanceSorting') ?? '',
       });
 
       if (response.status === 'OK' && response.data) {
         setData(response.data);
+      } else {
+        setData(null);
+
+        setSnackbar({
+          open: true,
+          message: response.message ?? generalMessages.UNEXPECTED_ERROR,
+        });
       }
-    } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
   }, [page, limit, searchParams]);
 
   useEffect(() => {
-    if (isClient) {
-      fetchUsers();
-    }
-  }, [isClient, fetchUsers]);
+    void fetchUsers();
+  }, [fetchUsers]);
 
   const rows = useMemo(
     () =>
@@ -99,55 +101,56 @@ const Users = () => {
     setModalState({ type: '', open: false });
   };
 
-  const usersColumns: GridColDef[] = [
-    ...columns,
-    {
-      field: 'actions',
-      headerName: 'İşlemler',
-      flex: 1,
-      minWidth: 100,
-      sortable: false,
-      filterable: false,
-      renderCell: params => (
-        <>
-          <IconButton
-            size="small"
-            onClick={e => {
-              setSelectedRow(params.row);
-              setMenuAnchorEl(e.currentTarget);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+  const usersColumns = useMemo<GridColDef[]>(
+    () => [
+      ...columns,
+      {
+        field: 'actions',
+        headerName: 'İşlemler',
+        flex: 1,
+        minWidth: 100,
+        sortable: false,
+        filterable: false,
+        renderCell: params => (
+          <>
+            <IconButton
+              size="small"
+              onClick={e => {
+                setSelectedRow(params.row);
+                setMenuAnchorEl(e.currentTarget);
+              }}
+            >
+              <MoreVertIcon />
+            </IconButton>
 
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={menuAnchorEl !== null && selectedRow?._id === params.row.id}
-            onClose={() => {
-              setMenuAnchorEl(null);
-              setSelectedRow(null);
-            }}
-          >
-            <MenuItem onClick={() => handleOpenModal('edit')}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Düzenle</ListItemText>
-            </MenuItem>
+            <Menu
+              anchorEl={menuAnchorEl}
+              open={menuAnchorEl !== null && selectedRow?._id === params.row.id}
+              onClose={() => {
+                setMenuAnchorEl(null);
+                setSelectedRow(null);
+              }}
+            >
+              <MenuItem onClick={() => handleOpenModal('edit')}>
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Düzenle</ListItemText>
+              </MenuItem>
 
-            <MenuItem onClick={() => handleOpenModal('balance')}>
-              <ListItemIcon>
-                <AccountBalanceWalletIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText> Bakiye Hareketi Ekle</ListItemText>
-            </MenuItem>
-          </Menu>
-        </>
-      ),
-    },
-  ];
-
-  if (!isClient) return null;
+              <MenuItem onClick={() => handleOpenModal('balance')}>
+                <ListItemIcon>
+                  <AccountBalanceWalletIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText> Bakiye Hareketi Ekle</ListItemText>
+              </MenuItem>
+            </Menu>
+          </>
+        ),
+      },
+    ],
+    [menuAnchorEl, selectedRow],
+  );
 
   return (
     <Wrapper>
@@ -166,7 +169,10 @@ const Users = () => {
           paginationModel={{ page: page - 1, pageSize: limit }}
           onPaginationModelChange={model => {
             const isPageSizeChanged = model.pageSize !== limit;
-            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+            const params = new URLSearchParams(searchParams);
+            params.set('sayfa', String(isPageSizeChanged ? 1 : model.page + 1));
+            params.set('limit', String(model.pageSize));
+            router.push(`?${params.toString()}`);
           }}
           slotProps={{
             noRowsOverlay: {
@@ -185,8 +191,8 @@ const Users = () => {
         userId={selectedRow?._id ?? ''}
         open={modalState.type === 'balance' && modalState.open}
         onClose={handleCloseModal}
-        onSuccess={async () => {
-          await fetchUsers();
+        onSuccess={() => {
+          void fetchUsers();
           handleCloseModal();
         }}
       />
@@ -196,9 +202,15 @@ const Users = () => {
         onClose={handleCloseModal}
         user={selectedRow}
         onSuccess={() => {
+          void fetchUsers();
           handleCloseModal();
         }}
       />
+      <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
+        <Alert severity="error" variant="filled">
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Wrapper>
   );
 };

@@ -40,7 +40,10 @@ const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'searchSenderUser');
+        scope.captureException(error);
+      });
     }
     return { status: 'ERROR', message: UNEXPECTED_ERROR };
   }

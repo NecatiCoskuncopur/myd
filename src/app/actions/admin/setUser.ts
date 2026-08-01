@@ -8,7 +8,6 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { User } from '@/models';
 import setUserSchema from '@/schemas/setUser.schema';
-import { revalidatePath } from 'next/cache';
 import { AdminTypes } from '@/types/admin';
 const { NOT_FOUND, EDITUSER, EMAIL } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -18,12 +17,11 @@ const setUser = async (data: AdminTypes.ISetUserPayload): Promise<ResponseTypes.
     const authError = await requireRoles([UserRole.ADMIN]);
     if (authError) return authError;
 
-    await connectMongoDB();
-
     const validatedData = await setUserSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const { userId, ...updateData } = validatedData;
 
@@ -43,17 +41,13 @@ const setUser = async (data: AdminTypes.ISetUserPayload): Promise<ResponseTypes.
       };
     }
 
-    revalidatePath('/panel/yonetim/uyeler');
     return { status: 'OK', message: EDITUSER.SUCCESS };
   } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error) {
-      const mongoError = error as { code: number };
-      if (mongoError.code === 11000) {
-        return {
-          status: 'ERROR',
-          message: EMAIL.EXIST,
-        };
-      }
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+      return {
+        status: 'ERROR',
+        message: EMAIL.EXIST,
+      };
     }
 
     if (error instanceof ValidationError) {
@@ -64,7 +58,10 @@ const setUser = async (data: AdminTypes.ISetUserPayload): Promise<ResponseTypes.
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'setUser');
+        scope.captureException(error);
+      });
     }
 
     return {
