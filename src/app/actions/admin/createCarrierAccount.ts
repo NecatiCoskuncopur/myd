@@ -2,7 +2,6 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
-import { revalidatePath } from 'next/cache';
 import { carrierMessages, generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
@@ -15,12 +14,11 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
-    await connectMongoDB();
-
     const validatedData = await createCarrierAccountSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const existingAccount = await CarrierAccount.findOne({
       carrier: validatedData.carrier,
@@ -39,7 +37,6 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
       isActive: true,
     });
 
-    revalidatePath('/panel/yonetim/kargo-hesaplari');
     return {
       status: 'OK',
       message: carrierMessages.CREATE.SUCCESS,
@@ -60,7 +57,10 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'createCarrierAccount');
+        scope.captureException(error);
+      });
     }
 
     return {

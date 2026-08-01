@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -41,47 +41,42 @@ const CarrierAccountTable = () => {
 
   useEffect(() => setIsClient(true), []);
 
+  const fetchCarrierAccounts = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
+    try {
+      setLoading(true);
+
+      const response = await getCarrierAccounts({
+        page,
+        limit,
+        name: searchParams.get('name') || undefined,
+        accountNumber: searchParams.get('accountNumber') || undefined,
+        carrier: (searchParams.get('carrier') as Carrier) || undefined,
+        isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
+      });
+
+      if (requestId !== requestIdRef.current) return;
+
+      if (response.status === 'OK' && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      if (requestId === requestIdRef.current) {
+        console.error(error || generalMessages.UNEXPECTED_ERROR);
+      }
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
+    }
+  }, [page, limit, searchParams]);
+
   useEffect(() => {
     if (!isClient) return;
 
-    let isMounted = true;
-    const requestId = ++requestIdRef.current;
-
-    const fetchCarrierAccounts = async () => {
-      try {
-        setLoading(true);
-
-        const response = await getCarrierAccounts({
-          page,
-          limit,
-          name: searchParams.get('name') || undefined,
-          accountNumber: searchParams.get('accountNumber') || undefined,
-          carrier: (searchParams.get('carrier') as Carrier) || undefined,
-          isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
-        });
-
-        if (!isMounted || requestId !== requestIdRef.current) return;
-
-        if (response.status === 'OK' && response.data) {
-          setData(response.data);
-        }
-      } catch (error) {
-        if (isMounted && requestId === requestIdRef.current) {
-          console.error(error || generalMessages.UNEXPECTED_ERROR);
-        }
-      } finally {
-        if (isMounted && requestId === requestIdRef.current) {
-          setLoading(false);
-        }
-      }
-    };
-
     fetchCarrierAccounts();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [page, limit, searchParams, isClient]);
+  }, [isClient, fetchCarrierAccounts]);
 
   const rows = useMemo(
     () =>
@@ -196,8 +191,9 @@ const CarrierAccountTable = () => {
       <CreateCarrierAccountForm
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}
-        onSuccess={() => {
+        onSuccess={async () => {
           handleCloseModal();
+          await fetchCarrierAccounts();
         }}
       />
 
@@ -205,8 +201,9 @@ const CarrierAccountTable = () => {
         open={modalState.type === 'edit' && modalState.open}
         account={selectedRow}
         onClose={handleCloseModal}
-        onSuccess={() => {
+        onSuccess={async () => {
           handleCloseModal();
+          await fetchCarrierAccounts();
         }}
       />
     </Wrapper>

@@ -16,11 +16,11 @@ type CreateCarrierAccountProps = {
 };
 
 const { ACCOUNTNUMBER, CREATE, NAME } = carrierMessages;
+const { UNEXPECTED_ERROR } = generalMessages;
 
 const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAccountProps) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -68,30 +68,37 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   }, [selectedCarrier, setValue]);
 
   const onSubmit = (data: CarrierAccountTypes.ICreateCarrierAccountPayload) => {
-    setErrorMessage(null);
     startTransition(async () => {
-      try {
-        const response = await createCarrierAccount(data);
+      const response = await createCarrierAccount(data);
 
-        if (response.status === 'OK') {
-          reset();
-          onSuccess?.();
-          onClose();
-          setSnackbar({
-            open: true,
-            message: response.message ?? CREATE.SUCCESS,
-            severity: 'success',
-          });
-        } else {
-          setErrorMessage(response?.message ?? generalMessages.UNEXPECTED_ERROR);
-        }
-      } catch (error) {
-        console.error('Create carrier account failed:', error);
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+      if (response.status === 'ERROR') {
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: response.message ?? UNEXPECTED_ERROR,
+        });
+        return;
       }
+
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: response.message ?? CREATE.SUCCESS,
+      });
+
+      reset();
+      onSuccess?.();
+      onClose();
     });
   };
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
+
+  const credentials = watch('credentials');
   return (
     <>
       <Dialog
@@ -108,16 +115,9 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
           },
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <DialogTitle>Kargo Hesabı Oluştur</DialogTitle>
-
           <DialogContent>
-            {errorMessage && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {errorMessage}
-              </Alert>
-            )}
-
             <Grid container spacing={2} sx={{ mt: 0.5 }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -152,8 +152,8 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
                   control={control}
                   render={({ field }) => (
                     <TextField {...field} select fullWidth label="Kargo Firması" error={!!errors.carrier}>
-                      <MenuItem value="FEDEX">FedEx</MenuItem>
-                      <MenuItem value="UPS">UPS</MenuItem>
+                      <MenuItem value={Carrier.FEDEX}>FedEx</MenuItem>
+                      <MenuItem value={Carrier.UPS}>UPS</MenuItem>
                     </TextField>
                   )}
                 />
@@ -162,7 +162,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>
                   <Grid container spacing={2}>
-                    {watch('credentials')?.map((item, index) => (
+                    {credentials?.map((item, index) => (
                       <Grid size={{ xs: 12, md: 6 }} key={item.key}>
                         <Controller
                           name={`credentials.${index}.value` as const}
@@ -191,14 +191,23 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
             <Button onClick={onClose} color="inherit" disabled={isPending}>
               İptal
             </Button>
-            <StyledButton type="submit" variant="contained" loading={isPending}>
+            <StyledButton type="button" onClick={handleSubmit(onSubmit)} variant="contained" loading={isPending}>
               Kaydet
             </StyledButton>
           </DialogActions>
         </form>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
         <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>
