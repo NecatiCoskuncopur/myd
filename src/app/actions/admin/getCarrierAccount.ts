@@ -38,7 +38,10 @@ const getCarrierAccount = async (id: string): Promise<ResponseTypes.IActionRespo
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getCarrierAccount');
+        scope.captureException(error);
+      });
     }
 
     return {

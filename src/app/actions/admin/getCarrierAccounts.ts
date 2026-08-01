@@ -19,6 +19,9 @@ const getCarrierAccounts = async (
 
     const { page = 1, limit = 5, name, carrier, accountNumber, isActive } = params;
 
+    const currentPage = Math.max(1, page);
+    const currentLimit = Math.max(1, limit);
+
     const match: Record<string, unknown> = {};
 
     if (name) match.name = { $regex: name, $options: 'i' };
@@ -26,7 +29,7 @@ const getCarrierAccounts = async (
     if (accountNumber) match.accountNumber = { $regex: accountNumber, $options: 'i' };
     if (typeof isActive === 'boolean') match.isActive = isActive;
 
-    const skip = (page - 1) * limit;
+    const skip = (currentPage - 1) * currentLimit;
 
     const [carrierAccounts, totalCount] = await Promise.all([
       CarrierAccount.find(match).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
@@ -42,8 +45,8 @@ const getCarrierAccounts = async (
       data: {
         carrierAccounts: JSON.parse(JSON.stringify(carrierAccounts)),
         totalCount,
-        page,
-        limit,
+        page: currentPage,
+        limit: currentLimit,
         totalPages,
         hasPrevPage,
         hasNextPage,
@@ -51,7 +54,10 @@ const getCarrierAccounts = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getCarrierAccounts');
+        scope.captureException(error);
+      });
     }
 
     return {

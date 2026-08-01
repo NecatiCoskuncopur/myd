@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -11,7 +11,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
 import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
-import { Carrier, generalMessages } from '@/constants';
+import { Carrier } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccountForm from './CreateCarrierAccountForm';
 import FilterSection from './FilterSection';
@@ -36,39 +36,33 @@ const CarrierAccountTable = () => {
 
   const requestIdRef = useRef(0);
 
-  const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
-  const limit = useMemo(() => Number(searchParams.get('limit')) || 5, [searchParams]);
+  const page = Number(searchParams.get('sayfa')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
 
   useEffect(() => setIsClient(true), []);
 
   const fetchCarrierAccounts = useCallback(async () => {
     const requestId = ++requestIdRef.current;
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const response = await getCarrierAccounts({
-        page,
-        limit,
-        name: searchParams.get('name') || undefined,
-        accountNumber: searchParams.get('accountNumber') || undefined,
-        carrier: (searchParams.get('carrier') as Carrier) || undefined,
-        isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
-      });
+    const response = await getCarrierAccounts({
+      page,
+      limit,
+      name: searchParams.get('name') || undefined,
+      accountNumber: searchParams.get('accountNumber') || undefined,
+      carrier: (searchParams.get('carrier') as Carrier) || undefined,
+      isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
+    });
 
-      if (requestId !== requestIdRef.current) return;
-
+    if (requestId === requestIdRef.current) {
       if (response.status === 'OK' && response.data) {
         setData(response.data);
+      } else {
+        console.error(response.message);
       }
-    } catch (error) {
-      if (requestId === requestIdRef.current) {
-        console.error(error || generalMessages.UNEXPECTED_ERROR);
-      }
-    } finally {
-      if (requestId === requestIdRef.current) {
-        setLoading(false);
-      }
+
+      setLoading(false);
     }
   }, [page, limit, searchParams]);
 
@@ -78,22 +72,11 @@ const CarrierAccountTable = () => {
     fetchCarrierAccounts();
   }, [isClient, fetchCarrierAccounts]);
 
-  const rows = useMemo(
-    () =>
-      data?.carrierAccounts?.map(account => ({
-        id: account._id,
-        _id: account._id,
-        name: account.name,
-        carrier: account.carrier,
-        accountNumber: account.accountNumber,
-        credentials: account.credentials,
-        meta: account.meta,
-        isActive: account.isActive,
-        createdAt: account.createdAt,
-        updatedAt: account.updatedAt,
-      })) ?? [],
-    [data],
-  );
+  const rows =
+    data?.carrierAccounts.map(account => ({
+      id: account._id,
+      ...account,
+    })) ?? [];
 
   const handleOpenModal = (type: 'edit' | 'create') => {
     setModalState({ type, open: true });
@@ -191,9 +174,9 @@ const CarrierAccountTable = () => {
       <CreateCarrierAccountForm
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}
-        onSuccess={async () => {
+        onSuccess={() => {
           handleCloseModal();
-          await fetchCarrierAccounts();
+          void fetchCarrierAccounts();
         }}
       />
 
@@ -201,9 +184,9 @@ const CarrierAccountTable = () => {
         open={modalState.type === 'edit' && modalState.open}
         account={selectedRow}
         onClose={handleCloseModal}
-        onSuccess={async () => {
+        onSuccess={() => {
           handleCloseModal();
-          await fetchCarrierAccounts();
+          void fetchCarrierAccounts();
         }}
       />
     </Wrapper>
