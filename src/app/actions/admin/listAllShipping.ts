@@ -10,6 +10,7 @@ import connectMongoDB from '@/lib/db';
 import { Shipping } from '@/models';
 import requireRoles from '@/lib/requireRoles';
 import { ShippingTypes } from '@/types/shipping';
+import excelColumns from '@/constants/excelColumns';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -68,27 +69,27 @@ const listShippingAdmin = async (
         .populate('userId', 'name email')
         .select('userId sender consignee content package carrier createdAt')
         .limit(10000)
-        .lean<any[]>();
+        .lean();
 
       const excelData = shipping.map(item => {
-        const totalProductValue = item.content?.products?.reduce((prev: number, { piece = 0, unitPrice = 0 }) => prev + piece * unitPrice, 0) ?? 0;
-        const productNames = item.content?.products?.map((p: any) => p.name).join(', ') ?? '';
+        const totalProductValue = item.content?.products?.reduce((prev: number, { piece = 0, unitPrice = 0 }) => prev + piece! * unitPrice!, 0) ?? 0;
+        const productNames = item.content?.products?.map(p => p.name).join(', ') ?? '';
 
         return {
-          // 'Müşteri Bilgisi': item.userId ? `${item.userId.name} (${item.userId.email})` : 'Bilinmeyen Kullanıcı',
-          'Gönderici Adı': item.sender?.name || '',
-          'Gönderici Firma': item.sender?.company || '',
-          'Alıcı Adı': item.consignee?.name || '',
-          'Alıcı Adres': `${item.consignee?.address?.line1 ?? ''} ${item.consignee?.address?.line2 ?? ''} ${item.consignee?.address?.city ?? ''}`.trim(),
-          'Alıcı Ülke': item.consignee?.address?.country || '',
-          'Alıcı Eyalet': item.consignee?.address?.state ?? '',
-          'Alıcı Posta Kodu': item.consignee?.address?.postalCode || '',
-          'Takip Kodu': item.carrier?.trackingNumber ?? '',
-          'Ağırlık/Desi': item.package?.weight || 0,
-          Tutar: item.carrier?.amount ?? '',
-          İçerik: productNames,
-          'İçerik Toplam Tutarı': totalProductValue,
-          Tarih: item.createdAt ? moment(item.createdAt).format('YYYY-MM-DD') : '',
+          [excelColumns.senderName]: item.sender?.name || '',
+          [excelColumns.senderCompany]: item.sender?.company || '',
+          [excelColumns.consigneeName]: item.consignee?.name || '',
+          [excelColumns.consigneeAddress]:
+            `${item.consignee?.address?.line1 ?? ''} ${item.consignee?.address?.line2 ?? ''} ${item.consignee?.address?.city ?? ''}`.trim(),
+          [excelColumns.consigneeCountry]: item.consignee?.address?.country || '',
+          [excelColumns.consigneeState]: item.consignee?.address?.state ?? '',
+          [excelColumns.consigneePostalCode]: item.consignee?.address?.postalCode || '',
+          [excelColumns.trackingNumber]: item.carrier?.trackingNumber ?? '',
+          [excelColumns.weight]: item.package?.weight || 0,
+          [excelColumns.price]: item.carrier?.amount ?? '',
+          [excelColumns.content]: productNames,
+          [excelColumns.totalContentValue]: totalProductValue,
+          [excelColumns.date]: item.createdAt ? moment(item.createdAt).format('YYYY-MM-DD') : '',
         };
       });
 
@@ -129,19 +130,10 @@ const listShippingAdmin = async (
       },
     });
 
-    const serializedShippings: any[] = result.docs.map((doc: any) => ({
-      ...doc,
-      _id: doc._id.toString(),
-      userId: doc.userId ? { ...doc.userId, _id: doc.userId._id.toString() } : null,
-      consigneeId: doc.consigneeId?.toString(),
-      createdAt: doc.createdAt?.toString(),
-      updatedAt: doc.updatedAt?.toString(),
-    }));
-
     return {
       status: 'OK',
       data: {
-        shippings: serializedShippings,
+        shippings: JSON.parse(JSON.stringify(result.docs)),
         totalCount: result.totalDocs,
         limit: result.limit ?? safeLimit,
         page: result.page ?? safePage,
@@ -152,7 +144,10 @@ const listShippingAdmin = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'listAllShipping');
+        scope.captureException(error);
+      });
     }
 
     return {

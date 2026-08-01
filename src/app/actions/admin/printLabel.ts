@@ -91,7 +91,10 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'printLabel');
+        scope.captureException(error);
+      });
     }
 
     return {

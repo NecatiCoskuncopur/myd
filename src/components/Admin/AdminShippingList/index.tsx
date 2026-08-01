@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCarrierIcon } from '@/constants/carrierIcons';
 
@@ -22,6 +22,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Snackbar,
   Typography,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -50,7 +51,7 @@ const AdminShippingList = () => {
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -66,38 +67,67 @@ const AdminShippingList = () => {
 
   const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
 
-  const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
-  const limit = useMemo(() => Number(searchParams.get('limit')) || 10, [searchParams]);
+  const requestIdRef = useRef(0);
+  const page = Number(searchParams.get('sayfa')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
 
   useEffect(() => setIsClient(true), []);
 
-  const fetchList = async () => {
-    if (!isClient) return;
+  const filters = useMemo(
+    () => ({
+      consigneeName: searchParams.get('consigneeName') || undefined,
+      consigneePhone: searchParams.get('consigneePhone') || undefined,
+      trackingNumber: searchParams.get('trackingNumber') || undefined,
+      startDate: searchParams.get('startDate') || undefined,
+      endDate: searchParams.get('endDate') || undefined,
+    }),
+    [searchParams],
+  );
+
+  const fetchList = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
+    setLoading(true);
+
     try {
-      setLoading(true);
       const response = await listAllShipping({
         page,
         limit,
-        consigneeName: searchParams.get('consigneeName') || undefined,
-        consigneePhone: searchParams.get('consigneePhone') || undefined,
-        trackingNumber: searchParams.get('trackingNumber') || undefined,
-        startDate: searchParams.get('startDate') || undefined,
-        endDate: searchParams.get('endDate') || undefined,
+        ...filters,
       });
 
-      if (response.status === 'OK' && 'shippings' in response.data!) {
-        setData(response.data as ShippingTypes.IShippingData);
+      if (requestId !== requestIdRef.current) return;
+
+      if (response.status === 'OK' && response.data && 'shippings' in response.data) {
+        setData(response.data);
+        return;
       }
+
+      setData(null);
+
+      setSnackbar({
+        open: true,
+        message: response.message ?? generalMessages.UNEXPECTED_ERROR,
+      });
     } catch {
-      console.error(UNEXPECTED_ERROR);
+      if (requestId !== requestIdRef.current) return;
+
+      setData(null);
+
+      setSnackbar({
+        open: true,
+        message: generalMessages.UNEXPECTED_ERROR,
+      });
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [page, limit, filters]);
 
   useEffect(() => {
     fetchList();
-  }, [page, limit, searchParams, isClient]);
+  }, [fetchList]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -160,7 +190,7 @@ const AdminShippingList = () => {
       });
 
       if (res.status === 'OK') {
-        fetchList();
+        await fetchList();
       } else {
         setBarcodeError(res.message || 'Barkod oluşturulamadı');
       }
@@ -187,11 +217,17 @@ const AdminShippingList = () => {
           newWindow.document.title = type === 'labels' ? 'Kargo Barkodu' : 'Proforma Fatura';
         }
       } else {
-        alert(res.message || 'Evrak indirilirken bir hata oluştu.');
+        setSnackbar({
+          open: true,
+          message: 'Evrak indirilirken bir hata oluştu.',
+        });
       }
     } catch (error) {
       console.error(error);
-      alert('Beklenmedik bir hata oluştu.');
+      setSnackbar({
+        open: true,
+        message: UNEXPECTED_ERROR,
+      });
     }
   };
 
@@ -337,6 +373,7 @@ const AdminShippingList = () => {
             )}
 
             {!barcodeLoading && barcodeError && (
+
               <Alert severity="error" onClose={() => setBarcodeError(null)}>
                 {barcodeError}
               </Alert>
@@ -355,6 +392,11 @@ const AdminShippingList = () => {
             fetchList();
           }}
         />
+        <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
+          <Alert severity="success" variant="filled">
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Wrapper>
     </LocalizationProvider>
   );

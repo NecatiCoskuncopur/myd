@@ -23,3 +23,4 @@ export { default as ShippingPurpose } from './enums/shippingPurpose';
 export { default as CurrencyEnum } from './enums/currencyEnum';
 export { default as ShippingStatus } from './enums/shippingStatus';
 export { default as ShippingActivities } from './enums/shippingActivities';
+export { default as ExcelColumns } from './excelColumns';
