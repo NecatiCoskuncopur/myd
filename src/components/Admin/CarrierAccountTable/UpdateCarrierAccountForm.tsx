@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useTransition } from 'react';
 
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Snackbar, TextField, useTheme } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
 import StyledButton from '@/components/StyledButton';
@@ -16,11 +16,11 @@ type UpdateCarrierAccountProps = {
 };
 
 const { ACCOUNTNUMBER, UPDATE, NAME } = carrierMessages;
+const { UNEXPECTED_ERROR } = generalMessages;
 
 const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateCarrierAccountProps) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -34,7 +34,6 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   const {
     control,
     handleSubmit,
-    watch,
     setValue,
     reset,
     formState: { errors },
@@ -43,6 +42,7 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   useEffect(() => {
     if (account && open) {
       reset({
+        id: account._id,
         name: account.name,
         accountNumber: account.accountNumber,
         carrier: account.carrier,
@@ -52,7 +52,15 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
     }
   }, [account, open, reset]);
 
-  const selectedCarrier = watch('carrier');
+  const credentials = useWatch({
+    control,
+    name: 'credentials',
+  });
+
+  const selectedCarrier = useWatch({
+    control,
+    name: 'carrier',
+  });
 
   useEffect(() => {
     if (account?.carrier !== selectedCarrier) {
@@ -71,51 +79,47 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   }, [selectedCarrier, account?.carrier, setValue]);
 
   const onSubmit = (data: CarrierAccountTypes.IUpdateCarrierAccountPayload) => {
-    if (!account?._id) return;
-    setErrorMessage(null);
-
     startTransition(async () => {
-      try {
-        const payload = { ...data, id: account._id };
-        const response = await updateCarrierAccount(payload);
-        if (response.status === 'OK') {
-          onSuccess?.();
-          onClose();
-          setSnackbar({
-            open: true,
-            message: response.message ?? UPDATE.SUCCESS,
-            severity: 'success',
-          });
-        } else {
-          setErrorMessage(response?.message ?? generalMessages.UNEXPECTED_ERROR);
-        }
-      } catch (error) {
-        console.error('Update carrier account failed:', error);
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+      const response = await updateCarrierAccount(data);
+
+      if (response.status === 'ERROR') {
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: response.message ?? UNEXPECTED_ERROR,
+        });
+        return;
       }
+      setSnackbar({
+        open: true,
+        message: response.message ?? UPDATE.SUCCESS,
+        severity: 'success',
+      });
+
+      onSuccess?.();
+      onClose();
     });
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
   return (
     <>
       <Dialog
         open={open}
-        onClose={onClose}
+        onClose={handleClose}
         maxWidth="md"
         fullWidth
         slotProps={{
           paper: { sx: { backgroundImage: 'none', backgroundColor: theme.palette.dashboard.sidebar } },
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <DialogTitle>Kargo Hesabını Düzenle</DialogTitle>
           <DialogContent>
-            {errorMessage && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {errorMessage}
-              </Alert>
-            )}
-
             <Grid container spacing={2} sx={{ mt: 0.5 }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -175,7 +179,7 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>
                   <Grid container spacing={2}>
-                    {watch('credentials')?.map((item, index) => (
+                    {credentials?.map((item, index) => (
                       <Grid size={{ xs: 12, md: 6 }} key={item.key}>
                         <Controller
                           name={`credentials.${index}.value` as const}
@@ -190,17 +194,26 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
             </Grid>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>
-            <Button onClick={onClose} color="inherit">
+            <Button onClick={handleClose} color="inherit">
               İptal
             </Button>
-            <StyledButton type="submit" variant="contained" loading={isPending}>
+            <StyledButton type="button" onClick={handleSubmit(onSubmit)} variant="contained" loading={isPending}>
               Güncelle
             </StyledButton>
           </DialogActions>
         </form>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
         <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>
