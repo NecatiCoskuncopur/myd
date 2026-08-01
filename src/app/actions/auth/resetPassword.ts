@@ -21,26 +21,25 @@ interface ResetTokenPayload extends JwtPayload {
 
 const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await resetPasswordSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
 
+    await connectMongoDB();
     const decoded = jwt.decode(validatedData.token) as ResetTokenPayload;
 
-    if (!decoded || !decoded.sub || decoded.type !== 'PASSWORD_RESET') {
+    if (!decoded || typeof decoded !== 'object' || !('sub' in decoded) || decoded.type !== 'PASSWORD_RESET') {
       return { status: 'ERROR', message: INVALID_TOKEN };
     }
 
-    const user = await User.findById(decoded.sub).select('+password');
+    const user = await User.findById(decoded.sub).select('_id email +password');
 
     if (!user) {
       return { status: 'ERROR', message: INVALID_TOKEN };
     }
 
-    const dynamicSecret = env.JWT_SECRET + user.password.slice(-10);
+    const dynamicSecret = `${env.JWT_SECRET}:${user.password}`;
 
     try {
       jwt.verify(validatedData.token, dynamicSecret);
@@ -74,7 +73,10 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'resetPassword');
+        scope.captureException(error);
+      });
     }
 
     return {

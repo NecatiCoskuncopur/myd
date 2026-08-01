@@ -5,13 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/constants/excelColumns.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ResetPasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SignUpForm/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +110,7 @@
       <workItem from="1785509662801" duration="4694000" />
       <workItem from="1785519761846" duration="653000" />
       <workItem from="1785546599918" duration="10564000" />
-      <workItem from="1785568114576" duration="6227000" />
+      <workItem from="1785568114576" duration="13296000" />
     </task>
     <servers />
   </component>

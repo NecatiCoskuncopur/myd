@@ -14,12 +14,11 @@ import createUserSchema from '@/schemas/createUser.schema';
 
 const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await createUserSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     /*
     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
@@ -28,7 +27,7 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     }
 */
 
-    const emailLower = validatedData.email.toLowerCase();
+    const emailLower = validatedData.email.trim().toLowerCase();
     const existingUser = await User.findOne({ email: emailLower });
     if (existingUser) {
       return {
@@ -69,27 +68,29 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       };
     }
 
-    try {
-      await MydMail.sendMail({
-        from: '"MYD Export" <noreply@mydexport.com>',
-        to: newUser.email,
-        subject: '🎉 Hoşgeldiniz!',
-        html: welcomeMail,
+    void MydMail.sendMail({
+      from: '"MYD Export" <noreply@mydexport.com>',
+      to: newUser.email,
+      subject: '🎉 Hoşgeldiniz!',
+      html: welcomeMail,
+    }).catch(error => {
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'signUp');
+        scope.setExtra('email', newUser.email);
+        Sentry.captureException(error);
       });
-    } catch (mailError) {
-      Sentry.captureException(mailError);
+    });
+
+    const smsText = `Sayın ${newUser.firstName} ${newUser.lastName}, MYD Export'a hoşgeldiniz! Gönderi oluşturmaya başlayabilirsiniz, detaylar için sizi arayacağız, iyi çalışmalar ve bol kazançlar dileriz.`;
+    if (!newUser.phone) {
+      void sendSms(newUser.phone, smsText).catch(error => {
+        Sentry.withScope(scope => {
+          scope.setTag('action', 'signUp');
+          scope.setExtra('phone', newUser.phone);
+          Sentry.captureException(error);
+        });
+      });
     }
-
-    if (newUser.phone) {
-      try {
-        const smsText = `Sayın ${newUser.firstName} ${newUser.lastName}, MYD Export'a hoşgeldiniz! Gönderi oluşturmaya başlayabilirsiniz, detaylar için sizi arayacağız, iyi çalışmalar ve bol kazançlar dileriz.`;
-
-        await sendSms(newUser.phone, smsText);
-      } catch (smsError) {
-        Sentry.captureException(smsError);
-      }
-    }
-
     return {
       status: 'OK',
       message: authMessages.SIGNUP.SUCCESS,
@@ -103,9 +104,11 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'signUp');
+        scope.captureException(error);
+      });
     }
-
     return {
       status: 'ERROR',
       message: generalMessages.UNEXPECTED_ERROR,

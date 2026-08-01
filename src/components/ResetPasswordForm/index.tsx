@@ -10,7 +10,7 @@ import { authMessages, generalMessages, userMessages } from '@/constants';
 import FormItems from './FormItems';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 
-const { INVALID_TOKEN, RESETPASSWORD } = authMessages;
+const { RESETPASSWORD } = authMessages;
 const { PASSWORD } = userMessages;
 
 const ResetPasswordForm = () => {
@@ -49,11 +49,7 @@ const ResetPasswordForm = () => {
         });
 
         if (response.status === 'ERROR') {
-          if (response.message === INVALID_TOKEN) {
-            setErrorMessage(INVALID_TOKEN);
-          } else {
-            setErrorMessage(response.message ?? RESETPASSWORD.ERROR);
-          }
+          setErrorMessage(response.message ?? RESETPASSWORD.ERROR);
           return;
         }
 

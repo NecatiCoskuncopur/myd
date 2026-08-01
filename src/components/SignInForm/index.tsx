@@ -7,13 +7,13 @@ import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/mat
 import { useForm } from 'react-hook-form';
 
 import signIn from '@/app/actions/auth/signIn';
-import { authMessages, generalMessages } from '@/constants';
+import { authMessages } from '@/constants';
 import FormItems from './FormItems';
 
 const SignInForm = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [captchaKey, setCaptchaKey] = useState(0);
+  // const [captchaKey, setCaptchaKey] = useState(0);
 
   const [pending, startTransition] = useTransition();
 
@@ -32,23 +32,18 @@ const SignInForm = () => {
   });
 
   const onSubmit = (values: AuthTypes.ISignInPayload) => {
+    setErrorMessage(null);
+
     startTransition(async () => {
-      try {
-        const response = await signIn(values);
+      const response = await signIn(values);
 
-        if (response.status === 'ERROR') {
-          // resetField('recaptchaToken');
-          resetField('password');
-          setCaptchaKey(prev => prev + 1);
-          setErrorMessage(response.message ?? authMessages.SIGNIN.ERROR);
-          return;
-        }
-
-        router.refresh();
-        router.replace('/panel');
-      } catch {
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+      if (response.status === 'ERROR') {
+        resetField('password');
+        setErrorMessage(response.message ?? authMessages.SIGNIN.ERROR);
+        return;
       }
+
+      router.replace('/panel');
     });
   };
 
@@ -70,7 +65,7 @@ const SignInForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 3 }}
-          startIcon={pending && <CircularProgress size={20} />}
+          startIcon={pending ? <CircularProgress size={20} color="inherit" /> : undefined}
           disabled={pending}
         >
           {pending ? '' : 'Giriş Yap'}

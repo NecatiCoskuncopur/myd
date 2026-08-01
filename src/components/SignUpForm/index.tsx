@@ -14,7 +14,7 @@ const SignUpForm = () => {
   const [pending, startTransition] = useTransition();
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [captchaKey, setCaptchaKey] = useState(0);
+  // const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
@@ -48,16 +48,15 @@ const SignUpForm = () => {
       try {
         const response = await signUp(values);
 
-        if (response.status === 'ERROR') {
-          // resetField('recaptchaToken');
-          resetField('password');
-          setCaptchaKey(prev => prev + 1);
-          setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
+        if (response.status === 'OK') {
+          setSuccess(true);
           return;
         }
 
-        setSuccess(true);
+        resetField('password');
+        setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
       } catch {
+        resetField('password');
         setErrorMessage(generalMessages.UNEXPECTED_ERROR);
       }
     });
@@ -79,15 +78,16 @@ const SignUpForm = () => {
         </Alert>
       )}
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Box>
         <FormItems errors={errors} control={control} setValue={setValue} />
         <Button
-          type="submit"
+          type="button"
+          onClick={handleSubmit(onSubmit)}
           variant="contained"
           size="large"
           fullWidth
           sx={{ mt: 4 }}
-          startIcon={pending && <CircularProgress size={20} />}
+          startIcon={pending ? <CircularProgress size={20} color="inherit" /> : undefined}
           disabled={pending}
         >
           {pending ? '' : 'Kayıt Ol'}

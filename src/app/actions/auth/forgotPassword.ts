@@ -8,29 +8,29 @@ import { forgotPasswordMail, generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import MydMail from '@/lib/mailer';
-import validateRecaptcha from '@/lib/validateRecaptcha';
+// import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import forgotPasswordSchema from '@/schemas/forgotPassword.schema';
 
 const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await forgotPasswordSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
+    await connectMongoDB();
 
     /*    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
     }*/
 
-    const user = await User.findOne({ email: validatedData.email.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: validatedData.email.trim().toLowerCase() }).select('_id email +password');
 
     if (!user) return { status: 'OK' };
 
-    const secret = env.JWT_SECRET + user.password.slice(-10);
+    const secret = `${env.JWT_SECRET}:${user.password}`;
 
     const token = jwt.sign(
       {
@@ -49,7 +49,11 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
         html: forgotPasswordMail(`${env.FRONT_URL}/kullanici/parolami-unuttum/${token}`),
       });
     } catch (mailError) {
-      Sentry.captureException(mailError);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'forgotPassword');
+        scope.setExtra('email', user.email);
+        Sentry.captureException(mailError);
+      });
     }
 
     return { status: 'OK' };
@@ -62,7 +66,10 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'forgotPassword');
+        scope.captureException(error);
+      });
     }
 
     return {

@@ -14,13 +14,13 @@ const ForgotPasswordForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [pending, startTransition] = useTransition();
-  const [captchaKey, setCaptchaKey] = useState(0);
+  // const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
     handleSubmit,
     setValue,
-    resetField,
+    // resetField,
     formState: { errors },
   } = useForm<AuthTypes.IForgotPasswordPayload>({
     defaultValues: {
@@ -37,8 +37,6 @@ const ForgotPasswordForm = () => {
         const response = await forgotPassword(values);
 
         if (response.status === 'ERROR') {
-          // resetField('recaptchaToken');
-          setCaptchaKey(prev => prev + 1);
           setErrorMessage(response.message ?? authMessages.FORGOTPASSWORD.ERROR);
           return;
         }

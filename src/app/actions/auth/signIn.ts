@@ -16,21 +16,22 @@ import { UserDocument } from '@/models/User.model';
 
 const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IActionResponse<AuthTypes.ISignInResponse>> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await loginSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     /*    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
     }*/
 
+    const email = validatedData.email.trim().toLowerCase();
+
     const user = (await User.findOne({
-      email: validatedData.email.toLowerCase(),
-    }).select('+password')) as UserDocument | null;
+      email,
+    }).select('_id email role isActive barcodePermits +password')) as UserDocument | null;
 
     const hashedPassword = user?.password ?? '$2y$12$L7W.IasE0A6hA9hYm8dMhuXGqVz5.Vq5vY6L7W.IasE0A6hA9hYm8dMhu';
     const isCorrectPassword = await bcrypt.compare(validatedData.password, hashedPassword);
@@ -77,10 +78,12 @@ const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IAc
       return { status: 'ERROR', message: error.errors.join(', ') };
     }
 
-    Sentry.withScope(scope => {
-      scope.setExtra('payload_email', data.email);
-      Sentry.captureException(error);
-    });
+    if (error instanceof Error) {
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'signIn');
+        scope.captureException(error);
+      });
+    }
 
     return {
       status: 'ERROR',
