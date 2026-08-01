@@ -7,7 +7,6 @@ import { generalMessages, pricingListMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList, User } from '@/models';
-import { revalidatePath } from 'next/cache';
 
 const { NOT_FOUND } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -54,14 +53,16 @@ const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionR
 
     await pricingListDoc.deleteOne();
 
-    revalidatePath('/panel/yonetim/fiyat-listeleri');
     return {
       status: 'OK',
       message: pricingListMessages.DELETE.SUCCESS,
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'deletePricingList');
+        scope.captureException(error);
+      });
     }
 
     return {

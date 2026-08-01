@@ -53,7 +53,10 @@ const getPricingLists = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getPricingLists');
+        scope.captureException(error);
+      });
     }
 
     return {

@@ -6,9 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +109,7 @@
       <workItem from="1785495848415" duration="2529000" />
       <workItem from="1785509662801" duration="4694000" />
       <workItem from="1785519761846" duration="653000" />
-      <workItem from="1785546599918" duration="4035000" />
+      <workItem from="1785546599918" duration="7795000" />
     </task>
     <servers />
   </component>

@@ -25,7 +25,6 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
   const matrix = useMemo(() => buildPricingMatrix(9), []);
 
   const [rows, setRows] = useState<GridRow[]>([matrix.createEmptyRow(), matrix.createThanRow()]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -46,38 +45,40 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
   });
 
   useEffect(() => {
-    if (list && list.zone && list.zone.length > 0) {
-      reset({ name: list.name });
+    if (!list || list.zone.length === 0) {
+      return;
+    }
 
-      const newRows: GridRow[] = [];
-      const pricesLength = list.zone[0].prices.length;
+    reset({ name: list.name });
 
-      for (let i = 0; i < pricesLength; i++) {
-        const row: GridRow = {
-          id: i.toString(),
-          weight: list.zone[0].prices[i]?.weight ?? 0,
-        };
+    const newRows: GridRow[] = [];
+    const pricesLength = list.zone[0].prices.length;
 
-        for (let z = 0; z < list.zone.length; z++) {
-          const priceObj = list.zone[z].prices[i];
-          row[`zone${z + 1}`] = priceObj?.price ?? null;
-        }
-
-        newRows.push(row);
-      }
-
-      const lastWeight = list.zone[0].prices[pricesLength - 1]?.weight ?? 0;
-      const thanRow: GridRow = {
-        id: 'than',
-        weight: `>${lastWeight}`,
+    for (let i = 0; i < pricesLength; i++) {
+      const row: GridRow = {
+        id: i.toString(),
+        weight: list.zone[0].prices[i]?.weight ?? 0,
       };
 
       for (let z = 0; z < list.zone.length; z++) {
-        thanRow[`zone${z + 1}`] = list.zone[z].than ?? null;
+        const priceObj = list.zone[z].prices[i];
+        row[`zone${z + 1}`] = priceObj?.price ?? null;
       }
 
-      setRows([...newRows, thanRow]);
+      newRows.push(row);
     }
+
+    const lastWeight = list.zone[0].prices[pricesLength - 1]?.weight ?? 0;
+    const thanRow: GridRow = {
+      id: 'than',
+      weight: `>${lastWeight}`,
+    };
+
+    for (let z = 0; z < list.zone.length; z++) {
+      thanRow[`zone${z + 1}`] = list.zone[z].than ?? null;
+    }
+
+    setRows([...newRows, thanRow]);
   }, [list, reset]);
 
   const addRow = () => {
@@ -102,41 +103,39 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
   };
 
   const onSubmit = (data: PricingListTypes.ICreatePricingListPayload) => {
-    setErrorMessage(null);
-
+    if (!list) return;
     startTransition(async () => {
-      try {
-        const zones = matrix.rowsToZones(rows);
+      const zones = matrix.rowsToZones(rows);
 
-        const res = await updatePricingList({
-          pricingListId: list?._id ?? '',
-          name: data.name,
-          zone: zones,
-        });
+      const response = await updatePricingList({
+        pricingListId: list?._id,
+        name: data.name,
+        zone: zones,
+      });
 
-        if (res.status === 'ERROR') {
-          setErrorMessage(res.message ?? UNEXPECTED_ERROR);
-          return;
-        }
-
+      if (response.status === 'ERROR') {
         setSnackbar({
           open: true,
-          message: res.message ?? UPDATE,
-          severity: 'success',
+          severity: 'error',
+          message: response.message ?? UNEXPECTED_ERROR,
         });
-
-        onSuccess?.();
-      } catch (error) {
-        console.error('Update pricing list failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
+        return;
       }
+
+      setSnackbar({
+        open: true,
+        message: response.message ?? UPDATE,
+        severity: 'success',
+      });
+
+      onSuccess?.();
+      handleClose();
     });
   };
 
   const handleClose = () => {
-    setRows([matrix.createEmptyRow(), matrix.createThanRow()]);
-    setErrorMessage(null);
     reset();
+    setRows([matrix.createEmptyRow(), matrix.createThanRow()]);
     onClose?.();
   };
 
@@ -154,12 +153,6 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
         }}
       >
         <DialogTitle>Fiyat Listesini Düzenle</DialogTitle>
-
-        {errorMessage && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMessage}
-          </Alert>
-        )}
 
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -189,6 +182,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
                 '& .MuiDataGrid-cell': { fontSize: 12, border: `1px solid ${theme.palette.dashboard.border}` },
                 '& .MuiDataGrid-columnHeader': { fontSize: 12 },
               }}
+              onProcessRowUpdateError={error => console.error(error)}
               processRowUpdate={newRow => {
                 setRows(prev => prev.map(r => (r.id === newRow.id ? newRow : r)));
                 return newRow;
@@ -207,8 +201,17 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
         </DialogContent>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
-        <Alert severity={snackbar.severity} variant="filled">
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

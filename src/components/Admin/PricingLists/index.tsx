@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -36,48 +36,58 @@ const PriceLists = () => {
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
   const requestIdRef = useRef(0);
-  const page = useMemo(() => Number(searchParams.get('sayfa')) || 1, [searchParams]);
-  const limit = useMemo(() => Number(searchParams.get('limit')) || 5, [searchParams]);
+  const page = Number(searchParams.get('sayfa')) || 1;
+  const limit = Number(searchParams.get('limit')) || 5;
 
   useEffect(() => setIsClient(true), []);
+  const name = searchParams.get('name') ?? undefined;
 
-  const fetchPricingLists = async () => {
-    const isMounted = true;
+  const fetchPricingLists = useCallback(async () => {
     const requestId = ++requestIdRef.current;
-
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await getPricingLists({ page, limit, name: searchParams.get('name') || undefined });
-      if (!isMounted || requestId !== requestIdRef.current) return;
-      if (response.status === 'OK' && response.data) setData(response.data);
-    } catch (error) {
-      if (isMounted && requestId === requestIdRef.current) console.error(error || generalMessages.UNEXPECTED_ERROR);
+      const response = await getPricingLists({
+        page,
+        limit,
+        name,
+      });
+
+      if (requestId !== requestIdRef.current) return;
+
+      if (response.status === 'OK' && response.data) {
+        setData(response.data);
+      } else {
+        setData(null);
+
+        setSnackbar({
+          open: true,
+          message: response.message ?? generalMessages.UNEXPECTED_ERROR,
+        });
+      }
     } finally {
-      if (isMounted && requestId === requestIdRef.current) setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [page, limit, name]);
 
   useEffect(() => {
     if (!isClient) return;
+
     fetchPricingLists();
-  }, [page, limit, searchParams, isClient]);
+  }, [isClient, fetchPricingLists]);
 
   const rows = useMemo(
     () =>
       data?.pricingLists?.map(pricingList => ({
         id: pricingList._id,
-        _id: pricingList._id,
-        name: pricingList.name,
-        zone: pricingList.zone,
-        isDefault: pricingList.isDefault,
-        createdAt: pricingList.createdAt,
-        updatedAt: pricingList.updatedAt,
+        ...pricingList,
       })) ?? [],
     [data],
   );
 
   const handleOpenModal = (type: 'edit' | 'create' | 'delete') => {
-    setMenuOpen(false); // Menüyü kapat ama 3 nokta buton referansını tut
+    setMenuOpen(false);
     setModalState({ type, open: true });
   };
 
@@ -87,59 +97,62 @@ const PriceLists = () => {
     setModalState({ type: '', open: false });
   };
 
-  const priceListsColumns: GridColDef[] = [
-    ...columns,
-    {
-      field: 'actions',
-      headerName: 'İşlemler',
-      flex: 1,
-      minWidth: 100,
-      sortable: false,
-      filterable: false,
-      renderCell: params => (
-        <>
-          <IconButton
-            size="small"
-            onClick={e => {
-              setSelectedRow(params.row);
-              setActionIconButton(e.currentTarget); // Doğrudan 3 nokta butonunu hedefler
-              setMenuOpen(true);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={actionIconButton}
-            open={menuOpen && selectedRow?._id === params.row.id}
-            onClose={() => {
-              setMenuOpen(false);
-              setActionIconButton(null);
-              setSelectedRow(null);
-            }}
-          >
-            <MenuItem onClick={() => handleOpenModal('edit')}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Düzenle</ListItemText>
-            </MenuItem>
-
-            <MenuItem
-              onClick={() => handleOpenModal('delete')}
-              disabled={params.row.isDefault}
-              sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }}
+  const priceListsColumns = useMemo<GridColDef[]>(
+    () => [
+      ...columns,
+      {
+        field: 'actions',
+        headerName: 'İşlemler',
+        flex: 1,
+        minWidth: 100,
+        sortable: false,
+        filterable: false,
+        renderCell: params => (
+          <>
+            <IconButton
+              size="small"
+              onClick={e => {
+                setSelectedRow(params.row);
+                setActionIconButton(e.currentTarget); // Doğrudan 3 nokta butonunu hedefler
+                setMenuOpen(true);
+              }}
             >
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }} />
-              </ListItemIcon>
-              <ListItemText>{params.row.isDefault ? 'Varsayılan (Silinemez)' : 'Sil'}</ListItemText>
-            </MenuItem>
-          </Menu>
-        </>
-      ),
-    },
-  ];
+              <MoreVertIcon />
+            </IconButton>
+
+            <Menu
+              anchorEl={actionIconButton}
+              open={menuOpen && selectedRow?._id === params.row.id}
+              onClose={() => {
+                setMenuOpen(false);
+                setActionIconButton(null);
+                setSelectedRow(null);
+              }}
+            >
+              <MenuItem onClick={() => handleOpenModal('edit')}>
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Düzenle</ListItemText>
+              </MenuItem>
+
+              <MenuItem
+                onClick={() => handleOpenModal('delete')}
+                disabled={params.row.isDefault}
+                sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }}
+              >
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }} />
+                </ListItemIcon>
+                <ListItemText>{params.row.isDefault ? 'Varsayılan (Silinemez)' : 'Sil'}</ListItemText>
+              </MenuItem>
+            </Menu>
+          </>
+        ),
+      },
+    ],
+    [theme, actionIconButton, menuOpen, selectedRow],
+  );
 
   if (!isClient) return null;
 
@@ -168,7 +181,10 @@ const PriceLists = () => {
           paginationModel={{ page: page - 1, pageSize: limit }}
           onPaginationModelChange={model => {
             const isPageSizeChanged = model.pageSize !== limit;
-            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
+            const params = new URLSearchParams(searchParams);
+            params.set('sayfa', String(isPageSizeChanged ? 1 : model.page + 1));
+            params.set('limit', String(model.pageSize));
+            router.push(`?${params.toString()}`);
           }}
           slotProps={{
             noRowsOverlay: {
@@ -184,8 +200,23 @@ const PriceLists = () => {
         />
       </TableWrapper>
 
-      <CreateList open={modalState.type === 'create' && modalState.open} onClose={handleCloseModal} onSuccess={handleCloseModal} />
-      <UpdateList list={selectedRow} open={modalState.type === 'edit' && modalState.open} onClose={handleCloseModal} onSuccess={handleCloseModal} />
+      <CreateList
+        open={modalState.type === 'create' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          handleCloseModal();
+          void fetchPricingLists();
+        }}
+      />
+      <UpdateList
+        list={selectedRow}
+        open={modalState.type === 'edit' && modalState.open}
+        onClose={handleCloseModal}
+        onSuccess={() => {
+          handleCloseModal();
+          void fetchPricingLists();
+        }}
+      />
 
       <DeleteList
         list={selectedRow}
@@ -195,7 +226,7 @@ const PriceLists = () => {
         onSuccess={msg => {
           handleCloseModal();
           setSnackbar({ open: true, message: msg });
-          fetchPricingLists();
+          void fetchPricingLists();
         }}
       />
 

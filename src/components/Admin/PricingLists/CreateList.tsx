@@ -21,7 +21,6 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   const theme = useTheme();
   const [pending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const matrix = useMemo(() => buildPricingMatrix(9), []);
   const [rows, setRows] = useState([matrix.createEmptyRow(), matrix.createThanRow()]);
 
@@ -70,42 +69,39 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   };
 
   const onSubmit = (data: PricingListTypes.ICreatePricingListPayload) => {
-    setErrorMessage(null);
-
     startTransition(async () => {
-      try {
-        const zones = matrix.rowsToZones(rows);
+      const zones = matrix.rowsToZones(rows);
 
-        const res = await createPricingList({
-          ...data,
-          zone: zones,
-        });
+      const response = await createPricingList({
+        ...data,
+        zone: zones,
+      });
 
-        if (res.status === 'ERROR') {
-          setErrorMessage(res.message ?? UNEXPECTED_ERROR);
-          return;
-        }
-
+      if (response.status === 'ERROR') {
         setSnackbar({
           open: true,
-          message: res.message ?? SUCCESS,
-          severity: 'success',
+          severity: 'error',
+          message: response.message ?? UNEXPECTED_ERROR,
         });
-
-        onSuccess?.();
-        reset();
-      } catch (error) {
-        console.error('Create pricing list failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
+        return;
       }
+
+      setSnackbar({
+        open: true,
+        message: response.message ?? SUCCESS,
+        severity: 'success',
+      });
+
+      reset();
+      onSuccess?.();
+      handleClose();
     });
   };
 
   const handleClose = () => {
-    setRows([matrix.createEmptyRow(), matrix.createThanRow()]);
-    setErrorMessage(null);
-    onClose?.();
     reset();
+    setRows([matrix.createEmptyRow(), matrix.createThanRow()]);
+    onClose?.();
   };
 
   return (
@@ -125,12 +121,6 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
         }}
       >
         <DialogTitle>Fiyat Listesi Oluştur</DialogTitle>
-
-        {errorMessage && (
-          <Alert severity="error" sx={{ mb: 2, mx: 3 }}>
-            {errorMessage}
-          </Alert>
-        )}
 
         <DialogContent>
           <Stack sx={{ marginTop: 1 }} spacing={2}>
@@ -169,6 +159,9 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
                   fontSize: 12,
                 },
               }}
+              onProcessRowUpdateError={error => {
+                console.error(error);
+              }}
               processRowUpdate={newRow => {
                 setRows(prev => prev.map(r => (r.id === newRow.id ? newRow : r)));
 
@@ -189,8 +182,17 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
         </DialogContent>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
-        <Alert severity={snackbar.severity} variant="filled">
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

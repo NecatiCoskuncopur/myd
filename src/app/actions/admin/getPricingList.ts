@@ -52,7 +52,10 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getPricingList');
+        scope.captureException(error);
+      });
     }
 
     return {

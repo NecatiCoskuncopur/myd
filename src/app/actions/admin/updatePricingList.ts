@@ -8,7 +8,6 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
 import updatePricingListSchema from '@/schemas/updatePricingList.schema';
-import { revalidatePath } from 'next/cache';
 
 const { EXIST, NOT_FOUND, UPDATE } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -18,12 +17,11 @@ const updatePricingList = async (data: PricingListTypes.IUpdatePricingListPayloa
     const authError = await requireRoles([UserRole.ADMIN]);
     if (authError) return authError;
 
-    await connectMongoDB();
-
     const validatedData = await updatePricingListSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const { pricingListId, ...updateFields } = validatedData;
 
@@ -41,16 +39,14 @@ const updatePricingList = async (data: PricingListTypes.IUpdatePricingListPayloa
     if (!updated) {
       return { status: 'ERROR', message: NOT_FOUND };
     }
-    revalidatePath('/panel/yonetim/fiyat-listeleri');
+
     return {
       status: 'OK',
       message: UPDATE,
     };
   } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error) {
-      if ((error as { code: number }).code === 11000) {
-        return { status: 'ERROR', message: EXIST };
-      }
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+      return { status: 'ERROR', message: EXIST };
     }
 
     if (error instanceof ValidationError) {
@@ -61,7 +57,10 @@ const updatePricingList = async (data: PricingListTypes.IUpdatePricingListPayloa
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'updatePricingList');
+        scope.captureException(error);
+      });
     }
 
     return {
