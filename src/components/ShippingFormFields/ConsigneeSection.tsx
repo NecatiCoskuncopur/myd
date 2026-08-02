@@ -1,18 +1,25 @@
 'use client';
 
-import { Autocomplete, Grid, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Autocomplete, Grid, TextField, Typography } from '@mui/material';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import { addressMessages, countries, countryStates, shippingMessages, userMessages } from '@/constants';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
 import { ShippingTypes } from '@/types/shipping';
+import { ConsigneeTypes } from '@/types/consignee';
+import getConsignees from '@/app/actions/consignee/getConsignees';
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;
 const { CONSIGNEE } = shippingMessages;
 
 const ConsigneeSection = () => {
+  const [options, setOptions] = useState<ConsigneeTypes.IConsigneeResponse[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [selectedConsignee, setSelectedConsignee] = useState<ConsigneeTypes.IConsigneeResponse | null>(null);
+  const [open, setOpen] = useState(false);
   const {
     control,
     setValue,
@@ -27,8 +34,87 @@ const ConsigneeSection = () => {
   const states = selectedCountry ? countryStates[selectedCountry] : null;
   const hasStates = states && states.length > 0;
 
+  useEffect(() => {
+    if (selectedConsignee) return;
+
+    const timeout = setTimeout(async () => {
+      const value = inputValue.trim();
+
+      if (value.length < 2) {
+        setOptions([]);
+        setOpen(false);
+        return;
+      }
+
+      const response = await getConsignees({
+        name: value,
+        page: 1,
+        limit: 10,
+      });
+
+      if (response.status === 'OK') {
+        const result = response.data?.consignees ?? [];
+
+        setOptions(result);
+
+        if (result.length > 0) {
+          setOpen(true);
+        } else {
+          setOpen(false);
+        }
+      } else {
+        setOptions([]);
+        setOpen(false);
+      }
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [inputValue]);
+
+  const clearConsignee = () => {
+    setSelectedConsignee(null);
+
+    const fields = [
+      'consignee.name',
+      'consignee.company',
+      'consignee.phone',
+      'consignee.email',
+      'consignee.taxId',
+      'consignee.address.line1',
+      'consignee.address.line2',
+      'consignee.address.country',
+      'consignee.address.state',
+      'consignee.address.city',
+      'consignee.address.postalCode',
+    ] as const;
+
+    fields.forEach(field => {
+      setValue(field, '');
+    });
+
+    setInputValue('');
+    setOptions([]);
+  };
+
   return (
-    <Wrapper title="Alıcı Bilgileri">
+    <Wrapper
+      title="Alıcı Bilgileri"
+      headerAction={
+        selectedConsignee && (
+          <Typography
+            variant="body2"
+            sx={{
+              cursor: 'pointer',
+              fontSize: '15px',
+              fontWeight: 500,
+            }}
+            onClick={clearConsignee}
+          >
+            Seçilen Alıcıyı Kaldır
+          </Typography>
+        )
+      }
+    >
       <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="consignee.name"
@@ -40,9 +126,63 @@ const ConsigneeSection = () => {
           }}
           render={({ field }) => {
             const errorMessage = errors.consignee?.name?.message;
+
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Ad *" fullWidth error={!!errorMessage} />
+                <Autocomplete
+                  options={options}
+                  loading={false}
+                  open={open}
+                  onClose={() => setOpen(false)}
+                  inputValue={inputValue}
+                  value={options.find(option => option.name === field.value) ?? null}
+                  getOptionLabel={option => (typeof option === 'string' ? option : option.name)}
+                  onInputChange={(_, value) => {
+                    setInputValue(value);
+                    field.onChange(value);
+                  }}
+                  onChange={(_, value) => {
+                    if (!value) {
+                      field.onChange('');
+                      setSelectedConsignee(null);
+                      return;
+                    }
+
+                    setSelectedConsignee(value);
+                    field.onChange(value.name);
+
+                    setValue('consignee.company', value.company ?? '');
+
+                    setValue('consignee.phone', value.phone ?? '');
+
+                    setValue('consignee.email', value.email ?? '');
+
+                    setValue('consignee.taxId', value.taxId ?? '');
+
+                    setValue('consignee.address.line1', value.address?.line1 ?? '');
+
+                    setValue('consignee.address.line2', value.address?.line2 ?? '');
+
+                    setValue('consignee.address.city', value.address?.city ?? '');
+
+                    setValue('consignee.address.postalCode', value.address?.postalCode ?? '');
+
+                    setValue('consignee.address.country', value.address?.country ?? '');
+
+                    setValue('consignee.address.state', value.address?.state ?? '');
+                  }}
+                  isOptionEqualToValue={(option, value) => option._id === value?._id}
+                  disabled={!!selectedConsignee}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option._id}>
+                      <div>
+                        <strong>{option.name}</strong>
+                        {option.company && <div>{option.company}</div>}
+                      </div>
+                    </li>
+                  )}
+                  renderInput={params => <TextField {...params} label="Ad *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />}
+                />
               </ErrorTooltip>
             );
           }}
@@ -63,7 +203,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -86,7 +226,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Şirket" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Şirket" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -109,7 +249,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres 2" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Adres 2" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -132,7 +272,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Telefon" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Telefon" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -163,6 +303,7 @@ const ConsigneeSection = () => {
                   }}
                   isOptionEqualToValue={(option, value) => option.code === value.code}
                   renderInput={params => <TextField {...params} label="Ülke *" fullWidth error={!!errorMessage} />}
+                  disabled={!!selectedConsignee}
                 />
               </ErrorTooltip>
             );
@@ -196,6 +337,7 @@ const ConsigneeSection = () => {
                     }}
                     isOptionEqualToValue={(option, value) => option.code === value.code}
                     renderInput={params => <TextField {...params} label="Eyalet *" fullWidth />}
+                    disabled={!!selectedConsignee}
                   />
                 </ErrorTooltip>
               );
@@ -223,7 +365,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.email?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="E-Posta" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="E-Posta" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -244,7 +386,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.taxId?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Vergi No" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Vergi No" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -263,7 +405,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.address?.city?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Şehir *" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Şehir *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -282,7 +424,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.address?.postalCode?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Posta Kodu *" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Posta Kodu *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}

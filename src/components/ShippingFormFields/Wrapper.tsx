@@ -4,9 +4,10 @@ import { Box, Typography, useTheme, Grid } from '@mui/material';
 type WrapperProps = {
   children: React.ReactNode;
   title: string;
+  headerAction?: React.ReactNode;
 };
 
-const Wrapper = ({ children, title }: WrapperProps) => {
+const Wrapper = ({ children, title, headerAction }: WrapperProps) => {
   const theme = useTheme();
 
   return (
@@ -23,6 +24,9 @@ const Wrapper = ({ children, title }: WrapperProps) => {
         sx={{
           py: 1.2,
           px: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.035)',
           borderBottom: `1px solid ${theme.palette.dashboard.border}`,
         }}
@@ -37,6 +41,8 @@ const Wrapper = ({ children, title }: WrapperProps) => {
         >
           {title}
         </Typography>
+
+        {headerAction}
       </Box>
 
       <Grid container spacing={2} sx={{ p: 2, m: 0, width: '100%' }}>
