@@ -5,6 +5,16 @@ declare namespace CarrierTypes {
     accountNumber: string;
   }
 
+  interface ICarrierDriverParams {
+    shippingInstance: ShippingTypes.IShipping;
+    accountNumber: string;
+    credentials: {
+      apiKey: string;
+      secretKey: string;
+    };
+    shippingId: string;
+  }
+
   interface ICreateFedexPaper extends ICreatePaper {
     credentials: {
       apiKey: string;

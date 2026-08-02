@@ -17,12 +17,11 @@ const { NOT_FOUND } = userMessages;
 
 const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promise<ResponseTypes.IActionResponse<{ _id: string }>> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await createShippingSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -55,7 +54,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       });
     }
 
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(userId).select('firstName lastName company phone email address').lean();
     if (!user) {
       return {
         status: 'ERROR',
@@ -64,7 +63,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
     }
     const { width, height, length, weight, numberOfPackage } = validatedData.package;
 
-    const volumetricWeight = width && height && length ? Number(((width * height * length) / 5000).toFixed(2)) : 0;
+    const volumetricWeight = width != null && height != null && length != null ? Number(((width * height * length) / 5000).toFixed(2)) : 0;
 
     const shipping = await Shipping.create({
       userId,
@@ -115,7 +114,10 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'createShipping');
+        scope.captureException(error);
+      });
     }
 
     return {

@@ -6,7 +6,8 @@ import { Autocomplete, Box, CircularProgress, TextField, Typography } from '@mui
 
 import calculateShipping from '@/app/actions/shipping/calculateShipping';
 import { StyledButton } from '@/components';
-import { countries, shippingMessages } from '@/constants';
+import { countries, pricingListMessages, shippingMessages } from '@/constants';
+const { PRICE } = pricingListMessages;
 
 interface CountryOption {
   code: string;
@@ -22,7 +23,9 @@ const PriceCalculator = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleCalculate = async () => {
-    if (!selectedCountry || weight === '' || Number(weight) < 0.1) return;
+    if (!selectedCountry || weight === '' || weight < 0.1) {
+      return;
+    }
 
     setLoading(true);
     setResult(null);
@@ -31,14 +34,15 @@ const PriceCalculator = () => {
     try {
       const res = await calculateShipping({
         countryCode: selectedCountry.code,
-        weight: Number(weight),
+        weight,
       });
 
-      if (res.status === 'OK' && res.data !== undefined) {
-        setResult(res.data);
-      } else {
-        setErrorMessage(res.message || 'Hesaplama yapılırken bir hata oluştu.');
+      if (res.status === 'ERROR') {
+        setErrorMessage(res.message || PRICE.NOT_FOUND);
+        return;
       }
+
+      setResult(res.data!);
     } catch {
       setErrorMessage('Ağ hatası oluştu, lütfen tekrar deneyin.');
     } finally {

@@ -9,20 +9,19 @@ import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping } from '@/models';
 import updateShippingSchema from '@/schemas/updateShipping.schema';
-import { revalidatePath } from 'next/cache';
 import { ShippingTypes } from '@/types/shipping';
+import { UserRole } from '@/constants';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { ALREADY_LABELED, CONSIGNEE, ID, NOT_FOUND, UPDATESHIPPING } = shippingMessages;
 
 const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await updateShippingSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+    await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser) return { status: 'ERROR', message: UNAUTHORIZED };
@@ -45,7 +44,7 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
     if (!shipping) return { status: 'ERROR', message: NOT_FOUND };
 
     let userId = currentUser.id;
-    if (currentUser.role === 'ADMIN' || currentUser.role === 'OPERATOR') {
+    if (currentUser.role === UserRole.ADMIN || currentUser.role === UserRole.OPERATOR) {
       userId = shipping.userId.toString();
     } else if (shipping.userId.toString() !== currentUser.id) {
       return { status: 'ERROR', message: UNAUTHORIZED };
@@ -63,23 +62,29 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       }
     }
 
-    await Shipping.updateOne(
+    const result = await Shipping.updateOne(
       { _id: shippingId, userId },
       {
         $set: {
           ...rest,
-          consignee: consignee,
+          consignee,
         },
       },
     );
-    revalidatePath('/panel/gonderilerim/listele');
+    if (result.modifiedCount === 0) {
+      return { status: 'ERROR', message: UPDATESHIPPING.NOCHANGE };
+    }
+
     return { status: 'OK', message: UPDATESHIPPING.SUCCESS };
   } catch (error: unknown) {
     if (error instanceof ValidationError) {
       return { status: 'ERROR', message: error.errors.join(', ') };
     }
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'updateShipping');
+        scope.captureException(error);
+      });
     }
     return { status: 'ERROR', message: UNEXPECTED_ERROR };
   }

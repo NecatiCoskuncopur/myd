@@ -7,7 +7,7 @@ import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Storage } from '@/lib/storage';
 import { Shipping } from '@/models';
-import { generalMessages, shippingMessages } from '@/constants';
+import { generalMessages, shippingMessages, UserRole } from '@/constants';
 import { ShippingTypes } from '@/types/shipping';
 
 const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<ResponseTypes.IActionResponse<{ file: string }>> => {
@@ -37,7 +37,9 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
       };
     }
 
-    if (currentUser.role !== 'ADMIN' && currentUser.role !== 'OPERATOR') {
+    const isAdminOrOperator = [UserRole.ADMIN, UserRole.OPERATOR].includes(currentUser.role);
+
+    if (!isAdminOrOperator) {
       const shipping = await Shipping.findOne({
         _id: params.shippingId,
         userId: currentUser.id,
@@ -60,7 +62,16 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
         Key: `${params.shippingId}.pdf`,
         Bucket: params.type,
       });
-    } catch {
+    } catch (error) {
+      Sentry.captureException(error);
+
+      return {
+        status: 'ERROR',
+        message: generalMessages.UNEXPECTED_ERROR,
+      };
+    }
+
+    if (!paper.Body) {
       return {
         status: 'ERROR',
         message: shippingMessages.PAPER.NOT_FOUND,
@@ -77,7 +88,10 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getPaper');
+        scope.captureException(error);
+      });
     }
 
     return {

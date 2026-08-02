@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Button, Menu, MenuItem, ListItemIcon, ListItemText, Snackbar, Alert } from '@mui/material';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import getPaper from '@/app/actions/shipping/getPaper';
+
+import { shippingMessages } from '@/constants';
 
 interface PaperDownloadProps {
   shippingId: string;
@@ -13,8 +15,13 @@ interface PaperDownloadProps {
 
 const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
   const open = Boolean(anchorEl);
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -25,28 +32,49 @@ const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
 
   const handleDownload = async (type: 'labels' | 'invoices') => {
     handleClose();
-    try {
-      const res = await getPaper({ shippingId, type });
+    setLoading(true);
 
-      if (res.status === 'OK' && res.data?.file) {
-        const pdfUrl = `data:application/pdf;base64,${res.data.file}`;
-        const newWindow = window.open();
-        if (newWindow) {
-          newWindow.document.write(`<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none; margin:0; padding:0; overflow:hidden;"></iframe>`);
-          newWindow.document.title = type === 'labels' ? 'Kargo Barkodu' : 'Proforma Fatura';
-        }
-      } else {
-        alert(res.message || 'Evrak indirilirken bir hata oluştu.');
+    try {
+      const response = await getPaper({ shippingId, type });
+
+      if (response.status !== 'OK' || !response.data?.file) {
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: response.message ?? shippingMessages.PAPER.ERROR,
+        });
+
+        return;
       }
+
+      const binary = atob(response.data.file);
+      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+
+      const blob = new Blob([bytes], {
+        type: 'application/pdf',
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, '_blank', 'noopener,noreferrer');
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error(error);
-      alert('Beklenmedik bir hata oluştu.');
+
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: shippingMessages.PAPER.ERROR,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <Button variant="contained" size="small" startIcon={<FileDownloadOutlinedIcon />} onClick={handleClick}>
+      <Button variant="contained" size="small" startIcon={<FileDownloadOutlinedIcon />} onClick={handleClick} disabled={loading}>
         Evraklar
       </Button>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
@@ -63,6 +91,20 @@ const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
           <ListItemText>Proforma Fatura</ListItemText>
         </MenuItem>
       </Menu>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() =>
+          setSnackbar(prev => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      >
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

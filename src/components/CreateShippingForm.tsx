@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Alert, Box, Checkbox, FormControlLabel, Snackbar, Typography, useTheme } from '@mui/material';
+import { Alert, Box, Checkbox, FormControlLabel, Snackbar, useTheme } from '@mui/material';
 import cleanDeep from 'clean-deep';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -25,7 +25,6 @@ const CreateShippingForm = () => {
   const router = useRouter();
 
   const [pending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
   const [snackbar, setSnackbar] = useState<{
@@ -105,38 +104,49 @@ const CreateShippingForm = () => {
   });
 
   const onSubmit = (values: ShippingTypes.ICreateShippingPayload) => {
-    setErrorMessage(null);
-    const cleaned = cleanDeep(values) as ShippingTypes.ICreateShippingPayload;
     startTransition(async () => {
-      try {
-        const response = await createShipping(cleaned);
+      const cleaned = cleanDeep(values) as ShippingTypes.ICreateShippingPayload;
 
-        if (response.status !== 'OK') {
-          setErrorMessage(response.message ?? CREATESHIPPING.ERROR);
+      try {
+        const { status, message, data } = await createShipping(cleaned);
+
+        if (status === 'ERROR') {
+          setSnackbar({
+            open: true,
+            message: message || CREATESHIPPING.ERROR,
+            severity: 'error',
+          });
           return;
         }
 
-        const shippingId = response.data?._id;
-
-        if (!shippingId) {
-          setErrorMessage(UNEXPECTED_ERROR);
+        if (!data?._id) {
+          setSnackbar({
+            open: true,
+            message: message || CREATESHIPPING.ERROR,
+            severity: 'error',
+          });
           return;
         }
 
         if (isBatchMode) {
           methods.reset(undefined, { keepDefaultValues: true });
+
           setSnackbar({
             open: true,
-            message: response.message ?? CREATESHIPPING.SUCCESS,
+            message: message || CREATESHIPPING.SUCCESS,
             severity: 'success',
           });
+
           return;
         }
 
-        router.replace(`/panel/gonderilerim/${shippingId}`);
-      } catch (error) {
-        console.error('Create shipping failed:', error);
-        setErrorMessage(UNEXPECTED_ERROR);
+        router.replace(`/panel/gonderilerim/${data._id}`);
+      } catch {
+        setSnackbar({
+          open: true,
+          message: UNEXPECTED_ERROR,
+          severity: 'error',
+        });
       }
     });
   };
@@ -155,13 +165,6 @@ const CreateShippingForm = () => {
       <TableHeader title="Gönderi Oluştur" subTitle="Alıcı, paket ve gönderi detaylarını girerek yeni bir sevkiyat oluşturun.">
         <FormControlLabel control={<Checkbox checked={isBatchMode} onChange={e => setIsBatchMode(e.target.checked)} />} label="Seri giriş" />
       </TableHeader>
-
-      {errorMessage && (
-        <Typography color="error" sx={{ mb: 2 }}>
-          {errorMessage}
-        </Typography>
-      )}
-
       <FormProvider {...methods}>
         <Box
           component="form"

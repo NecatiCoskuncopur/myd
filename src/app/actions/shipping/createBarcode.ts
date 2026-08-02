@@ -11,10 +11,11 @@ import { CarrierAccount, Shipping, User } from '@/models';
 import createFedexPaper from '@/lib/carriers/fedex';
 import createUpsPaper from '@/lib/carriers/ups';
 import { ShippingTypes } from '@/types/shipping';
+import ICarrierDriverParams = CarrierTypes.ICarrierDriverParams;
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const carrierDrivers: Record<string, (params: any) => Promise<{ trackingNumber: string; label: string; invoice: string }>> = {
+const carrierDrivers: Record<string, (params: ICarrierDriverParams) => Promise<{ trackingNumber: string; label: string; invoice: string }>> = {
   FEDEX: createFedexPaper,
   UPS: createUpsPaper,
 };
@@ -98,8 +99,11 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       data: { trackingNumber },
     };
   } catch (error) {
-    console.log(error);
-    if (error instanceof Error) Sentry.captureException(error);
+    Sentry.withScope(scope => {
+      scope.setTag('action', 'createBarcode');
+      scope.captureException(error);
+    });
+
     return { status: 'ERROR', message: UNEXPECTED_ERROR };
   }
 };

@@ -6,18 +6,25 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/changePassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/changePassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/editUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/editUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PaperDownload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaperDownload.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserBalanceTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/PriceCalculator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/PriceCalculator.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +121,10 @@
       <workItem from="1785519761846" duration="653000" />
       <workItem from="1785546599918" duration="10564000" />
       <workItem from="1785568114576" duration="13629000" />
-      <workItem from="1785612690196" duration="4345000" />
+      <workItem from="1785612690196" duration="4967000" />
+      <workItem from="1785629012907" duration="405000" />
+      <workItem from="1785629777208" duration="298000" />
+      <workItem from="1785686404207" duration="8064000" />
     </task>
     <servers />
   </component>

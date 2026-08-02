@@ -26,26 +26,47 @@ const ShippingDetail = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const fetchShipping = async () => {
-      if (!id) return;
+      if (!id) {
+        setShipping(null);
+        setError('');
+        setLoading(false);
+        return;
+      }
 
       setLoading(true);
+      setError('');
+
       try {
         const response = await getShipping(id);
+
+        if (!mounted) return;
 
         if (response.status === 'OK' && response.data) {
           setShipping(response.data);
         } else {
+          setShipping(null);
           setError(response.message || NOT_FOUND);
         }
       } catch {
+        if (!mounted) return;
+
+        setShipping(null);
         setError(UNEXPECTED_ERROR);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchShipping();
+
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
   if (!shipping) return null;

@@ -61,6 +61,8 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
   useEffect(() => {
     if (!modalOpen || !selectedAccount) return;
 
+    let cancelled = false;
+
     const run = async () => {
       if (!selectedAccount.carrier || !selectedAccount.accountNumber) return;
 
@@ -74,6 +76,8 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
           accountNumber: selectedAccount.accountNumber,
         });
 
+        if (cancelled) return;
+
         if (res.status === 'OK') {
           router.refresh();
         } else {
@@ -82,12 +86,17 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
       } catch {
         setError('Sistem hatası oluştu');
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     run();
-  }, [modalOpen, selectedAccount]);
+    return () => {
+      cancelled = true;
+    };
+  }, [[modalOpen, selectedAccount, shipping._id, router]]);
 
   if (fetching) return <CircularProgress size={20} />;
   if (!accounts.length) return null;

@@ -29,7 +29,7 @@ const shippingMessages = {
     INVALID: 'Geçersiz para birimi. Sadece USD, EUR veya GBP seçilebilir.',
   },
   DELETE: {
-    SUCCESS: 'Göndeeri başarıyla silindi.',
+    SUCCESS: 'Gönderi başarıyla silindi.',
     ERROR: 'Gönderi silinirken hata oluştu.',
   },
   DESCRIPTION: {
@@ -104,6 +104,7 @@ const shippingMessages = {
   UPDATESHIPPING: {
     SUCCESS: 'Gönderi başarıyla güncellendi.',
     ERROR: 'Gönderi güncellenemedi.',
+    NOCHANGE: 'Değişiklik yapılmadı.',
   },
   WEIGHT: {
     REQUIRED: 'Ağırlık zorunludur.',
@@ -119,6 +120,7 @@ const shippingMessages = {
   PAPER: {
     NOT_FOUND: 'İstenen evrak bulunamadı.',
     INVALID_TYPE: 'Geçersiz evrak türü',
+    ERROR: 'Evrak indirilemedi.',
   },
 } as const;
 

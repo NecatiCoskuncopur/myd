@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import mongoose from 'mongoose';
 
-import { generalMessages, shippingMessages } from '@/constants';
+import { generalMessages, shippingMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
@@ -25,34 +25,37 @@ const getShipping = async (shippingId: string): Promise<ResponseTypes.IActionRes
       return { status: 'ERROR', message: UNAUTHORIZED };
     }
 
-    const query: any = { _id: new mongoose.Types.ObjectId(shippingId) };
+    const objectId = new mongoose.Types.ObjectId(shippingId);
 
-    if (currentUser.role === 'CUSTOMER') {
-      query.userId = currentUser.id;
-    }
+    const query = {
+      _id: objectId,
+      ...(currentUser.role === UserRole.CUSTOMER && {
+        userId: currentUser.id,
+      }),
+    };
 
     const shipping = await Shipping.findOne(query).lean<ShippingTypes.IShipping>();
 
     if (!shipping) {
       return { status: 'ERROR', message: NOT_FOUND };
     }
-    const formattedShipping = {
-      ...shipping,
-      _id: shipping._id.toString(),
-      userId: shipping.userId?.toString(),
-      consigneeId: shipping.consigneeId?.toString(),
-      createdAt: shipping.createdAt?.toString(),
-      updatedAt: shipping.updatedAt?.toString(),
-    };
 
     return {
       status: 'OK',
-      data: formattedShipping,
+      data: JSON.parse(JSON.stringify(shipping)),
     };
   } catch (error) {
-    if (error instanceof Error) Sentry.captureException(error);
-    console.error('getShipping error:', error);
-    return { status: 'ERROR', message: UNEXPECTED_ERROR };
+    if (error instanceof Error) {
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'getShipping');
+        scope.captureException(error);
+      });
+    }
+
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

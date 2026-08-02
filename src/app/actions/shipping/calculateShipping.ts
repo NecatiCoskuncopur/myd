@@ -17,12 +17,12 @@ const { NOT_FOUND } = pricingListMessages;
 
 const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload): Promise<ResponseTypes.IActionResponse<number>> => {
   try {
-    await connectMongoDB();
-
     const validatedData = await calculateShippingSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
+    await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -32,7 +32,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
       };
     }
 
-    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId: Types.ObjectId }>();
+    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId: Types.ObjectId } | null>();
 
     if (!user?.priceListId) {
       return {
@@ -63,7 +63,10 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
     }
 
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'calculateShipping');
+        scope.captureException(error);
+      });
     }
 
     return {

@@ -3,11 +3,10 @@
 import * as Sentry from '@sentry/nextjs';
 import mongoose from 'mongoose';
 
-import { generalMessages, shippingMessages } from '@/constants';
+import { generalMessages, shippingMessages, ShippingStatus, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
-import { revalidatePath } from 'next/cache';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { ALREADY_LABELED, DELETE, ID, NOT_FOUND } = shippingMessages;
@@ -30,11 +29,15 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
         message: ID.INVALID,
       };
     }
-    const query: any = { _id: new mongoose.Types.ObjectId(shippingId) };
 
-    if (currentUser.role === 'CUSTOMER') {
-      query.userId = currentUser.id;
-    }
+    const objectId = new mongoose.Types.ObjectId(shippingId);
+
+    const query = {
+      _id: objectId,
+      ...(currentUser.role === UserRole.CUSTOMER && {
+        userId: currentUser.id,
+      }),
+    };
 
     const shipping = await Shipping.findOne(query).select('carrier.trackingNumber status').lean();
 
@@ -45,7 +48,7 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
       };
     }
 
-    if (shipping.carrier?.trackingNumber || shipping.status === 'LABELED') {
+    if (shipping.carrier?.trackingNumber || shipping.status === ShippingStatus.LABELED) {
       return {
         status: 'ERROR',
         message: ALREADY_LABELED,
@@ -60,14 +63,16 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
         message: NOT_FOUND,
       };
     }
-    revalidatePath('/panel/gonderilerim/listele');
     return {
       status: 'OK',
       message: DELETE.SUCCESS,
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+        scope.setTag('action', 'deleteShipping');
+        scope.captureException(error);
+      });
     }
 
     return {

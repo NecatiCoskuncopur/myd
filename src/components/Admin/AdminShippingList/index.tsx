@@ -180,7 +180,6 @@ const AdminShippingList = () => {
     if (!shippingId || !account.carrier || !account.accountNumber) return;
 
     closeActionsMenu();
-    setBarcodeDialogOpen(true);
     setBarcodeLoading(true);
     setBarcodeError(null);
 
@@ -192,6 +191,7 @@ const AdminShippingList = () => {
       });
 
       if (res.status === 'OK') {
+        setBarcodeDialogOpen(true);
         await fetchList();
       } else {
         setBarcodeError(res.message || 'Barkod oluşturulamadı');
@@ -205,27 +205,38 @@ const AdminShippingList = () => {
 
   const handleDownloadPaper = async (type: 'labels' | 'invoices') => {
     const shippingId = selectedRow?._id;
+
     closeActionsMenu();
+
     if (!shippingId) return;
 
     try {
-      const res = await getPaper({ shippingId, type });
+      const response = await getPaper({ shippingId, type });
 
-      if (res.status === 'OK' && res.data?.file) {
-        const pdfUrl = `data:application/pdf;base64,${res.data.file}`;
-        const newWindow = window.open();
-        if (newWindow) {
-          newWindow.document.write(`<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none; margin:0; padding:0; overflow:hidden;"></iframe>`);
-          newWindow.document.title = type === 'labels' ? 'Kargo Barkodu' : 'Proforma Fatura';
-        }
-      } else {
+      if (response.status !== 'OK' || !response.data?.file) {
         setSnackbar({
           open: true,
-          message: 'Evrak indirilirken bir hata oluştu.',
+          message: response.message ?? 'Evrak indirilirken bir hata oluştu.',
         });
+
+        return;
       }
+
+      const binary = atob(response.data.file);
+      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+
+      const blob = new Blob([bytes], {
+        type: 'application/pdf',
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, '_blank', 'noopener,noreferrer');
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error(error);
+
       setSnackbar({
         open: true,
         message: UNEXPECTED_ERROR,
