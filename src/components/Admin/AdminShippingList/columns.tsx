@@ -1,14 +1,14 @@
 'use client';
 
-import { getCarrierIcon } from '@/constants/carrierIcons';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
-import { getCarrierTrackingUrl } from '@/constants/carrierTracking';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { Typography, Box } from '@mui/material';
 import { ShippingTypes } from '@/types/shipping';
+import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
+import getCarrierIcon from '@/lib/getCarrierIcon';
 
 const columns: GridColDef[] = [
   {
@@ -73,7 +73,7 @@ const columns: GridColDef[] = [
       if (!trackingNo) return '-';
 
       const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNo);
-      const { icon } = getCarrierIcon(carrierName);
+      const icon = getCarrierIcon(carrierName);
 
       if (hasLink && url) {
         return (

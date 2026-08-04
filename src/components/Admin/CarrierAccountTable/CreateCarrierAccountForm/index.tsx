@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
 import StyledButton from '@/components/StyledButton';
-import { carrierMessages, generalMessages } from '@/constants';
+import { carrierConfig, carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { Carrier } from '@/constants';
 import FormItems from './FormItems';
@@ -71,17 +71,14 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const hasCustomInfo = watch('hasCustomInfo');
 
   useEffect(() => {
-    if (selectedCarrier === Carrier.FEDEX) {
-      setValue('credentials', [
-        { key: 'apiKey', value: '' },
-        { key: 'secretKey', value: '' },
-      ]);
-    } else if (selectedCarrier === Carrier.UPS) {
-      setValue('credentials', [
-        { key: 'clientId', value: '' },
-        { key: 'clientSecret', value: '' },
-      ]);
-    }
+    if (!selectedCarrier) return;
+
+    const credentials = carrierConfig[selectedCarrier]?.credentials ?? [];
+
+    setValue(
+      'credentials',
+      credentials.map(credential => ({ ...credential })),
+    );
   }, [selectedCarrier, setValue]);
 
   const onSubmit = (data: CarrierAccountTypes.ICreateCarrierAccountPayload) => {

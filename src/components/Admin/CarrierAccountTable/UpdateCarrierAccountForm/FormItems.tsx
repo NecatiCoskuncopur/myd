@@ -2,7 +2,7 @@ import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-fo
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, TextField } from '@mui/material';
 import CustomInfoSection from '../CustomInfoSection';
-import { carrierMessages } from '@/constants';
+import { Carrier, carrierMessages } from '@/constants';
 
 type FormItemsProps = {
   control: Control<CarrierAccountTypes.IUpdateCarrierAccountPayload, CarrierAccountTypes.IUpdateCarrierAccountPayload>;
@@ -66,8 +66,11 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue, acco
           control={control}
           render={({ field }) => (
             <TextField {...field} select fullWidth label="Kargo Firması">
-              <MenuItem value="FEDEX">FedEx</MenuItem>
-              <MenuItem value="UPS">UPS</MenuItem>
+              {Object.values(Carrier).map(carrier => (
+                <MenuItem key={carrier} value={carrier}>
+                  {carrier}
+                </MenuItem>
+              ))}
             </TextField>
           )}
         />

@@ -5,7 +5,8 @@ import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
 import { Box, Typography } from '@mui/material';
 import moment from 'moment';
 
-import { getCarrierIcon } from '@/constants/carrierIcons';
+import getCarrierIcon from '@/lib/getCarrierIcon';
+import { Carrier } from '@/constants';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Hesap Adı', flex: 1, minWidth: 100 },
@@ -15,13 +16,13 @@ const columns: GridColDef[] = [
     flex: 1,
     minWidth: 140,
     renderCell: params => {
-      const carrierInfo = getCarrierIcon(params.value as string);
+      const icon = getCarrierIcon(params.value as Carrier);
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 18 }}>{carrierInfo.icon}</Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 18 }}>{icon}</Box>
           <Typography variant="body2" sx={{ fontWeight: 500 }}>
-            {carrierInfo.name}
+            {params.value?.name}
           </Typography>
         </Box>
       );

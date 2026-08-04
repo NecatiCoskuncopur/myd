@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getCarrierIcon } from '@/constants/carrierIcons';
+import getCarrierIcon from '@/lib/getCarrierIcon';
 
 import { DeleteOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -349,11 +349,11 @@ const AdminShippingList = () => {
               </MenuItem>
             ) : (
               accounts.map(acc => {
-                const carrierInfo = getCarrierIcon(acc.carrier);
+                const icon = getCarrierIcon(acc.carrier as Carrier);
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                    <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{carrierInfo.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{icon}</ListItemIcon>
                     <ListItemText> {acc.name}</ListItemText>
                   </MenuItem>
                 );

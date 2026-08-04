@@ -51,8 +51,11 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue }: Fo
           control={control}
           render={({ field }) => (
             <TextField {...field} select fullWidth label="Kargo Firması" error={!!errors.carrier}>
-              <MenuItem value={Carrier.FEDEX}>FedEx</MenuItem>
-              <MenuItem value={Carrier.UPS}>UPS</MenuItem>
+              {Object.values(Carrier).map(carrier => (
+                <MenuItem key={carrier} value={carrier}>
+                  {carrier}
+                </MenuItem>
+              ))}
             </TextField>
           )}
         />

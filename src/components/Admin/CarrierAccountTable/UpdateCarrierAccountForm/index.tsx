@@ -8,6 +8,7 @@ import StyledButton from '@/components/StyledButton';
 import { carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import FormItems from './FormItems';
+import getCarrierCredentials from '@/lib/getCarrierCredentials';
 
 type UpdateCarrierAccountProps = {
   open: boolean;
@@ -71,18 +72,8 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   });
 
   useEffect(() => {
-    if (account?.carrier !== selectedCarrier) {
-      const newCreds =
-        selectedCarrier === 'FEDEX'
-          ? [
-              { key: 'apiKey', value: '' },
-              { key: 'secretKey', value: '' },
-            ]
-          : [
-              { key: 'clientId', value: '' },
-              { key: 'clientSecret', value: '' },
-            ];
-      setValue('credentials', newCreds);
+    if (account?.carrier !== selectedCarrier && selectedCarrier) {
+      setValue('credentials', getCarrierCredentials(selectedCarrier));
     }
   }, [selectedCarrier, account?.carrier, setValue]);
 
