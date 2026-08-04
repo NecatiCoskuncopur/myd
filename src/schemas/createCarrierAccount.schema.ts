@@ -1,12 +1,16 @@
 import * as yup from 'yup';
 
-import { Carrier, carrierMessages } from '@/constants';
+import { addressMessages, Carrier, carrierMessages, userMessages } from '@/constants';
 
 const { ACCOUNTNUMBER, CARRIER, CREDENTIALS, NAME } = carrierMessages;
+const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 
 export default yup.object({
   name: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).required(NAME.REQUIRED),
+
   carrier: yup.string().oneOf(Object.values(Carrier), CARRIER.TYPE_INVALID).required(CARRIER.REQUIRED),
+
   accountNumber: yup.string().typeError(ACCOUNTNUMBER.TYPE).min(1, ACCOUNTNUMBER.MIN).required(ACCOUNTNUMBER.REQUIRED),
 
   credentials: yup
@@ -19,6 +23,31 @@ export default yup.object({
     )
     .min(2, CREDENTIALS.MIN)
     .required(CREDENTIALS.REQUIRED),
+
   isActive: yup.boolean().default(true),
+
+  hasCustomInfo: yup.boolean().required().default(false),
+
+  customInfo: yup.object().when('hasCustomInfo', {
+    is: true,
+    then: schema =>
+      schema.shape({
+        email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),
+        firstName: yup.string().typeError(FIRSTNAME.TYPE).min(2, FIRSTNAME.MIN).max(75, FIRSTNAME.MAX).required(FIRSTNAME.REQUIRED),
+        lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
+        company: yup.string().typeError(COMPANY.TYPE).min(2, COMPANY.MIN).max(75, COMPANY.MAX),
+        phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH).required(PHONE.REQUIRED),
+        address: yup.object({
+          line1: yup.string().typeError(LINE.TYPE).min(5, LINE.MIN).max(255, LINE.MAX).required(LINE.REQUIRED),
+          line2: yup.string().typeError(LINE.TYPE).max(255, LINE.MAX),
+          district: yup.string().typeError(DISTRICT.TYPE).min(2, DISTRICT.MIN).max(25, DISTRICT.MAX).required(DISTRICT.REQUIRED),
+          city: yup.string().typeError(CITY.TYPE).min(2, CITY.MIN).max(35, CITY.MAX).required(CITY.REQUIRED),
+          postalCode: yup.string().typeError(POSTALCODE.TYPE).length(5, POSTALCODE.LENGTH).required(POSTALCODE.REQUIRED),
+        }),
+      }),
+
+    otherwise: schema => schema.optional().nullable(),
+  }),
+
   meta: yup.object().nullable().optional(),
 });

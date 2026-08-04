@@ -1,5 +1,7 @@
 import mongoose, { HydratedDocument, InferSchemaType, Schema, Types } from 'mongoose';
-import { Carrier } from '@/constants';
+import { Carrier, emailRegex, phoneRegex, userMessages } from '@/constants';
+
+const { EMAIL, PHONE } = userMessages;
 
 const CarrierCredentialSchema = new Schema(
   {
@@ -38,6 +40,72 @@ const CarrierAccountSchema = new Schema(
       type: [CarrierCredentialSchema],
       required: true,
       validate: [(val: unknown[]) => val.length > 0, 'En az bir credential gereklidir.'],
+    },
+    hasCustomInfo: {
+      type: Boolean,
+      default: false,
+    },
+    customInfo: {
+      email: {
+        type: String,
+        unique: true,
+        sparse: true,
+        lowercase: true,
+        trim: true,
+        validate: {
+          validator: value => !value || emailRegex.test(value),
+          message: EMAIL.INVALID,
+        },
+      },
+      firstName: {
+        type: String,
+        minLength: 2,
+        maxLength: 75,
+      },
+      lastName: {
+        type: String,
+        minLength: 2,
+        maxLength: 75,
+      },
+      company: {
+        type: String,
+        minLength: 2,
+        maxLength: 75,
+      },
+      phone: {
+        type: String,
+        trim: true,
+        validate: {
+          validator: value => phoneRegex.test(value),
+          message: PHONE.INVALID,
+        },
+      },
+      address: {
+        line1: {
+          type: String,
+          minLength: 5,
+          maxLength: 255,
+        },
+        line2: {
+          type: String,
+          maxLength: 255,
+        },
+        city: {
+          type: String,
+          minLength: 2,
+          maxLength: 35,
+        },
+        postalCode: {
+          type: String,
+          minLength: 3,
+          maxLength: 15,
+        },
+        district: {
+          type: String,
+          minLength: 2,
+          maxLength: 25,
+        },
+      },
     },
     meta: {
       type: Map,

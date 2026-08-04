@@ -21,7 +21,20 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
 
     const { id, ...updateFields } = validatedData;
 
-    const updatedAccount = await CarrierAccount.findByIdAndUpdate(id, { $set: updateFields }, { new: true, runValidators: true });
+    const updateData = {
+      $set: updateFields,
+      ...(!updateFields.hasCustomInfo && {
+        $unset: {
+          customInfo: 1,
+        },
+      }),
+    };
+
+    const updatedAccount = await CarrierAccount.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!updatedAccount) {
       return {
         status: 'ERROR',

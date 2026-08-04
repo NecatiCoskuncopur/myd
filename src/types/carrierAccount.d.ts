@@ -5,6 +5,24 @@ declare namespace CarrierAccountTypes {
     key: string;
     value: string;
   }
+
+  interface ICarrierAddress {
+    line1: string;
+    line2?: string;
+    city: string;
+    postalCode: string;
+    district: string;
+  }
+
+  interface ICustomInfo {
+    email: string;
+    firstName: string;
+    lastName: string;
+    company: string;
+    phone: string;
+    address?: ICarrierAddress;
+  }
+
   interface ICarrierAccount {
     _id: string;
     name: string;
@@ -12,6 +30,8 @@ declare namespace CarrierAccountTypes {
     accountNumber: string;
     isActive: boolean;
     credentials: ICarrierCredential[];
+    hasCustomInfo: boolean;
+    customInfo?: ICustomInfo;
     meta?: Record<string, string>;
     createdAt: string;
     updatedAt: string;
@@ -22,6 +42,8 @@ declare namespace CarrierAccountTypes {
     carrier: Carrier;
     accountNumber: string;
     credentials: ICarrierCredential[];
+    hasCustomInfo: boolean;
+    customInfo?: ICustomInfo;
     meta?: Record<string, string>;
   }
 

@@ -1,13 +1,28 @@
 import React, { useEffect, useState, useTransition } from 'react';
 
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Snackbar, TextField, useTheme } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Snackbar,
+  TextField,
+  useTheme,
+} from '@mui/material';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
 import StyledButton from '@/components/StyledButton';
 import { carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
-
+import CustomInfoSection from './CustomInfoSection';
 type UpdateCarrierAccountProps = {
   open: boolean;
   onClose: () => void;
@@ -48,6 +63,8 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
         carrier: account.carrier,
         credentials: account.credentials,
         isActive: account.isActive,
+        hasCustomInfo: account.hasCustomInfo,
+        customInfo: account.customInfo,
       });
     }
   }, [account, open, reset]);
@@ -60,6 +77,11 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   const selectedCarrier = useWatch({
     control,
     name: 'carrier',
+  });
+
+  const hasCustomInfo = useWatch({
+    control,
+    name: 'hasCustomInfo',
   });
 
   useEffect(() => {
@@ -175,6 +197,55 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
                   )}
                 />
               </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name="hasCustomInfo"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={field.value}
+                          onChange={e => {
+                            const checked = e.target.checked;
+
+                            field.onChange(checked);
+
+                            if (checked && !account?.customInfo) {
+                              setValue('customInfo', {
+                                email: '',
+                                firstName: '',
+                                lastName: '',
+                                company: '',
+                                phone: '',
+                                address: {
+                                  line1: '',
+                                  line2: '',
+                                  city: '',
+                                  district: '',
+                                  postalCode: '',
+                                },
+                              });
+                            }
+
+                            if (!checked) {
+                              setValue('customInfo', undefined);
+                            }
+                          }}
+                        />
+                      }
+                      label="Özel gönderici bilgileri kullan"
+                    />
+                  )}
+                />
+              </Grid>
+
+              {hasCustomInfo && (
+                <Grid size={{ xs: 12 }}>
+                  <CustomInfoSection control={control} errors={errors} />
+                </Grid>
+              )}
 
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>

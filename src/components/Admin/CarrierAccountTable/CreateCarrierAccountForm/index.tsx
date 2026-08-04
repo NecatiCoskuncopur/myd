@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useTransition } from 'react';
 
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Snackbar, TextField, useTheme } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
+import { useForm } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
 import StyledButton from '@/components/StyledButton';
 import { carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { Carrier } from '@/constants';
+import FormItems from './FormItems';
 
 type CreateCarrierAccountProps = {
   open: boolean;
@@ -15,7 +16,7 @@ type CreateCarrierAccountProps = {
   onSuccess?: () => void;
 };
 
-const { ACCOUNTNUMBER, CREATE, NAME } = carrierMessages;
+const { CREATE } = carrierMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAccountProps) => {
@@ -48,10 +49,26 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
         { key: 'apiKey', value: '' },
         { key: 'secretKey', value: '' },
       ],
+      hasCustomInfo: false,
+      customInfo: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        company: '',
+        phone: '',
+        address: {
+          line1: '',
+          line2: '',
+          city: '',
+          district: '',
+          postalCode: '',
+        },
+      },
     },
   });
 
   const selectedCarrier = watch('carrier');
+  const hasCustomInfo = watch('hasCustomInfo');
 
   useEffect(() => {
     if (selectedCarrier === Carrier.FEDEX) {
@@ -118,73 +135,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
         <form>
           <DialogTitle>Kargo Hesabı Oluştur</DialogTitle>
           <DialogContent>
-            <Grid container spacing={2} sx={{ mt: 0.5 }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="name"
-                  rules={{
-                    required: NAME.REQUIRED,
-                    minLength: { value: 2, message: NAME.MIN },
-                    maxLength: { value: 75, message: NAME.MAX },
-                  }}
-                  control={control}
-                  render={({ field }) => <TextField {...field} fullWidth label="Hesap Adı" error={!!errors.name} helperText={errors.name?.message} />}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="accountNumber"
-                  rules={{
-                    required: ACCOUNTNUMBER.REQUIRED,
-                    minLength: { value: 1, message: ACCOUNTNUMBER.MIN },
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} fullWidth label="Hesap Numarası" error={!!errors.accountNumber} helperText={errors.accountNumber?.message} />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <Controller
-                  name="carrier"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} select fullWidth label="Kargo Firması" error={!!errors.carrier}>
-                      <MenuItem value={Carrier.FEDEX}>FedEx</MenuItem>
-                      <MenuItem value={Carrier.UPS}>UPS</MenuItem>
-                    </TextField>
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>
-                  <Grid container spacing={2}>
-                    {credentials?.map((item, index) => (
-                      <Grid size={{ xs: 12, md: 6 }} key={item.key}>
-                        <Controller
-                          name={`credentials.${index}.value` as const}
-                          control={control}
-                          rules={{ required: 'Bu alan zorunludur' }}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              fullWidth
-                              label={item.key === 'apiKey' ? 'API Key' : item.key === 'secretKey' ? 'Secret Key' : item.key}
-                              error={!!errors.credentials?.[index]?.value}
-                              helperText={errors.credentials?.[index]?.value?.message}
-                            />
-                          )}
-                        />
-                        <Controller name={`credentials.${index}.key` as const} control={control} render={({ field }) => <input type="hidden" {...field} />} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Box>
-              </Grid>
-            </Grid>
+            <FormItems control={control} setValue={setValue} credentials={credentials} hasCustomInfo={hasCustomInfo} errors={errors} />
           </DialogContent>
 
           <DialogActions sx={{ px: 3, pb: 3 }}>
