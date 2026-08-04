@@ -41,7 +41,16 @@ const carrierConfig: Record<Carrier, ICarrierConfig> = {
       { key: 'clientId', value: '' },
       { key: 'clientSecret', value: '' },
     ],
-    icon: <Image src="/images/qs.png" alt="UPS" width={24} height={24} style={{ objectFit: 'contain' }} />,
+    icon: <Image src="/images/qs.png" alt="QUICKSHIPPER" width={24} height={24} style={{ objectFit: 'contain' }} />,
+  },
+  [Carrier.NAVLUNGO]: {
+    name: 'NAVLUNGO',
+    trackingUrl: 'https://www.ups.com/track?tracknum=%s',
+    credentials: [
+      { key: 'clientId', value: '' },
+      { key: 'clientSecret', value: '' },
+    ],
+    icon: <Image src="/images/navlungo.png" alt="NAVLUNGO" width={24} height={24} style={{ objectFit: 'contain' }} />,
   },
 };
 
