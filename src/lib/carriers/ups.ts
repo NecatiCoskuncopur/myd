@@ -1,6 +1,7 @@
 import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
+import { CarrierTypes } from '@/types/carrier';
 
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -8,6 +9,8 @@ const BASE_URL = 'https://www.sandbox.ups.com';
 
 const createUpsPaper = async ({
   shippingInstance,
+  hasCustomInfo,
+  customInfo,
   accountNumber,
   credentials,
   shippingId,
@@ -46,18 +49,27 @@ const createUpsPaper = async ({
           UserLevelDiscountIndicator: 'Y',
         },
         Shipper: {
-          Name: shippingInstance.sender.name.substring(0, 35),
-          AttentionName: shippingInstance.sender.name.substring(0, 35),
+          Name: (hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name).substring(0, 35),
+
+          AttentionName: (hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name).substring(0, 35),
+
           Phone: {
-            Number: shippingInstance.sender.phone.replace(/\D/g, ''),
+            Number: (hasCustomInfo && customInfo ? customInfo.phone : shippingInstance.sender.phone).replace(/\D/g, ''),
           },
+
           ShipperNumber: formattedAccountNumber,
+
           Address: {
-            AddressLine: [shippingInstance.sender.address.line1.substring(0, 35), (shippingInstance.sender.address.line2 || '').substring(0, 35)].filter(
-              Boolean,
-            ),
-            City: shippingInstance.sender.address.city,
-            PostalCode: shippingInstance.sender.address.postalCode,
+            AddressLine: [
+              (hasCustomInfo && customInfo ? customInfo?.address?.line1 || '' : shippingInstance.sender.address.line1).substring(0, 35),
+
+              (hasCustomInfo && customInfo ? customInfo?.address?.line2 || '' : shippingInstance.sender.address.line2 || '').substring(0, 35),
+            ].filter(Boolean),
+
+            City: hasCustomInfo && customInfo ? customInfo?.address?.city : shippingInstance.sender.address.city,
+
+            PostalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
+
             CountryCode: 'TR',
           },
         },

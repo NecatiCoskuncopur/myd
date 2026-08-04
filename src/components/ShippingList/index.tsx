@@ -188,6 +188,8 @@ const ShippingList = () => {
 
     try {
       const res = await createBarcode({
+        hasCustomInfo: !!account.hasCustomInfo,
+        customInfo: account.customInfo,
         shippingId,
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,

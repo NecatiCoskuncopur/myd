@@ -11,11 +11,11 @@ import { CarrierAccount, Shipping, User } from '@/models';
 import createFedexPaper from '@/lib/carriers/fedex';
 import createUpsPaper from '@/lib/carriers/ups';
 import { ShippingTypes } from '@/types/shipping';
-import ICarrierDriverParams = CarrierTypes.ICarrierDriverParams;
+import { CarrierTypes } from '@/types/carrier';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const carrierDrivers: Record<string, (params: ICarrierDriverParams) => Promise<{ trackingNumber: string; label: string; invoice: string }>> = {
+const carrierDrivers: Record<string, (params: CarrierTypes.ICarrierDriverParams) => Promise<{ trackingNumber: string; label: string; invoice: string }>> = {
   FEDEX: createFedexPaper,
   UPS: createUpsPaper,
 };
@@ -28,7 +28,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     if (!currentUser) return { status: 'ERROR', message: UNAUTHORIZED };
 
     const { id: userId, role } = currentUser;
-    const { shippingId, firm, accountNumber } = data;
+    const { shippingId, firm, accountNumber, customInfo, hasCustomInfo } = data;
 
     const driver = carrierDrivers[firm];
     if (!driver) return { status: 'ERROR', message: carrierMessages.UNSUPPORTED };
@@ -63,6 +63,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const carrierResult = await driver({
       shippingInstance,
       accountNumber,
+      hasCustomInfo,
+      customInfo,
       credentials: {
         apiKey: credentials.apiKey,
         secretKey: credentials.secretKey,

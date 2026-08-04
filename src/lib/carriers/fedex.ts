@@ -1,6 +1,7 @@
 import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
+import { CarrierTypes } from '@/types/carrier';
 
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -14,6 +15,8 @@ const splitAddress = (addressStr: string): string[] => {
 
 const createFedexPaper = async ({
   shippingInstance,
+  hasCustomInfo,
+  customInfo,
   accountNumber,
   credentials,
   shippingId,
@@ -59,13 +62,17 @@ const createFedexPaper = async ({
       packagingType: 'YOUR_PACKAGING',
       shipper: {
         contact: {
-          personName: shippingInstance.sender.name,
-          phoneNumber: shippingInstance.sender.phone,
+          personName: hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name,
+          phoneNumber: hasCustomInfo && customInfo ? customInfo?.phone : shippingInstance.sender.phone,
         },
         address: {
-          streetLines: splitAddress(`${shippingInstance.sender.address.line1} ${shippingInstance.sender.address.line2 || ''}`.trim()),
-          city: shippingInstance.sender.address.city,
-          postalCode: shippingInstance.sender.address.postalCode,
+          streetLines: splitAddress(
+            hasCustomInfo && customInfo
+              ? `${customInfo?.address?.line1} ${customInfo?.address?.line2 || ''}`.trim()
+              : `${shippingInstance.sender.address.line1} ${shippingInstance.sender.address.line2 || ''}`.trim(),
+          ),
+          city: hasCustomInfo && customInfo ? customInfo?.address?.city : shippingInstance.sender.address.city,
+          postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
           countryCode: 'TR',
         },
       },

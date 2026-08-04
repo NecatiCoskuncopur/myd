@@ -1,4 +1,5 @@
 import { Carrier, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace ShippingTypes {
   interface ICalculateShippingPayload {
@@ -140,6 +141,8 @@ declare namespace ShippingTypes {
   interface ICreateBarcodeParams {
     shippingId: string;
     firm: Carrier;
+    hasCustomInfo: boolean;
+    customInfo?: CarrierAccountTypes.ICustomInfo;
     accountNumber: string;
   }
 

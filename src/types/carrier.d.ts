@@ -1,6 +1,10 @@
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+
 declare namespace CarrierTypes {
   interface ICreatePaper {
     shippingInstance: ShippingTypes.IShipping;
+    hasCustomInfo: boolean;
+    customInfo?: CarrierAccountTypes.ICustomInfo;
     shippingId: string;
     accountNumber: string;
   }
@@ -8,6 +12,8 @@ declare namespace CarrierTypes {
   interface ICarrierDriverParams {
     shippingInstance: ShippingTypes.IShipping;
     accountNumber: string;
+    hasCustomInfo: boolean;
+    customInfo?: CarrierAccountTypes.ICustomInfo;
     credentials: {
       apiKey: string;
       secretKey: string;
