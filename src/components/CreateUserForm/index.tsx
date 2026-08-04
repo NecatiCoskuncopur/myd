@@ -32,6 +32,7 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
       phone: '',
       email: '',
       password: '',
+      nickname: '',
       address: {
         line1: '',
         district: '',

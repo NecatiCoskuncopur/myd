@@ -34,6 +34,12 @@ const UserSchema = new Schema(
       minLength: 2,
       maxLength: 75,
     },
+    nickname: {
+      type: String,
+      required: false,
+      default: null,
+      trim: true,
+    },
     company: {
       type: String,
       minLength: 2,

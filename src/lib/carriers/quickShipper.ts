@@ -1,5 +1,5 @@
 import { Storage } from '@/lib/storage';
-import { carrierMessages } from '@/constants';
+import { carrierMessages, company } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -34,10 +34,13 @@ const createQuickShipperPaper = async ({
       applyInsurance: shippingInstance.content.insurance > 0,
       shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
       shippingAddress: {
-        firstName: hasCustomInfo && customInfo ? customInfo.firstName : shippingInstance.sender.name,
-        lastName: hasCustomInfo && customInfo ? customInfo.lastName || '' : '',
+        firstName: hasCustomInfo && customInfo ? customInfo.firstName : (shippingInstance.sender.nickname || shippingInstance.sender.name).split(' ')[0],
+        lastName:
+          hasCustomInfo && customInfo
+            ? customInfo.lastName || ''
+            : (shippingInstance.sender.nickname || shippingInstance.sender.name).split(' ').slice(1).join(' '),
         companyName: hasCustomInfo && customInfo ? customInfo.company || '' : shippingInstance.sender.company,
-        phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : shippingInstance.sender.phone,
+        phoneNumber: company.phone,
         email: hasCustomInfo && customInfo ? customInfo.email : shippingInstance.sender.email,
         zipCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
         countryCode: 'TR',

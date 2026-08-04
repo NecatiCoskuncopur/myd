@@ -8,7 +8,7 @@ import { Control, Controller, FieldErrors } from 'react-hook-form';
 import { addressMessages, userMessages } from '@/constants';
 import { AdminTypes } from '@/types/admin';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE, PASSWORD } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 type FormItemsProps = {
@@ -43,6 +43,22 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
             maxLength: { value: 75, message: LASTNAME.MAX },
           }}
           render={({ field }) => <TextField {...field} label="Soyad" fullWidth error={!!errors.lastName} helperText={errors.lastName?.message} />}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Controller
+          name="nickname"
+          control={control}
+          rules={{
+            validate: value => {
+              if (!value) return true;
+              if (value.length < 4) return NICKNAME.MIN;
+              if (value.length > 75) return NICKNAME.MAX;
+              return true;
+            },
+          }}
+          render={({ field }) => <TextField {...field} label="Kullanıcı Adı" fullWidth error={!!errors.nickname} helperText={errors.nickname?.message} />}
         />
       </Grid>
 
@@ -102,7 +118,7 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12 }}>
         <Controller
           name="password"
           control={control}

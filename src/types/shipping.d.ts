@@ -28,6 +28,7 @@ declare namespace ShippingTypes {
     company?: string;
     phone: string;
     email: string;
+    nickname?: string;
     address: ISenderAddress;
   }
 

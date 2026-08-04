@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { addressMessages, userMessages } from '@/constants';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE, PASSWORD } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE, PASSWORD } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 export default yup.object({
@@ -12,6 +12,7 @@ export default yup.object({
   lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
   company: yup.string().typeError(COMPANY.TYPE).min(2, COMPANY.MIN).max(75, COMPANY.MAX),
   phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH).required(PHONE.REQUIRED),
+  nickname: yup.string().typeError(NICKNAME.TYPE).min(4, NICKNAME.MIN).max(75, NICKNAME.MAX),
   address: yup.object({
     line1: yup.string().typeError(LINE.TYPE).min(5, LINE.MIN).max(255, LINE.MAX).required(LINE.REQUIRED),
     line2: yup.string().typeError(LINE.TYPE).max(255, LINE.MAX),

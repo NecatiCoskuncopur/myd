@@ -5,10 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/User.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/User.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/setUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/setUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +128,7 @@
       <workItem from="1785714574253" duration="4443000" />
       <workItem from="1785721127179" duration="1222000" />
       <workItem from="1785788535084" duration="15772000" />
-      <workItem from="1785836618770" duration="9816000" />
+      <workItem from="1785836618770" duration="15058000" />
     </task>
     <servers />
   </component>

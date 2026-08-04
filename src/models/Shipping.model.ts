@@ -8,6 +8,7 @@ const ShippingSchema = new mongoose.Schema(
     consigneeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Consignee', index: true },
     sender: {
       name: String,
+      nickname: String,
       company: String,
       phone: String,
       email: String,

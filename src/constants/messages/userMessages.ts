@@ -10,6 +10,11 @@ const userMessages = {
     MIN: 'Şirket adı en az 2 karakter olmalı.',
     MAX: 'Şirket adı en fazla 75 karakter olmalı',
   },
+  NICKNAME: {
+    TYPE: 'Kullanıcı adı metin tipinde olmalı.',
+    MIN: 'Kullanıcı adı en az 4 karakter olmalı.',
+    MAX: 'Kullanıcı adı en fazla 75 karakter olmalı',
+  },
   EMAIL: {
     TYPE: 'E-Posta adresi metin tipinde olmalı.',
     INVALID: 'E-Posta adresi geçersiz',

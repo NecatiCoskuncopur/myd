@@ -1,4 +1,4 @@
-import { carrierMessages } from '@/constants';
+import { carrierMessages, company } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
@@ -49,12 +49,13 @@ const createUpsPaper = async ({
           UserLevelDiscountIndicator: 'Y',
         },
         Shipper: {
-          Name: (hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name).substring(0, 35),
-
+          Name: (hasCustomInfo && customInfo
+            ? `${customInfo.firstName} ${customInfo.lastName}`
+            : shippingInstance.sender.nickname || shippingInstance.sender.name
+          ).substring(0, 35),
           AttentionName: (hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name).substring(0, 35),
-
           Phone: {
-            Number: (hasCustomInfo && customInfo ? customInfo.phone : shippingInstance.sender.phone).replace(/\D/g, ''),
+            Number: company.phone,
           },
 
           ShipperNumber: formattedAccountNumber,

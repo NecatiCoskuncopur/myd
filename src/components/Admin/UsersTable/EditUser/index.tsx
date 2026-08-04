@@ -50,6 +50,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       userId: '',
       firstName: '',
       lastName: '',
+      nickname: '',
       company: '',
       phone: '',
       email: '',

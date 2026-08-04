@@ -54,7 +54,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       });
     }
 
-    const user = await User.findById(userId).select('firstName lastName company phone email address').lean();
+    const user = await User.findById(userId).select('firstName lastName nickname company phone email address').lean();
     if (!user) {
       return {
         status: 'ERROR',
@@ -70,6 +70,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
 
       sender: {
         name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
+        nickname: user.nickname,
         company: user.company,
         phone: user.phone,
         email: user.email,

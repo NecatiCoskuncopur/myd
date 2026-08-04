@@ -1,4 +1,4 @@
-import { carrierMessages } from '@/constants';
+import { carrierMessages, company } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
@@ -62,8 +62,9 @@ const createFedexPaper = async ({
       packagingType: 'YOUR_PACKAGING',
       shipper: {
         contact: {
-          personName: hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name,
-          phoneNumber: hasCustomInfo && customInfo ? customInfo?.phone : shippingInstance.sender.phone,
+          personName:
+            hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
+          phoneNumber: company.phone,
         },
         address: {
           streetLines: splitAddress(

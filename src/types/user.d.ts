@@ -60,6 +60,7 @@ declare namespace UserTypes {
     firstName: string;
     lastName: string;
     company?: string;
+    nickname?: string;
     phone: string;
     role: UserRole;
     isActive: boolean;

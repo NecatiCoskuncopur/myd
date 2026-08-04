@@ -19,7 +19,7 @@ import { addressMessages, userMessages } from '@/constants';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 type FormItemsProps = {
@@ -38,7 +38,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         </Typography>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="firstName"
           control={control}
@@ -69,7 +69,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="lastName"
           control={control}
@@ -100,7 +100,23 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Controller
+          name="nickname"
+          control={control}
+          rules={{
+            validate: value => {
+              if (!value) return true;
+              if (value.length < 4) return NICKNAME.MIN;
+              if (value.length > 75) return NICKNAME.MAX;
+              return true;
+            },
+          }}
+          render={({ field }) => <TextField {...field} label="Kullanıcı Adı" fullWidth error={!!errors.nickname} helperText={errors.nickname?.message} />}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="company"
           control={control}
