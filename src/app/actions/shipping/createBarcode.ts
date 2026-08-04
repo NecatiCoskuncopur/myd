@@ -12,12 +12,14 @@ import createFedexPaper from '@/lib/carriers/fedex';
 import createUpsPaper from '@/lib/carriers/ups';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
+import createQuickShipperPaper from '@/lib/carriers/quickShipper';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
 const carrierDrivers: Record<string, (params: CarrierTypes.ICarrierDriverParams) => Promise<{ trackingNumber: string; label: string; invoice: string }>> = {
   FEDEX: createFedexPaper,
   UPS: createUpsPaper,
+  QUICKSHIPPER: createQuickShipperPaper,
 };
 
 const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string }>> => {

@@ -35,6 +35,13 @@ declare namespace CarrierTypes {
     };
   }
 
+  interface ICreateQuickShipperPaper extends ICreatePaper {
+    credentials: {
+      apiKey: string;
+      secretKey: string;
+    };
+  }
+
   interface FedexPackageDocument {
     contentType?: string;
     documentType?: string;

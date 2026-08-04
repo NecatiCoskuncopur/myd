@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/images/navlungo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/carrierConfig.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/carrierConfig.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/enums/carrier.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/enums/carrier.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +115,7 @@
       <workItem from="1785714574253" duration="4443000" />
       <workItem from="1785721127179" duration="1222000" />
       <workItem from="1785788535084" duration="15772000" />
-      <workItem from="1785836618770" duration="8146000" />
+      <workItem from="1785836618770" duration="9816000" />
     </task>
     <servers />
   </component>
