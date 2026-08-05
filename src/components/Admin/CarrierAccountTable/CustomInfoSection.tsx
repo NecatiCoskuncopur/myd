@@ -1,4 +1,4 @@
-import { Box, Grid, TextField } from '@mui/material';
+import { Box, Grid, TextField, useTheme } from '@mui/material';
 import { Control, Controller, FieldErrors, Path } from 'react-hook-form';
 import { addressMessages, userMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -12,12 +12,15 @@ type CustomInfoSectionProps<T extends { customInfo?: Partial<CarrierAccountTypes
 };
 
 const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.ICustomInfo> }>({ control, errors }: CustomInfoSectionProps<T>) => {
+  const mode = useTheme().palette.mode;
+
+  const borderDashed = mode === 'light' ? '1px dashed rgba(0,0,0,0.12)' : '1px dashed rgba(255,255,255,0.2)';
   const customInfoErrors = errors.customInfo as FieldErrors<CarrierAccountTypes.ICustomInfo> | undefined;
   const addressErrors = customInfoErrors?.address;
 
   return (
     <Grid size={{ xs: 12 }}>
-      <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>
+      <Box sx={{ p: 2, border: borderDashed, borderRadius: 1 }}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Controller

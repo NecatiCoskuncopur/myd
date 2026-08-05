@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, MenuItem, TextField } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, MenuItem, TextField, useTheme } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 import { Carrier, carrierMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -16,6 +16,9 @@ type FormItemsProps = {
 };
 
 const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue }: FormItemsProps) => {
+  const mode = useTheme().palette.mode;
+
+  const borderDashed = mode === 'light' ? '1px dashed rgba(0,0,0,0.12)' : '1px dashed rgba(255,255,255,0.2)';
   return (
     <Grid container spacing={2} sx={{ mt: 0.5 }}>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -103,7 +106,7 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue }: Fo
       {hasCustomInfo && <CustomInfoSection errors={errors} control={control} />}
 
       <Grid size={{ xs: 12 }}>
-        <Box sx={{ p: 2, border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 1 }}>
+        <Box sx={{ p: 2, border: borderDashed, borderRadius: 1 }}>
           <Grid container spacing={2}>
             {credentials?.map((item, index) => (
               <Grid size={{ xs: 12, md: 6 }} key={item.key}>
