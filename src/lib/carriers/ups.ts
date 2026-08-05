@@ -14,7 +14,7 @@ const createUpsPaper = async ({
   accountNumber,
   credentials,
   shippingId,
-}: CarrierTypes.ICreateUpsPaper): Promise<{
+}: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
   invoice: string;
@@ -23,7 +23,7 @@ const createUpsPaper = async ({
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Base64 ${Buffer.from(`${credentials.apiKey}:${credentials.secretKey}`).toString('base64')}`,
+      Authorization: `Base64 ${Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString('base64')}`,
     },
     body: new URLSearchParams({
       grant_type: 'client_credentials',

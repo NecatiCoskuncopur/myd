@@ -14,7 +14,7 @@ const createQuickShipperPaper = async ({
   accountNumber,
   credentials,
   shippingId,
-}: CarrierTypes.ICreateQuickShipperPaper): Promise<{
+}: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
   invoice: string;
@@ -99,8 +99,8 @@ const createQuickShipperPaper = async ({
       headers: {
         'Content-Type': 'application/json',
         accountNumber: formattedAccountNumber,
-        'qs-key': credentials.apiKey,
-        'qs-secret': credentials.secretKey,
+        'qs-key': credentials['qs-key'],
+        'qs-secret': credentials['qs-secret'],
       },
       body: JSON.stringify(body),
     });

@@ -62,15 +62,27 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       return acc;
     }, {});
 
+    const carrierCredentials = {
+      FEDEX: {
+        apiKey: credentials.apiKey,
+        secretKey: credentials.secretKey,
+      },
+      UPS: {
+        clientId: credentials.clientId,
+        clientSecret: credentials.clientSecret,
+      },
+      QUICKSHIPPER: {
+        'qs-key': credentials['qs-key'],
+        'qs-secret': credentials['qs-secret'],
+      },
+    };
+
     const carrierResult = await driver({
       shippingInstance,
       accountNumber,
       hasCustomInfo,
       customInfo,
-      credentials: {
-        apiKey: credentials.apiKey,
-        secretKey: credentials.secretKey,
-      },
+      credentials: carrierCredentials[firm as keyof typeof carrierCredentials],
       shippingId: shipping._id.toString(),
     });
 

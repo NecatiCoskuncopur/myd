@@ -20,7 +20,7 @@ const createFedexPaper = async ({
   accountNumber,
   credentials,
   shippingId,
-}: CarrierTypes.ICreateFedexPaper): Promise<{
+}: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
   invoice: string;

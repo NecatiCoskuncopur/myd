@@ -6,6 +6,7 @@ declare namespace CarrierTypes {
     hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
     shippingId: string;
+    credentials: Record<string, string>;
     accountNumber: string;
   }
 
@@ -14,32 +15,8 @@ declare namespace CarrierTypes {
     accountNumber: string;
     hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
-    credentials: {
-      apiKey: string;
-      secretKey: string;
-    };
+    credentials: Record<string, string>;
     shippingId: string;
-  }
-
-  interface ICreateFedexPaper extends ICreatePaper {
-    credentials: {
-      apiKey: string;
-      secretKey: string;
-    };
-  }
-
-  interface ICreateUpsPaper extends ICreatePaper {
-    credentials: {
-      apiKey: string;
-      secretKey: string;
-    };
-  }
-
-  interface ICreateQuickShipperPaper extends ICreatePaper {
-    credentials: {
-      apiKey: string;
-      secretKey: string;
-    };
   }
 
   interface FedexPackageDocument {
