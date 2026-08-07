@@ -1,7 +1,8 @@
 import { Storage } from '@/lib/storage';
-import { carrierMessages, company } from '@/constants';
+import { carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
+import latinize from 'latinize';
 
 const { SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -20,76 +21,74 @@ const createQuickShipperPaper = async ({
   invoice: string;
 }> => {
   try {
-    const formattedAccountNumber = String(accountNumber).trim();
+    const { consignee, content, detail, sender, package: pkg } = shippingInstance;
+
+    const senderData = {
+      firstName: latinize(
+        hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
+      ),
+      lastName: '',
+      companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
+      phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
+      email: hasCustomInfo && customInfo ? customInfo.email : sender.email,
+      zipCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
+      countryCode: 'TR',
+      cityName: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
+      address1: latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : shippingInstance.sender.address.line1),
+      address2: latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 || '' : shippingInstance.sender.address.line2 || ''),
+      isCorporate: false,
+      saveAddress: false,
+    };
+
+    const consigneeData = {
+      firstName: latinize(consignee.name),
+      lastName: '',
+      companyName: latinize(consignee.company || consignee.name),
+      countryCode: consignee.address.country,
+      address1: latinize(consignee.address.line1),
+      address2: latinize(consignee.address.line2 || ''),
+      cityName: latinize(consignee.address.city),
+      phoneNumber: consignee.phone ? String('+' + consignee.phone).replace('-', '') : '111111111111',
+      email: consignee.email,
+      zipCode: String(consignee.address.postalCode).split('-')[0],
+      stateProvinceCode: consignee.address.state,
+      addressType: 0,
+      isCorporate: false,
+      saveAddress: false,
+    };
 
     const body = {
       currency: 'USD',
-      ioss: shippingInstance.detail.iossNumber,
+      ioss: detail.iossNumber,
       serviceTypeId: '1',
       integratorId: '2',
       contentId: 1,
-      customsExpensesId: shippingInstance.detail.payor?.customs === 'SENDER' ? 1 : 0,
+      customsExpensesId: detail.payor?.customs === 'SENDER' ? 1 : 0,
       shipmentStatusId: 0,
       totalWeight: shippingInstance.package.weight * shippingInstance.package.numberOfPackage,
       applyInsurance: shippingInstance.content.insurance > 0,
       shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
       shippingAddress: {
-        firstName: hasCustomInfo && customInfo ? customInfo.firstName : (shippingInstance.sender.nickname || shippingInstance.sender.name).split(' ')[0],
-        lastName:
-          hasCustomInfo && customInfo
-            ? customInfo.lastName || ''
-            : (shippingInstance.sender.nickname || shippingInstance.sender.name).split(' ').slice(1).join(' '),
-        companyName: hasCustomInfo && customInfo ? customInfo.company || '' : shippingInstance.sender.company,
-        phoneNumber: company.phone,
-        email: hasCustomInfo && customInfo ? customInfo.email : shippingInstance.sender.email,
-        zipCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
-        countryCode: 'TR',
-        cityName: hasCustomInfo && customInfo ? customInfo?.address?.city : shippingInstance.sender.address.city,
-        address1: hasCustomInfo && customInfo ? customInfo?.address?.line1 : shippingInstance.sender.address.line1,
-        address2: hasCustomInfo && customInfo ? customInfo?.address?.line2 || '' : shippingInstance.sender.address.line2 || '',
-        isCorporate: false,
-        saveAddress: false,
+        ...senderData,
       },
       consigneeAddress: {
-        firstName: shippingInstance.consignee.name,
-        lastName: '',
-        companyName: shippingInstance.consignee.company,
-        countryCode: shippingInstance.consignee.address.country,
-        address1: shippingInstance.consignee.address.line1,
-        address2: shippingInstance.consignee.address.line2 || '',
-        cityName: shippingInstance.consignee.address.city,
-        phoneNumber: shippingInstance.consignee.phone ? `+${shippingInstance.consignee.phone}`.replace('-', '') : '111111111111',
-        email: shippingInstance.consignee.email,
-        zipCode: String(shippingInstance.consignee.address.postalCode).split('-')[0],
-        stateProvinceCode: shippingInstance.consignee.address.state,
-        addressType: 0,
-        isCorporate: false,
-        saveAddress: false,
+        ...consigneeData,
       },
 
-      items: Array.from(
-        {
-          length: shippingInstance.package.numberOfPackage,
-        },
-        () => ({
-          quantity: 1,
+      items: [...Array(pkg.numberOfPackage).keys()].map(() => ({
+        quantity: 1,
+        weight: pkg.weight,
+        width: pkg.width,
+        size: pkg.length,
+        height: pkg.height,
+      })),
 
-          weight: shippingInstance.package.weight,
-
-          width: shippingInstance.package.width,
-
-          size: shippingInstance.package.length,
-
-          height: shippingInstance.package.height,
-        }),
-      ),
-
-      goods: shippingInstance.content.products.map((product: ShippingTypes.IProduct) => ({
+      goods: content.products.map((product: ShippingTypes.IProduct) => ({
         description: product.name,
         price: product.unitPrice,
         quantity: product.piece,
         gtip: product.gtip || '',
-        productOriginCountry: 'TR',
+        productOriginCountry: '',
       })),
     };
 
@@ -98,7 +97,7 @@ const createQuickShipperPaper = async ({
 
       headers: {
         'Content-Type': 'application/json',
-        accountNumber: formattedAccountNumber,
+        accountNumber,
         'qs-key': credentials['qs-key'],
         'qs-secret': credentials['qs-secret'],
       },

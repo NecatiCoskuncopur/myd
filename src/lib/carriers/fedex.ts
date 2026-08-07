@@ -1,17 +1,11 @@
-import { carrierMessages, company } from '@/constants';
+import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
-
+import latinize from 'latinize';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
-
-const splitAddress = (addressStr: string): string[] => {
-  if (!addressStr) return ['Missing Address'];
-  const chunks = addressStr.match(/.{1,35}/g) || [];
-  return chunks.slice(0, 3);
-};
 
 const createFedexPaper = async ({
   shippingInstance,
@@ -38,111 +32,140 @@ const createFedexPaper = async ({
   });
 
   if (!authRes.ok) throw new Error(AUTH_FAILED);
-
+  const { sender, consignee, detail, content, package: pkg } = shippingInstance;
   const authData = await authRes.json();
   const accessToken = authData.access_token;
-  const formattedAccountNumber = String(accountNumber).trim();
-  const totalProductValue = shippingInstance.content.products.reduce((acc: number, p: ShippingTypes.IProduct) => acc + p.unitPrice * p.piece, 0);
-  const productCount = shippingInstance.content.products.length || 1;
+  const totalValue = content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0);
+  const productDesc = content.description || latinize(content.products.map((p: ShippingTypes.IProduct) => p.name).toString());
 
-  let weightPerProduct = Number((shippingInstance.package.weight / productCount).toFixed(2));
-  if (weightPerProduct <= 0) weightPerProduct = 0.01;
+  const senderContact = {
+    personName: latinize(
+      hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
+    ),
+    companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
+    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
+    emailAddress: hasCustomInfo && customInfo ? customInfo.email : sender.email,
+  };
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const senderAddress = {
+    streetLines: [
+      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : sender.address.line1),
+      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 : sender.address.line2),
+    ].filter(Boolean),
+    city: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
+    postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
+    countryCode: 'TR',
+    residential: false,
+  };
+
+  const consigneeContact = {
+    personName: latinize(consignee.name),
+    companyName: latinize(consignee.company || consignee.name),
+    phoneNumber: consignee.phone ? String(`+${consignee.phone}`).replace('-', '') : '111111111111',
+    emailAddress: consignee.email,
+  };
+
+  const consigneeAddress = {
+    streetLines: [latinize(consignee.address.line1), latinize(consignee.address.line2)].filter(Boolean),
+    city: latinize(consignee.address.city),
+    stateOrProvinceCode: consignee.address.state,
+    postalCode: String(consignee.address.postalCode).split('-')[0],
+    countryCode: consignee.address.country,
+    residential: false,
+  };
 
   const payload = {
     labelResponseOptions: 'LABEL',
     accountNumber: {
-      value: formattedAccountNumber,
+      value: accountNumber,
     },
     requestedShipment: {
-      shipDatestamp: todayStr,
-      pickupType: 'USE_SCHEDULED_PICKUP',
+      shipDatestamp: new Date(Date.now() + 86_400_000).toISOString().split('T')[0],
+      pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
       serviceType: 'INTERNATIONAL_PRIORITY',
-      packagingType: 'YOUR_PACKAGING',
+      packagingType: 'FEDEX_PAK',
+      totalWeight: pkg.weight * pkg.numberOfPackage,
+      preferredCurrency: content.currency,
       shipper: {
+        accountNumber: { value: accountNumber },
+        ...(detail.iossNumber && {
+          tins: [{ tinType: 'BUSINESS_UNION', number: detail.iossNumber }],
+        }),
         contact: {
-          personName:
-            hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
-          phoneNumber: company.phone,
+          ...senderContact,
         },
         address: {
-          streetLines: splitAddress(
-            hasCustomInfo && customInfo
-              ? `${customInfo?.address?.line1} ${customInfo?.address?.line2 || ''}`.trim()
-              : `${shippingInstance.sender.address.line1} ${shippingInstance.sender.address.line2 || ''}`.trim(),
-          ),
-          city: hasCustomInfo && customInfo ? customInfo?.address?.city : shippingInstance.sender.address.city,
-          postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
-          countryCode: 'TR',
+          ...senderAddress,
         },
       },
       recipients: [
         {
           contact: {
-            personName: shippingInstance.consignee.name,
-            phoneNumber: shippingInstance.consignee.phone,
+            ...consigneeContact,
           },
           address: {
-            streetLines: splitAddress(`${shippingInstance.consignee.address.line1} ${shippingInstance.consignee.address.line2 || ''}`.trim()),
-            city: shippingInstance.consignee.address.city,
-            ...(['US', 'CA', 'IN'].includes(shippingInstance.consignee.address.country) && {
-              stateOrProvinceCode: shippingInstance.consignee.address.state || 'NY',
-            }),
-            postalCode: shippingInstance.consignee.address.postalCode.replace(/\s/g, ''),
-            countryCode: shippingInstance.consignee.address.country,
+            ...consigneeAddress,
           },
         },
       ],
+
       shippingChargesPayment: {
-        paymentType: shippingInstance?.detail?.payor?.shipping === 'CONSIGNEE' ? 'RECIPIENT' : 'SENDER',
+        paymentType: 'SENDER',
         payor: {
           responsibleParty: {
-            accountNumber: { value: formattedAccountNumber },
+            accountNumber: { value: accountNumber },
           },
         },
       },
-      customsClearanceDetail: {
-        commercialInvoice: {
-          shipmentPurpose: shippingInstance.detail.purpose === 'REPAIR_OR_RETURN' ? 'REPAIR_AND_RETURN' : shippingInstance.detail.purpose || 'COMMERCIAL',
-          invoiceNumber: `INV-${Date.now().toString().slice(-6)}`,
-          invoiceDate: todayStr,
-        },
-        dutiesPayment: {
-          paymentType: shippingInstance?.detail?.payor?.customs === 'CONSIGNEE' ? 'RECIPIENT' : 'SENDER',
-          payor: {
-            responsibleParty: {
-              accountNumber: { value: formattedAccountNumber },
-            },
-          },
-        },
-        customsValue: {
-          amount: Number(totalProductValue.toFixed(2)),
-          currency: shippingInstance.content.currency || 'USD',
-        },
-        commodities: shippingInstance.content?.products?.map((product: ShippingTypes.IProduct) => {
-          const cleanDescription = (product.name || '').trim();
-          const safeDescription = cleanDescription.length > 2 && cleanDescription.toLowerCase() !== 'product' ? cleanDescription : 'Textile Fabric Sample';
 
-          return {
-            description: safeDescription.substring(0, 45),
-            countryOfManufacture: 'TR',
-            quantity: product.piece || 1,
-            quantityUnits: 'PCS',
-            unitPrice: {
-              amount: Number((product.unitPrice || 0).toFixed(2)),
-              currency: shippingInstance.content.currency || 'USD',
+      shipmentSpecialServices: {
+        specialServiceTypes: ['ELECTRONIC_TRADE_DOCUMENTS', ...(content.insurance > 0 ? ['INSURED_VALUE'] : [])],
+        etdDetail: {
+          attributes: ['POST_SHIPMENT_UPLOAD_REQUESTED'],
+        },
+      },
+
+      customsClearanceDetail: {
+        dutiesPayment: {
+          paymentType: detail.payor?.customs === 'SENDER' ? 'SENDER' : 'RECIPIENT',
+          ...(detail.payor.customs === 'SENDER' && {
+            Payor: {
+              ResponsibleParty: {
+                AccountNumber: accountNumber,
+              },
             },
-            customsValue: {
-              amount: Number(((product.unitPrice || 0) * (product.piece || 0)).toFixed(2)),
-              currency: shippingInstance.content.currency || 'USD',
-            },
-            weight: {
-              units: 'KG',
-              value: weightPerProduct,
-            },
-          };
-        }),
+          }),
+        },
+
+        customsValue: { currency: content.currency, amount: totalValue },
+        partiesToTransactionAreRelated: false,
+
+        commercialInvoice: {
+          comments: [productDesc],
+          ...(content.freight && {
+            freightCharge: { currency: content.currency, amount: content.freight },
+          }),
+          specialInstructions: productDesc,
+          declarationStatement: productDesc,
+          termsOfSale: detail.payor?.customs === 'SENDER' ? 'DDP' : undefined,
+          shipmentPurpose: detail.purpose,
+        },
+
+        commodities: content.products.map((product: ShippingTypes.IProduct) => ({
+          name: latinize(product.name),
+          numberOfPieces: 1,
+          description: latinize(product.name),
+          countryOfManufacture: 'TR',
+          harmonizedCode: product.gtip,
+          weight: { units: 'KG', value: 0.001 },
+          quantity: product.piece,
+          quantityUnits: 'PCS',
+          unitPrice: { currency: content.currency, amount: product.unitPrice },
+          customsValue: {
+            currency: content.currency,
+            amount: product.unitPrice * product.piece,
+          },
+        })),
       },
 
       labelSpecification: {
@@ -152,21 +175,41 @@ const createFedexPaper = async ({
         labelPrintingOrientation: 'TOP_EDGE_OF_TEXT_FIRST',
         labelOrder: 'SHIPPING_LABEL_FIRST',
       },
-      requestedPackageLineItems: [
-        {
-          weight: {
-            units: 'KG',
-            value: Number(shippingInstance.package.weight.toFixed(2)),
+
+      shippingDocumentSpecification: {
+        shippingDocumentTypes: ['COMMERCIAL_INVOICE'],
+        commercialInvoiceDetail: {
+          documentFormat: {
+            dispositions: [{ dispositionType: 'RETURNED', grouping: 'INDIVIDUAL' }],
+            docType: 'PDF',
+            stockType: 'PAPER_LETTER',
           },
-          dimensions: {
-            length: Math.ceil(shippingInstance.package.length || 10),
-            width: Math.ceil(shippingInstance.package.width || 10),
-            height: Math.ceil(shippingInstance.package.height || 10),
-            units: 'CM',
-          },
+          customerImageUsages: [
+            { type: 'LETTER_HEAD', id: 'IMAGE_2' },
+            { type: 'SIGNATURE', id: 'IMAGE_1' },
+          ],
         },
-      ],
+      },
+      rateRequestTypes: ['LIST'],
+      edtRequestType: 'ALL',
+      packageCount: pkg.numberOfPackage,
     },
+
+    requestedPackageLineItems: [
+      {
+        sequenceNumber: 1,
+        groupNumber: 1,
+        groupPackageCount: pkg.numberOfPackage,
+        weight: { units: 'KG', value: pkg.weight / 2 },
+        dimensions: {
+          length: pkg.length / 2,
+          width: pkg.width / 2,
+          height: pkg.height / 2,
+          units: 'CM',
+        },
+        customerReferences: [{ customerReferenceType: 'CUSTOMER_REFERENCE', value: 'REF06REF06' }],
+      },
+    ],
   };
 
   const shipmentRes = await fetch(`${BASE_URL}/ship/v1/shipments`, {

@@ -1,8 +1,9 @@
-import { carrierMessages, company } from '@/constants';
+import { carrierMessages } from '@/constants';
 import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
-
+import latinize from 'latinize';
+import moment from 'moment';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://www.sandbox.ups.com';
@@ -34,126 +35,176 @@ const createUpsPaper = async ({
 
   const authData = await authRes.json();
   const accessToken = authData.access_token;
-  const formattedAccountNumber = String(accountNumber).trim();
-  const totalProductValue = shippingInstance.content.products.reduce((acc: number, p: ShippingTypes.IProduct) => acc + p.unitPrice * p.piece, 0);
-  const currency = shippingInstance.content.currency || 'USD';
+  const { content, consignee, detail, sender, package: pkg } = shippingInstance;
+
+  const shipperData = {
+    name: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name),
+    attentionName: latinize(hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : sender.nickname || sender.name),
+    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
+    email: hasCustomInfo && customInfo ? customInfo.email : sender.email,
+    addressLine: [
+      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : sender.address.line1),
+      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 : sender.address.line2),
+    ].filter(Boolean),
+    city: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
+    postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
+    countryCode: 'TR',
+  };
+
+  const recipientData = {
+    name: latinize(consignee.company || consignee.name),
+    attentionName: latinize(consignee.name),
+    phoneNumber: consignee.phone ? String(consignee.phone).replace('-', '') : '11111111111',
+    email: consignee.email,
+    taxId: consignee.taxId,
+    addressLine: [latinize(consignee.address.line1), latinize(consignee.address.line2)].filter(Boolean),
+    city: latinize(consignee.address.city),
+    postalCode: consignee.address.postalCode.split('-')[0],
+    state: consignee.address.state,
+    countryCode: consignee.address.country,
+  };
 
   const payload = {
     ShipmentRequest: {
-      Request: {
-        RequestOption: 'nonvalidate',
-      },
       Shipment: {
-        Description: 'International Shipment',
-        ShipmentRatingOptions: {
-          UserLevelDiscountIndicator: 'Y',
-        },
+        Description: content.description ? latinize(content.description) : latinize(content.products[0].name),
         Shipper: {
-          Name: (hasCustomInfo && customInfo
-            ? `${customInfo.firstName} ${customInfo.lastName}`
-            : shippingInstance.sender.nickname || shippingInstance.sender.name
-          ).substring(0, 35),
-          AttentionName: (hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.name).substring(0, 35),
+          Name: shipperData.name,
+          AttentionName: shipperData.attentionName,
           Phone: {
-            Number: company.phone,
+            Number: shipperData.phoneNumber,
           },
-
-          ShipperNumber: formattedAccountNumber,
-
+          EMailAddress: shipperData.email,
+          ShipperNumber: accountNumber,
           Address: {
-            AddressLine: [
-              (hasCustomInfo && customInfo ? customInfo?.address?.line1 || '' : shippingInstance.sender.address.line1).substring(0, 35),
-
-              (hasCustomInfo && customInfo ? customInfo?.address?.line2 || '' : shippingInstance.sender.address.line2 || '').substring(0, 35),
-            ].filter(Boolean),
-
-            City: hasCustomInfo && customInfo ? customInfo?.address?.city : shippingInstance.sender.address.city,
-
-            PostalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : shippingInstance.sender.address.postalCode,
-
-            CountryCode: 'TR',
+            AddressLine: shipperData.addressLine,
+            City: shipperData.city,
+            PostalCode: shipperData.postalCode,
+            CountryCode: shipperData.countryCode,
+          },
+          VendorInfo: {
+            VendorCollectIDTypeCode: '0356',
+            VendorCollectIDNumber: 'IMDEU1234567',
           },
         },
         ShipTo: {
-          Name: shippingInstance.consignee.name.substring(0, 35),
-          AttentionName: shippingInstance.consignee.name.substring(0, 35),
+          Name: recipientData.name,
+          AttentionName: recipientData.attentionName,
           Phone: {
-            Number: shippingInstance.consignee.phone,
+            Number: recipientData.phoneNumber,
           },
+          EMailAddress: recipientData.email,
+          TaxIdentificationNumber: recipientData.taxId,
           Address: {
-            AddressLine: [shippingInstance.consignee.address.line1.substring(0, 35), (shippingInstance.consignee.address.line2 || '').substring(0, 35)].filter(
-              Boolean,
-            ),
-            City: shippingInstance.consignee.address.city,
-            StateProvinceCode: shippingInstance.consignee.address.state || '',
-            PostalCode: shippingInstance.consignee.address.postalCode.replace(/\s/g, ''),
-            CountryCode: shippingInstance.consignee.address.country,
+            AddressLine: recipientData.addressLine,
+            City: recipientData.city,
+            StateProvinceCode: recipientData.state,
+            PostalCode: recipientData.postalCode,
+            CountryCode: recipientData.countryCode,
           },
         },
         PaymentInformation: {
-          ShipmentCharge: {
-            Type: '01', // Transportation Charges
-            BillShipper: {
-              AccountNumber: formattedAccountNumber,
+          ShipmentCharge: [
+            {
+              Type: '01',
+              BillShipper: {
+                AccountNumber: accountNumber,
+              },
             },
-          },
+          ],
         },
         Service: {
           Code: '65',
-          Description: 'UPS Worldwide Express Saver',
         },
-
         ShipmentServiceOptions: {
           InternationalForms: {
-            FormType: ['01'], // 01 = Commercial Invoice
-            UserSelectedFormType: '01',
-            InvoiceNumber: `INV-${Date.now().toString().slice(-6)}`,
-            InvoiceDate: new Date().toISOString().split('T')[0].replace(/-/g, ''),
-            ReasonForExport: shippingInstance.detail.purpose || 'COMMERCIAL',
-            CurrencyCode: currency,
-            Product: shippingInstance.content?.products?.map((product: ShippingTypes.IProduct) => ({
-              Description: (product.name || 'Sample').substring(0, 35),
-              Unit: {
-                Number: String(product.piece || 1),
-                Value: String(product.unitPrice || 0),
-                UnitOfMeasurement: {
-                  Code: 'PCS',
+            FormType: '01',
+            InvoiceDate: moment().add(1, 'days').format('YYYYMMDD'),
+            ReasonForExport: (() => {
+              switch (detail.purpose) {
+                case 'COMMERICAL':
+                  return 'SALE';
+                case 'PERSONAL':
+                  return 'GIFT';
+                case 'REPAIR_OR_RETURN':
+                  return 'RETURN';
+                default:
+                  return detail.purpose;
+              }
+            })(),
+            CurrencyCode: content.currency,
+            FreightCharges: {
+              MonetaryValue: content.freight ? content.freight.toString() : '0',
+            },
+            Contacts: {
+              SoldTo: {
+                Name: latinize(consignee.company) || latinize(consignee.name),
+                AttentionName: latinize(consignee.name),
+                Phone: {
+                  Number: consignee.phone ? consignee.phone : '11111111111',
+                },
+                EMailAddress: consignee.email,
+                TaxIdentificationNumber: consignee.taxId,
+                Address: {
+                  AddressLine: [latinize(consignee.address.line1), latinize(consignee.address.line2)],
+                  City: latinize(consignee.address.city),
+                  StateProvinceCode: consignee.address.state,
+                  PostalCode: consignee.address.postalCode.split('-')[0],
+                  CountryCode: consignee.address.country,
                 },
               },
+            },
+            Product: content.products.map((product: ShippingTypes.IProduct) => ({
+              Description: latinize(product.name),
+              Unit: {
+                Number: String(product.piece),
+                UnitOfMeasurement: {
+                  Code: 'PC',
+                },
+                Value: String(product.unitPrice),
+              },
+              CommodityCode: product.gtip,
               OriginCountryCode: 'TR',
             })),
           },
         },
-        Package: [
-          {
-            Packaging: {
-              Code: '02', // Customer Box
-              Description: 'Customer Box',
-            },
-            Dimensions: {
-              UnitOfMeasurement: { Code: 'CM' },
-              Length: String(Math.ceil(shippingInstance.package.length || 10)),
-              Width: String(Math.ceil(shippingInstance.package.width || 10)),
-              Height: String(Math.ceil(shippingInstance.package.height || 10)),
-            },
-            PackageWeight: {
-              UnitOfMeasurement: { Code: 'KGS' },
-              Weight: String(Number(shippingInstance.package.weight.toFixed(2))),
-            },
+        Package: [...new Array(pkg.numberOfPackage)].map(x => ({
+          Packaging: {
+            Code: '02',
           },
-        ],
+          PackageWeight: {
+            UnitOfMeasurement: {
+              Code: 'KGS',
+            },
+            Weight: String(pkg.weight),
+          },
+          PackageServiceOptions:
+            content.insurance > 0
+              ? {
+                  DeclaredValue: {
+                    CurrencyCode: content.currency,
+                    MonetaryValue: String(content.insurance),
+                  },
+                }
+              : undefined,
+        })),
       },
       LabelSpecification: {
         LabelImageFormat: {
-          Code: 'GIF',
-        },
-        LabelStockSize: {
-          Height: '6',
-          Width: '4',
+          Code: 'PNG',
         },
       },
     },
   };
+
+  if (detail.payor.customs === 'SENDER') {
+    payload.ShipmentRequest.Shipment.PaymentInformation.ShipmentCharge.push({
+      Type: '02',
+      BillShipper: {
+        AccountNumber: accountNumber,
+      },
+    });
+  }
 
   const shipmentRes = await fetch(`${BASE_URL}/api/shipments/v1/ship`, {
     method: 'POST',
