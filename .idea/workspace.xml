@@ -6,11 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

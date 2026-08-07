@@ -69,7 +69,7 @@ const ConsigneeSection = () => {
     }, 100);
 
     return () => clearTimeout(timeout);
-  }, [inputValue]);
+  }, [inputValue, selectedConsignee]);
 
   const clearConsignee = () => {
     setSelectedConsignee(null);
@@ -130,48 +130,57 @@ const ConsigneeSection = () => {
             return (
               <ErrorTooltip message={errorMessage}>
                 <Autocomplete
+                  freeSolo
                   options={options}
                   loading={false}
                   open={open}
                   onClose={() => setOpen(false)}
                   inputValue={inputValue}
-                  value={options.find(option => option.name === field.value) ?? null}
+                  value={selectedConsignee ?? field.value ?? ''}
                   getOptionLabel={option => (typeof option === 'string' ? option : option.name)}
                   onInputChange={(_, value) => {
                     setInputValue(value);
-                    field.onChange(value);
+
+                    if (!selectedConsignee) {
+                      field.onChange(value);
+                    }
                   }}
                   onChange={(_, value) => {
                     if (!value) {
-                      field.onChange('');
                       setSelectedConsignee(null);
+                      field.onChange('');
+                      setInputValue('');
+                      return;
+                    }
+
+                    if (typeof value === 'string') {
+                      setSelectedConsignee(null);
+                      setInputValue(value);
+                      field.onChange(value);
                       return;
                     }
 
                     setSelectedConsignee(value);
+                    setInputValue(value.name);
                     field.onChange(value.name);
 
                     setValue('consignee.company', value.company ?? '');
-
                     setValue('consignee.phone', value.phone ?? '');
-
                     setValue('consignee.email', value.email ?? '');
-
                     setValue('consignee.taxId', value.taxId ?? '');
 
                     setValue('consignee.address.line1', value.address?.line1 ?? '');
-
                     setValue('consignee.address.line2', value.address?.line2 ?? '');
-
                     setValue('consignee.address.city', value.address?.city ?? '');
-
                     setValue('consignee.address.postalCode', value.address?.postalCode ?? '');
-
                     setValue('consignee.address.country', value.address?.country ?? '');
-
                     setValue('consignee.address.state', value.address?.state ?? '');
                   }}
-                  isOptionEqualToValue={(option, value) => option._id === value?._id}
+                  isOptionEqualToValue={(option, value) => {
+                    if (typeof value === 'string') return false;
+
+                    return option._id === value?._id;
+                  }}
                   disabled={!!selectedConsignee}
                   renderOption={(props, option) => (
                     <li {...props} key={option._id}>
