@@ -25,7 +25,7 @@ declare namespace AuthTypes {
     firstName: string;
     lastName: string;
     password: string;
-    // recaptchaToken: string;
+    recaptchaToken: string;
     company?: string;
     phone: string;
     address: UserTypes.Address;

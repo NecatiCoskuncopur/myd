@@ -7,14 +7,14 @@ import { useForm } from 'react-hook-form';
 
 import signUp from '@/app/actions/auth/signUp';
 import { authMessages, generalMessages } from '@/constants';
-import FormItems from './FormItems';
 import SignUpSuccess from './SignUpSuccess';
+import FormFields from './FormFields';
 
 const SignUpForm = () => {
   const [pending, startTransition] = useTransition();
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // const [captchaKey, setCaptchaKey] = useState(0);
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
@@ -37,7 +37,7 @@ const SignUpForm = () => {
         city: '',
         postalCode: '',
       },
-      // recaptchaToken: '',
+      recaptchaToken: '',
     },
   });
 
@@ -57,6 +57,7 @@ const SignUpForm = () => {
         setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
       } catch {
         resetField('password');
+        setCaptchaKey(prev => prev + 1);
         setErrorMessage(generalMessages.UNEXPECTED_ERROR);
       }
     });
@@ -79,7 +80,7 @@ const SignUpForm = () => {
       )}
 
       <Box>
-        <FormItems errors={errors} control={control} setValue={setValue} />
+        <FormFields errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
         <Button
           type="button"
           onClick={handleSubmit(onSubmit)}

@@ -42,7 +42,7 @@ const UserSchema = new Schema(
     },
     company: {
       type: String,
-      minLength: 2,
+      minLength: 5,
       maxLength: 75,
     },
     phone: {
@@ -78,7 +78,7 @@ const UserSchema = new Schema(
       postalCode: {
         type: String,
         required: true,
-        minLength: 3,
+        minLength: 4,
         maxLength: 15,
       },
       district: {

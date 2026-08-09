@@ -7,7 +7,7 @@ const userMessages = {
   },
   COMPANY: {
     TYPE: 'Şirket adı metin tipinde olmalı.',
-    MIN: 'Şirket adı en az 2 karakter olmalı.',
+    MIN: 'Şirket adı en az 5 karakter olmalı.',
     MAX: 'Şirket adı en fazla 75 karakter olmalı',
   },
   NICKNAME: {
