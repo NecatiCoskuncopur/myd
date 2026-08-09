@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SignInForm/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/login.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/login.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/forgotPassword.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/forgotPassword.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/types/auth.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/auth.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -136,7 +135,7 @@
       <workItem from="1786115421340" duration="4052000" />
       <workItem from="1786276201707" duration="8484000" />
       <workItem from="1786285642959" duration="702000" />
-      <workItem from="1786296863860" duration="6380000" />
+      <workItem from="1786296863860" duration="6653000" />
     </task>
     <servers />
   </component>

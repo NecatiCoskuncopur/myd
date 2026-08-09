@@ -8,7 +8,7 @@ import { forgotPasswordMail, generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import MydMail from '@/lib/mailer';
-// import validateRecaptcha from '@/lib/validateRecaptcha';
+import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import forgotPasswordSchema from '@/schemas/forgotPassword.schema';
 
@@ -21,10 +21,10 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
 
     await connectMongoDB();
 
-    /*    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
-    }*/
+    }
 
     const user = await User.findOne({ email: validatedData.email.trim().toLowerCase() }).select('_id email +password');
 

@@ -12,7 +12,7 @@ declare namespace AuthTypes {
 
   interface IForgotPasswordPayload {
     email: string;
-    // recaptchaToken: string;
+    recaptchaToken: string;
   }
 
   interface IResetPasswordPayload {

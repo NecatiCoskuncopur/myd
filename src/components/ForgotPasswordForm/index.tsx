@@ -14,18 +14,18 @@ const ForgotPasswordForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [pending, startTransition] = useTransition();
-  // const [captchaKey, setCaptchaKey] = useState(0);
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
     handleSubmit,
     setValue,
-    // resetField,
+    resetField,
     formState: { errors },
   } = useForm<AuthTypes.IForgotPasswordPayload>({
     defaultValues: {
       email: '',
-      // recaptchaToken: '',
+      recaptchaToken: '',
     },
   });
 
@@ -37,6 +37,8 @@ const ForgotPasswordForm = () => {
         const response = await forgotPassword(values);
 
         if (response.status === 'ERROR') {
+          resetField('email');
+          setCaptchaKey(prev => prev + 1);
           setErrorMessage(response.message ?? authMessages.FORGOTPASSWORD.ERROR);
           return;
         }
@@ -68,7 +70,7 @@ const ForgotPasswordForm = () => {
       )}
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} setValue={setValue} />
+        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
 
         <Button
           type="submit"
