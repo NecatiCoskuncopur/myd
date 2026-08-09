@@ -9,8 +9,8 @@ import editUser from '@/app/actions/user/editUser';
 import getUser from '@/app/actions/user/getUser';
 import { StyledButton } from '@/components';
 import { generalMessages, userMessages } from '@/constants';
-import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
+import FormFields from './FormFields';
 
 const { EMAIL, EDITUSER, NOT_FOUND } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -88,7 +88,7 @@ const EditUserForm = () => {
         </Typography>
 
         <Box component="form" noValidate>
-          <FormItems errors={errors} register={register} pending={pending} />
+          <FormFields errors={errors} register={register} pending={pending} />
           <StyledButton
             type="button"
             onClick={handleSubmit(onSubmit)}

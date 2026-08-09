@@ -5,29 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/AddressFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/ContactFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/PersonalInfoFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/SignUpSuccess.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/AddressFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/ContactFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/PersonalInfoFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/ForgotPasswordSuccess.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/ForgotPasswordSuccess.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/HCaptcha.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HCaptcha.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/ResetPasswordSuccess.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/ResetPasswordSuccess.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignInForm/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignInForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/AddressFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/ContactFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/SignUpSuccess.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormItems.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/editUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/editUser.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,7 +139,7 @@
       <workItem from="1786276201707" duration="8484000" />
       <workItem from="1786285642959" duration="702000" />
       <workItem from="1786296863860" duration="7105000" />
-      <workItem from="1786304033013" duration="360000" />
+      <workItem from="1786304033013" duration="4441000" />
     </task>
     <servers />
   </component>
