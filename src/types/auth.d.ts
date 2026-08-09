@@ -2,7 +2,7 @@ declare namespace AuthTypes {
   interface ISignInPayload {
     email: string;
     password: string;
-    // recaptchaToken: string;
+    recaptchaToken: string;
   }
 
   interface ISignInResponse {

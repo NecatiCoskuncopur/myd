@@ -13,7 +13,7 @@ import FormItems from './FormItems';
 const SignInForm = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // const [captchaKey, setCaptchaKey] = useState(0);
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const [pending, startTransition] = useTransition();
 
@@ -27,7 +27,7 @@ const SignInForm = () => {
     defaultValues: {
       email: '',
       password: '',
-      // recaptchaToken: '',
+      recaptchaToken: '',
     },
   });
 
@@ -39,6 +39,7 @@ const SignInForm = () => {
 
       if (response.status === 'ERROR') {
         resetField('password');
+        setCaptchaKey(prev => prev + 1);
         setErrorMessage(response.message ?? authMessages.SIGNIN.ERROR);
         return;
       }
@@ -58,7 +59,7 @@ const SignInForm = () => {
         </Alert>
       )}
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} setValue={setValue} />
+        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
         <Button
           type="submit"
           variant="contained"

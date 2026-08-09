@@ -9,7 +9,7 @@ import { ValidationError } from 'yup';
 import { authMessages, generalMessages, userMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
-// import validateRecaptcha from '@/lib/validateRecaptcha';
+import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import loginSchema from '@/schemas/login.schema';
 import { UserDocument } from '@/models/User.model';
@@ -22,10 +22,10 @@ const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IAc
     });
     await connectMongoDB();
 
-    /*    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
-    }*/
+    }
 
     const email = validatedData.email.trim().toLowerCase();
 

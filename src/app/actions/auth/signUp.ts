@@ -8,7 +8,7 @@ import { authMessages, generalMessages, pricingListMessages, userMessages, welco
 import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
-// import validateRecaptcha from '@/lib/validateRecaptcha';
+import validateRecaptcha from '@/lib/validateRecaptcha';
 import { Balance, User, PricingList } from '@/models';
 import createUserSchema from '@/schemas/createUser.schema';
 
@@ -20,12 +20,10 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     });
     await connectMongoDB();
 
-    /*
     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
     }
-*/
 
     const emailLower = validatedData.email.trim().toLowerCase();
     const existingUser = await User.findOne({ email: emailLower });
