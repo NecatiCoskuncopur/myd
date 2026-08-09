@@ -157,7 +157,7 @@ const SenderSection = () => {
         slotProps={{
           paper: {
             sx: {
-              width: { xs: '100%', sm: 450 },
+              width: { xs: '100%', sm: 550 },
               p: 4,
               backgroundImage: 'none',
               backgroundColor: theme.palette.dashboard.sidebar,

@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form';
 import adminCreateUser from '@/app/actions/admin/adminCreateUser';
 import { StyledButton } from '@/components';
 import { authMessages, generalMessages } from '@/constants';
-import FormItems from './FormItems';
 import { AdminTypes } from '@/types/admin';
+import FormFields from '@/components/CreateUserForm/FormFields';
 
 interface CreateUserFormProps {
   onSuccess?: (user: AdminTypes.ISearchSenderResult) => void;
@@ -72,7 +72,7 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
         </Alert>
       )}
       <Box component="div">
-        <FormItems errors={errors} control={control} />
+        <FormFields errors={errors} control={control} />
 
         <StyledButton
           type="button"

@@ -10,7 +10,12 @@ export default yup.object({
   email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),
   firstName: yup.string().typeError(FIRSTNAME.TYPE).min(2, FIRSTNAME.MIN).max(75, FIRSTNAME.MAX).required(FIRSTNAME.REQUIRED),
   lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
-  company: yup.string().typeError(COMPANY.TYPE).min(2, COMPANY.MIN).max(75, COMPANY.MAX),
+  company: yup
+    .string()
+    .transform(value => (value === '' ? undefined : value))
+    .typeError(COMPANY.TYPE)
+    .min(5, COMPANY.MIN)
+    .max(75, COMPANY.MAX),
   phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH).required(PHONE.REQUIRED),
   nickname: yup.string().typeError(NICKNAME.TYPE).min(4, NICKNAME.MIN).max(75, NICKNAME.MAX),
   address: yup.object({
