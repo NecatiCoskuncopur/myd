@@ -8,7 +8,6 @@ import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping, User } from '@/models';
 import createShippingSchema from '@/schemas/createShipping.schema';
-import { revalidatePath } from 'next/cache';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
@@ -64,6 +63,16 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
     const { width, height, length, weight, numberOfPackage } = validatedData.package;
 
     const volumetricWeight = width != null && height != null && length != null ? Number(((width * height * length) / 5000).toFixed(2)) : 0;
+    const totalProductValue = validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0);
+    const insurance = validatedData.content.insurance ?? 0;
+    const currency = validatedData.content.currency;
+
+    if (insurance && totalProductValue !== insurance) {
+      return {
+        status: 'ERROR',
+        message: `Sigorta bedeli (${insurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir!.`,
+      };
+    }
 
     const shipping = await Shipping.create({
       userId,
@@ -98,7 +107,6 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       },
     });
 
-    revalidatePath('/panel/gonderilerim/listele');
     return {
       status: 'OK',
       message: CREATESHIPPING.SUCCESS,

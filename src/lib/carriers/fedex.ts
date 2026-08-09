@@ -82,7 +82,7 @@ const createFedexPaper = async ({
     requestedShipment: {
       shipDatestamp: new Date(Date.now() + 86_400_000).toISOString().split('T')[0],
       pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
-      serviceType: 'INTERNATIONAL_PRIORITY',
+      serviceType: 'FEDEX_INTERNATIONAL_PRIORITY',
       packagingType: 'FEDEX_PAK',
       totalWeight: pkg.weight * pkg.numberOfPackage,
       preferredCurrency: content.currency,
@@ -127,14 +127,14 @@ const createFedexPaper = async ({
 
       customsClearanceDetail: {
         dutiesPayment: {
-          paymentType: detail.payor?.customs === 'SENDER' ? 'SENDER' : 'RECIPIENT',
-          ...(detail.payor.customs === 'SENDER' && {
-            Payor: {
-              ResponsibleParty: {
-                AccountNumber: accountNumber,
+          paymentType: 'SENDER',
+          payor: {
+            responsibleParty: {
+              accountNumber: {
+                value: accountNumber,
               },
             },
-          }),
+          },
         },
 
         customsValue: { currency: content.currency, amount: totalValue },
@@ -193,23 +193,23 @@ const createFedexPaper = async ({
       rateRequestTypes: ['LIST'],
       edtRequestType: 'ALL',
       packageCount: pkg.numberOfPackage,
-    },
 
-    requestedPackageLineItems: [
-      {
-        sequenceNumber: 1,
-        groupNumber: 1,
-        groupPackageCount: pkg.numberOfPackage,
-        weight: { units: 'KG', value: pkg.weight / 2 },
-        dimensions: {
-          length: pkg.length / 2,
-          width: pkg.width / 2,
-          height: pkg.height / 2,
-          units: 'CM',
+      requestedPackageLineItems: [
+        {
+          sequenceNumber: 1,
+          groupNumber: 1,
+          groupPackageCount: pkg.numberOfPackage,
+          weight: { units: 'KG', value: pkg.weight / 2 },
+          dimensions: {
+            length: pkg.length / 2,
+            width: pkg.width / 2,
+            height: pkg.height / 2,
+            units: 'CM',
+          },
+          customerReferences: [{ customerReferenceType: 'CUSTOMER_REFERENCE', value: 'REF06REF06' }],
         },
-        customerReferences: [{ customerReferenceType: 'CUSTOMER_REFERENCE', value: 'REF06REF06' }],
-      },
-    ],
+      ],
+    },
   };
 
   const shipmentRes = await fetch(`${BASE_URL}/ship/v1/shipments`, {

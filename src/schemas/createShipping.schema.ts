@@ -1,11 +1,26 @@
 import * as yup from 'yup';
 
-import { addressMessages, Carrier, CurrencyEnum, shippingMessages, ShippingPayor, ShippingPurpose, userMessages } from '@/constants';
+import { addressMessages, CurrencyEnum, shippingMessages, ShippingPayor, ShippingPurpose, userMessages } from '@/constants';
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;
-const { CONSIGNEE, CURRENCY, DESCRIPTION, FREIGHT, HARMONIZED_CODE_TYPE, HEIGHT, NUMBEROFPACKAGE, IOSSNUMBER, LENGTH, PAYOR, PRODUCT, PURPOSE, WEIGHT, WIDTH } =
-  shippingMessages;
+const {
+  CONSIGNEE,
+  CURRENCY,
+  DESCRIPTION,
+  FREIGHT,
+  HARMONIZED_CODE_TYPE,
+  HEIGHT,
+  NUMBEROFPACKAGE,
+  IOSSNUMBER,
+  INSURANCE,
+  LENGTH,
+  PAYOR,
+  PRODUCT,
+  PURPOSE,
+  WEIGHT,
+  WIDTH,
+} = shippingMessages;
 
 export default yup.object({
   senderId: yup.string(),
@@ -49,6 +64,7 @@ export default yup.object({
   content: yup.object({
     currency: yup.string().oneOf(Object.values(CurrencyEnum), CURRENCY.INVALID).required(CURRENCY.REQUIRED),
     description: yup.string().typeError(DESCRIPTION.TYPE).max(50, DESCRIPTION.MAX),
+    insurance: yup.number().typeError(INSURANCE.TYPE).min(1, INSURANCE.MIN),
     freight: yup.number().typeError(FREIGHT.TYPE).min(1, FREIGHT.MIN),
     products: yup
       .array()

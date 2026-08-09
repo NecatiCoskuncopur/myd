@@ -10,7 +10,7 @@ import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
 import { ShippingTypes } from '@/types/shipping';
 
-const { CURRENCY, DESCRIPTION, FREIGHT, PRODUCT } = shippingMessages;
+const { CURRENCY, DESCRIPTION, FREIGHT, INSURANCE, PRODUCT } = shippingMessages;
 
 const PackageContentSection = () => {
   const {
@@ -243,6 +243,54 @@ const PackageContentSection = () => {
         >
           + Farklı Ürün Ekle
         </Button>
+      </Grid>
+      <Grid size={{ xs: 12, md: 5 }}>
+        <Controller
+          name="content.insurance"
+          rules={{
+            validate: value => {
+              if (!value) return true;
+              if (value < 1) return INSURANCE.MIN;
+              return true;
+            },
+          }}
+          control={control}
+          render={({ field }) => {
+            const errorMessage = errors.content?.insurance?.message;
+
+            return (
+              <ErrorTooltip message={errorMessage}>
+                <TextField
+                  {...field}
+                  label="Sigorta Bedeli"
+                  fullWidth
+                  error={!!errorMessage}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Tooltip
+                            title="Gönderi sigortalanacaksa sigorta bedelini girebilirsiniz. Sigorta bedeli, gönderinin proforma değerine göre belirlenmelidir."
+                            arrow
+                            placement="top"
+                          >
+                            <HelpIcon
+                              sx={{
+                                fontSize: 18,
+                                color: 'action.active',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </ErrorTooltip>
+            );
+          }}
+        />
       </Grid>
     </Wrapper>
   );

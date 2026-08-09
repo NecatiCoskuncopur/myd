@@ -83,6 +83,7 @@ const CreateShippingForm = () => {
         currency: CurrencyEnum.USD,
         description: '',
         freight: '' as unknown as number,
+        insurance: '' as unknown as number,
         products: [
           {
             name: '',

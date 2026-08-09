@@ -62,6 +62,17 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       }
     }
 
+    const totalProductValue = validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0);
+    const insurance = validatedData.content.insurance ?? 0;
+    const currency = validatedData.content.currency;
+
+    if (insurance && totalProductValue !== insurance) {
+      return {
+        status: 'ERROR',
+        message: `Sigorta bedeli (${insurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir!.`,
+      };
+    }
+
     const result = await Shipping.updateOne(
       { _id: shippingId, userId },
       {

@@ -47,6 +47,10 @@ const shippingMessages = {
     MIN: 'Yükseklik en az 0.5 cm olmalıdır.',
     MAX: 'Yükseklik en fazla 500 cm olabilir.',
   },
+  INSURANCE: {
+    MIN: 'Sigorta tutarı en az 1 olmalıdır.',
+    TYPE: 'Sigorta tutarı sayısal olmalıdır.',
+  },
   ID: {
     INVALID: 'Geçersiz gönderi id.',
     TYPE: 'Gönderi id metin tipinde olmalıdır.',
