@@ -13,7 +13,7 @@ import PersonalInfoFields from './PersonalInfoFields';
 import ContactFields from './ContactFields';
 import AddressFields from './AddressFields';
 
-import HCaptchaField from '../../HCaptcha';
+import { HCaptcha } from '@/components';
 
 const { PASSWORD } = userMessages;
 
@@ -80,7 +80,7 @@ const FormFields = ({ errors, control, setValue, captchaKey }: FormItemsProps) =
           name="recaptchaToken"
           control={control}
           rules={{ required: captchaMessages.REQUIRED }}
-          render={() => <HCaptchaField onVerify={token => setValue('recaptchaToken', token)} onExpire={() => setValue('recaptchaToken', '')} />}
+          render={() => <HCaptcha onVerify={token => setValue('recaptchaToken', token)} onExpire={() => setValue('recaptchaToken', '')} />}
         />
       </Grid>
     </Grid>

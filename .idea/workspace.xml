@@ -5,11 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/AddressFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/ContactFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/PersonalInfoFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/SignUpSuccess.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/forgotPassword.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/forgotPassword.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/auth.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/auth.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/ForgotPasswordSuccess.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/ForgotPasswordSuccess.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ForgotPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ForgotPasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HCaptcha.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HCaptcha.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/ResetPasswordSuccess.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/ResetPasswordSuccess.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ResetPasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/ResetPasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignInForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignInForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignInForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/AddressFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/ContactFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/FormFields/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/SignUpSuccess.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/SignUpForm/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +35,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="274" />
+    <option name="cachedIndexableFilesCount" value="277" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -36,42 +54,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
-    "javascript.preferred.runtime.type.id": "node",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/Necati/Desktop/projects/myd",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "npm.Next.js: server-side.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\prettier",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Necati/Desktop/projects/myd&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\public\images" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\public" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\CarrierAccountTable" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\app\actions\consignee" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\constants" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -135,7 +153,8 @@
       <workItem from="1786115421340" duration="4052000" />
       <workItem from="1786276201707" duration="8484000" />
       <workItem from="1786285642959" duration="702000" />
-      <workItem from="1786296863860" duration="6653000" />
+      <workItem from="1786296863860" duration="7105000" />
+      <workItem from="1786304033013" duration="360000" />
     </task>
     <servers />
   </component>

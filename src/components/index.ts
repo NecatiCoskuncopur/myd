@@ -1,8 +1,8 @@
 export { default as HCaptcha } from './HCaptcha';
-export { default as SignInForm } from './SignInForm';
-export { default as SignUpForm } from './SignUpForm';
-export { default as ForgotPasswordForm } from './ForgotPasswordForm';
-export { default as ResetPasswordForm } from './ResetPasswordForm';
+export { default as SignInForm } from './Auth/SignInForm';
+export { default as SignUpForm } from './Auth/SignUpForm';
+export { default as ForgotPasswordForm } from './Auth/ForgotPasswordForm';
+export { default as ResetPasswordForm } from './Auth/ResetPasswordForm';
 export { default as DashboardShell } from './DashboardShell';
 export { default as UserBalanceTable } from './UserBalanceTable';
 export { default as StyledButton } from './StyledButton';

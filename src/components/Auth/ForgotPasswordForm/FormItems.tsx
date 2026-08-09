@@ -5,7 +5,7 @@ import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
 import { captchaMessages, userMessages } from '@/constants';
-import HCaptchaField from '../HCaptcha';
+import { HCaptcha } from '@/components';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.IForgotPasswordPayload>;
@@ -55,7 +55,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
         rules={{ required: captchaMessages.REQUIRED }}
         render={() => (
           <Box sx={{ mt: 2 }}>
-            <HCaptchaField
+            <HCaptcha
               key={captchaKey}
               onVerify={token =>
                 setValue('recaptchaToken', token, {

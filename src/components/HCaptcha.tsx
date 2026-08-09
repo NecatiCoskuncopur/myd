@@ -7,7 +7,7 @@ interface Props {
   onExpire?: () => void;
 }
 
-export default function HCaptchaField({ onVerify, onExpire }: Props) {
+const HCaptcha = ({ onVerify, onExpire }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<number | null>(null);
 
@@ -48,4 +48,6 @@ export default function HCaptchaField({ onVerify, onExpire }: Props) {
       }}
     />
   );
-}
+};
+
+export default HCaptcha;
