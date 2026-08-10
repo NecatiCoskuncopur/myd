@@ -10,7 +10,7 @@ import adminCreateUser from '@/app/actions/admin/adminCreateUser';
 import { StyledButton } from '@/components';
 import { authMessages, generalMessages } from '@/constants';
 import { AdminTypes } from '@/types/admin';
-import FormFields from '@/components/CreateUserForm/FormFields';
+import FormItems from './FormItems';
 
 interface CreateUserFormProps {
   onSuccess?: (user: AdminTypes.ISearchSenderResult) => void;
@@ -72,7 +72,7 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
         </Alert>
       )}
       <Box component="div">
-        <FormFields errors={errors} control={control} />
+        <FormItems errors={errors} control={control} />
 
         <StyledButton
           type="button"

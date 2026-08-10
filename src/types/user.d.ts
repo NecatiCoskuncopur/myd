@@ -52,7 +52,15 @@ declare namespace UserTypes {
     };
   }
 
-  interface IEditUserPayload extends Pick<UserDto, 'email' | 'firstName' | 'lastName' | 'company' | 'phone' | 'address'> {}
+  interface IEditUserPayload {
+    email: string;
+    firstName: string;
+    lastName: string;
+    company: string;
+    nickname: string;
+    phone: string;
+    address;
+  }
 
   interface UserDto {
     _id: string;

@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import signUp from '@/app/actions/auth/signUp';
 import { authMessages, generalMessages } from '@/constants';
 import SignUpSuccess from './SignUpSuccess';
-import FormFields from './FormFields';
+import FormItems from './FormItems';
 
 const SignUpForm = () => {
   const [pending, startTransition] = useTransition();
@@ -80,7 +80,7 @@ const SignUpForm = () => {
       )}
 
       <Box>
-        <FormFields errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
+        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
         <Button
           type="button"
           onClick={handleSubmit(onSubmit)}

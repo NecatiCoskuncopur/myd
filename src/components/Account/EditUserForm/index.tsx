@@ -28,12 +28,28 @@ const EditUserForm = () => {
   });
 
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     setError,
     formState: { errors },
-  } = useForm<UserTypes.IEditUserPayload>();
+  } = useForm<UserTypes.IEditUserPayload>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      nickname: '',
+      company: '',
+      phone: '',
+      email: '',
+      address: {
+        line1: '',
+        line2: '',
+        district: '',
+        city: '',
+        postalCode: '',
+      },
+    },
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -88,7 +104,7 @@ const EditUserForm = () => {
         </Typography>
 
         <Box component="form" noValidate>
-          <FormFields errors={errors} register={register} pending={pending} />
+          <FormFields errors={errors} control={control} />
           <StyledButton
             type="button"
             onClick={handleSubmit(onSubmit)}
@@ -104,7 +120,7 @@ const EditUserForm = () => {
         </Box>
       </Box>
 
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} >
         <Alert severity={snackbar.severity} variant="filled">
           {snackbar.message}
         </Alert>

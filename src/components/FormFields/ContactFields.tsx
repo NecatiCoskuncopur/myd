@@ -1,23 +1,31 @@
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+'use client';
+
 import { Grid, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
-import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
+import { Control, Controller, FieldErrors, Path } from 'react-hook-form';
+import React from 'react';
+import { userMessages } from '@/constants';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import HelpIcon from '@mui/icons-material/Help';
-import { userMessages } from '@/constants';
+import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 
-type ContactFieldsProps = {
-  errors: FieldErrors<AuthTypes.ISignUpPayload>;
-  control: Control<AuthTypes.ISignUpPayload, AuthTypes.ISignUpPayload>;
+type ContactFieldsData = {
+  phone: string;
+  email: string;
+};
+
+type ContactFieldsProps<T extends ContactFieldsData> = {
+  errors: FieldErrors<ContactFieldsData>;
+  control: Control<T>;
 };
 
 const { EMAIL, PHONE } = userMessages;
 
-const ContactFields = ({ errors, control }: ContactFieldsProps) => {
+const ContactFields = <T extends ContactFieldsData>({ errors, control }: ContactFieldsProps<T>) => {
   return (
     <>
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
-          name="phone"
+          name={'phone' as Path<T>}
           control={control}
           rules={{
             required: PHONE.REQUIRED,
@@ -63,7 +71,7 @@ const ContactFields = ({ errors, control }: ContactFieldsProps) => {
 
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
-          name="email"
+          name={'email' as Path<T>}
           control={control}
           rules={{
             required: EMAIL.REQUIRED,

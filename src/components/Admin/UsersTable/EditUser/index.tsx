@@ -70,11 +70,11 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
 
   useEffect(() => {
     if (!user) return;
-
     reset({
       userId: user._id,
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
+      nickname: user.nickname ?? '',
       company: user.company ?? '',
       phone: user.phone ?? '',
       email: user.email ?? '',

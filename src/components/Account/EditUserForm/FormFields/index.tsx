@@ -1,25 +1,23 @@
 import React from 'react';
 
 import { Grid } from '@mui/material';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Control, FieldErrors } from 'react-hook-form';
 
 import { UserTypes } from '@/types/user';
-import PersonalInfoFields from './PersonalInfoFields';
-import ContactFields from './ContactFields';
-import AddressFields from './AddressFields';
+import { AddressFields, ContactFields, NickNameField, PersonalFields } from '@/components';
 
 type FormFieldsProps = {
   errors: FieldErrors<UserTypes.IEditUserPayload>;
-  register: UseFormRegister<UserTypes.IEditUserPayload>;
-  pending: boolean;
+  control: Control<UserTypes.IEditUserPayload>;
 };
 
-const FormFields = ({ errors, register, pending }: FormFieldsProps) => {
+const FormFields = ({ errors, control }: FormFieldsProps) => {
   return (
     <Grid container spacing={3}>
-      <PersonalInfoFields errors={errors} register={register} pending={pending} />
-      <ContactFields errors={errors} register={register} pending={pending} />
-      <AddressFields errors={errors} register={register} pending={pending} />
+      <PersonalFields errors={errors} control={control} />
+      <NickNameField errors={errors} control={control} />
+      <ContactFields errors={errors} control={control} />
+      <AddressFields errors={errors} control={control} />
     </Grid>
   );
 };

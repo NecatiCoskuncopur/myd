@@ -21,7 +21,7 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
 
     await connectMongoDB();
 
-     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
     if (!captchaResult.success) {
       return { status: 'ERROR', message: captchaResult.message };
     }

@@ -29,6 +29,7 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
       email: userDoc.email,
       firstName: userDoc.firstName,
       lastName: userDoc.lastName,
+      nickname: userDoc.nickname || '',
       company: userDoc.company || '',
       phone: userDoc.phone,
       role: userDoc.role as UserTypes.UserDto['role'],

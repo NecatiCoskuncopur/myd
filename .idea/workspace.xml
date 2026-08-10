@@ -5,15 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/AddressFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/ContactFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/PersonalInfoFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/AddressFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/CaptchaField.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/ContactFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/NickNameField.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/PasswordField.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FormFields/PersonalFields.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormItems.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/AddressFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/ContactFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/AddressFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/ContactFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +41,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="277" />
+    <option name="cachedIndexableFilesCount" value="284" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -140,7 +160,9 @@
       <workItem from="1786276201707" duration="8484000" />
       <workItem from="1786285642959" duration="702000" />
       <workItem from="1786296863860" duration="7105000" />
-      <workItem from="1786304033013" duration="9192000" />
+      <workItem from="1786304033013" duration="11488000" />
+      <workItem from="1786316938696" duration="596000" />
+      <workItem from="1786358061128" duration="13825000" />
     </task>
     <servers />
   </component>
