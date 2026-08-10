@@ -46,6 +46,7 @@ const CreateShippingForm = () => {
     defaultValues: {
       senderId: '',
       consignee: {
+        _id: '',
         name: '',
         company: '',
         phone: '',

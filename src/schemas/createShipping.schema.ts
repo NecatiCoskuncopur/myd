@@ -27,7 +27,12 @@ export default yup.object({
   consignee: yup.object({
     _id: yup.string(),
     name: yup.string().typeError(CONSIGNEE.NAME.TYPE).min(4, CONSIGNEE.NAME.MIN).max(35, CONSIGNEE.NAME.MAX).required(CONSIGNEE.NAME.REQUIRED),
-    company: yup.string().typeError(COMPANY.TYPE).min(5, COMPANY.MIN).max(75, COMPANY.MAX),
+    company: yup
+      .string()
+      .transform(value => (value === '' ? undefined : value))
+      .typeError(COMPANY.TYPE)
+      .min(5, COMPANY.MIN)
+      .max(75, COMPANY.MAX),
     phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH),
     email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID),
     taxId: yup.string().typeError(CONSIGNEE.TAXID.TYPE).max(35, CONSIGNEE.TAXID.MAX),

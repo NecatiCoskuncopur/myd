@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Autocomplete, Grid, TextField, Typography } from '@mui/material';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
@@ -20,6 +20,7 @@ const ConsigneeSection = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedConsignee, setSelectedConsignee] = useState<ConsigneeTypes.IConsigneeResponse | null>(null);
   const [open, setOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
   const {
     control,
     setValue,
@@ -31,11 +32,24 @@ const ConsigneeSection = () => {
     name: 'consignee.address.country',
   }) as keyof typeof countryStates | undefined;
 
+  const consigneeName = useWatch({
+    control,
+    name: 'consignee.name',
+  });
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (consigneeName && !initializedRef.current) {
+      setInputValue(consigneeName);
+      initializedRef.current = true;
+    }
+  }, [consigneeName]);
+
   const states = selectedCountry ? countryStates[selectedCountry] : null;
   const hasStates = states && states.length > 0;
 
   useEffect(() => {
-    if (selectedConsignee) return;
+    if (!searching || selectedConsignee) return;
 
     const timeout = setTimeout(async () => {
       const value = inputValue.trim();
@@ -54,27 +68,19 @@ const ConsigneeSection = () => {
 
       if (response.status === 'OK') {
         const result = response.data?.consignees ?? [];
-
         setOptions(result);
-
-        if (result.length > 0) {
-          setOpen(true);
-        } else {
-          setOpen(false);
-        }
-      } else {
-        setOptions([]);
-        setOpen(false);
+        setOpen(result.length > 0);
       }
-    }, 100);
+    }, 300);
 
     return () => clearTimeout(timeout);
-  }, [inputValue, selectedConsignee]);
+  }, [inputValue, selectedConsignee, searching]);
 
   const clearConsignee = () => {
     setSelectedConsignee(null);
 
     const fields = [
+      'consignee._id',
       'consignee.name',
       'consignee.company',
       'consignee.phone',
@@ -138,16 +144,21 @@ const ConsigneeSection = () => {
                   inputValue={inputValue}
                   value={selectedConsignee ?? field.value ?? ''}
                   getOptionLabel={option => (typeof option === 'string' ? option : option.name)}
-                  onInputChange={(_, value) => {
+                  onInputChange={(_, value, reason) => {
                     setInputValue(value);
 
-                    if (!selectedConsignee) {
-                      field.onChange(value);
+                    if (reason === 'input') {
+                      setSearching(true);
+
+                      if (!selectedConsignee) {
+                        field.onChange(value);
+                      }
                     }
                   }}
                   onChange={(_, value) => {
                     if (!value) {
                       setSelectedConsignee(null);
+                      setValue('consignee._id', '');
                       field.onChange('');
                       setInputValue('');
                       return;
@@ -155,12 +166,15 @@ const ConsigneeSection = () => {
 
                     if (typeof value === 'string') {
                       setSelectedConsignee(null);
+                      setValue('consignee._id', '');
                       setInputValue(value);
                       field.onChange(value);
                       return;
                     }
 
                     setSelectedConsignee(value);
+                    setValue('consignee._id', value._id);
+
                     setInputValue(value.name);
                     field.onChange(value.name);
 
@@ -224,7 +238,7 @@ const ConsigneeSection = () => {
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value.length < 2) return COMPANY.MIN;
+              if (value.length < 5) return COMPANY.MIN;
               if (value.length > 75) return COMPANY.MAX;
               return true;
             },
@@ -395,7 +409,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.taxId?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Vergi No" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} value={field.value ?? ''} label="Vergi No" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}

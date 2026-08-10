@@ -5,33 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/providers/SnackbarProvider.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/AddressFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/ContactFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PaperDownload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaperDownload.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="284" />
+    <option name="cachedIndexableFilesCount" value="281" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -160,7 +139,9 @@
       <workItem from="1786296863860" duration="7105000" />
       <workItem from="1786304033013" duration="11488000" />
       <workItem from="1786316938696" duration="596000" />
-      <workItem from="1786358061128" duration="17721000" />
+      <workItem from="1786358061128" duration="17800000" />
+      <workItem from="1786377682343" duration="23000" />
+      <workItem from="1786401840942" duration="1965000" />
     </task>
     <servers />
   </component>

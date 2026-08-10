@@ -33,6 +33,7 @@ declare namespace ShippingTypes {
   }
 
   interface IConsignee {
+    _id: string;
     name: string;
     company?: string;
     phone?: string;
