@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import { Alert, Button, Snackbar, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 
 import getUser from '@/app/actions/user/getUser';
 import { shippingMessages, userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
 import { CreateBarcodeButton, DeleteShipping } from '@/components';
 import { ShippingTypes } from '@/types/shipping';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { DELETE } = shippingMessages;
 const { NOT_FOUND } = userMessages;
@@ -27,15 +28,7 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const handleOpenDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -46,18 +39,12 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    setSnackbar({
-      open: true,
-      message: DELETE.SUCCESS,
-      severity: 'success',
-    });
+    showSnackbar(DELETE.SUCCESS, 'success');
 
     setTimeout(() => {
       router.replace('/panel/gonderilerim');
     }, 1200);
   };
-
-  const handleCloseSnackbar = () => setSnackbar(prev => ({ ...prev, open: false }));
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -65,11 +52,7 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
       if (result.status === 'OK' && result.data) {
         setUser(result.data);
       } else {
-        setSnackbar({
-          open: true,
-          message: result.message || NOT_FOUND,
-          severity: 'error',
-        });
+        showSnackbar(result.message || NOT_FOUND, 'error');
       }
     };
     fetchUser();
@@ -99,12 +82,6 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
         </Stack>
       )}
       <DeleteShipping open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={handleCloseDelete} onSuccess={handleDeleteSuccess} />
-
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} variant="filled" sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

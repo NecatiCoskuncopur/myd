@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useTransition } from 'react';
 
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm, useWatch } from 'react-hook-form';
 
 import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
@@ -9,6 +9,7 @@ import { carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import FormItems from './FormItems';
 import getCarrierCredentials from '@/lib/getCarrierCredentials';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 type UpdateCarrierAccountProps = {
   open: boolean;
@@ -23,15 +24,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateCarrierAccountProps) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
@@ -82,18 +75,10 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
       const response = await updateCarrierAccount(data);
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
         return;
       }
-      setSnackbar({
-        open: true,
-        message: response.message ?? UPDATE.SUCCESS,
-        severity: 'success',
-      });
+      showSnackbar(response.message ?? UPDATE.SUCCESS, 'success');
 
       onSuccess?.();
       onClose();
@@ -131,21 +116,6 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
           </DialogActions>
         </form>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

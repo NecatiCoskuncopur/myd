@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 
-import { Alert, Box, Button, Popover, Snackbar, Typography, useTheme } from '@mui/material';
+import { Box, Button, Popover, Typography, useTheme } from '@mui/material';
 
 import deleteShipping from '../app/actions/shipping/deleteShipping';
 import { shippingMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { DELETE } = shippingMessages;
 
@@ -20,11 +21,7 @@ type DeleteShippingProps = {
 const DeleteShipping = ({ open, id, anchorEl, onClose, onSuccess }: DeleteShippingProps) => {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const handleDelete = () => {
     if (!id) return;
@@ -34,20 +31,11 @@ const DeleteShipping = ({ open, id, anchorEl, onClose, onSuccess }: DeleteShippi
       const response = await deleteShipping(id);
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? DELETE.ERROR,
-        });
+        showSnackbar(response.message ?? DELETE.ERROR, 'error');
+
         return;
       }
-
-      setSnackbar({
-        open: true,
-        message: response.message ?? DELETE.SUCCESS,
-        severity: 'success',
-      });
-
+      showSnackbar(response.message ?? DELETE.SUCCESS, 'success');
       onSuccess?.();
     });
   };
@@ -97,20 +85,6 @@ const DeleteShipping = ({ open, id, anchorEl, onClose, onSuccess }: DeleteShippi
           </Button>
         </Box>
       </Popover>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

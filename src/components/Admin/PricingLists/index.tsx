@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Alert, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Snackbar, useTheme } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
@@ -18,6 +18,7 @@ import CreateList from './CreateList';
 import UpdateList from './UpdateList';
 import DeleteList from './DeleteList';
 import FilterSection from './FilterSection';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const PriceLists = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const PriceLists = () => {
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
   const [modalState, setModalState] = useState<{ type: 'edit' | 'create' | 'delete' | ''; open: boolean }>({ type: '', open: false });
 
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
+  const { showSnackbar } = useSnackbar();
 
   const requestIdRef = useRef(0);
   const page = Number(searchParams.get('sayfa')) || 1;
@@ -59,10 +60,7 @@ const PriceLists = () => {
       } else {
         setData(null);
 
-        setSnackbar({
-          open: true,
-          message: response.message ?? generalMessages.UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
       }
     } finally {
       if (requestId === requestIdRef.current) {
@@ -225,16 +223,10 @@ const PriceLists = () => {
         onClose={handleCloseModal}
         onSuccess={msg => {
           handleCloseModal();
-          setSnackbar({ open: true, message: msg });
+          showSnackbar(msg, 'success');
           void fetchPricingLists();
         }}
       />
-
-      <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
-        <Alert severity="success" variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Wrapper>
   );
 };

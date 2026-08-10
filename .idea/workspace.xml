@@ -5,35 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/CreateUserForm/FormItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/AddressFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/CaptchaField.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/ContactFields.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/NickNameField.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/PasswordField.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FormFields/PersonalFields.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/providers/SnackbarProvider.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/AddressFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/ContactFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/FormFields/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/AddressFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/ContactFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/FormFields/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignUpForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/AddressFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/ContactFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/PersonalInfoFields.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/FormFields/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateUserForm/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PaperDownload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PaperDownload.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +160,7 @@
       <workItem from="1786296863860" duration="7105000" />
       <workItem from="1786304033013" duration="11488000" />
       <workItem from="1786316938696" duration="596000" />
-      <workItem from="1786358061128" duration="13825000" />
+      <workItem from="1786358061128" duration="17721000" />
     </task>
     <servers />
   </component>

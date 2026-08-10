@@ -1,10 +1,10 @@
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 
-import { Alert, Box, Button, Popover, Snackbar, Typography, useTheme } from '@mui/material';
-
+import { Box, Button, Popover, Typography, useTheme } from '@mui/material';
 import deletePricingList from '@/app/actions/admin/deletePricingList';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, pricingListMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 type DeleteListProps = {
   open: boolean;
@@ -19,12 +19,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const DeleteList = ({ open, anchorEl, onClose, onSuccess, list }: DeleteListProps) => {
   const theme = useTheme();
   const [pending, startTransition] = useTransition();
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
-
+  const { showSnackbar } = useSnackbar();
   const handleDelete = () => {
     if (!list?._id) return;
 
@@ -32,21 +27,13 @@ const DeleteList = ({ open, anchorEl, onClose, onSuccess, list }: DeleteListProp
       const response = await deletePricingList(list._id);
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
         return;
       }
       onClose();
 
       const successMsg = response.message ?? pricingListMessages.DELETE.SUCCESS;
-      setSnackbar({
-        open: true,
-        message: successMsg,
-        severity: 'success',
-      });
+      showSnackbar(successMsg, 'success');
 
       onSuccess?.(successMsg);
     });
@@ -96,20 +83,6 @@ const DeleteList = ({ open, anchorEl, onClose, onSuccess, list }: DeleteListProp
           </StyledButton>
         </Box>
       </Popover>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

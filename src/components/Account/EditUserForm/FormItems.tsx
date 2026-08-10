@@ -11,7 +11,7 @@ type FormFieldsProps = {
   control: Control<UserTypes.IEditUserPayload>;
 };
 
-const FormFields = ({ errors, control }: FormFieldsProps) => {
+const FormItems = ({ errors, control }: FormFieldsProps) => {
   return (
     <Grid container spacing={3}>
       <PersonalFields errors={errors} control={control} />
@@ -22,4 +22,4 @@ const FormFields = ({ errors, control }: FormFieldsProps) => {
   );
 };
 
-export default FormFields;
+export default FormItems;

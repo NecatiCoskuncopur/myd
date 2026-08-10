@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useTransition } from 'react';
 
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
@@ -9,6 +9,7 @@ import { carrierConfig, carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { Carrier } from '@/constants';
 import FormItems from './FormItems';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 type CreateCarrierAccountProps = {
   open: boolean;
@@ -23,15 +24,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
@@ -86,19 +79,11 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       const response = await createCarrierAccount(data);
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
         return;
       }
 
-      setSnackbar({
-        open: true,
-        severity: 'success',
-        message: response.message ?? CREATE.SUCCESS,
-      });
+      showSnackbar(response.message ?? CREATE.SUCCESS, 'success');
 
       reset();
       onSuccess?.();
@@ -145,21 +130,6 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
           </DialogActions>
         </form>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Menu, MenuItem, ListItemIcon, ListItemText, Snackbar, Alert } from '@mui/material';
+import { Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import getPaper from '@/app/actions/shipping/getPaper';
 
 import { shippingMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 interface PaperDownloadProps {
   shippingId: string;
@@ -16,11 +17,7 @@ interface PaperDownloadProps {
 const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
+  const { showSnackbar } = useSnackbar();
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -38,12 +35,7 @@ const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
       const response = await getPaper({ shippingId, type });
 
       if (response.status !== 'OK' || !response.data?.file) {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? shippingMessages.PAPER.ERROR,
-        });
-
+        showSnackbar(response.message ?? shippingMessages.PAPER.ERROR, 'error');
         return;
       }
 
@@ -61,12 +53,7 @@ const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error(error);
-
-      setSnackbar({
-        open: true,
-        severity: 'error',
-        message: shippingMessages.PAPER.ERROR,
-      });
+      showSnackbar(shippingMessages.PAPER.ERROR, 'error');
     } finally {
       setLoading(false);
     }
@@ -91,20 +78,6 @@ const PaperDownload = ({ shippingId }: PaperDownloadProps) => {
           <ListItemText>Proforma Fatura</ListItemText>
         </MenuItem>
       </Menu>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Alert, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Snackbar } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { Wrapper, TableHeader, TableWrapper } from '@/components';
@@ -18,6 +18,7 @@ import EditUser from './EditUser';
 import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
 import { generalMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const Users = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<UserTypes.IUserWithPopulatedBalance | null>(null);
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
+  const { showSnackbar } = useSnackbar();
 
   const [modalState, setModalState] = useState<{
     type: 'edit' | 'balance' | '';
@@ -55,10 +56,7 @@ const Users = () => {
       } else {
         setData(null);
 
-        setSnackbar({
-          open: true,
-          message: response.message ?? generalMessages.UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
       }
     } finally {
       setLoading(false);
@@ -207,11 +205,6 @@ const Users = () => {
           handleCloseModal();
         }}
       />
-      <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
-        <Alert severity="error" variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Wrapper>
   );
 };

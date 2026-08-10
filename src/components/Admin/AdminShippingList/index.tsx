@@ -22,7 +22,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Snackbar,
   Typography,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -41,6 +40,7 @@ import { UserTypes } from '@/types/user';
 import FilterSection from './FilterSection';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -51,7 +51,7 @@ const AdminShippingList = () => {
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
+  const { showSnackbar } = useSnackbar();
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -105,19 +105,13 @@ const AdminShippingList = () => {
 
       setData(null);
 
-      setSnackbar({
-        open: true,
-        message: response.message ?? generalMessages.UNEXPECTED_ERROR,
-      });
+      showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
     } catch {
       if (requestId !== requestIdRef.current) return;
 
       setData(null);
 
-      setSnackbar({
-        open: true,
-        message: generalMessages.UNEXPECTED_ERROR,
-      });
+      showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
     } finally {
       if (requestId === requestIdRef.current) {
         setLoading(false);
@@ -216,10 +210,7 @@ const AdminShippingList = () => {
       const response = await getPaper({ shippingId, type });
 
       if (response.status !== 'OK' || !response.data?.file) {
-        setSnackbar({
-          open: true,
-          message: response.message ?? 'Evrak indirilirken bir hata oluştu.',
-        });
+        showSnackbar(response.message ?? 'Evrak indirilirken bir hata oluştu.', 'error');
 
         return;
       }
@@ -239,10 +230,7 @@ const AdminShippingList = () => {
     } catch (error) {
       console.error(error);
 
-      setSnackbar({
-        open: true,
-        message: UNEXPECTED_ERROR,
-      });
+      showSnackbar(UNEXPECTED_ERROR, 'error');
     }
   };
 
@@ -406,11 +394,6 @@ const AdminShippingList = () => {
             fetchList();
           }}
         />
-        <Snackbar open={snackbar.open} autoHideDuration={2500} onClose={() => setSnackbar({ open: false, message: '' })}>
-          <Alert severity="success" variant="filled">
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Wrapper>
     </LocalizationProvider>
   );

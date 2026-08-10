@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useTransition } from 'react';
 
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -8,6 +8,7 @@ import createPricingList from '@/app/actions/admin/createPricingList';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, pricingListMessages } from '@/constants';
 import { buildPricingMatrix } from '@/lib/buildPricingMatrix';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 type CreateListProps = {
   open: boolean;
@@ -24,15 +25,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   const matrix = useMemo(() => buildPricingMatrix(9), []);
   const [rows, setRows] = useState([matrix.createEmptyRow(), matrix.createThanRow()]);
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
@@ -78,19 +71,11 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
       });
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
         return;
       }
 
-      setSnackbar({
-        open: true,
-        message: response.message ?? SUCCESS,
-        severity: 'success',
-      });
+      showSnackbar(response.message ?? SUCCESS, 'success');
 
       reset();
       onSuccess?.();
@@ -181,21 +166,6 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
           </Stack>
         </DialogContent>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

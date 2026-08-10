@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
@@ -14,6 +14,7 @@ import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { EDITUSER } = userMessages;
@@ -30,15 +31,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
   const [carrierAccountsData, setCarrierAccountsData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
   const theme = useTheme();
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
@@ -102,19 +95,11 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
     const response = await setUser(values);
 
     if (response.status === 'ERROR') {
-      setSnackbar({
-        open: true,
-        severity: 'error',
-        message: response.message ?? UNEXPECTED_ERROR,
-      });
+      showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
       return;
     }
 
-    setSnackbar({
-      open: true,
-      message: response.message ?? EDITUSER.SUCCESS,
-      severity: 'success',
-    });
+    showSnackbar(response.message ?? EDITUSER.SUCCESS, 'success');
 
     onSuccess?.();
     onClose();
@@ -137,30 +122,18 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
         if (pricingResponse.status === 'OK' && pricingResponse.data) {
           setPricingLists(pricingResponse.data.pricingLists);
         } else {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: pricingResponse.message ?? UNEXPECTED_ERROR,
-          });
+          showSnackbar(pricingResponse.message ?? UNEXPECTED_ERROR, 'error');
         }
 
         if (carrierResponse.status === 'OK' && carrierResponse.data) {
           setCarrierAccountsData(carrierResponse.data);
         } else {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: carrierResponse.message ?? UNEXPECTED_ERROR,
-          });
+          showSnackbar(carrierResponse.message ?? UNEXPECTED_ERROR, 'error');
         }
       } catch (error) {
         console.error('Failed to load edit user data:', error);
 
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: UNEXPECTED_ERROR,
-        });
+        showSnackbar(UNEXPECTED_ERROR, 'error');
       }
     };
 
@@ -197,19 +170,6 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
           </StyledButton>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
-      </Snackbar>
     </>
   );
 };

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Alert, Box, Snackbar, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import changePassword from '@/app/actions/user/changePassword';
@@ -10,20 +10,13 @@ import StyledButton from '@/components/StyledButton';
 import { userMessages } from '@/constants';
 import FormItems from './FormItems';
 import { UserTypes } from '@/types/user';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { PASSWORD } = userMessages;
 
 const ChangePasswordForm = () => {
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     register,
@@ -41,11 +34,7 @@ const ChangePasswordForm = () => {
         newPassword: values.newPassword,
       });
 
-      setSnackbar({
-        open: true,
-        message: response.message || PASSWORD.SUCCESS,
-        severity: response.status === 'OK' ? 'success' : 'error',
-      });
+      showSnackbar(response.message || PASSWORD.SUCCESS, response.status === 'OK' ? 'success' : 'error');
 
       if (response.status === 'OK') {
         reset();
@@ -77,12 +66,6 @@ const ChangePasswordForm = () => {
           Parolayı Güncelle
         </StyledButton>
       </Box>
-
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

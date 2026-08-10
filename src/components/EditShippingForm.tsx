@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useTransition } from 'react';
 import { useParams } from 'next/navigation';
 
-import { Alert, Box, CircularProgress, Snackbar, Typography, useTheme } from '@mui/material';
+import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import getShipping from '@/app/actions/shipping/getShipping';
@@ -12,6 +12,7 @@ import StyledButton from '@/components/StyledButton';
 import { generalMessages, shippingMessages } from '@/constants';
 import ShippingFormFields from '@/components/ShippingFormFields';
 import { ShippingTypes } from '@/types/shipping';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { UPDATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -22,15 +23,7 @@ const EditShippingForm = () => {
 
   const [pending, startTransition] = useTransition();
   const [loading, setLoading] = useState(true);
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const methods = useForm<ShippingTypes.IUpdateShippingPayload>({});
 
@@ -57,20 +50,11 @@ const EditShippingForm = () => {
             package: res.data.package,
           });
         } else {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: 'Veri yüklenemedi',
-          });
+          showSnackbar('Veri yüklenemedi', 'error');
         }
       } catch {
         if (!mounted) return;
-
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: UNEXPECTED_ERROR,
-        });
+        showSnackbar(UNEXPECTED_ERROR, 'error');
       } finally {
         if (mounted) {
           setLoading(false);
@@ -95,19 +79,10 @@ const EditShippingForm = () => {
       });
 
       if (response.status === 'ERROR') {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: response.message ?? UNEXPECTED_ERROR,
-        });
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
         return;
       }
-
-      setSnackbar({
-        open: true,
-        message: response.message ?? UPDATESHIPPING.SUCCESS,
-        severity: 'success',
-      });
+      showSnackbar(response.message ?? UPDATESHIPPING.SUCCESS, 'success');
     });
   };
 
@@ -151,20 +126,6 @@ const EditShippingForm = () => {
           </Box>
         </FormProvider>
       </Box>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() =>
-          setSnackbar(prev => ({
-            ...prev,
-            open: false,
-          }))
-        }
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

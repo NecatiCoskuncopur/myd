@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 
 import { AddCircleOutlined } from '@mui/icons-material';
-import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, useTheme } from '@mui/material';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import addTransactionUserBalance from '@/app/actions/admin/addTransactionUserBalance';
@@ -11,6 +11,7 @@ import StyledButton from '@/components/StyledButton';
 import { generalMessages, transactionMessages } from '@/constants';
 import FormItems from './FormItems';
 import { AdminTypes } from '@/types/admin';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { SUCCESS } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -49,15 +50,7 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
     });
   }, [userId, reset]);
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const onSubmit = (values: AdminTypes.IAddTransactionUserBalancePayload) => {
     startTransition(async () => {
@@ -65,19 +58,11 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
         const response = await addTransactionUserBalance(values);
 
         if (response.status === 'ERROR') {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: response.message ?? UNEXPECTED_ERROR,
-          });
+          showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
           return;
         }
 
-        setSnackbar({
-          open: true,
-          message: response.message ?? SUCCESS,
-          severity: 'success',
-        });
+        showSnackbar(response.message ?? SUCCESS, 'success');
 
         onSuccess?.();
         reset({
@@ -90,11 +75,7 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
       } catch (error) {
         console.error('Add transaction failed:', error);
 
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: UNEXPECTED_ERROR,
-        });
+        showSnackbar(UNEXPECTED_ERROR, 'error');
       }
     });
   };
@@ -141,22 +122,6 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
           </DialogActions>
         </Box>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={2000}
-        onClose={() =>
-          setSnackbar({
-            open: false,
-            message: '',
-            severity: 'success',
-          })
-        }
-      >
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

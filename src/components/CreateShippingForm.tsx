@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Alert, Box, Checkbox, FormControlLabel, Snackbar, useTheme } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, useTheme } from '@mui/material';
 import cleanDeep from 'clean-deep';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -15,6 +15,7 @@ import ShippingFormFields from '@/components/ShippingFormFields';
 import { UserTypes } from '@/types/user';
 import { TableHeader } from '@/components';
 import { ShippingTypes } from '@/types/shipping';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { CREATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -27,15 +28,7 @@ const CreateShippingForm = () => {
   const [pending, startTransition] = useTransition();
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -43,11 +36,7 @@ const CreateShippingForm = () => {
       if (result.status === 'OK' && result.data) {
         setUser(result.data);
       } else {
-        setSnackbar({
-          open: true,
-          message: result.message || NOT_FOUND,
-          severity: 'error',
-        });
+        showSnackbar(result.message || NOT_FOUND, 'error');
       }
     };
     fetchUser();
@@ -112,42 +101,26 @@ const CreateShippingForm = () => {
         const { status, message, data } = await createShipping(cleaned);
 
         if (status === 'ERROR') {
-          setSnackbar({
-            open: true,
-            message: message || CREATESHIPPING.ERROR,
-            severity: 'error',
-          });
+          showSnackbar(message || CREATESHIPPING.ERROR, 'error');
           return;
         }
 
         if (!data?._id) {
-          setSnackbar({
-            open: true,
-            message: message || CREATESHIPPING.ERROR,
-            severity: 'error',
-          });
+          showSnackbar(message || CREATESHIPPING.ERROR, 'error');
           return;
         }
 
         if (isBatchMode) {
           methods.reset(undefined, { keepDefaultValues: true });
 
-          setSnackbar({
-            open: true,
-            message: message || CREATESHIPPING.SUCCESS,
-            severity: 'success',
-          });
+          showSnackbar(message || CREATESHIPPING.SUCCESS, 'success');
 
           return;
         }
 
         router.replace(`/panel/gonderilerim/${data._id}`);
       } catch {
-        setSnackbar({
-          open: true,
-          message: UNEXPECTED_ERROR,
-          severity: 'error',
-        });
+        showSnackbar(UNEXPECTED_ERROR, 'error');
       }
     });
   };
@@ -201,12 +174,6 @@ const CreateShippingForm = () => {
           </Box>
         </Box>
       </FormProvider>
-
-      <Snackbar open={snackbar.open} autoHideDuration={2000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
-import { Alert, Autocomplete, Button, CircularProgress, Drawer, Grid, Snackbar, TextField, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Drawer, Grid, TextField, Typography, useTheme } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import searchSenderUser from '@/app/actions/admin/searchSenderUser';
@@ -13,6 +13,7 @@ import { AdminTypes } from '@/types/admin';
 import { ShippingTypes } from '@/types/shipping';
 
 import { generalMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const SenderSection = () => {
   const theme = useTheme();
@@ -24,15 +25,7 @@ const SenderSection = () => {
   const [selectedUser, setSelectedUser] = useState<AdminTypes.ISearchSenderResult | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -54,11 +47,7 @@ const SenderSection = () => {
           setOptions(res.data ?? []);
         } else {
           setOptions([]);
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: res.message ?? generalMessages.UNEXPECTED_ERROR,
-          });
+          showSnackbar(res.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
         }
       } finally {
         setLoading(false);
@@ -73,7 +62,7 @@ const SenderSection = () => {
     setSelectedUser(newUser);
     setValue('senderId', newUser._id.toString());
     setIsDrawerOpen(false);
-    setSnackbar({ open: true, severity: 'success', message: 'Kullanıcı başarıyla oluşturuldu ve seçildi.' });
+    showSnackbar('Kullanıcı başarıyla oluşturuldu ve seçildi.', 'success');
   };
 
   return (
@@ -171,17 +160,6 @@ const SenderSection = () => {
 
         <CreateUserForm onSuccess={handleUserCreated} />
       </Drawer>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Wrapper>
   );
 };

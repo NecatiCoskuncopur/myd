@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 
-import { Alert, Box, Grid, Snackbar, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import editUser from '@/app/actions/user/editUser';
@@ -10,22 +10,15 @@ import getUser from '@/app/actions/user/getUser';
 import { StyledButton } from '@/components';
 import { generalMessages, userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
-import FormFields from './FormFields';
+import FormItems from './FormItems';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const { EMAIL, EDITUSER, NOT_FOUND } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const EditUserForm = () => {
   const [pending, startTransition] = useTransition();
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: 'success' | 'error';
-  }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
@@ -57,11 +50,7 @@ const EditUserForm = () => {
       if (result.status === 'OK' && result.data) {
         reset(result.data);
       } else {
-        setSnackbar({
-          open: true,
-          message: result.message || NOT_FOUND,
-          severity: 'error',
-        });
+        showSnackbar(result.message || NOT_FOUND, 'error');
       }
     };
     fetchUser();
@@ -80,19 +69,11 @@ const EditUserForm = () => {
           return;
         }
 
-        setSnackbar({
-          open: true,
-          message: result.message || UNEXPECTED_ERROR,
-          severity: 'error',
-        });
+        showSnackbar(result.message || UNEXPECTED_ERROR, 'error');
         return;
       }
 
-      setSnackbar({
-        open: true,
-        message: result.message || EDITUSER.SUCCESS,
-        severity: 'success',
-      });
+      showSnackbar(result.message || EDITUSER.SUCCESS, 'success');
     });
   };
 
@@ -104,7 +85,7 @@ const EditUserForm = () => {
         </Typography>
 
         <Box component="form" noValidate>
-          <FormFields errors={errors} control={control} />
+          <FormItems errors={errors} control={control} />
           <StyledButton
             type="button"
             onClick={handleSubmit(onSubmit)}
@@ -119,12 +100,6 @@ const EditUserForm = () => {
           </StyledButton>
         </Box>
       </Box>
-
-      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} >
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Grid>
   );
 };
