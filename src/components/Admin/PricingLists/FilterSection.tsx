@@ -40,7 +40,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ mb: 3, alignItems: 'center' }}>
+    <Grid container spacing={2} sx={{ mb: 3 }}>
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
         <TextField
           label="Hesap Adı"

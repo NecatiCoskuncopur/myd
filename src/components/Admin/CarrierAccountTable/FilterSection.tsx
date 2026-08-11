@@ -53,14 +53,10 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       container
       spacing={2}
       sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 2,
         mb: 3,
-        alignItems: 'center',
       }}
     >
-      <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
         <TextField
           label="Hesap Adı"
           size="small"
@@ -72,7 +68,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
         <TextField
           label="Hesap No"
           size="small"
@@ -84,7 +80,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Kargo Firması</InputLabel>
           <Select value={filters.carrier} label="Kargo Firması" onChange={e => setFilters(prev => ({ ...prev, carrier: e.target.value }))}>
@@ -95,7 +91,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Durum</InputLabel>
           <Select value={filters.isActive} label="Durum" onChange={e => setFilters(prev => ({ ...prev, isActive: e.target.value }))}>
@@ -106,16 +102,15 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 12, md: 2.4 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
-            Ara
-          </StyledButton>
-
-          <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
-            Sıfırla
-          </StyledButton>
-        </Box>
+      <Grid size={{ xs: 6, md: 6, lg: 2 }}>
+        <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
+          Ara
+        </StyledButton>
+      </Grid>
+      <Grid size={{ xs: 6, md: 6, lg: 2 }}>
+        <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
+          Sıfırla
+        </StyledButton>
       </Grid>
     </Grid>
   );

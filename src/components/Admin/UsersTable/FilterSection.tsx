@@ -5,7 +5,7 @@ import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
 
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { Grid, TextField, Box } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';
 
@@ -52,18 +52,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const isDirty = Object.values(filters).some(value => value !== '');
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 2,
-        mb: 3,
-        alignItems: 'center',
-      }}
-    >
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+    <Grid container spacing={2} sx={{ mb: 3 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Ad"
           size="small"
@@ -75,7 +65,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Soyad"
           size="small"
@@ -87,7 +77,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Şirket"
           size="small"
@@ -99,7 +89,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Telefon"
           size="small"
@@ -111,7 +101,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Eposta"
           size="small"
@@ -123,16 +113,16 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
-            Ara
-          </StyledButton>
+      <Grid size={{ xs: 6, md: 3, lg: 1.5 }}>
+        <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
+          Ara
+        </StyledButton>
+      </Grid>
 
-          <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
-            Sıfırla
-          </StyledButton>
-        </Box>
+      <Grid size={{ xs: 6, md: 3, lg: 1.5 }}>
+        <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
+          Sıfırla
+        </StyledButton>
       </Grid>
     </Grid>
   );

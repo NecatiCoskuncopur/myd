@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, Grid, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import SearchIcon from '@mui/icons-material/Search';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -116,77 +116,79 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const isFiltered = inputs.consigneeName || inputs.consigneePhone || inputs.trackingNumber || inputs.startDate || inputs.endDate;
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSearch}
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', lg: 'row' },
-        gap: 2,
-        alignItems: 'center',
-      }}
-    >
-      <TextField
-        label="Alıcı Adı"
-        size="small"
-        value={inputs.consigneeName}
-        onChange={e => setInputs(prev => ({ ...prev, consigneeName: e.target.value }))}
-        sx={{ width: { xs: '100%', lg: 'auto' } }}
-      />
-      <TextField
-        label="Alıcı Telefon"
-        size="small"
-        value={inputs.consigneePhone}
-        onChange={e => setInputs(prev => ({ ...prev, consigneePhone: e.target.value }))}
-        sx={{ width: { xs: '100%', lg: 'auto' } }}
-      />
-      <TextField
-        label="Takip No"
-        size="small"
-        value={inputs.trackingNumber}
-        onChange={e => setInputs(prev => ({ ...prev, trackingNumber: e.target.value }))}
-        sx={{ width: { xs: '100%', lg: 'auto' } }}
-      />
-      <DatePicker
-        label="Başlangıç"
-        slotProps={{ textField: { size: 'small', sx: { width: { xs: '100%', lg: 'auto' } } } }}
-        value={inputs.startDate}
-        onChange={val => setInputs(prev => ({ ...prev, startDate: val }))}
-      />
-      <DatePicker
-        label="Bitiş"
-        slotProps={{ textField: { size: 'small', sx: { width: { xs: '100%', lg: 'auto' } } } }}
-        value={inputs.endDate}
-        onChange={val => setInputs(prev => ({ ...prev, endDate: val }))}
-      />
+    <Grid component="form" onSubmit={handleSearch} container spacing={2}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <TextField
+          label="Alıcı Adı"
+          size="small"
+          fullWidth
+          value={inputs.consigneeName}
+          onChange={e => setInputs(prev => ({ ...prev, consigneeName: e.target.value }))}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <TextField
+          label="Alıcı Telefon"
+          size="small"
+          fullWidth
+          value={inputs.consigneePhone}
+          onChange={e => setInputs(prev => ({ ...prev, consigneePhone: e.target.value }))}
+        />
+      </Grid>
 
-      <StyledButton type="submit" variant="contained" startIcon={<SearchIcon />} sx={{ height: 40, width: { xs: '100%', lg: 'auto' } }}>
-        Ara
-      </StyledButton>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <TextField
+          label="Takip No"
+          size="small"
+          fullWidth
+          value={inputs.trackingNumber}
+          onChange={e => setInputs(prev => ({ ...prev, trackingNumber: e.target.value }))}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <DatePicker
+          label="Başlangıç"
+          slotProps={{ textField: { size: 'small', fullWidth: true } }}
+          value={inputs.startDate}
+          onChange={val => setInputs(prev => ({ ...prev, startDate: val }))}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <DatePicker
+          label="Bitiş"
+          slotProps={{ textField: { size: 'small', fullWidth: true } }}
+          value={inputs.endDate}
+          onChange={val => setInputs(prev => ({ ...prev, endDate: val }))}
+        />
+      </Grid>
 
-      <StyledButton
-        disabled={!isFiltered}
-        type="button"
-        variant="outlined"
-        startIcon={<RestartAltIcon />}
-        onClick={handleReset}
-        sx={{ height: 40, width: { xs: '100%', lg: 'auto' } }}
-      >
-        Sıfırla
-      </StyledButton>
+      <Grid size={{ xs: 6, md: 2, lg: 1.5 }}>
+        <StyledButton type="submit" fullWidth variant="contained" startIcon={<SearchIcon />}>
+          Ara
+        </StyledButton>
+      </Grid>
 
-      <Button
-        type="button"
-        variant="outlined"
-        color="success"
-        startIcon={<FileDownloadIcon />}
-        onClick={handleDownloadExcel}
-        disabled={downloading}
-        sx={{ height: 40, fontSize: 12, width: { xs: '100%', lg: 'auto' }, ml: { lg: 'auto' }, lineHeight: 1 }}
-      >
-        {downloading ? 'Hazırlanıyor...' : 'Dışa Aktar'}
-      </Button>
-    </Box>
+      <Grid size={{ xs: 6, md: 2, lg: 1.5 }}>
+        <StyledButton disabled={!isFiltered} fullWidth type="button" variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset}>
+          Sıfırla
+        </StyledButton>
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 2, lg: 1.5 }}>
+        <Button
+          type="button"
+          variant="outlined"
+          color="success"
+          fullWidth
+          startIcon={<FileDownloadIcon />}
+          onClick={handleDownloadExcel}
+          disabled={downloading}
+          sx={{ fontSize: 12, lineHeight: 1 }}
+        >
+          {downloading ? 'Hazırlanıyor...' : 'Dışa Aktar'}
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 
