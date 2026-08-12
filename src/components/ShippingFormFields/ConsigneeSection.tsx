@@ -441,7 +441,6 @@ const ConsigneeSection = () => {
           control={control}
           rules={{
             required: POSTALCODE.REQUIRED,
-            validate: value => value.length === 5 || POSTALCODE.LENGTH,
           }}
           render={({ field }) => {
             const errorMessage = errors.consignee?.address?.postalCode?.message;

@@ -1,11 +1,24 @@
 import { carrierMessages } from '@/constants';
-import { Storage } from '@/lib/storage';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
 import latinize from 'latinize';
+import mergePdfLabels from '@/lib/mergedPdfLabels';
+import saveShippingLabel from '@/app/actions/shippingBarcode/saveShippingLabel';
+import * as Sentry from '@sentry/nextjs';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
+
+type FedexErrorResponse = {
+  errors?: Array<{
+    code?: string;
+    message?: string;
+    parameterList?: Array<{
+      parameter: string;
+      value: string;
+    }>;
+  }>;
+};
 
 const createFedexPaper = async ({
   shippingInstance,
@@ -31,12 +44,15 @@ const createFedexPaper = async ({
     }),
   });
 
-  if (!authRes.ok) throw new Error(AUTH_FAILED);
+  if (!authRes.ok) {
+    throw new Error(AUTH_FAILED);
+  }
+
   const { sender, consignee, detail, content, package: pkg } = shippingInstance;
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const totalValue = content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0);
-  const productDesc = content.description || latinize(content.products.map((p: ShippingTypes.IProduct) => p.name).toString());
+  const productDesc = content.description || latinize(content.products.map((product: ShippingTypes.IProduct) => product.name).toString());
 
   const senderContact = {
     personName: latinize(
@@ -66,11 +82,18 @@ const createFedexPaper = async ({
   };
 
   const consigneeAddress = {
-    streetLines: [latinize(consignee.address.line1), latinize(consignee.address.line2)].filter(Boolean),
+    streetLines: [
+      consignee.address.line1 ? latinize(consignee.address.line1) : undefined,
+      consignee.address.line2 ? latinize(consignee.address.line2) : undefined,
+    ].filter(Boolean),
+
     city: latinize(consignee.address.city),
+
     stateOrProvinceCode: consignee.address.state,
-    postalCode: String(consignee.address.postalCode).split('-')[0],
+    postalCode: String(consignee.address.postalCode).trim(),
+
     countryCode: consignee.address.country,
+
     residential: false,
   };
 
@@ -87,9 +110,17 @@ const createFedexPaper = async ({
       totalWeight: pkg.weight * pkg.numberOfPackage,
       preferredCurrency: content.currency,
       shipper: {
-        accountNumber: { value: accountNumber },
+        accountNumber: {
+          value: accountNumber,
+        },
+
         ...(detail.iossNumber && {
-          tins: [{ tinType: 'BUSINESS_UNION', number: detail.iossNumber }],
+          tins: [
+            {
+              tinType: 'BUSINESS_UNION',
+              number: detail.iossNumber,
+            },
+          ],
         }),
         contact: {
           ...senderContact,
@@ -108,12 +139,13 @@ const createFedexPaper = async ({
           },
         },
       ],
-
       shippingChargesPayment: {
         paymentType: 'SENDER',
         payor: {
           responsibleParty: {
-            accountNumber: { value: accountNumber },
+            accountNumber: {
+              value: accountNumber,
+            },
           },
         },
       },
@@ -128,6 +160,7 @@ const createFedexPaper = async ({
       customsClearanceDetail: {
         dutiesPayment: {
           paymentType: 'SENDER',
+
           payor: {
             responsibleParty: {
               accountNumber: {
@@ -136,14 +169,19 @@ const createFedexPaper = async ({
             },
           },
         },
-
-        customsValue: { currency: content.currency, amount: totalValue },
+        customsValue: {
+          currency: content.currency,
+          amount: totalValue,
+        },
         partiesToTransactionAreRelated: false,
 
         commercialInvoice: {
           comments: [productDesc],
           ...(content.freight && {
-            freightCharge: { currency: content.currency, amount: content.freight },
+            freightCharge: {
+              currency: content.currency,
+              amount: content.freight,
+            },
           }),
           specialInstructions: productDesc,
           declarationStatement: productDesc,
@@ -157,10 +195,16 @@ const createFedexPaper = async ({
           description: latinize(product.name),
           countryOfManufacture: 'TR',
           harmonizedCode: product.gtip,
-          weight: { units: 'KG', value: 0.001 },
+          weight: {
+            units: 'KG',
+            value: 0.001,
+          },
           quantity: product.piece,
           quantityUnits: 'PCS',
-          unitPrice: { currency: content.currency, amount: product.unitPrice },
+          unitPrice: {
+            currency: content.currency,
+            amount: product.unitPrice,
+          },
           customsValue: {
             currency: content.currency,
             amount: product.unitPrice * product.piece,
@@ -185,8 +229,8 @@ const createFedexPaper = async ({
             stockType: 'PAPER_LETTER',
           },
           customerImageUsages: [
-            { type: 'LETTER_HEAD', id: 'IMAGE_2' },
-            { type: 'SIGNATURE', id: 'IMAGE_1' },
+            { type: 'LETTER_HEAD', providedImageType: 'LETTER_HEAD' },
+            { type: 'SIGNATURE', providedImageType: 'SIGNATURE' },
           ],
         },
       },
@@ -222,37 +266,95 @@ const createFedexPaper = async ({
   });
 
   if (!shipmentRes.ok) {
-    const errorData = await shipmentRes.json();
-    console.error('FEDEX ERROR DETAIL:', JSON.stringify(errorData, null, 2));
-    throw new Error(`${SHIPMENT_FAILED}: ${JSON.stringify(errorData.errors)}`);
+    const responseText = await shipmentRes.text();
+    let errorData: FedexErrorResponse | string;
+    try {
+      errorData = JSON.parse(responseText) as FedexErrorResponse;
+    } catch {
+      errorData = responseText;
+    }
+    const error = new Error(
+      `${SHIPMENT_FAILED}: HTTP ${shipmentRes.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData.errors || errorData)}`,
+    );
+
+    Sentry.captureException(error, {
+      extra: {
+        senderName: senderContact.personName,
+        senderEmail: senderContact.emailAddress,
+        fedexError: typeof errorData === 'string' ? errorData : errorData.errors || errorData,
+        responseStatus: shipmentRes.status,
+        responseBody: errorData,
+      },
+    });
+
+    throw error;
   }
 
   const shipmentData = await shipmentRes.json();
   const output = shipmentData?.output?.transactionShipments?.[0];
-  const trackingNumber = output?.pieceResponses?.[0]?.trackingNumber;
 
-  if (!trackingNumber) throw new Error(TRACKING_NUMBER_NOT_FOUND);
+  if (!output) {
+    throw new Error(`${SHIPMENT_FAILED}: FedEx transaction shipment bulunamadı.`);
+  }
 
-  const documents = output?.pieceResponses?.[0]?.packageDocuments || [];
-  const labelObj = documents.find((doc: CarrierTypes.FedexPackageDocument) => doc.contentType?.includes('LABEL') || doc.documentType?.includes('LABEL'));
-  const label = labelObj?.encodedLabel || labelObj?.parts?.[0]?.image || '';
+  const pieceResponses = output?.pieceResponses || [];
 
-  if (label) {
-    try {
-      await Storage.putObject({
-        Bucket: 'labels',
-        Key: `${shippingId}.pdf`,
-        Body: Buffer.from(label, 'base64'),
+  if (!pieceResponses.length) {
+    throw new Error(TRACKING_NUMBER_NOT_FOUND);
+  }
+
+  const trackingNumber = pieceResponses[0]?.trackingNumber || output?.masterTrackingNumber;
+
+  if (!trackingNumber) {
+    throw new Error(TRACKING_NUMBER_NOT_FOUND);
+  }
+
+  const packageLabels: string[] = [];
+
+  for (const [index, piece] of pieceResponses.entries()) {
+    const documents = piece?.packageDocuments || [];
+
+    const labelDocuments = documents.filter((doc: CarrierTypes.FedexPackageDocument) => doc.contentType === 'LABEL');
+
+    const labelImage = labelDocuments[0]?.encodedLabel;
+
+    if (!labelImage) {
+      const error = new Error(`FedEx Package ${index + 1}: LABEL bulunamadı.`);
+      Sentry.captureException(error, {
+        extra: { senderName: senderContact.personName, senderEmail: senderContact.emailAddress, packageIndex: index + 1, trackingNumber },
       });
-      console.log(`[Storage] FedEx Barkodu (${shippingId}.pdf) başarıyla kaydedildi.`);
-    } catch (err) {
-      console.error('[Storage Error] FedEx barkodu yazılırken hata çıktı:', err);
-      throw err;
+      continue;
     }
+
+    packageLabels.push(labelImage);
+  }
+
+  if (!packageLabels.length) {
+    throw new Error(`${SHIPMENT_FAILED}: No FedEx labels found.`);
+  }
+
+  const label = await mergePdfLabels(packageLabels);
+
+  if (!label.length) {
+    throw new Error(`${SHIPMENT_FAILED}: No FedEx labels found.`);
+  }
+
+  const saveLabelResult = await saveShippingLabel({
+    shippingId,
+    pdf: label,
+  });
+
+  if (saveLabelResult.status === 'ERROR') {
+    throw new Error(saveLabelResult.message);
   }
 
   const invoice = '';
-  return { trackingNumber, label, invoice };
+
+  return {
+    trackingNumber,
+    label: label.toString('base64'),
+    invoice,
+  };
 };
 
 export default createFedexPaper;

@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Storage } from '@/lib/storage';
-import { Shipping } from '@/models';
+import { Shipping, ShippingBarcode } from '@/models';
 import { generalMessages, shippingMessages, UserRole } from '@/constants';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -55,6 +55,28 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
       }
     }
 
+    if (params.type === 'labels') {
+      const shippingBarcode = await ShippingBarcode.findOne({
+        shippingId: params.shippingId,
+      })
+        .select('pdf')
+        .lean();
+
+      if (!shippingBarcode?.pdf) {
+        return {
+          status: 'ERROR',
+          message: shippingMessages.PAPER.NOT_FOUND,
+        };
+      }
+
+      return {
+        status: 'OK',
+        data: {
+          file: shippingBarcode.pdf.toString('base64'),
+        },
+      };
+    }
+
     let paper;
 
     try {
@@ -78,12 +100,10 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
       };
     }
 
-    const base64File = paper.Body.toString('base64');
-
     return {
       status: 'OK',
       data: {
-        file: base64File,
+        file: paper.Body.toString('base64'),
       },
     };
   } catch (error) {

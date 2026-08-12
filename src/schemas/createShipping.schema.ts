@@ -48,7 +48,7 @@ export default yup.object({
         .notRequired()
         .min(2, STATE.MIN)
         .max(45, STATE.MAX),
-      postalCode: yup.string().typeError(POSTALCODE.TYPE).length(5, POSTALCODE.LENGTH).required(POSTALCODE.REQUIRED),
+      postalCode: yup.string().typeError(POSTALCODE.TYPE).required(POSTALCODE.REQUIRED),
     }),
   }),
   detail: yup.object({

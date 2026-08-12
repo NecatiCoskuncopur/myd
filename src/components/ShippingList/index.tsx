@@ -217,16 +217,9 @@ const ShippingList = () => {
 
       const binary = atob(response.data.file);
       const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-
-      const blob = new Blob([bytes], {
-        type: 'application/pdf',
-      });
-
+      const blob = new Blob([bytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-
       window.open(url, '_blank', 'noopener,noreferrer');
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error(error);
       showSnackbar(UNEXPECTED_ERROR, 'error');
