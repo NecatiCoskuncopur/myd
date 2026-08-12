@@ -4,22 +4,24 @@ import * as Sentry from '@sentry/nextjs';
 
 import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
-import { ShippingBarcode } from '@/models';
+import { ShippingDocument } from '@/models';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-interface ISaveShippingLabelPayload {
+interface ISaveShippingDocumentPayload {
   shippingId: string;
   pdf: Buffer;
+  invoice?: Buffer;
 }
 
-const saveShippingLabel = async (data: ISaveShippingLabelPayload): Promise<ResponseTypes.IActionResponse> => {
+const saveShippingDocument = async (data: ISaveShippingDocumentPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     await connectMongoDB();
 
-    await ShippingBarcode.create({
+    await ShippingDocument.create({
       shippingId: data.shippingId,
-      pdf: data.pdf,
+      label: data.pdf,
+      ...(data.invoice ? { invoice: data.invoice } : {}),
     });
 
     return {
@@ -48,4 +50,4 @@ const saveShippingLabel = async (data: ISaveShippingLabelPayload): Promise<Respo
   }
 };
 
-export default saveShippingLabel;
+export default saveShippingDocument;

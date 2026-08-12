@@ -3,22 +3,12 @@ import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
 import latinize from 'latinize';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
-import saveShippingLabel from '@/app/actions/shippingBarcode/saveShippingLabel';
+import saveShippingDocument from '../../app/actions/shippingDocument/saveShippingDocument';
 import * as Sentry from '@sentry/nextjs';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
-
-type FedexErrorResponse = {
-  errors?: Array<{
-    code?: string;
-    message?: string;
-    parameterList?: Array<{
-      parameter: string;
-      value: string;
-    }>;
-  }>;
-};
 
 const createFedexPaper = async ({
   shippingInstance,
@@ -267,9 +257,9 @@ const createFedexPaper = async ({
 
   if (!shipmentRes.ok) {
     const responseText = await shipmentRes.text();
-    let errorData: FedexErrorResponse | string;
+    let errorData: CarrierAccountTypes.ICarrierErrorResponse | string;
     try {
-      errorData = JSON.parse(responseText) as FedexErrorResponse;
+      errorData = JSON.parse(responseText) as CarrierAccountTypes.ICarrierErrorResponse;
     } catch {
       errorData = responseText;
     }
@@ -339,7 +329,7 @@ const createFedexPaper = async ({
     throw new Error(`${SHIPMENT_FAILED}: No FedEx labels found.`);
   }
 
-  const saveLabelResult = await saveShippingLabel({
+  const saveLabelResult = await saveShippingDocument({
     shippingId,
     pdf: label,
   });

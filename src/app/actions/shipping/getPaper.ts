@@ -5,8 +5,7 @@ import mongoose from 'mongoose';
 
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
-import { Storage } from '@/lib/storage';
-import { Shipping, ShippingBarcode } from '@/models';
+import { Shipping, ShippingDocument } from '@/models';
 import { generalMessages, shippingMessages, UserRole } from '@/constants';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -55,45 +54,15 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
       }
     }
 
-    if (params.type === 'labels') {
-      const shippingBarcode = await ShippingBarcode.findOne({
-        shippingId: params.shippingId,
-      })
-        .select('pdf')
-        .lean();
+    const field = params.type === 'labels' ? 'label' : 'invoice';
 
-      if (!shippingBarcode?.pdf) {
-        return {
-          status: 'ERROR',
-          message: shippingMessages.PAPER.NOT_FOUND,
-        };
-      }
+    const shippingBarcode = await ShippingDocument.findOne({
+      shippingId: params.shippingId,
+    })
+      .select(field)
+      .lean();
 
-      return {
-        status: 'OK',
-        data: {
-          file: shippingBarcode.pdf.toString('base64'),
-        },
-      };
-    }
-
-    let paper;
-
-    try {
-      paper = await Storage.getObject({
-        Key: `${params.shippingId}.pdf`,
-        Bucket: params.type,
-      });
-    } catch (error) {
-      Sentry.captureException(error);
-
-      return {
-        status: 'ERROR',
-        message: generalMessages.UNEXPECTED_ERROR,
-      };
-    }
-
-    if (!paper.Body) {
+    if (!shippingBarcode?.[field]) {
       return {
         status: 'ERROR',
         message: shippingMessages.PAPER.NOT_FOUND,
@@ -103,7 +72,7 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
     return {
       status: 'OK',
       data: {
-        file: paper.Body.toString('base64'),
+        file: shippingBarcode[field].toString('base64'),
       },
     };
   } catch (error) {

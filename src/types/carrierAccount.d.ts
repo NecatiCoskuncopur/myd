@@ -62,4 +62,15 @@ declare namespace CarrierAccountTypes {
     id: string;
     isActive?: boolean;
   }
+
+  interface ICarrierErrorResponse {
+    errors?: Array<{
+      code?: string;
+      message?: string;
+      parameterList?: Array<{
+        parameter: string;
+        value: string;
+      }>;
+    }>;
+  }
 }
