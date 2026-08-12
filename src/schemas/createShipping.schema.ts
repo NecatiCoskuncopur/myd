@@ -33,7 +33,12 @@ export default yup.object({
       .typeError(COMPANY.TYPE)
       .min(5, COMPANY.MIN)
       .max(75, COMPANY.MAX),
-    phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH),
+    phone: yup
+      .string()
+      .transform(value => (value === '' ? undefined : value))
+      .typeError(PHONE.TYPE)
+      .min(2, PHONE.MIN)
+      .max(20, PHONE.MAX),
     email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID),
     taxId: yup.string().typeError(CONSIGNEE.TAXID.TYPE).max(35, CONSIGNEE.TAXID.MAX),
     address: yup.object({

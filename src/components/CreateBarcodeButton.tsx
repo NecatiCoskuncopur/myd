@@ -3,22 +3,24 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Alert, Button, CircularProgress, Dialog, DialogContent, Menu, MenuItem, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, ClickAwayListener, Dialog, DialogContent, Paper, Popper, Typography } from '@mui/material';
 
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 import { Carrier } from '@/constants';
+import getCarrierIcon from '@/lib/getCarrierIcon';
 
 interface Props {
   shipping: ShippingTypes.IShipping;
+  onSuccess: () => void;
 }
 
-const CreateBarcodeButton = ({ shipping }: Props) => {
+const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
   const router = useRouter();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
   const [fetching, setFetching] = useState(true);
 
@@ -44,17 +46,17 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
     fetchAccounts();
   }, []);
 
-  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(e.currentTarget);
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleSelect = (acc: Partial<CarrierAccountTypes.ICarrierAccount>) => {
-    handleCloseMenu();
-    setSelectedAccount(acc);
+  const handleSelect = (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
+    handleClose();
+    setSelectedAccount(account);
     setModalOpen(true);
   };
 
@@ -64,7 +66,9 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
     let cancelled = false;
 
     const run = async () => {
-      if (!selectedAccount.carrier || !selectedAccount.accountNumber) return;
+      if (!selectedAccount.carrier || !selectedAccount.accountNumber) {
+        return;
+      }
 
       setLoading(true);
       setError(null);
@@ -81,7 +85,7 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
         if (cancelled) return;
 
         if (res.status === 'OK') {
-          router.refresh();
+          onSuccess();
         } else {
           setError(res.message || 'Barkod oluşturulamadı');
         }
@@ -95,33 +99,119 @@ const CreateBarcodeButton = ({ shipping }: Props) => {
     };
 
     run();
+
     return () => {
       cancelled = true;
     };
-  }, [[modalOpen, selectedAccount, shipping._id, router]]);
+  }, [modalOpen, selectedAccount, shipping._id, router]);
 
-  if (fetching) return <CircularProgress size={20} />;
-  if (!accounts.length) return null;
+  if (fetching) {
+    return <CircularProgress size={20} />;
+  }
+
+  if (!accounts.length) {
+    return null;
+  }
+
+  const open = Boolean(anchorEl);
 
   return (
     <>
-      <Button size="small" variant="outlined" onClick={handleOpen}>
-        Barkod Oluştur
-      </Button>
+      <ClickAwayListener onClickAway={handleClose}>
+        <Box
+          sx={{
+            display: 'inline-flex',
+            position: 'relative',
+          }}
+          onMouseEnter={event => {
+            setAnchorEl(event.currentTarget);
+          }}
+          onMouseLeave={() => {
+            setAnchorEl(null);
+          }}
+        >
+          <Button size="small" variant="outlined">
+            Barkod Oluştur
+          </Button>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-        {accounts.map(acc => (
-          <MenuItem key={acc._id} onClick={() => handleSelect(acc)}>
-            {acc.name}
-          </MenuItem>
-        ))}
-      </Menu>
+          <Popper open={open} anchorEl={anchorEl} placement="bottom-start" sx={{ zIndex: theme => theme.zIndex.tooltip }}>
+            <Paper
+              elevation={4}
+              sx={{
+                mt: 0.5,
+                minWidth: 220,
+                overflow: 'hidden',
+              }}
+              onMouseEnter={() => {
+                if (anchorEl) {
+                  setAnchorEl(anchorEl);
+                }
+              }}
+            >
+              {accounts.map(account => {
+                const carrierName = account.carrier;
 
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DialogContent sx={{ minWidth: 300, textAlign: 'center' }}>
+                const icon = carrierName ? getCarrierIcon(carrierName) : null;
+
+                return (
+                  <Box
+                    key={account._id}
+                    onClick={() => handleSelect(account)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      px: 2,
+                      py: 1.25,
+                      cursor: 'pointer',
+                      transition: 'background-color 0.15s',
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      },
+                    }}
+                  >
+                    {icon && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 28,
+                          height: 28,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {icon}
+                      </Box>
+                    )}
+
+                    <Typography variant="body2">{account.name}</Typography>
+                  </Box>
+                );
+              })}
+            </Paper>
+          </Popper>
+        </Box>
+      </ClickAwayListener>
+
+      <Dialog
+        open={modalOpen}
+        onClose={() => {
+          if (!loading) {
+            setModalOpen(false);
+          }
+        }}
+      >
+        <DialogContent
+          sx={{
+            minWidth: 300,
+            textAlign: 'center',
+          }}
+        >
           {loading && (
             <>
               <CircularProgress />
+
               <Typography sx={{ mt: 2 }}>Barkod oluşturuluyor...</Typography>
             </>
           )}

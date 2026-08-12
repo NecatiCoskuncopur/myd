@@ -75,6 +75,7 @@ const PackageContentSection = () => {
                   {...field}
                   label="Navlun Bedeli"
                   fullWidth
+                  value={field.value ?? ''}
                   error={!!errorMessage}
                   slotProps={{
                     input: {
@@ -115,7 +116,7 @@ const PackageContentSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Açıklama" fullWidth error={!!errorMessage} />
+                <TextField {...field} label="Açıklama" value={field.value ?? ''} fullWidth error={!!errorMessage} />
               </ErrorTooltip>
             );
           }}
@@ -196,6 +197,7 @@ const PackageContentSection = () => {
                     <TextField
                       {...field}
                       label="GTİP"
+                      value={field.value ?? ''}
                       fullWidth
                       error={!!errorMessage}
                       slotProps={{
@@ -264,6 +266,7 @@ const PackageContentSection = () => {
                   {...field}
                   label="Sigorta Bedeli"
                   fullWidth
+                  value={field.value ?? ''}
                   error={!!errorMessage}
                   slotProps={{
                     input: {

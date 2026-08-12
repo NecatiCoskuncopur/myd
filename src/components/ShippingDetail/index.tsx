@@ -24,6 +24,7 @@ const ShippingDetail = () => {
   const [shipping, setShipping] = useState<ShippingTypes.IShipping | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -67,7 +68,11 @@ const ShippingDetail = () => {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [id, refreshKey]);
+
+  const handleShippingRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   if (!shipping) return null;
   if (loading) {
@@ -102,7 +107,7 @@ const ShippingDetail = () => {
           gap: 2,
         }}
       >
-        <Header hasTrackingNumber={!!shipping?.carrier?.trackingNumber} id={id} shipping={shipping} />
+        <Header hasTrackingNumber={!!shipping?.carrier?.trackingNumber} id={id} shipping={shipping} handleShippingRefresh={handleShippingRefresh} />
       </Box>
 
       <Grid container spacing={2} sx={{ mt: '24px' }}>

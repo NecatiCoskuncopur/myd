@@ -20,9 +20,10 @@ type HeaderProps = {
   hasTrackingNumber: boolean;
   id: string;
   shipping: ShippingTypes.IShipping;
+  handleShippingRefresh: () => void;
 };
 
-const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
+const Header = ({ hasTrackingNumber, id, shipping, handleShippingRefresh }: HeaderProps) => {
   const router = useRouter();
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -78,7 +79,7 @@ const Header = ({ hasTrackingNumber, id, shipping }: HeaderProps) => {
             Düzenle
           </Button>
 
-          {(user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={shipping} />}
+          {(user?.barcodePermits?.length ?? 0) > 0 && <CreateBarcodeButton shipping={shipping} onSuccess={handleShippingRefresh} />}
         </Stack>
       )}
       <DeleteShipping open={Boolean(anchorEl)} id={id} anchorEl={anchorEl} onClose={handleCloseDelete} onSuccess={handleDeleteSuccess} />

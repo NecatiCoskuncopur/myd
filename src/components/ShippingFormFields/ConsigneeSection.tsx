@@ -226,7 +226,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Adres *" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -249,7 +249,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Şirket" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Şirket" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -272,7 +272,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Adres 2" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Adres 2" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -285,8 +285,8 @@ const ConsigneeSection = () => {
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value.length !== 10) return PHONE.LENGTH;
-              return true;
+              if (value.length < 2) return PHONE.MIN;
+              if (value.length > 20) return PHONE.MAX;
             },
           }}
           control={control}
@@ -295,7 +295,7 @@ const ConsigneeSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Telefon" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Telefon" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -388,7 +388,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.email?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="E-Posta" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="E-Posta" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -428,7 +428,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.address?.city?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Şehir *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Şehir *" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
@@ -446,7 +446,7 @@ const ConsigneeSection = () => {
             const errorMessage = errors.consignee?.address?.postalCode?.message;
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="Posta Kodu *" fullWidth error={!!errorMessage} disabled={!!selectedConsignee} />
+                <TextField {...field} label="Posta Kodu *" fullWidth error={!!errorMessage} value={field.value ?? ''} disabled={!!selectedConsignee} />
               </ErrorTooltip>
             );
           }}
