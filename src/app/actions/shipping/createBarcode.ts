@@ -72,8 +72,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
         clientSecret: credentials.clientSecret,
       },
       QUICKSHIPPER: {
-        'qs-key': credentials['qs-key'],
-        'qs-secret': credentials['qs-secret'],
+        apiKey: credentials.apiKey,
+        apiSecret: credentials.apiSecret,
       },
     };
 

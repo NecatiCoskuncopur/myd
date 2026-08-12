@@ -1,9 +1,12 @@
 import { carrierMessages } from '@/constants';
-import { Storage } from '@/lib/storage';
+import * as Sentry from '@sentry/nextjs';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
 import latinize from 'latinize';
 import moment from 'moment';
+import mergePdfLabels from '@/lib/mergedPdfLabels';
+import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://www.sandbox.ups.com';
@@ -191,7 +194,7 @@ const createUpsPaper = async ({
       },
       LabelSpecification: {
         LabelImageFormat: {
-          Code: 'PNG',
+          Code: 'PDF',
         },
       },
     },
@@ -216,50 +219,94 @@ const createUpsPaper = async ({
   });
 
   if (!shipmentRes.ok) {
-    const errorData = await shipmentRes.json();
-    console.error('UPS ERROR DETAIL:', JSON.stringify(errorData, null, 2));
-    throw new Error(`${SHIPMENT_FAILED}: ${JSON.stringify(errorData.response?.errors || errorData)}`);
+    const responseText = await shipmentRes.text();
+    let errorData: CarrierAccountTypes.ICarrierErrorResponse | string;
+    try {
+      errorData = JSON.parse(responseText) as CarrierAccountTypes.ICarrierErrorResponse;
+    } catch {
+      errorData = responseText;
+    }
+    const error = new Error(
+      `${SHIPMENT_FAILED}: HTTP ${shipmentRes.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData.errors || errorData)}`,
+    );
+
+    Sentry.captureException(error, {
+      extra: {
+        senderName: shipperData.name,
+        senderEmail: shipperData.email,
+        upsError: typeof errorData === 'string' ? errorData : errorData.errors || errorData,
+        responseStatus: shipmentRes.status,
+        responseBody: errorData,
+      },
+    });
+
+    throw error;
   }
 
   const shipmentData = await shipmentRes.json();
   const shipmentResults = shipmentData?.ShipmentResponse?.ShipmentResults;
+
   const trackingNumber = shipmentResults?.ShipmentIdentificationNumber;
-
-  if (!trackingNumber) throw new Error(TRACKING_NUMBER_NOT_FOUND);
-  const packageResult = shipmentResults?.PackageResults?.[0] || shipmentResults?.PackageResults;
-  const label = packageResult?.ShippingLabel?.GraphicImage || '';
-
-  if (label) {
-    try {
-      await Storage.putObject({
-        Bucket: 'labels',
-        Key: `${shippingId}.pdf`,
-        Body: Buffer.from(label, 'base64'),
-      });
-      console.log(`[Storage] UPS Barkodu (${shippingId}.pdf) başarıyla kaydedildi.`);
-    } catch (err) {
-      console.error('[Storage Error] UPS barkodu yazılırken hata çıktı:', err);
-      throw err;
-    }
+  if (!trackingNumber) {
+    throw new Error(TRACKING_NUMBER_NOT_FOUND);
   }
 
-  const invoiceObj = shipmentResults?.Form?.Image;
-  const invoice = invoiceObj?.GraphicImage || '';
+  const packageResults = Array.isArray(shipmentResults?.PackageResults)
+    ? shipmentResults.PackageResults
+    : shipmentResults?.PackageResults
+      ? [shipmentResults.PackageResults]
+      : [];
 
-  if (invoice) {
-    try {
-      await Storage.putObject({
-        Bucket: 'invoices',
-        Key: `${shippingId}.pdf`,
-        Body: Buffer.from(invoice, 'base64'),
+  const packageLabels: string[] = [];
+
+  for (const [index, packageResult] of packageResults.entries()) {
+    const labelImage = packageResult?.ShippingLabel?.GraphicImage;
+
+    if (!labelImage) {
+      const error = new Error(`UPS Package ${index + 1}: LABEL bulunamadı.`);
+
+      Sentry.captureException(error, {
+        extra: {
+          packageIndex: index + 1,
+          trackingNumber,
+        },
       });
-      console.log(`[Storage] UPS Faturası (${shippingId}.pdf) başarıyla kaydedildi.`);
-    } catch (err) {
-      console.error('[Storage Error] UPS faturası yazılırken hata çıktı:', err);
+
+      continue;
     }
+
+    packageLabels.push(labelImage);
   }
 
-  return { trackingNumber, label, invoice };
+  if (!packageLabels.length) {
+    throw new Error(`${SHIPMENT_FAILED}: No UPS labels found.`);
+  }
+
+  const label = await mergePdfLabels(packageLabels);
+
+  if (!label.length) {
+    throw new Error(`${SHIPMENT_FAILED}: No UPS labels found.`);
+  }
+
+  const invoiceImage = shipmentResults?.Form?.Image?.GraphicImage;
+
+  const invoice = invoiceImage ? Buffer.from(invoiceImage, 'base64') : undefined;
+
+  const saveDocumentResult = await saveShippingDocument({
+    shippingId,
+    label,
+    ...(invoice ? { invoice } : {}),
+  });
+
+  if (saveDocumentResult.status === 'ERROR') {
+    throw new Error(saveDocumentResult.message);
+  }
+
+  return {
+    trackingNumber,
+    label: label.toString('base64'),
+    invoice: invoice ? invoice.toString('base64') : '',
+  };
 };
 
 export default createUpsPaper;

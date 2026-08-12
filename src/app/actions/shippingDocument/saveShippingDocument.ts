@@ -10,7 +10,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 interface ISaveShippingDocumentPayload {
   shippingId: string;
-  pdf: Buffer;
+  label: Buffer;
   invoice?: Buffer;
 }
 
@@ -20,7 +20,7 @@ const saveShippingDocument = async (data: ISaveShippingDocumentPayload): Promise
 
     await ShippingDocument.create({
       shippingId: data.shippingId,
-      label: data.pdf,
+      label: data.label,
       ...(data.invoice ? { invoice: data.invoice } : {}),
     });
 

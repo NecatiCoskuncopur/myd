@@ -36,10 +36,10 @@ const carrierConfig: Record<Carrier, ICarrierConfig> = {
   },
   [Carrier.QUICKSHIPPER]: {
     name: 'QUICKSHIPPER',
-    trackingUrl: 'https://www.ups.com/track?tracknum=%s',
+    trackingUrl: 'https://www.fedex.com/fedextrack/?trknbr=%s',
     credentials: [
-      { key: 'clientId', value: '' },
-      { key: 'clientSecret', value: '' },
+      { key: 'apiKey', value: '' },
+      { key: 'apiSecret', value: '' },
     ],
     icon: <Image src="/images/qs.png" alt="QUICKSHIPPER" width={24} height={24} style={{ objectFit: 'contain' }} />,
   },

@@ -1,8 +1,9 @@
-import { Storage } from '@/lib/storage';
 import { carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 import latinize from 'latinize';
+import * as Sentry from '@sentry/node';
+import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 
 const { SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -20,17 +21,20 @@ const createQuickShipperPaper = async ({
   label: string;
   invoice: string;
 }> => {
-  try {
-    const { consignee, content, detail, sender, package: pkg } = shippingInstance;
+  const { consignee, content, detail, sender, package: pkg } = shippingInstance;
 
+  const senderName =
+    hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name;
+
+  const senderEmail = hasCustomInfo && customInfo ? customInfo.email : sender.email;
+
+  try {
     const senderData = {
-      firstName: latinize(
-        hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
-      ),
+      firstName: latinize(senderName),
       lastName: '',
       companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
       phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
-      email: hasCustomInfo && customInfo ? customInfo.email : sender.email,
+      email: senderEmail,
       zipCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
       countryCode: 'TR',
       cityName: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
@@ -68,12 +72,8 @@ const createQuickShipperPaper = async ({
       totalWeight: shippingInstance.package.weight * shippingInstance.package.numberOfPackage,
       applyInsurance: shippingInstance.content.insurance > 0,
       shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
-      shippingAddress: {
-        ...senderData,
-      },
-      consigneeAddress: {
-        ...consigneeData,
-      },
+      shippingAddress: senderData,
+      consigneeAddress: consigneeData,
 
       items: [...Array(pkg.numberOfPackage).keys()].map(() => ({
         quantity: 1,
@@ -94,59 +94,141 @@ const createQuickShipperPaper = async ({
 
     const response = await fetch(BASE_URL, {
       method: 'POST',
-
       headers: {
         'Content-Type': 'application/json',
         accountNumber,
-        'qs-key': credentials['qs-key'],
-        'qs-secret': credentials['qs-secret'],
+        'qs-key': credentials.apiKey,
+        'qs-secret': credentials.apiSecret,
       },
       body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const responseText = await response.text();
 
-      console.error('QUICKSHIPPER ERROR:', JSON.stringify(errorData, null, 2));
+      let errorData: unknown;
 
-      throw new Error(`${SHIPMENT_FAILED}: ${JSON.stringify(errorData)}`);
+      try {
+        errorData = JSON.parse(responseText);
+      } catch {
+        errorData = responseText;
+      }
+
+      const error = new Error(`${SHIPMENT_FAILED}: HTTP ${response.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData)}`);
+
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          senderName,
+          senderEmail,
+          quickShipperError: errorData,
+          responseStatus: response.status,
+          responseStatusText: response.statusText,
+          responseBody: errorData,
+        },
+      });
+
+      throw error;
     }
 
     const shipmentData = await response.json();
-
     const output = shipmentData?.data;
 
     const trackingNumber = output?.integratorAWBNumber;
 
     if (!trackingNumber) {
-      throw new Error(TRACKING_NUMBER_NOT_FOUND);
+      const error = new Error(TRACKING_NUMBER_NOT_FOUND);
+
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          senderName,
+          senderEmail,
+          quickShipperResponse: shipmentData,
+        },
+      });
+
+      throw error;
     }
 
     const label = output?.labels?.[0] || '';
 
-    if (label) {
-      await Storage.putObject({
-        Bucket: 'labels',
+    if (!label) {
+      const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label bulunamadı.`);
 
-        Key: `${shippingId}.pdf`,
-
-        Body: Buffer.from(label, 'base64'),
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          senderName,
+          senderEmail,
+          trackingNumber,
+          quickShipperResponse: shipmentData,
+        },
       });
 
-      console.log(`[Storage] QuickShipper label (${shippingId}.pdf) kaydedildi.`);
+      throw error;
+    }
+
+    const labelBuffer = Buffer.from(label, 'base64');
+
+    if (!labelBuffer.length) {
+      const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label boş.`);
+
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          senderName,
+          senderEmail,
+          trackingNumber,
+        },
+      });
+
+      throw error;
+    }
+
+    const saveLabelResult = await saveShippingDocument({
+      shippingId,
+      label: labelBuffer,
+    });
+
+    if (saveLabelResult.status === 'ERROR') {
+      const error = new Error(saveLabelResult.message);
+
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          senderName,
+          senderEmail,
+          trackingNumber,
+          documentSaveError: saveLabelResult,
+        },
+      });
+
+      throw error;
     }
 
     return {
       trackingNumber,
-
-      label,
-
+      label: labelBuffer.toString('base64'),
       invoice: '',
     };
   } catch (error) {
-    console.error('[QUICKSHIPPER LABEL ERROR]', error);
+    if (error instanceof Error) {
+      throw error;
+    }
 
-    throw error;
+    const unknownError = new Error(`${SHIPMENT_FAILED}: Unknown QuickShipper error`);
+
+    Sentry.captureException(unknownError, {
+      extra: {
+        shippingId,
+        senderName,
+        senderEmail,
+        originalError: error,
+      },
+    });
+
+    throw unknownError;
   }
 };
 

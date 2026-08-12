@@ -331,7 +331,7 @@ const createFedexPaper = async ({
 
   const saveLabelResult = await saveShippingDocument({
     shippingId,
-    pdf: label,
+    label,
   });
 
   if (saveLabelResult.status === 'ERROR') {

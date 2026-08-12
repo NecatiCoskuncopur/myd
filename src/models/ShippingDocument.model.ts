@@ -36,6 +36,6 @@ export type ShippingDocumentModel = PaginateModel<IShippingDocument>;
 
 const ShippingDocument: ShippingDocumentModel =
   (mongoose.models.ShippingDocument as ShippingDocumentModel) ??
-  mongoose.model<IShippingDocument, ShippingDocumentModel>('ShippingBarcode', ShippingDocumentSchema);
+  mongoose.model<IShippingDocument, ShippingDocumentModel>('ShippingDocument', ShippingDocumentSchema);
 
 export default ShippingDocument;
