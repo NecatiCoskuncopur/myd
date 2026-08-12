@@ -259,6 +259,7 @@ const AdminShippingList = () => {
   if (!isClient) return null;
 
   const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
+  const hasLabel = selectedRow?.labeledAt ? new Date(selectedRow.labeledAt).setMonth(new Date(selectedRow.labeledAt).getMonth() + 3) > Date.now() : false;
   const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
 
   return (
@@ -341,8 +342,8 @@ const AdminShippingList = () => {
               })
             ))}
 
-          {hasTrackingNumber && <Divider />}
-          {hasTrackingNumber && (
+          {hasTrackingNumber && hasLabel && <Divider />}
+          {hasTrackingNumber && hasLabel && (
             <MenuItem onClick={() => handleDownloadPaper('labels')}>
               <ListItemIcon>
                 <DescriptionOutlinedIcon fontSize="small" />
@@ -350,7 +351,7 @@ const AdminShippingList = () => {
               <ListItemText>Barkod İndir (Label)</ListItemText>
             </MenuItem>
           )}
-          {hasTrackingNumber && (
+          {hasTrackingNumber && hasLabel && (
             <MenuItem onClick={() => handleDownloadPaper('invoices')}>
               <ListItemIcon>
                 <ReceiptLongOutlinedIcon fontSize="small" />

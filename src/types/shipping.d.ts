@@ -101,6 +101,7 @@ declare namespace ShippingTypes {
     carrier?: ICarrier;
     labelLink?: string;
     activities?: IActivity[];
+    labeledAt?: Date;
     createdAt: string;
     updatedAt: string;
   }

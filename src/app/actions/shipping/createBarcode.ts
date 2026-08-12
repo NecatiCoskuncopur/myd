@@ -107,7 +107,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     };
 
     shipping.status = ShippingStatus.LABELED;
-
+    shipping.labeledAt = new Date();
     await shipping.save();
 
     return {

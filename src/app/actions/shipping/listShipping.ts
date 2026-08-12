@@ -109,6 +109,7 @@ const listShipping = async (
         content: { currency: 1, products: 1 },
         package: 1,
         carrier: 1,
+        labeledAt: 1,
         createdAt: 1,
       },
     });

@@ -98,6 +98,7 @@ const ShippingSchema = new mongoose.Schema(
       amount: Number,
     },
     labelLink: String,
+    labeledAt: Date,
     activities: [
       {
         userId: mongoose.Types.ObjectId,
