@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveShippingDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveShippingDocument.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/carrierConfig.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/carrierConfig.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/columns.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +141,7 @@
       <workItem from="1786444073226" duration="10398000" />
       <workItem from="1786455294086" duration="28862000" />
       <workItem from="1786533719763" duration="4438000" />
-      <workItem from="1786538316669" duration="1910000" />
+      <workItem from="1786538316669" duration="2385000" />
     </task>
     <servers />
   </component>

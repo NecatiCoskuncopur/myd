@@ -16,13 +16,15 @@ const columns: GridColDef[] = [
     flex: 1,
     minWidth: 140,
     renderCell: params => {
-      const icon = getCarrierIcon(params.value as Carrier);
+      const carrier = params.value as Carrier;
+      const icon = getCarrierIcon(carrier);
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 18 }}>{icon}</Box>
+
           <Typography variant="body2" sx={{ fontWeight: 500 }}>
-            {params.value?.name}
+            {carrier}
           </Typography>
         </Box>
       );
