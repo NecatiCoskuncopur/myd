@@ -29,3 +29,4 @@ export { default as PasswordField } from './FormFields/PasswordField';
 export { default as AddressFields } from './FormFields/AddressFields';
 export { default as CaptchaField } from './FormFields/CaptchaField';
 export { default as NickNameField } from './FormFields/NickNameField';
+export { default as TaxFields } from './FormFields/TaxFields';

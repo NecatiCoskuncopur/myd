@@ -10,7 +10,12 @@ const setUserSchema = editUserSchema.shape({
   userId: yup.string().typeError(USERID.TYPE).required(USERID.REQUIRED),
   priceListId: yup.string().typeError(pricingListMessages.TYPE).required(pricingListMessages.REQUIRED),
   role: yup.string().oneOf(['CUSTOMER', 'ADMIN', 'OPERATOR'], ROLE.INVALID).required(ROLE.REQUIRED),
-  nickname: yup.string().typeError(NICKNAME.TYPE).min(4, NICKNAME.MIN).max(75, NICKNAME.MAX),
+  nickname: yup
+    .string()
+    .transform(value => (value === '' ? undefined : value))
+    .typeError(NICKNAME.TYPE)
+    .min(4, NICKNAME.MIN)
+    .max(75, NICKNAME.MAX),
   isActive: yup.boolean().typeError(ISACTIVE.TYPE).required(ISACTIVE.REQUIRED),
   barcodePermits: yup.array().of(yup.string()).typeError(BARCODE_PERMITS.INVALID),
 });

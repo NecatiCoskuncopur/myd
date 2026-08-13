@@ -77,6 +77,8 @@ const Users = () => {
         lastName: user.lastName,
         nickname: user.nickname,
         company: user.company,
+        taxId: user.taxId,
+        taxOffice: user.taxOffice,
         phone: user.phone,
         priceList: user.pricingList?.name,
         priceListId: user.pricingList?._id,

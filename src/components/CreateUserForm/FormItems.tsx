@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import { Control, FieldErrors } from 'react-hook-form';
 
 import { AdminTypes } from '@/types/admin';
-import { AddressFields, ContactFields, NickNameField, PasswordField, PersonalFields } from '@/components';
+import { AddressFields, ContactFields, NickNameField, PasswordField, PersonalFields, TaxFields } from '@/components';
 import React from 'react';
 
 type FormItemsProps = {
@@ -16,6 +16,7 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
       <PersonalFields control={control} errors={errors} />
       <NickNameField errors={errors} control={control} />
       <ContactFields control={control} errors={errors} />
+      <TaxFields errors={errors} control={control} />
       <Grid size={{ xs: 12 }}>
         <PasswordField errors={errors} control={control} />
       </Grid>

@@ -68,6 +68,8 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
           lastName: 1,
           nickname: 1,
           company: 1,
+          taxId: 1,
+          taxOffice: 1,
           phone: 1,
           address: 1,
           role: 1,

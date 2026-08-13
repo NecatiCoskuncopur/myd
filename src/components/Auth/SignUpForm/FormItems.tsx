@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { Control, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
-import { AddressFields, CaptchaField, ContactFields, PasswordField, PersonalFields } from '@/components';
+import { AddressFields, CaptchaField, ContactFields, PasswordField, PersonalFields, TaxFields } from '@/components';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.ISignUpPayload>;
@@ -20,7 +20,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
       <Grid size={{ xs: 12, md: 6 }}>
         <PasswordField errors={errors} control={control} />
       </Grid>
-
+      <TaxFields errors={errors} control={control} />
       <AddressFields control={control} errors={errors} />
       <CaptchaField captchaKey={captchaKey} control={control} onCaptchaChange={token => setValue('recaptchaToken', token)} />
     </Grid>

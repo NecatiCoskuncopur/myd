@@ -57,6 +57,8 @@ declare namespace UserTypes {
     firstName: string;
     lastName: string;
     company: string;
+    taxId: string;
+    taxOffice: string;
     nickname: string;
     phone: string;
     address;
@@ -68,6 +70,8 @@ declare namespace UserTypes {
     firstName: string;
     lastName: string;
     company?: string;
+    taxId?: string;
+    taxOffice?: string;
     nickname?: string;
     phone: string;
     role: UserRole;

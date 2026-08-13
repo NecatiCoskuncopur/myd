@@ -1,8 +1,8 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Schema, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
-import { emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
+import { emailRegex, phoneRegex, taxIdRegex, userMessages, UserRole } from '@/constants';
 
-const { EMAIL, PHONE } = userMessages;
+const { EMAIL, PHONE, TAXID } = userMessages;
 
 const UserSchema = new Schema(
   {
@@ -53,6 +53,19 @@ const UserSchema = new Schema(
         validator: value => phoneRegex.test(value),
         message: PHONE.INVALID,
       },
+    },
+    taxId: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: value => !value || taxIdRegex.test(value),
+        message: TAXID.INVALID,
+      },
+    },
+    taxOffice: {
+      type: String,
+      trim: true,
+      maxlength: 75,
     },
     priceListId: {
       type: Schema.Types.ObjectId,

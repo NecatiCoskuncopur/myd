@@ -67,6 +67,14 @@ const userMessages = {
   EDITUSER: {
     SUCCESS: 'Kullanıcı başarıyla güncellendi.',
   },
+  TAXID: {
+    TYPE: 'Vergi numarası metin tipinde olmalı.',
+    INVALID: 'Vergi numarası 10 karakter olmalı.',
+  },
+  TAXOFFICE: {
+    TYPE: 'Vergi dairesi metin tipinde olmalı.',
+    MAX: 'Vergi dairesi en fazla 75 karakter olmalı.',
+  },
 } as const;
 
 export default userMessages;

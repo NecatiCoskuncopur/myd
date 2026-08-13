@@ -29,6 +29,8 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
       firstName: '',
       lastName: '',
       company: '',
+      taxId: '',
+      taxOffice: '',
       phone: '',
       email: '',
       password: '',

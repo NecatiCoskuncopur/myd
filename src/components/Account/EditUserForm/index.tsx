@@ -32,6 +32,8 @@ const EditUserForm = () => {
       lastName: '',
       nickname: '',
       company: '',
+      taxId: '',
+      taxOffice: '',
       phone: '',
       email: '',
       address: {

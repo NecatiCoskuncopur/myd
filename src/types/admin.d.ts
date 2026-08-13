@@ -26,6 +26,8 @@ declare namespace AdminTypes {
     firstName: string;
     lastName: string;
     company?: string;
+    taxId?: string;
+    taxOffice?: string;
     phone: string;
     nickname?: string;
     address: UserTypes.IAddress;
@@ -52,6 +54,8 @@ declare namespace AdminTypes {
     lastName: string;
     password: string;
     company?: string;
+    taxId?: string;
+    taxOffice?: string;
     phone: string;
     nickname?: string;
     address: UserTypes.IAddress;

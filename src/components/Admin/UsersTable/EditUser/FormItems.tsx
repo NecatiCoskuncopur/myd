@@ -8,7 +8,7 @@ import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { AddressFields, ContactFields, NickNameField, PersonalFields } from '@/components';
+import { AddressFields, ContactFields, NickNameField, PersonalFields, TaxFields } from '@/components';
 
 type FormItemsProps = {
   control: Control<AdminTypes.ISetUserPayload, AdminTypes.ISetUserPayload>;
@@ -27,6 +27,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
       </Grid>
       <PersonalFields control={control} errors={errors} />
       <NickNameField errors={errors} control={control} />
+      <TaxFields errors={errors} control={control} />
       <Grid size={12} sx={{ my: 1 }}>
         <Divider />
       </Grid>

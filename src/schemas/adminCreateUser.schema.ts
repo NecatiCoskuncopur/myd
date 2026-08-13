@@ -1,8 +1,8 @@
 import * as yup from 'yup';
 
-import { addressMessages, userMessages } from '@/constants';
+import { addressMessages, taxIdRegex, userMessages } from '@/constants';
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE, PASSWORD } = userMessages;
+const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE, PASSWORD, TAXID, TAXOFFICE } = userMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 
 export default yup.object({
@@ -16,8 +16,18 @@ export default yup.object({
     .typeError(COMPANY.TYPE)
     .min(5, COMPANY.MIN)
     .max(75, COMPANY.MAX),
+  taxId: yup
+    .string()
+    .nullable()
+    .test('tax-id-format', TAXID.INVALID, value => !value || taxIdRegex.test(value)),
+  taxOffice: yup.string().nullable().typeError(TAXOFFICE.TYPE).max(75, TAXOFFICE.MAX),
   phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH).required(PHONE.REQUIRED),
-  nickname: yup.string().typeError(NICKNAME.TYPE).min(4, NICKNAME.MIN).max(75, NICKNAME.MAX),
+  nickname: yup
+    .string()
+    .transform(value => (value === '' ? undefined : value))
+    .typeError(NICKNAME.TYPE)
+    .min(4, NICKNAME.MIN)
+    .max(75, NICKNAME.MAX),
   address: yup.object({
     line1: yup.string().typeError(LINE.TYPE).min(5, LINE.MIN).max(255, LINE.MAX).required(LINE.REQUIRED),
     line2: yup.string().typeError(LINE.TYPE).max(255, LINE.MAX),

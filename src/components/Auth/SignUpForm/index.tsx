@@ -27,6 +27,8 @@ const SignUpForm = () => {
       firstName: '',
       lastName: '',
       company: '',
+      taxId: '',
+      taxOffice: '',
       phone: '',
       email: '',
       password: '',

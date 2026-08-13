@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 import { Control, FieldErrors } from 'react-hook-form';
 
 import { UserTypes } from '@/types/user';
-import { AddressFields, ContactFields, NickNameField, PersonalFields } from '@/components';
+import { AddressFields, ContactFields, NickNameField, PersonalFields, TaxFields } from '@/components';
 
 type FormFieldsProps = {
   errors: FieldErrors<UserTypes.IEditUserPayload>;
@@ -17,6 +17,7 @@ const FormItems = ({ errors, control }: FormFieldsProps) => {
       <PersonalFields errors={errors} control={control} />
       <NickNameField errors={errors} control={control} />
       <ContactFields errors={errors} control={control} />
+      <TaxFields errors={errors} control={control} />
       <AddressFields errors={errors} control={control} />
     </Grid>
   );

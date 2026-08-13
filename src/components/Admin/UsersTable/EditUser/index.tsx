@@ -45,6 +45,8 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       lastName: '',
       nickname: '',
       company: '',
+      taxId: '',
+      taxOffice: '',
       phone: '',
       email: '',
       address: {
@@ -69,6 +71,8 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       lastName: user.lastName ?? '',
       nickname: user.nickname ?? '',
       company: user.company ?? '',
+      taxId: user.taxId ?? '',
+      taxOffice: user.taxOffice ?? '',
       phone: user.phone ?? '',
       email: user.email ?? '',
       address: {
