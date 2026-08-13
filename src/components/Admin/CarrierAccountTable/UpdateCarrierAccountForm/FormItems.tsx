@@ -1,8 +1,10 @@
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { Box, Checkbox, FormControlLabel, Grid, MenuItem, TextField, useTheme } from '@mui/material';
+import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 import CustomInfoSection from '../CustomInfoSection';
 import { Carrier, carrierMessages } from '@/constants';
+import { PricingZoneEditor } from '@/components';
+import React from 'react';
 
 type FormItemsProps = {
   control: Control<CarrierAccountTypes.IUpdateCarrierAccountPayload, CarrierAccountTypes.IUpdateCarrierAccountPayload>;
@@ -142,6 +144,17 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue, acco
             ))}
           </Grid>
         </Box>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <Divider sx={{ mb: 2 }}>
+          <Typography variant="subtitle2">Fiyatlandırma</Typography>
+        </Divider>
+
+        <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+          Bu taşıyıcı hesabı için ağırlık bazlı maliyet kurallarını tanımlayın.
+        </Typography>
+
+        <Controller name="pricing.zones" control={control} render={({ field }) => <PricingZoneEditor value={field.value} onChange={field.onChange} />} />
       </Grid>
     </Grid>
   );

@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, Schema, Types } from 'mongoose';
 import { Carrier, emailRegex, phoneRegex, userMessages } from '@/constants';
+import PricingZoneSchema from './PricingZoneSchema.model';
 
 const { EMAIL, PHONE } = userMessages;
 
@@ -40,6 +41,12 @@ const CarrierAccountSchema = new Schema(
       type: [CarrierCredentialSchema],
       required: true,
       validate: [(val: unknown[]) => val.length > 0, 'En az bir credential gereklidir.'],
+    },
+    pricing: {
+      zones: {
+        type: [PricingZoneSchema],
+        default: [],
+      },
     },
     hasCustomInfo: {
       type: Boolean,

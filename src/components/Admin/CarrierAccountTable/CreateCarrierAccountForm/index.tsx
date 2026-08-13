@@ -42,6 +42,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
         { key: 'apiKey', value: '' },
         { key: 'secretKey', value: '' },
       ],
+      pricing: {},
       hasCustomInfo: false,
       customInfo: {
         firstName: '',

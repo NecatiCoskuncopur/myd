@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import PricingZoneSchema from './PricingZoneSchema.model';
 
 const PricingListSchema = new mongoose.Schema(
   {
@@ -11,34 +12,10 @@ const PricingListSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    zone: [
-      {
-        _id: false,
-        number: {
-          type: Number,
-          min: 1,
-          max: 9,
-          required: true,
-        },
-        prices: [
-          {
-            _id: false,
-            weight: {
-              type: Number,
-              required: true,
-            },
-            price: {
-              type: Number,
-              required: true,
-            },
-          },
-        ],
-        than: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+    zone: {
+      type: [PricingZoneSchema],
+      default: [],
+    },
   },
   { timestamps: true },
 );

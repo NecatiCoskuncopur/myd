@@ -23,6 +23,21 @@ declare namespace CarrierAccountTypes {
     address?: ICarrierAddress;
   }
 
+  interface IPrice {
+    weight: number;
+    price: number;
+  }
+
+  interface IZone {
+    number: number;
+    prices: IPrice[];
+    than: number;
+  }
+
+  interface IPricing {
+    zones: IZone[];
+  }
+
   interface ICarrierAccount {
     _id: string;
     name: string;
@@ -30,6 +45,7 @@ declare namespace CarrierAccountTypes {
     accountNumber: string;
     isActive: boolean;
     credentials: ICarrierCredential[];
+    pricing: IPricing;
     hasCustomInfo: boolean;
     customInfo?: ICustomInfo;
     meta?: Record<string, string>;
@@ -41,6 +57,7 @@ declare namespace CarrierAccountTypes {
     name: string;
     carrier: Carrier;
     accountNumber: string;
+    pricing: IPricing;
     credentials: ICarrierCredential[];
     hasCustomInfo: boolean;
     customInfo?: ICustomInfo;

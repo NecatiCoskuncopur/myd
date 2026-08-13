@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/api/cron/negative-balance/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/PricingZoneEditor.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/PricingZoneSchema.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/PricingList.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/PricingList.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +158,7 @@
       <workItem from="1786579672636" duration="1000" />
       <workItem from="1786579861538" duration="9000" />
       <workItem from="1786585533761" duration="1221000" />
-      <workItem from="1786622752531" duration="11607000" />
+      <workItem from="1786622752531" duration="21177000" />
     </task>
     <servers />
   </component>
