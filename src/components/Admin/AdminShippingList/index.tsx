@@ -41,6 +41,9 @@ import FilterSection from './FilterSection';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { getCarrierPrice } from '@/lib/getCarrierPrice';
+import getPricingList from '@/app/actions/admin/getPricingList';
+import { getCustomerPrice } from '@/lib/getCustomerPrice';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -55,7 +58,7 @@ const AdminShippingList = () => {
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
+  const [pricingList, setPricingList] = useState<PricingListTypes.IPricingList | null>(null);
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
@@ -134,6 +137,23 @@ const AdminShippingList = () => {
   }, []);
 
   useEffect(() => {
+    const fetchPricingList = async () => {
+      if (!user?.priceListId) {
+        setPricingList(null);
+        return;
+      }
+
+      const result = await getPricingList(user.priceListId);
+
+      if (result.status === 'OK' && result.data) {
+        setPricingList(result.data);
+      }
+    };
+
+    fetchPricingList();
+  }, [user?.priceListId]);
+
+  useEffect(() => {
     if (!canCreateBarcode) return;
 
     const fetchAccounts = async () => {
@@ -174,6 +194,7 @@ const AdminShippingList = () => {
     if (!shippingId || !account.carrier || !account.accountNumber) return;
 
     closeActionsMenu();
+    setBarcodeDialogOpen(true);
     setBarcodeLoading(true);
     setBarcodeError(null);
 
@@ -187,7 +208,6 @@ const AdminShippingList = () => {
       });
 
       if (res.status === 'OK') {
-        setBarcodeDialogOpen(true);
         await fetchList();
       } else {
         setBarcodeError(res.message || 'Barkod oluşturulamadı');
@@ -261,7 +281,6 @@ const AdminShippingList = () => {
   const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
   const hasLabel = selectedRow?.labeledAt ? new Date(selectedRow.labeledAt).setMonth(new Date(selectedRow.labeledAt).getMonth() + 3) > Date.now() : false;
   const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
-
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Wrapper>
@@ -332,11 +351,23 @@ const AdminShippingList = () => {
             ) : (
               accounts.map(acc => {
                 const icon = getCarrierIcon(acc.carrier as Carrier);
+                const cost = getCarrierPrice({
+                  countryCode: selectedRow?.consignee?.address.country ?? '',
+                  weight: selectedRow?.package.weight ?? 0,
+                  pricing: acc.pricing,
+                });
+
+                const customerPrice = getCustomerPrice({
+                  countryCode: selectedRow?.consignee?.address.country ?? '',
+                  weight: selectedRow?.package.weight ?? 0,
+                  pricingList,
+                });
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
                     <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{icon}</ListItemIcon>
-                    <ListItemText> {acc.name}</ListItemText>
+
+                    <ListItemText primary={acc.name} secondary={`Maliyet: ${cost ?? '-'} $ | Müşteri Fiyatı: ${customerPrice ?? '-'} $`} />
                   </MenuItem>
                 );
               })

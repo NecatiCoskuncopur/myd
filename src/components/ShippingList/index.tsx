@@ -42,6 +42,8 @@ import FilterSection from './FilterSection';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { getCustomerPrice } from '@/lib/getCustomerPrice';
+import getUserPricingList from '@/app/actions/user/getUserPricingList';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -52,14 +54,12 @@ const ShippingList = () => {
   const [isClient, setIsClient] = useState(false);
   const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
   const [loading, setLoading] = useState(false);
-
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
-
+  const [pricingList, setPricingList] = useState<PricingListTypes.IPricingList | null>(null);
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
   const { showSnackbar } = useSnackbar();
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
@@ -148,6 +148,19 @@ const ShippingList = () => {
 
     fetchAccounts();
   }, [canCreateBarcode]);
+
+  useEffect(() => {
+    const fetchPricingList = async () => {
+      const res = await getUserPricingList();
+      if (res.status === 'OK' && res.data) {
+        setPricingList(res.data);
+      } else {
+        console.error(res.message || UNEXPECTED_ERROR);
+      }
+    };
+
+    fetchPricingList();
+  }, []);
 
   const closeActionsMenu = () => {
     setMenuOpen(false);
@@ -344,11 +357,16 @@ const ShippingList = () => {
             ) : (
               accounts.map(acc => {
                 const icon = getCarrierIcon(acc?.carrier as Carrier);
+                const customerPrice = getCustomerPrice({
+                  countryCode: selectedRow?.consignee?.address.country ?? '',
+                  weight: selectedRow?.package.weight ?? 0,
+                  pricingList,
+                });
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
                     <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{icon}</ListItemIcon>
-                    <ListItemText> {acc.name}</ListItemText>
+                    <ListItemText primary={acc.name} secondary={` Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
                   </MenuItem>
                 );
               })

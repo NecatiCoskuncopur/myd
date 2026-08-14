@@ -122,7 +122,7 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} label="IOSS Numarası" value={field.value ?? ''}  fullWidth error={!!errorMessage} />
+                <TextField {...field} label="IOSS Numarası" value={field.value ?? ''} fullWidth error={!!errorMessage} />
               </ErrorTooltip>
             );
           }}
