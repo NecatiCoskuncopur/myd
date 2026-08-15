@@ -5,13 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/getCarrierPrice.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/getCustomerPrice.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/schemas/baseUserSchema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/FormFields/TaxFields.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/TaxFields.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/regex/tax.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/User.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/User.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/editUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/editUser.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +22,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="283" />
+    <option name="cachedIndexableFilesCount" value="284" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -155,7 +158,8 @@
       <workItem from="1786585533761" duration="1221000" />
       <workItem from="1786622752531" duration="21789000" />
       <workItem from="1786663240267" duration="6167000" />
-      <workItem from="1786709909809" duration="4166000" />
+      <workItem from="1786709909809" duration="8863000" />
+      <workItem from="1786802904738" duration="2112000" />
     </task>
     <servers />
   </component>

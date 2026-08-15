@@ -27,7 +27,11 @@ const TaxFields = <T extends TaxFieldsData>({ errors, control }: TaxFieldsProps<
           name={'taxId' as Path<T>}
           control={control}
           rules={{
-            validate: value => !value || value.length === 10 || TAXID.INVALID,
+            validate: value => {
+              if (!value) return true;
+              if (value.length > 20) return TAXID.MAX;
+              return true;
+            },
           }}
           render={({ field }) => (
             <TextField

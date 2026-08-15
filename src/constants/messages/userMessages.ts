@@ -70,6 +70,7 @@ const userMessages = {
   TAXID: {
     TYPE: 'Vergi numarası metin tipinde olmalı.',
     INVALID: 'Vergi numarası 10 karakter olmalı.',
+    MAX: 'Vergi numarası en fazla 20 karakter olmalı.',
   },
   TAXOFFICE: {
     TYPE: 'Vergi dairesi metin tipinde olmalı.',

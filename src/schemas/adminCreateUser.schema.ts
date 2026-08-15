@@ -1,38 +1,17 @@
 import * as yup from 'yup';
+import { userMessages } from '@/constants';
+import baseUserSchema from '@/schemas/baseUserSchema';
 
-import { addressMessages, taxIdRegex, userMessages } from '@/constants';
+const { NICKNAME, PASSWORD } = userMessages;
 
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, NICKNAME, PHONE, PASSWORD, TAXID, TAXOFFICE } = userMessages;
-const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
-
-export default yup.object({
+const adminCreateUserSchema = baseUserSchema.shape({
   password: yup.string().typeError(PASSWORD.TYPE).min(8, PASSWORD.MIN).max(255, PASSWORD.MAX).required(PASSWORD.REQUIRED),
-  email: yup.string().typeError(EMAIL.TYPE).email(EMAIL.INVALID).required(EMAIL.REQUIRED),
-  firstName: yup.string().typeError(FIRSTNAME.TYPE).min(2, FIRSTNAME.MIN).max(75, FIRSTNAME.MAX).required(FIRSTNAME.REQUIRED),
-  lastName: yup.string().typeError(LASTNAME.TYPE).min(2, LASTNAME.MIN).max(75, LASTNAME.MAX).required(LASTNAME.REQUIRED),
-  company: yup
-    .string()
-    .transform(value => (value === '' ? undefined : value))
-    .typeError(COMPANY.TYPE)
-    .min(5, COMPANY.MIN)
-    .max(75, COMPANY.MAX),
-  taxId: yup
-    .string()
-    .nullable()
-    .test('tax-id-format', TAXID.INVALID, value => !value || taxIdRegex.test(value)),
-  taxOffice: yup.string().nullable().typeError(TAXOFFICE.TYPE).max(75, TAXOFFICE.MAX),
-  phone: yup.string().typeError(PHONE.TYPE).length(10, PHONE.LENGTH).required(PHONE.REQUIRED),
   nickname: yup
     .string()
     .transform(value => (value === '' ? undefined : value))
     .typeError(NICKNAME.TYPE)
     .min(4, NICKNAME.MIN)
     .max(75, NICKNAME.MAX),
-  address: yup.object({
-    line1: yup.string().typeError(LINE.TYPE).min(5, LINE.MIN).max(255, LINE.MAX).required(LINE.REQUIRED),
-    line2: yup.string().typeError(LINE.TYPE).max(255, LINE.MAX),
-    district: yup.string().typeError(DISTRICT.TYPE).min(2, DISTRICT.MIN).max(25, DISTRICT.MAX).required(DISTRICT.REQUIRED),
-    city: yup.string().typeError(CITY.TYPE).min(2, CITY.MIN).max(35, CITY.MAX).required(CITY.REQUIRED),
-    postalCode: yup.string().typeError(POSTALCODE.TYPE).length(5, POSTALCODE.LENGTH).required(POSTALCODE.REQUIRED),
-  }),
 });
+
+export default adminCreateUserSchema;

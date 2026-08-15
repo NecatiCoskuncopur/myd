@@ -1,8 +1,8 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Schema, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
-import { emailRegex, phoneRegex, taxIdRegex, userMessages, UserRole } from '@/constants';
+import { emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
 
-const { EMAIL, PHONE, TAXID } = userMessages;
+const { EMAIL, PHONE } = userMessages;
 
 const UserSchema = new Schema(
   {
@@ -57,10 +57,7 @@ const UserSchema = new Schema(
     taxId: {
       type: String,
       trim: true,
-      validate: {
-        validator: value => !value || taxIdRegex.test(value),
-        message: TAXID.INVALID,
-      },
+      maxLength: 20,
     },
     taxOffice: {
       type: String,
