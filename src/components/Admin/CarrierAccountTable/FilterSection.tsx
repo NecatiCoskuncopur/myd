@@ -5,9 +5,10 @@ import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
 
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField, Box } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';
+import { Carrier } from '@/constants';
 
 type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;
@@ -85,8 +86,11 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           <InputLabel>Kargo Firması</InputLabel>
           <Select value={filters.carrier} label="Kargo Firması" onChange={e => setFilters(prev => ({ ...prev, carrier: e.target.value }))}>
             <MenuItem value="">Tümü</MenuItem>
-            <MenuItem value="FEDEX">FedEx</MenuItem>
-            <MenuItem value="UPS">UPS</MenuItem>
+            {Object.values(Carrier).map(carrier => (
+              <MenuItem key={carrier} value={carrier}>
+                {carrier}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Grid>
