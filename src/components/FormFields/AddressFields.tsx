@@ -81,6 +81,7 @@ const AddressFields = <T extends AddressFormData>({ errors, control }: AddressFi
             <TextField
               {...field}
               label="Adres Satırı 2"
+              value={field.value ?? ''}
               fullWidth
               error={!!errors.address?.line2}
               helperText={errors.address?.line2?.message}

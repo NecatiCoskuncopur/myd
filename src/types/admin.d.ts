@@ -45,7 +45,7 @@ declare namespace AdminTypes {
   }
 
   interface ISearchSenderResult extends ISearchSenderUserParams {
-    _id: Types.ObjectId;
+    _id: string;
   }
 
   interface ICreateUser {

@@ -4,12 +4,12 @@ import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { authMessages, generalMessages, userMessages, UserRole, welcomeMail } from '@/constants';
+import { authMessages, generalMessages, pricingListMessages, userMessages, UserRole, welcomeMail } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import MydMail from '@/lib/mailer';
 import requireRoles from '@/lib/requireRoles';
 import sendSms from '@/lib/sendSms';
-import { Balance, User } from '@/models';
+import { Balance, PricingList, User } from '@/models';
 import adminCreateUserSchema from '@/schemas/adminCreateUser.schema';
 import { AdminTypes } from '@/types/admin';
 
@@ -33,12 +33,21 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
       };
     }
 
+    const defaultPricingList = await PricingList.findOne({ isDefault: true });
+    if (!defaultPricingList) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.DEFAULT_UNDEFINED,
+      };
+    }
+
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
     const newUser = await User.create({
       ...validatedData,
       email: validatedData.email.toLowerCase(),
       password: hashedPassword,
+      priceListId: defaultPricingList._id,
     });
 
     await Balance.create({ userId: newUser._id, total: 0 });
@@ -75,7 +84,7 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
       status: 'OK',
       message: authMessages.SIGNUP.SUCCESS,
       data: {
-        _id: newUser._id,
+        _id: newUser._id.toString(),
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         company: newUser.company || '',
