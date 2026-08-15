@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
-import { Wrapper, TableHeader, TableWrapper, StyledButton } from '@/components';
+import { Wrapper, TableHeader, StyledButton, GenericDataGrid } from '@/components';
 import { Carrier } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccountForm from './CreateCarrierAccountForm';
@@ -19,7 +19,6 @@ import UpdateCarrierAccountForm from './UpdateCarrierAccountForm';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const CarrierAccountTable = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [isClient, setIsClient] = useState(false);
@@ -144,33 +143,16 @@ const CarrierAccountTable = () => {
         </StyledButton>
       </TableHeader>
       <FilterSection searchParams={searchParams} />
-      <TableWrapper>
-        <DataGrid
-          rows={rows}
-          columns={accountColumns}
-          loading={loading}
-          autoHeight
-          paginationMode="server"
-          rowCount={data?.totalCount ?? 0}
-          pageSizeOptions={[1, 5, 10, 50]}
-          paginationModel={{ page: page - 1, pageSize: limit }}
-          onPaginationModelChange={model => {
-            const isPageSizeChanged = model.pageSize !== limit;
-            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-          }}
-          slotProps={{
-            noRowsOverlay: {
-              children: 'Sistemde tanımlı kargo hesabı bulunamadı. Yeni bir taşıyıcı firma hesabı ekleyerek başlayabilirsiniz.',
-            },
-          }}
-          sx={{
-            '& .MuiDataGrid-main': {
-              overflowX: 'hidden',
-            },
-            minWidth: 1200,
-          }}
-        />
-      </TableWrapper>
+      <GenericDataGrid
+        rows={rows}
+        columns={accountColumns}
+        loading={loading}
+        totalCount={data?.totalCount}
+        page={page}
+        limit={limit}
+        searchParams={searchParams}
+        noRowsMessage="Sistemde tanımlı kargo hesabı bulunamadı. Yeni bir taşıyıcı firma hesabı ekleyerek başlayabilirsiniz."
+      />
       <CreateCarrierAccountForm
         open={modalState.type === 'create' && modalState.open}
         onClose={handleCloseModal}

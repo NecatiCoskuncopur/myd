@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 
-import { Wrapper, TableHeader, TableWrapper } from '@/components';
+import { Wrapper, TableHeader, GenericDataGrid } from '@/components';
 import FilterSection from './FilterSection';
 import getAllUsers from '@/app/actions/admin/getAllUsers';
 import AddTransaction from './AddTransaction';
@@ -21,7 +21,6 @@ import { generalMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 
 const Users = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [data, setData] = useState<AdminTypes.IUsersData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -158,36 +157,16 @@ const Users = () => {
       <TableHeader title="Üyeler" subTitle="Kullanıcı hesapları, erişim izinleri ve üyelik hareketleri özeti." stacked={true}>
         <FilterSection searchParams={searchParams} />
       </TableHeader>
-      <TableWrapper>
-        <DataGrid
-          rows={rows}
-          columns={usersColumns}
-          loading={loading}
-          autoHeight
-          paginationMode="server"
-          rowCount={data?.totalCount ?? 0}
-          pageSizeOptions={[1, 5, 10, 50]}
-          paginationModel={{ page: page - 1, pageSize: limit }}
-          onPaginationModelChange={model => {
-            const isPageSizeChanged = model.pageSize !== limit;
-            const params = new URLSearchParams(searchParams);
-            params.set('sayfa', String(isPageSizeChanged ? 1 : model.page + 1));
-            params.set('limit', String(model.pageSize));
-            router.push(`?${params.toString()}`);
-          }}
-          slotProps={{
-            noRowsOverlay: {
-              children: 'Henüz kayıtlı bir üye bulunmuyor.',
-            },
-          }}
-          sx={{
-            '& .MuiDataGrid-main': {
-              overflowX: 'hidden',
-            },
-            minWidth: 1200,
-          }}
-        />
-      </TableWrapper>
+      <GenericDataGrid
+        rows={rows}
+        columns={usersColumns}
+        loading={loading}
+        totalCount={data?.totalCount}
+        page={page}
+        limit={limit}
+        searchParams={searchParams}
+        noRowsMessage="Henüz kayıtlı bir üye bulunmuyor."
+      />
       <AddTransaction
         userId={selectedRow?._id ?? ''}
         open={modalState.type === 'balance' && modalState.open}

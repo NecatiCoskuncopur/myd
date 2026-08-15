@@ -31,3 +31,4 @@ export { default as CaptchaField } from './FormFields/CaptchaField';
 export { default as NickNameField } from './FormFields/NickNameField';
 export { default as TaxFields } from './FormFields/TaxFields';
 export { default as PricingZoneEditor } from './PricingZoneEditor';
+export { default as GenericDataGrid } from './Table/GenericDataGrid';

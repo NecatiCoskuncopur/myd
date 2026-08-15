@@ -25,7 +25,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
@@ -34,7 +34,7 @@ import getUser from '@/app/actions/user/getUser';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
-import { TableHeader, TableWrapper, Wrapper, DeleteShipping } from '@/components';
+import { TableHeader, Wrapper, DeleteShipping, GenericDataGrid } from '@/components';
 import { Carrier, generalMessages } from '@/constants';
 import columns from './columns';
 import { UserTypes } from '@/types/user';
@@ -279,33 +279,16 @@ const ShippingList = () => {
         <TableHeader title="Gönderilerim" subTitle="Gönderilerinize ait tüm detaylar ve güncel durum bilgileri." stacked={true}>
           <FilterSection searchParams={searchParams} />
         </TableHeader>
-        <TableWrapper>
-          <DataGrid
-            rows={rows}
-            columns={shippingColumns}
-            loading={loading}
-            autoHeight
-            paginationMode="server"
-            rowCount={data?.totalCount ?? 0}
-            pageSizeOptions={[1, 5, 10, 50]}
-            paginationModel={{ page: page - 1, pageSize: limit }}
-            onPaginationModelChange={model => {
-              const isPageSizeChanged = model.pageSize !== limit;
-              router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-            }}
-            slotProps={{
-              noRowsOverlay: {
-                children: 'Henüz kayıtlı bir gönderiniz bulunmuyor.',
-              },
-            }}
-            sx={{
-              '& .MuiDataGrid-main': {
-                overflowX: 'hidden',
-              },
-              minWidth: 1200,
-            }}
-          />
-        </TableWrapper>
+        <GenericDataGrid
+          rows={rows}
+          columns={shippingColumns}
+          loading={loading}
+          totalCount={data?.totalCount}
+          page={page}
+          limit={limit}
+          searchParams={searchParams}
+          noRowsMessage="Henüz kayıtlı bir gönderiniz bulunmuyor."
+        />
         <Menu anchorEl={actionIconButton} open={menuOpen} onClose={closeActionsMenu}>
           <MenuItem
             onClick={() => {

@@ -1,17 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-import { DataGrid } from '@mui/x-data-grid';
-import { Wrapper, TableWrapper, TableHeader } from '@/components';
+import { Wrapper, TableHeader, GenericDataGrid } from '@/components';
 import getUserBalance from '@/app/actions/user/getUserBalance';
 import columns from './columns';
 import CurrentBalance from './CurrentBalance';
 import { BalanceTypes } from '@/types/balance';
 
 const UserBalanceTable = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const page = Number(searchParams.get('sayfa')) || 1;
@@ -74,40 +72,16 @@ const UserBalanceTable = () => {
         <CurrentBalance total={data?.total || 0} />
       </TableHeader>
 
-      <TableWrapper>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          loading={loading}
-          paginationMode="server"
-          rowCount={data?.totalCount ?? 0}
-          pageSizeOptions={[1, 5, 10, 50]}
-          paginationModel={{ page: page - 1, pageSize: limit }}
-          onPaginationModelChange={model => {
-            const isPageSizeChanged = model.pageSize !== limit;
-            router.push(`?sayfa=${isPageSizeChanged ? 1 : model.page + 1}&limit=${model.pageSize}`);
-          }}
-          slotProps={{
-            noRowsOverlay: {
-              children: 'Bu hesaba ait ödeme ve harcama geçmişi bulunmamaktadır.',
-            },
-          }}
-          sx={{
-            flex: 1,
-            width: '100%',
-            border: 'none',
-
-            '& .MuiDataGrid-main': {
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-            },
-            '& .MuiDataGrid-virtualScroller': {
-              flexGrow: 1,
-            },
-          }}
-        />
-      </TableWrapper>
+      <GenericDataGrid
+        rows={rows}
+        columns={columns}
+        loading={loading}
+        totalCount={data?.totalCount}
+        page={page}
+        limit={limit}
+        searchParams={searchParams}
+        noRowsMessage="Bu hesaba ait ödeme ve harcama geçmişi bulunmamaktadır."
+      />
     </Wrapper>
   );
 };
