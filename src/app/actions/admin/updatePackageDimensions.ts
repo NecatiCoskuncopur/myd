@@ -23,7 +23,7 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       stripUnknown: true,
     });
 
-    const { shippingId, weight, numberOfPackage, width, height, length } = validatedData;
+    const { shippingId, weight, width, height, length } = validatedData;
 
     const volumetricWeight = (length * width * height) / 5000;
 
@@ -38,12 +38,12 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
 
     if (shipping.status !== ShippingStatus.LABELED) {
       shipping.package = {
+        numberOfPackage: shipping.package?.numberOfPackage ?? 1,
         weight,
         width,
         height,
         length,
         volumetricWeight,
-        numberOfPackage,
       };
       await shipping.save();
 
@@ -84,12 +84,12 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     }
 
     shipping.package = {
+      numberOfPackage: shipping.package?.numberOfPackage ?? 1,
       weight,
       width,
       height,
       length,
       volumetricWeight,
-      numberOfPackage,
     };
 
     if (shipping.carrier) {

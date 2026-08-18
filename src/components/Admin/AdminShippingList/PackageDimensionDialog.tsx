@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, useTheme } from '@mui/material';
 
 import updatePackageDimensions from '@/app/actions/admin/updatePackageDimensions';
 import { ShippingTypes } from '@/types/shipping';
 import { shippingMessages } from '@/constants';
+import StyledButton from '../../StyledButton';
 
 interface PackageDimensionsDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface PackageDimensionsDialogProps {
 const { UPDATESHIPPING } = shippingMessages;
 const PackageDimensionsDialog = ({ open, shipping, onClose, onSuccess, showSnackbar }: PackageDimensionsDialogProps) => {
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   const [form, setForm] = useState({
     weight: '',
@@ -70,7 +72,6 @@ const PackageDimensionsDialog = ({ open, shipping, onClose, onSuccess, showSnack
       const response = await updatePackageDimensions({
         shippingId: shipping._id,
         weight,
-        numberOfPackage,
         width,
         height,
         length,
@@ -93,41 +94,51 @@ const PackageDimensionsDialog = ({ open, shipping, onClose, onSuccess, showSnack
   };
 
   return (
-    <Dialog open={open} onClose={() => !loading && onClose()} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={() => !loading && onClose()}
+      fullWidth
+      maxWidth="sm"
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundImage: 'none',
+            backgroundColor: theme.palette.dashboard.sidebar,
+          },
+        },
+      }}
+    >
       <DialogTitle>Paket Bilgilerini Güncelle</DialogTitle>
 
       <DialogContent>
-        <Box
+        <Grid
+          spacing={2}
+          container
           sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 2,
             mt: 1,
           }}
         >
-          <TextField label="Ağırlık (kg)" type="number" value={form.weight} onChange={handleChange('weight')} fullWidth />
-          <TextField label="Paket Sayısı" type="number" value={form.numberOfPackage} onChange={handleChange('numberOfPackage')} fullWidth />
-          <TextField label="En (cm)" type="number" value={form.width} onChange={handleChange('width')} fullWidth />
-          <TextField label="Boy (cm)" type="number" value={form.length} onChange={handleChange('length')} fullWidth />
-          <TextField label="Yükseklik (cm)" type="number" value={form.height} onChange={handleChange('height')} fullWidth />
-        </Box>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField label="Ağırlık (kg)" type="number" value={form.weight} onChange={handleChange('weight')} fullWidth />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField label="En (cm)" type="number" value={form.width} onChange={handleChange('width')} fullWidth />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField label="Boy (cm)" type="number" value={form.length} onChange={handleChange('length')} fullWidth />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField label="Yükseklik (cm)" type="number" value={form.height} onChange={handleChange('height')} fullWidth />
+          </Grid>
+        </Grid>
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          İptal
-        </Button>
+        <Button onClick={onClose}>İptal</Button>
 
-        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-          {loading ? (
-            <>
-              <CircularProgress size={18} sx={{ mr: 1 }} />
-              Kaydediliyor...
-            </>
-          ) : (
-            'Kaydet'
-          )}
-        </Button>
+        <StyledButton variant="contained" onClick={handleSubmit} disabled={loading}>
+          Güncelle
+        </StyledButton>
       </DialogActions>
     </Dialog>
   );

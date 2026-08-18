@@ -64,10 +64,8 @@ declare namespace AdminTypes {
   interface IUpdatePackageDimensionsPayload {
     shippingId: string;
     weight: number;
-    numberOfPackage: number;
     width: number;
     height: number;
     length: number;
-    volumetricWeight?: number;
   }
 }
