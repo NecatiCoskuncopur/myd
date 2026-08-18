@@ -149,10 +149,6 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
               }}
             >
               {accounts.map(account => {
-                const carrierName = account.carrier;
-
-                const icon = carrierName ? getCarrierIcon(carrierName) : null;
-
                 return (
                   <Box
                     key={account._id}
@@ -170,21 +166,6 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                       },
                     }}
                   >
-                    {icon && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: 28,
-                          height: 28,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {icon}
-                      </Box>
-                    )}
-
                     <Typography variant="body2">{account.name}</Typography>
                   </Box>
                 );

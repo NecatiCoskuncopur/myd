@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import getCarrierIcon from '@/lib/getCarrierIcon';
 
 import { DeleteOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -339,7 +338,6 @@ const ShippingList = () => {
               </MenuItem>
             ) : (
               accounts.map(acc => {
-                const icon = getCarrierIcon(acc?.carrier as Carrier);
                 const customerPrice = getCustomerPrice({
                   countryCode: selectedRow?.consignee?.address.country ?? '',
                   weight: selectedRow?.package.weight ?? 0,
@@ -348,7 +346,6 @@ const ShippingList = () => {
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                    <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{icon}</ListItemIcon>
                     <ListItemText primary={acc.name} secondary={` Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
                   </MenuItem>
                 );

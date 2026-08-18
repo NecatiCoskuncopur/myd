@@ -8,7 +8,6 @@ import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { Typography, Box } from '@mui/material';
 import { ShippingTypes } from '@/types/shipping';
 import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
-import getCarrierIcon from '@/lib/getCarrierIcon';
 
 const columns: GridColDef[] = [
   {
@@ -73,7 +72,6 @@ const columns: GridColDef[] = [
       if (!trackingNo) return '-';
 
       const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNo);
-      const icon = getCarrierIcon(carrierName);
 
       if (hasLink && url) {
         return (
@@ -96,7 +94,6 @@ const columns: GridColDef[] = [
               },
             }}
           >
-            {icon}
             <Typography
               component="span"
               variant="body2"
@@ -114,7 +111,6 @@ const columns: GridColDef[] = [
 
       return (
         <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-          {icon && <Box sx={{ display: 'inline-flex', '& svg, & img': { width: 18, height: 18 } }}>{icon}</Box>}
           <Typography variant="body2" color="text.secondary" noWrap>
             {trackingNo}
           </Typography>
