@@ -10,6 +10,7 @@ import { Carrier } from '@/constants';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Hesap Adı', flex: 1, minWidth: 100 },
+  { field: 'displayName', headerName: 'Görünen Hesap Adı', flex: 1, minWidth: 100 },
   {
     field: 'carrier',
     headerName: 'Taşıyıcı Firma',

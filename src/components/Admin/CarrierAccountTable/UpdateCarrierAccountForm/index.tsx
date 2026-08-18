@@ -39,6 +39,7 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
       reset({
         id: account._id,
         name: account.name,
+        displayName: account.displayName,
         accountNumber: account.accountNumber,
         carrier: account.carrier,
         credentials: account.credentials,

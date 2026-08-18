@@ -196,6 +196,7 @@ const ShippingList = () => {
         hasCustomInfo: !!account.hasCustomInfo,
         customInfo: account.customInfo,
         shippingId,
+        displayName: account.displayName!,
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
       });
@@ -346,7 +347,7 @@ const ShippingList = () => {
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                    <ListItemText primary={acc.name} secondary={` Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
+                    <ListItemText primary={acc.displayName} secondary={` Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
                   </MenuItem>
                 );
               })

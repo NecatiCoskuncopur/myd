@@ -36,6 +36,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   } = useForm<CarrierAccountTypes.ICreateCarrierAccountPayload>({
     defaultValues: {
       name: '',
+      displayName: '',
       accountNumber: '',
       carrier: Carrier.FEDEX,
       credentials: [

@@ -33,7 +33,7 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
       _id: { $in: currentUser.barcodePermits.filter(id => Types.ObjectId.isValid(id)).map(id => new Types.ObjectId(id)) },
       isActive: true,
     })
-      .select('name carrier pricing accountNumber _id')
+      .select('name displayName carrier pricing accountNumber _id')
       .lean();
 
     return {

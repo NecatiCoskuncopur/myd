@@ -49,6 +49,7 @@ const CarrierAccountTable = () => {
       page,
       limit,
       name: searchParams.get('name') || undefined,
+      displayName: searchParams.get('displayName') || undefined,
       accountNumber: searchParams.get('accountNumber') || undefined,
       carrier: (searchParams.get('carrier') as Carrier) || undefined,
       isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,

@@ -17,7 +17,7 @@ const getCarrierAccounts = async (
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, name, carrier, accountNumber, isActive } = params;
+    const { page = 1, limit = 5, name, displayName, carrier, accountNumber, isActive } = params;
 
     const currentPage = Math.max(1, page);
     const currentLimit = Math.max(1, limit);
@@ -25,6 +25,7 @@ const getCarrierAccounts = async (
     const match: Record<string, unknown> = {};
 
     if (name) match.name = { $regex: name, $options: 'i' };
+    if (displayName) match.displayName = { $regex: displayName, $options: 'i' };
     if (carrier) match.carrier = carrier;
     if (accountNumber) match.accountNumber = { $regex: accountNumber, $options: 'i' };
     if (typeof isActive === 'boolean') match.isActive = isActive;

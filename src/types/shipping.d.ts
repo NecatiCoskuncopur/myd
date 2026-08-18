@@ -77,6 +77,7 @@ declare namespace ShippingTypes {
 
   interface ICarrier {
     name: Carrier;
+    displayName: string;
     account?: string;
     trackingNumber?: string;
     amount?: number;
@@ -145,6 +146,7 @@ declare namespace ShippingTypes {
   interface ICreateBarcodeParams {
     shippingId: string;
     firm: Carrier;
+    displayName: string;
     hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
     accountNumber: string;

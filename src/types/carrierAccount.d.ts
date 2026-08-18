@@ -41,6 +41,7 @@ declare namespace CarrierAccountTypes {
   interface ICarrierAccount {
     _id: string;
     name: string;
+    displayName: string;
     carrier: Carrier;
     accountNumber: string;
     isActive: boolean;
@@ -55,6 +56,7 @@ declare namespace CarrierAccountTypes {
 
   interface ICreateCarrierAccountPayload {
     name: string;
+    displayName: string;
     carrier: Carrier;
     accountNumber: string;
     pricing: IPricing;
@@ -70,6 +72,7 @@ declare namespace CarrierAccountTypes {
 
   interface ICarrierAccountsParams extends ParamsTypes.IPaginationParams {
     name?: string;
+    displayName?: string;
     carrier?: Carrier;
     accountNumber?: string;
     isActive?: boolean;

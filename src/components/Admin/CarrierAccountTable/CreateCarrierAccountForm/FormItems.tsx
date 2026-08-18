@@ -37,6 +37,21 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue }: Fo
 
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller
+          name="displayName"
+          rules={{
+            required: NAME.REQUIRED,
+            minLength: { value: 2, message: NAME.MIN },
+            maxLength: { value: 75, message: NAME.MAX },
+          }}
+          control={control}
+          render={({ field }) => (
+            <TextField {...field} fullWidth label="Görünen Hesap Adı" error={!!errors.displayName} helperText={errors.displayName?.message} />
+          )}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Controller
           name="accountNumber"
           rules={{
             required: ACCOUNTNUMBER.REQUIRED,
@@ -49,7 +64,7 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue }: Fo
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name="carrier"
           control={control}

@@ -122,8 +122,7 @@ const ShippingDetail = () => {
           }}
           size={{ xs: 12, md: 6 }}
         >
-          Taşıyıcı: {shipping?.carrier?.name || 'Henüz barkod oluşturulmadı.'}
-
+          Taşıyıcı Hesabı: {shipping?.carrier?.displayName || 'Henüz barkod oluşturulmadı.'}
         </Grid>
         <Grid
           sx={{

@@ -9,6 +9,7 @@ const { ZONE } = pricingListMessages;
 
 export default yup.object({
   name: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).required(NAME.REQUIRED),
+  displayName: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).required(NAME.REQUIRED),
   carrier: yup.string().oneOf(Object.values(Carrier), CARRIER.TYPE_INVALID).required(CARRIER.REQUIRED),
   accountNumber: yup.string().typeError(ACCOUNTNUMBER.TYPE).min(1, ACCOUNTNUMBER.MIN).required(ACCOUNTNUMBER.REQUIRED),
   credentials: yup

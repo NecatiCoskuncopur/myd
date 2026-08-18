@@ -19,6 +19,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
 
   const initialFilters = {
     name: '',
+    displayName: '',
     accountNumber: '',
     carrier: '',
     isActive: '',
@@ -26,6 +27,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
 
   const [filters, setFilters] = useState({
     name: searchParams.get('name') || '',
+    displayName: searchParams.get('displayName') || '',
     accountNumber: searchParams.get('accountNumber') || '',
     carrier: searchParams.get('carrier') || '',
     isActive: searchParams.get('isActive') || '',
@@ -57,7 +59,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         mb: 3,
       }}
     >
-      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Hesap Adı"
           size="small"
@@ -69,7 +71,19 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+        <TextField
+          label="Görünen Hesap Adı"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.displayName}
+          onChange={e => setFilters(prev => ({ ...prev, displayName: e.target.value }))}
+          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <TextField
           label="Hesap No"
           size="small"
@@ -81,7 +95,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Kargo Firması</InputLabel>
           <Select value={filters.carrier} label="Kargo Firması" onChange={e => setFilters(prev => ({ ...prev, carrier: e.target.value }))}>
@@ -95,7 +109,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Durum</InputLabel>
           <Select value={filters.isActive} label="Durum" onChange={e => setFilters(prev => ({ ...prev, isActive: e.target.value }))}>
@@ -106,12 +120,12 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 6, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 3, lg: 1.5 }}>
         <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
           Ara
         </StyledButton>
       </Grid>
-      <Grid size={{ xs: 6, md: 6, lg: 2 }}>
+      <Grid size={{ xs: 12, md: 3, lg: 1.5 }}>
         <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
           Sıfırla
         </StyledButton>

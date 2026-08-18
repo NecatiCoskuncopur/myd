@@ -30,7 +30,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     if (!currentUser) return { status: 'ERROR', message: UNAUTHORIZED };
 
     const { id: userId, role } = currentUser;
-    const { shippingId, firm, accountNumber, customInfo, hasCustomInfo } = data;
+    const { shippingId, firm, displayName, accountNumber, customInfo, hasCustomInfo } = data;
 
     const driver = carrierDrivers[firm];
     if (!driver) return { status: 'ERROR', message: carrierMessages.UNSUPPORTED };
@@ -102,6 +102,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     shipping.carrier = {
       trackingNumber,
       name: firm,
+      displayName,
       account: accountNumber,
       amount: shippingCost,
     };
