@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/schemas/updatePackageDimensions.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/PackageDimensionDialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/updatePackageDimensions.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/updatePackageDimensions.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +157,7 @@
       <workItem from="1786802904738" duration="11814000" />
       <workItem from="1786902650636" duration="6103000" />
       <workItem from="1786977891792" duration="3365000" />
-      <workItem from="1786994696899" duration="12593000" />
+      <workItem from="1786994696899" duration="15964000" />
     </task>
     <servers />
   </component>

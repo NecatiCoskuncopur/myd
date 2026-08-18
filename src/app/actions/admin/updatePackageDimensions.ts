@@ -13,7 +13,7 @@ import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 const { UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND, UPDATESHIPPING } = shippingMessages;
 
-const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensionsPayload) => {
+const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensionsPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
@@ -48,7 +48,8 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       await shipping.save();
 
       return {
-        status: UPDATESHIPPING.SUCCESS,
+        status: 'OK',
+        message: UPDATESHIPPING.SUCCESS,
       };
     }
 
@@ -62,7 +63,9 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
         message: pricingListMessages.PRICING.USER_NOT_FOUND,
       };
     }
+
     const shippingCostRes = await getShippingCost(userForPricing.priceListId!, weight, shipping.consignee!.address!.country);
+
     if (shippingCostRes.status !== 'OK') {
       return {
         status: 'ERROR',
@@ -71,12 +74,13 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     }
 
     const newShippingCost = shippingCostRes.data;
+
     const shippingCostDifference = newShippingCost - currentShippingCost;
 
     if (shippingCostDifference > 0) {
       await applyBalanceTransaction('SPEND', shipping.userId.toString(), shippingCostDifference, shipping._id.toString());
     } else if (shippingCostDifference < 0) {
-      //Gerektiğinde Pay olarak girilebilir
+      // Gerektiğinde PAY olarak girilebilir
     }
 
     shipping.package = {
@@ -88,14 +92,22 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       numberOfPackage,
     };
 
+    if (shipping.carrier) {
+      shipping.carrier.amount = newShippingCost;
+    }
+
     await shipping.save();
 
     return {
-      status: UPDATESHIPPING.SUCCESS,
+      status: 'OK',
+      message: UPDATESHIPPING.SUCCESS,
     };
   } catch (error: unknown) {
     if (error instanceof ValidationError) {
-      return { status: 'ERROR', message: error.errors.join(', ') };
+      return {
+        status: 'ERROR',
+        message: error.errors.join(', '),
+      };
     }
     if (error instanceof Error) {
       Sentry.withScope(scope => {
@@ -103,7 +115,10 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
         scope.captureException(error);
       });
     }
-    return { status: 'ERROR', message: UNEXPECTED_ERROR };
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

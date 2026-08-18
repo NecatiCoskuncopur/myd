@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import getCarrierIcon from '@/lib/getCarrierIcon';
-
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { DeleteOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -44,6 +44,7 @@ import { useSnackbar } from '@/providers/SnackbarProvider';
 import { getCarrierPrice } from '@/lib/getCarrierPrice';
 import getPricingList from '@/app/actions/admin/getPricingList';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
+import PackageDimensionsDialog from '@/components/Admin/AdminShippingList/PackageDimensionDialog';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -67,6 +68,7 @@ const AdminShippingList = () => {
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
   const [barcodeLoading, setBarcodeLoading] = useState(false);
   const [barcodeError, setBarcodeError] = useState<string | null>(null);
+  const [packageDialogOpen, setPackageDialogOpen] = useState(false);
 
   const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
 
@@ -247,6 +249,14 @@ const AdminShippingList = () => {
     }
   };
 
+  const handleOpenPackageDialog = () => {
+    if (!selectedRow) return;
+
+    setMenuOpen(false);
+    setActionIconButton(null);
+    setPackageDialogOpen(true);
+  };
+
   const rows = useMemo(() => data?.shippings ?? [], [data]);
 
   const shippingColumns: GridColDef[] = useMemo(
@@ -298,6 +308,13 @@ const AdminShippingList = () => {
           noRowsMessage="Henüz kayıtlı bir gönderi bulunmuyor."
         />
         <Menu anchorEl={actionIconButton} open={menuOpen} onClose={closeActionsMenu}>
+          <MenuItem onClick={handleOpenPackageDialog}>
+            <ListItemIcon>
+              <Inventory2OutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Paket Bilgilerini Güncelle</ListItemText>
+          </MenuItem>
+
           {!hasTrackingNumber && (
             <MenuItem
               onClick={() => {
@@ -392,6 +409,13 @@ const AdminShippingList = () => {
             {!barcodeLoading && !barcodeError && <Typography>Barkod başarıyla oluşturuldu</Typography>}
           </DialogContent>
         </Dialog>
+        <PackageDimensionsDialog
+          open={packageDialogOpen}
+          shipping={selectedRow}
+          onClose={() => setPackageDialogOpen(false)}
+          onSuccess={fetchList}
+          showSnackbar={showSnackbar}
+        />
         <DeleteShipping
           id={selectedRow?._id ?? ''}
           open={deleteOpen}
