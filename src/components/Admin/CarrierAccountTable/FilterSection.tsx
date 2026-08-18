@@ -8,7 +8,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';
-import { Carrier } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum } from '@/constants';
 
 type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;
@@ -22,6 +22,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     displayName: '',
     accountNumber: '',
     carrier: '',
+    accountType: '',
     isActive: '',
   };
 
@@ -30,6 +31,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     displayName: searchParams.get('displayName') || '',
     accountNumber: searchParams.get('accountNumber') || '',
     carrier: searchParams.get('carrier') || '',
+    accountType: searchParams.get('accountType') || '',
     isActive: searchParams.get('isActive') || '',
   });
 
@@ -59,7 +61,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         mb: 3,
       }}
     >
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <TextField
           label="Hesap Adı"
           size="small"
@@ -71,7 +73,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <TextField
           label="Görünen Hesap Adı"
           size="small"
@@ -83,7 +85,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <TextField
           label="Hesap No"
           size="small"
@@ -95,7 +97,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Kargo Firması</InputLabel>
           <Select value={filters.carrier} label="Kargo Firması" onChange={e => setFilters(prev => ({ ...prev, carrier: e.target.value }))}>
@@ -109,7 +111,21 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <FormControl fullWidth size="small">
+          <InputLabel>Hesap Tipi</InputLabel>
+          <Select value={filters.accountType} label="Hesap Tipi" onChange={e => setFilters(prev => ({ ...prev, accountType: e.target.value }))}>
+            <MenuItem value="">Tümü</MenuItem>
+            {Object.values(CarrierAccountTypeEnum).map(carrier => (
+              <MenuItem key={carrier} value={carrier}>
+                {carrier}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Durum</InputLabel>
           <Select value={filters.isActive} label="Durum" onChange={e => setFilters(prev => ({ ...prev, isActive: e.target.value }))}>
@@ -120,12 +136,12 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         </FormControl>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 3, lg: 1.5 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
           Ara
         </StyledButton>
       </Grid>
-      <Grid size={{ xs: 12, md: 3, lg: 1.5 }}>
+      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
           Sıfırla
         </StyledButton>

@@ -2,7 +2,7 @@ import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-fo
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography, useTheme } from '@mui/material';
 import CustomInfoSection from '../CustomInfoSection';
-import { Carrier, carrierMessages } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import { PricingZoneEditor } from '@/components';
 import React from 'react';
 
@@ -89,6 +89,21 @@ const FormItems = ({ control, errors, hasCustomInfo, credentials, setValue, acco
               {Object.values(Carrier).map(carrier => (
                 <MenuItem key={carrier} value={carrier}>
                   {carrier}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Controller
+          name="accountType"
+          control={control}
+          render={({ field }) => (
+            <TextField {...field} select fullWidth label="Hesap Tipi" error={!!errors.accountType}>
+              {Object.values(CarrierAccountTypeEnum).map(accountType => (
+                <MenuItem key={accountType} value={accountType}>
+                  {accountType}
                 </MenuItem>
               ))}
             </TextField>

@@ -9,6 +9,10 @@ const carrierMessages = {
   CREATE: {
     SUCCESS: 'Kargo hesabı başarıyla oluşturuldu.',
   },
+  ACCOUNTTYPE: {
+    INVALID: 'Geçersiz hesap tipi',
+    REQUIRED: 'Hesap tipi zorunludur',
+  },
   UPDATE: {
     ID_TYPE: 'Taşıyıcı firma id metin tipinde olmalıdır',
     ID_REQUIRED: 'Taşıyıcı firma id zorunludur.',

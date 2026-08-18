@@ -41,6 +41,7 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
         name: account.name,
         displayName: account.displayName,
         accountNumber: account.accountNumber,
+        accountType: account.accountType,
         carrier: account.carrier,
         credentials: account.credentials,
         pricing: account.pricing,

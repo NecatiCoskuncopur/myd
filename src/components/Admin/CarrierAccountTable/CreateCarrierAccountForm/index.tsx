@@ -5,9 +5,8 @@ import { useForm } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
 import StyledButton from '@/components/StyledButton';
-import { carrierConfig, carrierMessages, generalMessages } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, carrierConfig, carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { Carrier } from '@/constants';
 import FormItems from './FormItems';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 
@@ -39,6 +38,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       displayName: '',
       accountNumber: '',
       carrier: Carrier.FEDEX,
+      accountType: CarrierAccountTypeEnum.ECONOMY,
       credentials: [
         { key: 'apiKey', value: '' },
         { key: 'secretKey', value: '' },

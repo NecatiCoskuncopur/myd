@@ -11,7 +11,7 @@ import { GridColDef } from '@mui/x-data-grid';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
 import { Wrapper, TableHeader, StyledButton, GenericDataGrid } from '@/components';
-import { Carrier } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum } from '@/constants';
 import columns from './columns';
 import CreateCarrierAccountForm from './CreateCarrierAccountForm';
 import FilterSection from './FilterSection';
@@ -50,6 +50,7 @@ const CarrierAccountTable = () => {
       limit,
       name: searchParams.get('name') || undefined,
       displayName: searchParams.get('displayName') || undefined,
+      accountType: (searchParams.get('accountType') as CarrierAccountTypeEnum) || undefined,
       accountNumber: searchParams.get('accountNumber') || undefined,
       carrier: (searchParams.get('carrier') as Carrier) || undefined,
       isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,

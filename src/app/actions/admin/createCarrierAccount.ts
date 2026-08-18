@@ -20,18 +20,6 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
     });
     await connectMongoDB();
 
-    const existingAccount = await CarrierAccount.findOne({
-      carrier: validatedData.carrier,
-      accountNumber: validatedData.accountNumber,
-    });
-
-    if (existingAccount) {
-      return {
-        status: 'ERROR',
-        message: carrierMessages.ACCOUNTNUMBER.ALREADY_EXISTS,
-      };
-    }
-
     await CarrierAccount.create({
       ...validatedData,
       isActive: true,

@@ -1,4 +1,4 @@
-import { Carrier } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum } from '@/constants';
 
 declare namespace CarrierAccountTypes {
   export interface ICarrierCredential {
@@ -43,6 +43,7 @@ declare namespace CarrierAccountTypes {
     name: string;
     displayName: string;
     carrier: Carrier;
+    accountType: CarrierAccountTypeEnum;
     accountNumber: string;
     isActive: boolean;
     credentials: ICarrierCredential[];
@@ -58,6 +59,7 @@ declare namespace CarrierAccountTypes {
     name: string;
     displayName: string;
     carrier: Carrier;
+    accountType: CarrierAccountTypeEnum;
     accountNumber: string;
     pricing: IPricing;
     credentials: ICarrierCredential[];
@@ -73,6 +75,7 @@ declare namespace CarrierAccountTypes {
   interface ICarrierAccountsParams extends ParamsTypes.IPaginationParams {
     name?: string;
     displayName?: string;
+    accountType?: CarrierAccountTypeEnum;
     carrier?: Carrier;
     accountNumber?: string;
     isActive?: boolean;

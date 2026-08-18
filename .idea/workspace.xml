@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/constants/enums/carrierAccountTypeEnum.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/FormItems.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/FilterSection.tsx" afterDir="false" />
@@ -17,13 +16,11 @@
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/columns.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/carrierMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/carrierMessages.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,35 +47,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Necati/Desktop/projects/myd&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Node.js.index.ts.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "javascript.preferred.runtime.type.id": "node",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/Necati/Desktop/projects/myd",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "npm.Next.js: server-side.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\Necati\\Desktop\\projects\\myd\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Table" />
@@ -88,11 +86,14 @@
       <recent name="C:\Users\Necati\Desktop\projects\myd\public" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.Next.js: server-side">
+  <component name="RunManager" selected="Node.js.index.ts">
     <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
       <method v="2" />
     </configuration>
     <configuration name="Unnamed" type="NodeJSConfigurationType" nameIsGenerated="true" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/constants/index.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/constants">
       <method v="2" />
     </configuration>
     <configuration name="Next.js: server-side" type="js.build_tools.npm">
@@ -108,8 +109,14 @@
     <list>
       <item itemvalue="JavaScript Debug.Next.js: debug client-side" />
       <item itemvalue="Node.js.Unnamed" />
+      <item itemvalue="Node.js.index.ts" />
       <item itemvalue="npm.Next.js: server-side" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.index.ts" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -172,7 +179,7 @@
       <workItem from="1786902650636" duration="6103000" />
       <workItem from="1786977891792" duration="3365000" />
       <workItem from="1786994696899" duration="18327000" />
-      <workItem from="1787074134696" duration="6068000" />
+      <workItem from="1787074134696" duration="13623000" />
     </task>
     <servers />
   </component>

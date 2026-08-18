@@ -31,6 +31,7 @@ const columns: GridColDef[] = [
       );
     },
   },
+  { field: 'accountType', headerName: 'Hesap Tipi', flex: 1, minWidth: 100 },
   { field: 'accountNumber', headerName: 'Hesap Numarası', flex: 1, minWidth: 100 },
   {
     field: 'isActive',
