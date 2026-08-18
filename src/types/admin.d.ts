@@ -60,4 +60,14 @@ declare namespace AdminTypes {
     nickname?: string;
     address: UserTypes.IAddress;
   }
+
+  interface IUpdatePackageDimensionsPayload {
+    shippingId: string;
+    weight: number;
+    numberOfPackage: number;
+    width: number;
+    height: number;
+    length: number;
+    volumetricWeight?: number;
+  }
 }
