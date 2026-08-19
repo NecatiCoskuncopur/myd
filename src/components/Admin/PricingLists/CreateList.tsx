@@ -1,14 +1,15 @@
 import React, { useMemo, useState, useTransition } from 'react';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Stack, TextField, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Controller, useForm } from 'react-hook-form';
 
 import createPricingList from '@/app/actions/admin/createPricingList';
 import StyledButton from '@/components/StyledButton';
-import { generalMessages, pricingListMessages } from '@/constants';
+import { CarrierAccountTypeEnum, generalMessages, pricingListMessages } from '@/constants';
 import { buildPricingMatrix } from '@/lib/buildPricingMatrix';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { PricingListTypes } from '@/types/pricingList';
 
 type CreateListProps = {
   open: boolean;
@@ -35,6 +36,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   } = useForm<PricingListTypes.ICreatePricingListPayload>({
     defaultValues: {
       name: '',
+      listType: CarrierAccountTypeEnum.ECONOMY,
       zone: [],
     },
   });
@@ -109,16 +111,35 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
 
         <DialogContent>
           <Stack sx={{ marginTop: 1 }} spacing={2}>
-            <Controller
-              name="name"
-              control={control}
-              rules={{
-                required: NAME.REQUIRED,
-                minLength: { value: 2, message: NAME.MIN },
-                maxLength: { value: 75, message: NAME.MAX },
-              }}
-              render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
-            />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{
+                    required: NAME.REQUIRED,
+                    minLength: { value: 2, message: NAME.MIN },
+                    maxLength: { value: 75, message: NAME.MAX },
+                  }}
+                  render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="listType"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} select fullWidth label="Liste Tipi" error={!!errors.listType} helperText={errors.listType?.message}>
+                      {Object.values(CarrierAccountTypeEnum).map(accountType => (
+                        <MenuItem key={accountType} value={accountType}>
+                          {accountType}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+              </Grid>
+            </Grid>
 
             <Stack direction="row" spacing={2}>
               <Button variant="outlined" onClick={addRow}>

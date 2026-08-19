@@ -7,6 +7,7 @@ import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
+import { PricingListTypes } from '@/types/pricingList';
 
 const getPricingLists = async (
   params: PricingListTypes.IPricingListsParams = {},
@@ -17,25 +18,29 @@ const getPricingLists = async (
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, name } = params;
+    const { page = 1, limit = 5, name, listType } = params;
 
-    const safePage = Math.max(page, 1);
-    const safeLimit = Math.max(limit, 1);
+    const currentPage = Math.max(1, page);
+    const currentLimit = Math.max(1, limit);
 
-    const query = {
-      ...(name && {
-        name: {
-          $regex: `^${name}`,
-          $options: 'i',
-        },
-      }),
-    };
+    const query: Record<string, unknown> = {};
+
+    if (name) {
+      query.name = {
+        $regex: `^${name}`,
+        $options: 'i',
+      };
+    }
+
+    if (listType) {
+      query.listType = listType;
+    }
 
     const pricingModel = PricingList as typeof PricingList & PaginateModel<PricingListTypes.IPricingList>;
 
     const result = await pricingModel.paginate(query, {
-      page: safePage,
-      limit: safeLimit,
+      page: currentPage,
+      limit: currentLimit,
       lean: true,
     });
 
@@ -44,7 +49,7 @@ const getPricingLists = async (
       data: {
         pricingLists: JSON.parse(JSON.stringify(result.docs)),
         totalCount: result.totalDocs,
-        page: result.page ?? safePage,
+        page: result.page ?? currentPage,
         limit: result.limit,
         totalPages: result.totalPages,
         hasPrevPage: result.hasPrevPage,

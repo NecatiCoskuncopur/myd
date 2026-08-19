@@ -7,6 +7,7 @@ import { generalMessages, pricingListMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { PricingList, User } from '@/models';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { NOT_FOUND, USER_LIST_UNDEFINED } = pricingListMessages;
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
@@ -34,6 +35,7 @@ const getUserPricingList = async (): Promise<ResponseTypes.IActionResponse<Prici
     const pricingList: PricingListTypes.IPricingList = {
       _id: pricingListDoc._id.toString(),
       name: pricingListDoc.name,
+      listType: pricingListDoc.listType,
       zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
         number: z.number,
         prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight ?? 0, price: p.price ?? 0 })),

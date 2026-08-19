@@ -5,6 +5,7 @@ import deletePricingList from '@/app/actions/admin/deletePricingList';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, pricingListMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { PricingListTypes } from '@/types/pricingList';
 
 type DeleteListProps = {
   open: boolean;

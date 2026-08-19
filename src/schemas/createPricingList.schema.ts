@@ -1,12 +1,13 @@
 import * as yup from 'yup';
 
-import { pricingListMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierMessages, pricingListMessages } from '@/constants';
 
 const { NAME, ZONE } = pricingListMessages;
+const { ACCOUNTTYPE } = carrierMessages;
 
 export default yup.object({
   name: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).trim().required(NAME.REQUIRED),
-
+  listType: yup.string().oneOf(Object.values(CarrierAccountTypeEnum), ACCOUNTTYPE.INVALID).required(ACCOUNTTYPE.REQUIRED),
   zone: yup
     .array()
     .of(

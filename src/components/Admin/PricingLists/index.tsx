@@ -12,13 +12,14 @@ import { GridColDef } from '@mui/x-data-grid';
 
 import { Wrapper, TableHeader, StyledButton, GenericDataGrid } from '@/components';
 import getPricingLists from '@/app/actions/admin/getPricingLists';
-import { generalMessages } from '@/constants';
+import { CarrierAccountTypeEnum, generalMessages } from '@/constants';
 import columns from './columns';
 import CreateList from './CreateList';
 import UpdateList from './UpdateList';
 import DeleteList from './DeleteList';
 import FilterSection from './FilterSection';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { PricingListTypes } from '@/types/pricingList';
 
 const PriceLists = () => {
   const searchParams = useSearchParams();
@@ -40,7 +41,6 @@ const PriceLists = () => {
   const limit = Number(searchParams.get('limit')) || 5;
 
   useEffect(() => setIsClient(true), []);
-  const name = searchParams.get('name') ?? undefined;
 
   const fetchPricingLists = useCallback(async () => {
     const requestId = ++requestIdRef.current;
@@ -49,7 +49,8 @@ const PriceLists = () => {
       const response = await getPricingLists({
         page,
         limit,
-        name,
+        name: searchParams.get('name') ?? undefined,
+        listType: (searchParams.get('listType') as CarrierAccountTypeEnum) ?? undefined,
       });
 
       if (requestId !== requestIdRef.current) return;
@@ -66,7 +67,7 @@ const PriceLists = () => {
         setLoading(false);
       }
     }
-  }, [page, limit, name]);
+  }, [page, limit, searchParams]);
 
   useEffect(() => {
     if (!isClient) return;

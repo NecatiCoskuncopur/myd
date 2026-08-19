@@ -7,6 +7,7 @@ import { generalMessages, pricingListMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { NOT_FOUND } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -37,6 +38,7 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
       _id: pricingListDoc._id.toString(),
       name: pricingListDoc.name,
       isDefault: pricingListDoc.isDefault,
+      listType: pricingListDoc.listType,
       zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
         number: z.number,
         prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight, price: p.price })),

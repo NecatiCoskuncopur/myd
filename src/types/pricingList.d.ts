@@ -1,3 +1,5 @@
+import { CarrierAccountTypeEnum } from '@/constants';
+
 declare namespace PricingListTypes {
   interface IPrice {
     weight: number;
@@ -14,6 +16,7 @@ declare namespace PricingListTypes {
     _id: string;
     name: string;
     isDefault: boolean;
+    listType: CarrierAccountTypeEnum;
     zone: IZone[];
     createdAt: string;
     updatedAt: string;
@@ -21,11 +24,13 @@ declare namespace PricingListTypes {
 
   interface ICreatePricingListPayload {
     name: string;
+    listType: CarrierAccountTypeEnum;
     zone: IZone[];
   }
 
   interface IPricingListsParams extends ParamsTypes.IPaginationParams {
     name?: string;
+    listType?: CarrierAccountTypeEnum;
   }
 
   interface IPricingListData extends ResponseTypes.IPaginationResponse {

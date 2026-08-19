@@ -8,7 +8,7 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
 import createPricingListSchema from '@/schemas/createPricingList.schema';
-import { revalidatePath } from 'next/cache';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { EXIST, SUCCESS } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -38,7 +38,7 @@ const createPricingList = async (data: PricingListTypes.ICreatePricingListPayloa
       ...validatedData,
       name: listName,
     });
-    revalidatePath('/panel/yonetim/fiyat-listeleri');
+
     return {
       status: 'OK',
       message: SUCCESS,

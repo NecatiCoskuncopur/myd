@@ -8,6 +8,7 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
 import updatePricingListSchema from '@/schemas/updatePricingList.schema';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { EXIST, NOT_FOUND, UPDATE } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

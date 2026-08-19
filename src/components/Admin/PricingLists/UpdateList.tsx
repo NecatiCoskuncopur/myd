@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState, useTransition } from 'react';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Stack, TextField, useTheme } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Stack, TextField, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Controller, useForm } from 'react-hook-form';
 
 import updatePricingList from '@/app/actions/admin/updatePricingList';
 import StyledButton from '@/components/StyledButton';
-import { generalMessages, pricingListMessages } from '@/constants';
+import { CarrierAccountTypeEnum, generalMessages, pricingListMessages } from '@/constants';
 import { buildPricingMatrix, GridRow } from '@/lib/buildPricingMatrix';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { PricingListTypes } from '@/types/pricingList';
 
 type UpdateListProps = {
   open: boolean;
@@ -46,7 +47,10 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
       return;
     }
 
-    reset({ name: list.name });
+    reset({
+      name: list.name,
+      listType: list.listType,
+    });
 
     const newRows: GridRow[] = [];
     const pricesLength = list.zone[0].prices.length;
@@ -107,6 +111,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
       const response = await updatePricingList({
         pricingListId: list?._id,
         name: data.name,
+        listType: data.listType,
         zone: zones,
       });
 
@@ -145,11 +150,30 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
 
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
-            />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="listType"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} select fullWidth label="Liste Tipi" error={!!errors.listType} helperText={errors.listType?.message}>
+                      {Object.values(CarrierAccountTypeEnum).map(accountType => (
+                        <MenuItem key={accountType} value={accountType}>
+                          {accountType}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+              </Grid>
+            </Grid>
 
             <Grid container spacing={3} sx={{ display: 'flex' }}>
               <Button variant="outlined" onClick={addRow}>

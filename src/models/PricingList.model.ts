@@ -1,6 +1,7 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import PricingZoneSchema from './PricingZoneSchema.model';
+import { CarrierAccountTypeEnum } from '@/constants';
 
 const PricingListSchema = new mongoose.Schema(
   {
@@ -11,6 +12,12 @@ const PricingListSchema = new mongoose.Schema(
     isDefault: {
       type: Boolean,
       default: false,
+    },
+    listType: {
+      type: String,
+      required: true,
+      enum: Object.values(CarrierAccountTypeEnum),
+      default: CarrierAccountTypeEnum.ECONOMY,
     },
     zone: {
       type: [PricingZoneSchema],

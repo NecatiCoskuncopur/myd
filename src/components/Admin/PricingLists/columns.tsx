@@ -27,6 +27,12 @@ const columns: GridColDef[] = [
     },
   },
   {
+    field: 'listType',
+    headerName: 'Liste Tipi',
+    flex: 1,
+    minWidth: 200,
+  },
+  {
     field: 'createdAt',
     headerName: 'Oluşturulma Tarihi',
     flex: 1,
