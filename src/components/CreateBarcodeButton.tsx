@@ -91,6 +91,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
           shippingId: shipping._id,
           firm: selectedAccount.carrier as Carrier,
           accountNumber: selectedAccount.accountNumber,
+          carrierAccountId: selectedAccount._id!.toString(),
         });
 
         if (cancelled) return;

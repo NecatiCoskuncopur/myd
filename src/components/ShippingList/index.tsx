@@ -206,6 +206,7 @@ const ShippingList = () => {
         displayName: account.displayName!,
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
+        carrierAccountId: account._id!.toString(),
       });
 
       if (res.status === 'OK') {

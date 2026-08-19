@@ -151,6 +151,7 @@ declare namespace ShippingTypes {
     hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
     accountNumber: string;
+    carrierAccountId: string;
   }
 
   interface IGetPaperParams {

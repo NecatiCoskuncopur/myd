@@ -209,12 +209,13 @@ const AdminShippingList = () => {
 
     try {
       const res = await createBarcode({
-        customInfo: account?.customInfo,
+        customInfo: account.customInfo,
         hasCustomInfo: !!account.hasCustomInfo,
         displayName: account.displayName!,
         shippingId,
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
+        carrierAccountId: account._id!.toString(),
       });
 
       if (res.status === 'OK') {

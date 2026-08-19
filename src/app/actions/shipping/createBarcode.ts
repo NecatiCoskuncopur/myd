@@ -13,6 +13,7 @@ import createUpsPaper from '@/lib/carriers/ups';
 import { ShippingTypes } from '@/types/shipping';
 import { CarrierTypes } from '@/types/carrier';
 import createQuickShipperPaper from '@/lib/carriers/quickShipper';
+import getCarrierCost from '@/lib/getCarrierCost';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
@@ -42,7 +43,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     }
 
     const { id: userId, role } = currentUser;
-    const { shippingId, firm, displayName, accountNumber, customInfo, hasCustomInfo } = data;
+    const { shippingId, firm, displayName, accountNumber, carrierAccountId, customInfo, hasCustomInfo } = data;
 
     const driver = carrierDrivers[firm];
 
@@ -81,8 +82,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     }
 
     const carrierAccount = await CarrierAccount.findOne({
-      carrier: firm,
-      accountNumber,
+      _id: carrierAccountId,
       isActive: true,
     }).lean();
 
@@ -129,6 +129,15 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
+    const carrierCostRes = await getCarrierCost(carrierAccount!.pricing!, shipping!.package!.weight, shipping!.consignee!.address!.country);
+    if (carrierCostRes.status !== 'OK') {
+      return {
+        status: 'ERROR',
+        message: shippingMessages.COST_NOT_CALCULATED,
+      };
+    }
+
+    const carrierCost = carrierCostRes.data;
     const shippingCost = shippingCostRes.data;
 
     const credentials = carrierAccount.credentials.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
@@ -179,6 +188,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       account: accountNumber,
       accountType: carrierAccount.accountType,
       amount: shippingCost,
+      cost: carrierCost,
     };
 
     shipping.status = ShippingStatus.LABELED;
