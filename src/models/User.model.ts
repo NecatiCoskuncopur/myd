@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Schema, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
-import { emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
+import { CarrierAccountTypeEnum, emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
 
 const { EMAIL, PHONE } = userMessages;
 
@@ -64,10 +64,20 @@ const UserSchema = new Schema(
       trim: true,
       maxlength: 75,
     },
-    priceListId: {
-      type: Schema.Types.ObjectId,
-      ref: 'PricingList',
-    },
+    priceLists: [
+      {
+        serviceType: {
+          type: String,
+          enum: Object.values(CarrierAccountTypeEnum),
+          required: true,
+        },
+        priceListId: {
+          type: Schema.Types.ObjectId,
+          ref: 'PricingList',
+          required: true,
+        },
+      },
+    ],
     address: {
       line1: {
         type: String,

@@ -6,20 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/DeleteList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/FilterSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/PricingList.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/PricingList.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/createPricingList.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createPricingList.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/pricingList.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/pricingList.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/User.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/User.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/setUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/setUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +171,7 @@
       <workItem from="1786977891792" duration="3365000" />
       <workItem from="1786994696899" duration="18327000" />
       <workItem from="1787074134696" duration="15885000" />
-      <workItem from="1787102452578" duration="4803000" />
+      <workItem from="1787102452578" duration="8773000" />
     </task>
     <servers />
   </component>

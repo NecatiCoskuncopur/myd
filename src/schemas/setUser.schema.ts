@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { pricingListMessages, transactionMessages, userMessages } from '@/constants';
+import { transactionMessages, userMessages } from '@/constants';
 import editUserSchema from './editUser.schema';
 
 const { ROLE, ISACTIVE, BARCODE_PERMITS, NICKNAME } = userMessages;
@@ -8,7 +8,19 @@ const { USERID } = transactionMessages;
 
 const setUserSchema = editUserSchema.shape({
   userId: yup.string().typeError(USERID.TYPE).required(USERID.REQUIRED),
-  priceListId: yup.string().typeError(pricingListMessages.TYPE).required(pricingListMessages.REQUIRED),
+  priceLists: yup
+    .array()
+    .of(
+      yup.object({
+        serviceType: yup.string().required(),
+        priceListId: yup.string().required(),
+      }),
+    )
+    .test('unique-service-types', 'Duplicate service type', value => {
+      if (!value) return true;
+      const types = value.map(item => item.serviceType);
+      return new Set(types).size === types.length;
+    }),
   role: yup.string().oneOf(['CUSTOMER', 'ADMIN', 'OPERATOR'], ROLE.INVALID).required(ROLE.REQUIRED),
   nickname: yup
     .string()

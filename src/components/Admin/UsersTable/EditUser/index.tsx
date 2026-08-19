@@ -15,6 +15,7 @@ import { UserTypes } from '@/types/user';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { EDITUSER } = userMessages;
@@ -58,7 +59,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       },
       role: 'CUSTOMER',
       isActive: true,
-      priceListId: '',
+      priceLists: [],
       barcodePermits: [],
     },
   });
@@ -84,7 +85,11 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       },
       role: user.role,
       isActive: user.isActive,
-      priceListId: user.priceListId?.toString() ?? '',
+      priceLists:
+        user.priceLists?.map(item => ({
+          serviceType: item.serviceType,
+          priceListId: item.priceListId.toString(),
+        })) ?? [],
       barcodePermits: user.barcodePermits ?? [],
     });
   }, [user, pricingLists, reset]);

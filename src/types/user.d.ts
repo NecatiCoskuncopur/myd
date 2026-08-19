@@ -1,4 +1,4 @@
-import { UserRole } from '@/constants';
+import { UserRole, CarrierAccountTypeEnum } from '@/constants';
 import { IUser } from '@/models/User.model';
 
 declare namespace UserTypes {
@@ -20,6 +20,11 @@ declare namespace UserTypes {
     district: string;
     city: string;
     postalCode: string;
+  }
+
+  interface IUserPriceList {
+    serviceType: CarrierAccountTypeEnum;
+    priceListId: string;
   }
 
   interface ISidebarItem {
@@ -46,10 +51,14 @@ declare namespace UserTypes {
       _id: string;
       total: number;
     };
-    pricingList?: {
-      _id: string;
-      name: string;
-    };
+
+    pricingLists?: {
+      serviceType: CarrierAccountTypeEnum;
+      priceList: {
+        _id: string;
+        name: string;
+      };
+    }[];
   }
 
   interface IEditUserPayload {
@@ -78,7 +87,7 @@ declare namespace UserTypes {
     isActive: boolean;
     barcodePermits: string[];
     address: IUser['address'];
-    priceListId?: string;
+    priceLists: IUserPriceList[];
     createdAt: Date;
     updatedAt: Date;
   }

@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { CarrierAccountTypeEnum } from '@/constants';
 
 declare namespace AdminTypes {
   interface IAddTransactionUserBalancePayload {
@@ -21,6 +21,11 @@ declare namespace AdminTypes {
     email?: string;
   }
 
+  interface IPriceListAssignment {
+    serviceType: CarrierAccountTypeEnum;
+    priceListId: string;
+  }
+
   interface ISetUserPayload {
     email: string;
     firstName: string;
@@ -32,7 +37,7 @@ declare namespace AdminTypes {
     nickname?: string;
     address: UserTypes.IAddress;
     userId: string;
-    priceListId: string;
+    priceLists: IPriceListAssignment[];
     role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
     isActive: boolean;
     barcodePermits: string[];
