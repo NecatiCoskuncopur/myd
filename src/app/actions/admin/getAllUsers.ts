@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/nextjs';
 import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
-import { Balance, PricingList, User } from '@/models';
+import { Balance, User } from '@/models';
 import { AdminTypes } from '@/types/admin';
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -45,18 +45,8 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
       },
 
       {
-        $lookup: {
-          from: PricingList.collection.name,
-          localField: 'priceListId',
-          foreignField: '_id',
-          as: 'pricingList',
-        },
-      },
-
-      {
         $addFields: {
           balance: { $arrayElemAt: ['$balance', 0] },
-          pricingList: { $arrayElemAt: ['$pricingList', 0] },
         },
       },
 
@@ -75,14 +65,30 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
           role: 1,
           isActive: 1,
           barcodePermits: 1,
-          createdAt: { $dateToString: { format: '%Y-%m-%dT%H:%M:%S.%LZ', date: '$createdAt' } },
+
+          priceLists: {
+            $map: {
+              input: '$priceLists',
+              as: 'priceList',
+              in: {
+                serviceType: '$$priceList.serviceType',
+                priceListId: {
+                  $toString: '$$priceList.priceListId',
+                },
+              },
+            },
+          },
+
+          createdAt: {
+            $dateToString: {
+              format: '%Y-%m-%dT%H:%M:%S.%LZ',
+              date: '$createdAt',
+            },
+          },
+
           balance: {
             _id: { $toString: '$balance._id' },
             total: { $ifNull: ['$balance.total', 0] },
-          },
-          pricingList: {
-            _id: { $toString: '$pricingList._id' },
-            name: { $ifNull: ['$pricingList.name', 'Tanımlanmamış'] },
           },
         },
       },

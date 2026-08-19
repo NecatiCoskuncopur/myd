@@ -79,14 +79,14 @@ const Users = () => {
         taxId: user.taxId,
         taxOffice: user.taxOffice,
         phone: user.phone,
-        priceList: user.pricingList?.name,
-        priceListId: user.pricingList?._id,
+        priceLists: user.priceLists,
         address: user.address,
         role: user.role,
         isActive: user.isActive,
         barcodePermits: user.barcodePermits,
         balance: user.balance.total,
         createdAt: user.createdAt,
+        originalUser: user,
       })) ?? [],
     [data],
   );
@@ -116,7 +116,7 @@ const Users = () => {
             <IconButton
               size="small"
               onClick={e => {
-                setSelectedRow(params.row);
+                setSelectedRow(params.row.originalUser);
                 setMenuAnchorEl(e.currentTarget);
               }}
             >

@@ -1,4 +1,4 @@
-import { Carrier, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace ShippingTypes {
@@ -79,6 +79,7 @@ declare namespace ShippingTypes {
     name: Carrier;
     displayName: string;
     account?: string;
+    accountType?: CarrierAccountTypeEnum;
     trackingNumber?: string;
     amount?: number;
   }

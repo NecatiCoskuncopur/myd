@@ -112,45 +112,47 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         />
       </Grid>
 
-      {priceListTypes.map((type, index) => (
-        <Grid size={{ xs: 12, lg: 3 }} key={type}>
-          <Controller
-            name={`priceLists.${index}.serviceType`}
-            control={control}
-            defaultValue={type}
-            render={({ field }) => <input type="hidden" {...field} value={type} />}
-          />
+      {priceListTypes.map((type, index) => {
+        const filteredPricingLists = pricingLists.filter(list => list.listType === type);
 
-          <Controller
-            name={`priceLists.${index}.priceListId`}
-            control={control}
-            render={({ field }) => (
-              <FormControl fullWidth error={!!errors.priceLists?.[index]?.priceListId}>
-                <InputLabel shrink>{type} Fiyat Listesi</InputLabel>
+        return (
+          <Grid size={{ xs: 12, lg: 3 }} key={type}>
+            <Controller
+              name={`priceLists.${index}.serviceType`}
+              control={control}
+              defaultValue={type}
+              render={({ field }) => <input type="hidden" {...field} value={type} />}
+            />
 
-                <Select
-                  {...field}
-                  value={field.value || ''}
-                  label={`${type} Fiyat Listesi`}
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <PriceChangeOutlinedIcon />
-                    </InputAdornment>
-                  }
-                >
-                  {pricingLists
-                    .filter(list => list.listType === type)
-                    .map(list => (
+            <Controller
+              name={`priceLists.${index}.priceListId`}
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.priceLists?.[index]?.priceListId}>
+                  <InputLabel shrink>{type} Fiyat Listesi</InputLabel>
+
+                  <Select
+                    {...field}
+                    value={filteredPricingLists.some(list => list._id === field.value) ? field.value : ''}
+                    label={`${type} Fiyat Listesi`}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <PriceChangeOutlinedIcon />
+                      </InputAdornment>
+                    }
+                  >
+                    {filteredPricingLists.map(list => (
                       <MenuItem key={list._id} value={list._id}>
                         {list.name}
                       </MenuItem>
                     ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
-      ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+          </Grid>
+        );
+      })}
 
       <Grid size={{ xs: 12, lg: 6 }}>
         <Controller

@@ -51,14 +51,6 @@ declare namespace UserTypes {
       _id: string;
       total: number;
     };
-
-    pricingLists?: {
-      serviceType: CarrierAccountTypeEnum;
-      priceList: {
-        _id: string;
-        name: string;
-      };
-    }[];
   }
 
   interface IEditUserPayload {

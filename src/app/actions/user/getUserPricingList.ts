@@ -1,7 +1,6 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
-import mongoose from 'mongoose';
 
 import { generalMessages, pricingListMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
@@ -12,51 +11,100 @@ import { PricingListTypes } from '@/types/pricingList';
 const { NOT_FOUND, USER_LIST_UNDEFINED } = pricingListMessages;
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const getUserPricingList = async (): Promise<ResponseTypes.IActionResponse<PricingListTypes.IPricingList>> => {
+const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Record<string, PricingListTypes.IPricingList>>> => {
   try {
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
     if (!currentUser) {
-      return { status: 'ERROR', message: UNAUTHORIZED };
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    const user = await User.findById(currentUser.id).populate('priceListId').lean();
+    const user = await User.findById(currentUser.id).select('priceLists').lean();
 
-    if (!user?.priceListId) {
-      return { status: 'ERROR', message: USER_LIST_UNDEFINED };
+    if (!user?.priceLists?.length) {
+      return {
+        status: 'ERROR',
+        message: USER_LIST_UNDEFINED,
+      };
     }
 
-    const pricingListDoc = await PricingList.findById(user?.priceListId).lean();
-    if (!pricingListDoc) {
-      return { status: 'ERROR', message: NOT_FOUND };
+    const priceListIds = user.priceLists.map(priceList => priceList.priceListId);
+
+    const pricingListDocs = await PricingList.find({
+      _id: {
+        $in: priceListIds,
+      },
+    }).lean();
+
+    if (!pricingListDocs.length) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
 
-    const pricingList: PricingListTypes.IPricingList = {
-      _id: pricingListDoc._id.toString(),
-      name: pricingListDoc.name,
-      listType: pricingListDoc.listType,
-      zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
-        number: z.number,
-        prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight ?? 0, price: p.price ?? 0 })),
-        than: z.than,
-      })),
-      createdAt: new Date(pricingListDoc.createdAt).toISOString(),
-      updatedAt: new Date(pricingListDoc.updatedAt).toISOString(),
-      isDefault: pricingListDoc.isDefault,
+    const pricingLists: Record<string, PricingListTypes.IPricingList> = {};
+
+    for (const userPriceList of user.priceLists) {
+      const pricingListDoc = pricingListDocs.find(pricingList => pricingList._id.toString() === userPriceList.priceListId.toString());
+
+      if (!pricingListDoc) {
+        continue;
+      }
+
+      pricingLists[userPriceList.serviceType] = {
+        _id: pricingListDoc._id.toString(),
+        name: pricingListDoc.name,
+        listType: pricingListDoc.listType,
+
+        zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
+          number: z.number,
+
+          prices: z.prices.map((p: PricingListTypes.IPrice) => ({
+            weight: p.weight ?? 0,
+            price: p.price ?? 0,
+          })),
+
+          than: z.than,
+        })),
+
+        createdAt: new Date(pricingListDoc.createdAt).toISOString(),
+
+        updatedAt: new Date(pricingListDoc.updatedAt).toISOString(),
+
+        isDefault: pricingListDoc.isDefault,
+      };
+    }
+
+    if (Object.keys(pricingLists).length === 0) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
+    }
+
+    return {
+      status: 'OK',
+      data: pricingLists,
     };
-
-    return { status: 'OK', data: pricingList };
   } catch (error) {
     if (error instanceof Error) {
       Sentry.withScope(scope => {
-        scope.setTag('action', 'getUserPricingList');
+        scope.setTag('action', 'getUserPricingLists');
+
         scope.captureException(error);
       });
     }
 
-    return { status: 'ERROR', message: UNEXPECTED_ERROR };
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 
-export default getUserPricingList;
+export default getUserPricingLists;

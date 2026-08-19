@@ -42,7 +42,8 @@ import { ShippingTypes } from '@/types/shipping';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
-import getUserPricingList from '@/app/actions/user/getUserPricingList';
+import getUserPricingLists from '@/app/actions/user/getUserPricingList';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -58,7 +59,7 @@ const ShippingList = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
-  const [pricingList, setPricingList] = useState<PricingListTypes.IPricingList | null>(null);
+  const [pricingLists, setPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
   const { showSnackbar } = useSnackbar();
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
@@ -66,12 +67,13 @@ const ShippingList = () => {
   const [barcodeError, setBarcodeError] = useState<string | null>(null);
 
   const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
-
   const requestIdRef = useRef(0);
   const page = Number(searchParams.get('sayfa')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
 
-  useEffect(() => setIsClient(true), []);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const filters = useMemo(
     () => ({
@@ -117,7 +119,7 @@ const ShippingList = () => {
         setLoading(false);
       }
     }
-  }, [page, limit, filters]);
+  }, [page, limit, filters, showSnackbar]);
 
   useEffect(() => {
     fetchList();
@@ -134,6 +136,21 @@ const ShippingList = () => {
   }, []);
 
   useEffect(() => {
+    const fetchPricingLists = async () => {
+      const res = await getUserPricingLists();
+
+      if (res.status === 'OK' && res.data) {
+        setPricingLists(res.data);
+      } else {
+        setPricingLists({});
+        console.error(res.message || UNEXPECTED_ERROR);
+      }
+    };
+
+    fetchPricingLists();
+  }, []);
+
+  useEffect(() => {
     if (!canCreateBarcode) return;
 
     const fetchAccounts = async () => {
@@ -147,19 +164,6 @@ const ShippingList = () => {
 
     fetchAccounts();
   }, [canCreateBarcode]);
-
-  useEffect(() => {
-    const fetchPricingList = async () => {
-      const res = await getUserPricingList();
-      if (res.status === 'OK' && res.data) {
-        setPricingList(res.data);
-      } else {
-        console.error(res.message || UNEXPECTED_ERROR);
-      }
-    };
-
-    fetchPricingList();
-  }, []);
 
   const closeActionsMenu = () => {
     setMenuOpen(false);
@@ -184,7 +188,10 @@ const ShippingList = () => {
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
-    if (!shippingId || !account.carrier || !account.accountNumber) return;
+
+    if (!shippingId || !account.carrier || !account.accountNumber) {
+      return;
+    }
 
     closeActionsMenu();
     setBarcodeDialogOpen(true);
@@ -202,7 +209,7 @@ const ShippingList = () => {
       });
 
       if (res.status === 'OK') {
-        fetchList();
+        await fetchList();
       } else {
         setBarcodeError(res.message || 'Barkod oluşturulamadı');
       }
@@ -221,7 +228,10 @@ const ShippingList = () => {
     if (!shippingId) return;
 
     try {
-      const response = await getPaper({ shippingId, type });
+      const response = await getPaper({
+        shippingId,
+        type,
+      });
 
       if (response.status !== 'OK' || !response.data?.file) {
         showSnackbar(response.message ?? 'Evrak indirilirken bir hata oluştu.', 'error');
@@ -230,7 +240,11 @@ const ShippingList = () => {
 
       const binary = atob(response.data.file);
       const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-      const blob = new Blob([bytes], { type: 'application/pdf' });
+
+      const blob = new Blob([bytes], {
+        type: 'application/pdf',
+      });
+
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
@@ -240,7 +254,6 @@ const ShippingList = () => {
   };
 
   const rows = useMemo(() => data?.shippings ?? [], [data]);
-
   const shippingColumns: GridColDef[] = useMemo(
     () => [
       ...columns,
@@ -303,20 +316,22 @@ const ShippingList = () => {
             <ListItemText>İncele</ListItemText>
           </MenuItem>
 
-          {!hasTrackingNumber && <Divider />}
           {!hasTrackingNumber && (
-            <MenuItem
-              onClick={() => {
-                const id = selectedRow?._id;
-                closeActionsMenu();
-                router.push(`/panel/gonderilerim/${id}/duzenle`);
-              }}
-            >
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Düzenle</ListItemText>
-            </MenuItem>
+            <>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  const id = selectedRow?._id;
+                  closeActionsMenu();
+                  router.push(`/panel/gonderilerim/${id}/duzenle`);
+                }}
+              >
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Düzenle</ListItemText>
+              </MenuItem>
+            </>
           )}
 
           {!hasTrackingNumber && (
@@ -324,7 +339,14 @@ const ShippingList = () => {
               <ListItemIcon>
                 <DeleteOutlined fontSize="small" color="error" />
               </ListItemIcon>
-              <ListItemText sx={{ color: 'error.main' }}>Sil</ListItemText>
+
+              <ListItemText
+                sx={{
+                  color: 'error.main',
+                }}
+              >
+                Sil
+              </ListItemText>
             </MenuItem>
           )}
 
@@ -342,12 +364,12 @@ const ShippingList = () => {
                 const customerPrice = getCustomerPrice({
                   countryCode: selectedRow?.consignee?.address.country ?? '',
                   weight: selectedRow?.package.weight ?? 0,
-                  pricingList,
+                  pricingList: acc.accountType ? pricingLists[acc.accountType] : null,
                 });
 
                 return (
                   <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                    <ListItemText primary={acc.displayName} secondary={` Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
+                    <ListItemText primary={acc.displayName} secondary={`Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
                   </MenuItem>
                 );
               })
@@ -372,7 +394,12 @@ const ShippingList = () => {
           )}
         </Menu>
         <Dialog open={barcodeDialogOpen} onClose={() => !barcodeLoading && setBarcodeDialogOpen(false)}>
-          <DialogContent sx={{ minWidth: 300, textAlign: 'center' }}>
+          <DialogContent
+            sx={{
+              minWidth: 300,
+              textAlign: 'center',
+            }}
+          >
             {barcodeLoading && (
               <Box>
                 <CircularProgress />

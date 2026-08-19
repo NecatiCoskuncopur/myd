@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
-import { Carrier, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
 
 const ShippingSchema = new mongoose.Schema(
   {
@@ -94,6 +94,10 @@ const ShippingSchema = new mongoose.Schema(
         enum: Object.values(Carrier),
       },
       displayName: String,
+      accountType: {
+        type: String,
+        enum: Object.values(CarrierAccountTypeEnum),
+      },
       account: String,
       trackingNumber: String,
       amount: Number,

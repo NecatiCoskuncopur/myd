@@ -64,7 +64,25 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       };
     }
 
-    const shippingCostRes = await getShippingCost(userForPricing.priceListId!, weight, shipping.consignee!.address!.country);
+    const accountType = shipping.carrier?.accountType;
+
+    if (!accountType) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.NOT_FOUND,
+      };
+    }
+
+    const userPriceList = userForPricing.priceLists?.find(priceList => priceList.serviceType === accountType);
+
+    if (!userPriceList) {
+      return {
+        status: 'ERROR',
+        message: pricingListMessages.NOT_FOUND,
+      };
+    }
+
+    const shippingCostRes = await getShippingCost(userPriceList.priceListId, weight, shipping.consignee!.address!.country);
 
     if (shippingCostRes.status !== 'OK') {
       return {

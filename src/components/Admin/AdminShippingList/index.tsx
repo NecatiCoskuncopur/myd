@@ -45,6 +45,7 @@ import { getCarrierPrice } from '@/lib/getCarrierPrice';
 import getPricingList from '@/app/actions/admin/getPricingList';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
 import PackageDimensionsDialog from '@/components/Admin/AdminShippingList/PackageDimensionDialog';
+import { PricingListTypes } from '@/types/pricingList';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
@@ -59,7 +60,7 @@ const AdminShippingList = () => {
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [pricingList, setPricingList] = useState<PricingListTypes.IPricingList | null>(null);
+  const [pricingLists, setPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
@@ -139,21 +140,27 @@ const AdminShippingList = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPricingList = async () => {
-      if (!user?.priceListId) {
-        setPricingList(null);
+    const fetchPricingLists = async () => {
+      const userPriceLists = user?.priceLists ?? [];
+
+      if (userPriceLists.length === 0) {
+        setPricingLists({});
         return;
       }
 
-      const result = await getPricingList(user.priceListId);
+      const results = await Promise.all(
+        userPriceLists.map(async ({ serviceType, priceListId }) => {
+          const result = await getPricingList(priceListId);
 
-      if (result.status === 'OK' && result.data) {
-        setPricingList(result.data);
-      }
+          return result.status === 'OK' && result.data ? ([serviceType, result.data] as const) : null;
+        }),
+      );
+
+      setPricingLists(Object.fromEntries(results.filter((entry): entry is NonNullable<typeof entry> => entry !== null)));
     };
 
-    fetchPricingList();
-  }, [user?.priceListId]);
+    fetchPricingLists();
+  }, [user?.priceLists]);
 
   useEffect(() => {
     if (!canCreateBarcode) return;
@@ -361,7 +368,7 @@ const AdminShippingList = () => {
                 const customerPrice = getCustomerPrice({
                   countryCode: selectedRow?.consignee?.address.country ?? '',
                   weight: selectedRow?.package.weight ?? 0,
-                  pricingList,
+                  pricingList: acc.accountType ? pricingLists[acc.accountType] : null,
                 });
 
                 return (

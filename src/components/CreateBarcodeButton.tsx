@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { Alert, Box, Button, CircularProgress, ClickAwayListener, Dialog, DialogContent, Paper, Popper, Typography } from '@mui/material';
 
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
+import getUserPricingLists from '@/app/actions/user/getUserPricingList';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
+import { PricingListTypes } from '@/types/pricingList';
 import { Carrier } from '@/constants';
-import getCarrierIcon from '@/lib/getCarrierIcon';
+import { getCustomerPrice } from '@/lib/getCustomerPrice';
 
 interface Props {
   shipping: ShippingTypes.IShipping;
@@ -18,32 +19,41 @@ interface Props {
 }
 
 const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
-  const router = useRouter();
-
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
+  const [pricingLists, setPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
   const [fetching, setFetching] = useState(true);
-
   const [selectedAccount, setSelectedAccount] = useState<Partial<CarrierAccountTypes.ICarrierAccount> | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      const res = await getUserPermittedAccounts();
+    const fetchData = async () => {
+      setFetching(true);
 
-      if (res.status === 'OK' && res.data) {
-        setAccounts(res.data);
-      } else {
-        setError(res.message || 'Hesaplar yüklenemedi.');
+      try {
+        const [accountsRes, pricingListsRes] = await Promise.all([getUserPermittedAccounts(), getUserPricingLists()]);
+
+        if (accountsRes.status === 'OK' && accountsRes.data) {
+          setAccounts(accountsRes.data);
+        } else {
+          setError(accountsRes.message || 'Hesaplar yüklenemedi.');
+        }
+
+        if (pricingListsRes.status === 'OK' && pricingListsRes.data) {
+          setPricingLists(pricingListsRes.data);
+        } else {
+          setPricingLists({});
+        }
+      } catch {
+        setError('Veriler yüklenemedi.');
+      } finally {
+        setFetching(false);
       }
-
-      setFetching(false);
     };
 
-    fetchAccounts();
+    fetchData();
   }, []);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -77,6 +87,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
         const res = await createBarcode({
           customInfo: selectedAccount.customInfo,
           hasCustomInfo: !!selectedAccount.hasCustomInfo,
+          displayName: selectedAccount.displayName!,
           shippingId: shipping._id,
           firm: selectedAccount.carrier as Carrier,
           accountNumber: selectedAccount.accountNumber,
@@ -90,7 +101,9 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
           setError(res.message || 'Barkod oluşturulamadı');
         }
       } catch {
-        setError('Sistem hatası oluştu');
+        if (!cancelled) {
+          setError('Sistem hatası oluştu');
+        }
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -103,7 +116,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
     return () => {
       cancelled = true;
     };
-  }, [modalOpen, selectedAccount, shipping._id, router]);
+  }, [modalOpen, selectedAccount, shipping._id, onSuccess]);
 
   if (fetching) {
     return <CircularProgress size={20} />;
@@ -134,12 +147,19 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
             Barkod Oluştur
           </Button>
 
-          <Popper open={open} anchorEl={anchorEl} placement="bottom-start" sx={{ zIndex: theme => theme.zIndex.tooltip }}>
+          <Popper
+            open={open}
+            anchorEl={anchorEl}
+            placement="bottom-start"
+            sx={{
+              zIndex: theme => theme.zIndex.tooltip,
+            }}
+          >
             <Paper
               elevation={4}
               sx={{
                 mt: 0.5,
-                minWidth: 220,
+                minWidth: 280,
                 overflow: 'hidden',
               }}
               onMouseEnter={() => {
@@ -149,6 +169,11 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
               }}
             >
               {accounts.map(account => {
+                const customerPrice = getCustomerPrice({
+                  countryCode: shipping?.consignee?.address.country ?? '',
+                  weight: shipping?.package.weight ?? 0,
+                  pricingList: account.accountType ? pricingLists[account.accountType] : null,
+                });
                 return (
                   <Box
                     key={account._id}
@@ -156,7 +181,8 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 1.5,
+                      justifyContent: 'space-between',
+                      gap: 2,
                       px: 2,
                       py: 1.25,
                       cursor: 'pointer',
@@ -166,7 +192,17 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                       },
                     }}
                   >
-                    <Typography variant="body2">{account.name}</Typography>
+                    <Typography variant="body2">{account.displayName}</Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Ödenecek Tutar: <strong>{customerPrice ?? '-'} $</strong>
+                    </Typography>
                   </Box>
                 );
               })}

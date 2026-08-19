@@ -92,7 +92,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
         })) ?? [],
       barcodePermits: user.barcodePermits ?? [],
     });
-  }, [user, pricingLists, reset]);
+  }, [user, reset]);
 
   useEffect(() => {
     if (!open) {
