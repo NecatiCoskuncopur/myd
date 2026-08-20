@@ -15,7 +15,6 @@ declare namespace PricingListTypes {
   interface IPricingList {
     _id: string;
     name: string;
-    isDefault: boolean;
     listType: CarrierAccountTypeEnum;
     zone: IZone[];
     createdAt: string;

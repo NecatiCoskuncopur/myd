@@ -3,6 +3,7 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace ShippingTypes {
   interface ICalculateShippingPayload {
+    serviceType: CarrierAccountTypeEnum;
     weight: number;
     countryCode: string;
   }

@@ -9,15 +9,10 @@ const PricingListSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isDefault: {
-      type: Boolean,
-      default: false,
-    },
     listType: {
       type: String,
       required: true,
       enum: Object.values(CarrierAccountTypeEnum),
-      default: CarrierAccountTypeEnum.ECONOMY,
     },
     zone: {
       type: [PricingZoneSchema],

@@ -6,7 +6,8 @@ import { Autocomplete, Box, CircularProgress, TextField, Typography } from '@mui
 
 import calculateShipping from '@/app/actions/shipping/calculateShipping';
 import { StyledButton } from '@/components';
-import { countries, pricingListMessages, shippingMessages } from '@/constants';
+import { CarrierAccountTypeEnum, countries, pricingListMessages, shippingMessages } from '@/constants';
+
 const { PRICE } = pricingListMessages;
 
 interface CountryOption {
@@ -15,7 +16,11 @@ interface CountryOption {
   [key: string]: unknown;
 }
 
-const PriceCalculator = () => {
+interface PriceCalculatorProps {
+  serviceType: CarrierAccountTypeEnum;
+}
+
+const PriceCalculator = ({ serviceType }: PriceCalculatorProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
   const [weight, setWeight] = useState<number | ''>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,6 +38,7 @@ const PriceCalculator = () => {
 
     try {
       const res = await calculateShipping({
+        serviceType,
         countryCode: selectedCountry.code,
         weight,
       });
@@ -82,6 +88,7 @@ const PriceCalculator = () => {
           onChange={(_, newValue) => {
             setSelectedCountry(newValue);
             setErrorMessage(null);
+            setResult(null);
           }}
           sx={{ width: { xs: '100%', lg: 200 } }}
           renderInput={params => <TextField {...params} label="Varış Ülkesi" placeholder="Ülke ara..." />}
@@ -95,8 +102,10 @@ const PriceCalculator = () => {
           helperText={isWeightInvalid ? shippingMessages.WEIGHT.MIN : ''}
           onChange={e => {
             const val = e.target.value;
+
             setWeight(val === '' ? '' : Number(val));
             setErrorMessage(null);
+            setResult(null);
           }}
           slotProps={{
             htmlInput: {
@@ -106,6 +115,7 @@ const PriceCalculator = () => {
           }}
           sx={{ width: { xs: '100%', lg: 200 } }}
         />
+
         <StyledButton
           variant="contained"
           onClick={handleCalculate}

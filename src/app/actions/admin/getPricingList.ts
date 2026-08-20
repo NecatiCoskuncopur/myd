@@ -37,7 +37,6 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     const pricingList: PricingListTypes.IPricingList = {
       _id: pricingListDoc._id.toString(),
       name: pricingListDoc.name,
-      isDefault: pricingListDoc.isDefault,
       listType: pricingListDoc.listType,
       zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
         number: z.number,

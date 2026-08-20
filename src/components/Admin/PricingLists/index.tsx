@@ -134,15 +134,11 @@ const PriceLists = () => {
                 <ListItemText>Düzenle</ListItemText>
               </MenuItem>
 
-              <MenuItem
-                onClick={() => handleOpenModal('delete')}
-                disabled={params.row.isDefault}
-                sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }}
-              >
+              <MenuItem onClick={() => handleOpenModal('delete')} sx={{ color: theme.palette.error.main }}>
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" sx={{ color: params.row.isDefault ? 'inherit' : theme.palette.error.main }} />
+                  <DeleteIcon fontSize="small" sx={{ color: theme.palette.error.main }} />
                 </ListItemIcon>
-                <ListItemText>{params.row.isDefault ? 'Varsayılan (Silinemez)' : 'Sil'}</ListItemText>
+                <ListItemText>Sil</ListItemText>
               </MenuItem>
             </Menu>
           </>

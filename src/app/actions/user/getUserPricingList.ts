@@ -75,8 +75,6 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
         createdAt: new Date(pricingListDoc.createdAt).toISOString(),
 
         updatedAt: new Date(pricingListDoc.updatedAt).toISOString(),
-
-        isDefault: pricingListDoc.isDefault,
       };
     }
 

@@ -9,7 +9,6 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { User } from '@/models';
 import calculateShippingSchema from '@/schemas/calculateShipping.schema';
-import { Types } from 'mongoose';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
@@ -25,6 +24,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
+
     if (!currentUser) {
       return {
         status: 'ERROR',
@@ -32,16 +32,25 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
       };
     }
 
-    const user = await User.findById(currentUser.id).select('priceListId').lean<{ priceListId: Types.ObjectId } | null>();
+    const user = await User.findById(currentUser.id).select('priceLists').lean();
 
-    if (!user?.priceListId) {
+    if (!user?.priceLists?.length) {
       return {
         status: 'ERROR',
         message: NOT_FOUND,
       };
     }
 
-    const result = await getShippingCost(user.priceListId, validatedData.weight, validatedData.countryCode);
+    const userPricingList = user.priceLists.find(item => item.serviceType === validatedData.serviceType);
+
+    if (!userPricingList) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
+    }
+
+    const result = await getShippingCost(userPricingList.priceListId, validatedData.weight, validatedData.countryCode);
 
     if (result.status === 'ERROR') {
       return {

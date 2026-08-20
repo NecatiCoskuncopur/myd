@@ -22,6 +22,7 @@ const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionR
         message: NOT_FOUND,
       };
     }
+
     await connectMongoDB();
 
     const pricingListDoc = await PricingList.findById(listId);
@@ -33,23 +34,16 @@ const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionR
       };
     }
 
-    if (pricingListDoc.isDefault) {
-      return {
-        status: 'ERROR',
-        message: pricingListMessages.DELETE?.DEFAULT_ERROR,
-      };
-    }
-
-    const defaultPricingList = await PricingList.findOne({ isDefault: true });
-
-    if (!defaultPricingList) {
-      return {
-        status: 'ERROR',
-        message: pricingListMessages.DELETE.DEFAULT_NOT_FOUND,
-      };
-    }
-
-    await User.updateMany({ priceListId: listId }, { priceListId: defaultPricingList._id });
+    await User.updateMany(
+      { 'priceLists.priceListId': listId },
+      {
+        $pull: {
+          priceLists: {
+            priceListId: listId,
+          },
+        },
+      },
+    );
 
     await pricingListDoc.deleteOne();
 
