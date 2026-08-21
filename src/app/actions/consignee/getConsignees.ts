@@ -2,10 +2,10 @@
 
 import * as Sentry from '@sentry/nextjs';
 
+import { generalMessages, UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee } from '@/models';
-import { generalMessages, UserRole } from '@/constants';
 import { ConsigneeTypes } from '@/types/consignee';
 
 const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

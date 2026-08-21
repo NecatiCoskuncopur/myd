@@ -1,10 +1,10 @@
 import React from 'react';
-
 import PersonIcon from '@mui/icons-material/Person';
 import { Grid, Typography } from '@mui/material';
 
-import CardHeader from './CardHeader';
 import { ShippingTypes } from '@/types/shipping';
+
+import CardHeader from './CardHeader';
 
 type ConsigneeSectionProps = {
   consignee: ShippingTypes.IConsignee | undefined;

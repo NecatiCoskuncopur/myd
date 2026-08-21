@@ -6,13 +6,13 @@ import { Box, Divider, Drawer, List, useMediaQuery, useTheme } from '@mui/materi
 
 import signOut from '@/app/actions/auth/signOut';
 import { getSidebarItems } from '@/constants';
+import { IUser } from '@/models/User.model';
 import { UserTypes } from '@/types/user';
 
-import MobileMenuTrigger from './MobileMenuTrigger';
+import MenuFooter from './MenuFooter';
 import MenuHeader from './MenuHeader';
 import MenuItems from './MenuItems';
-import MenuFooter from './MenuFooter';
-import { IUser } from '@/models/User.model';
+import MobileMenuTrigger from './MobileMenuTrigger';
 
 const DRAWER_WIDTH = 280;
 const MINI_DRAWER_WIDTH = 70;

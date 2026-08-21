@@ -1,14 +1,14 @@
 import React, { useEffect, useTransition } from 'react';
-
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm, useWatch } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
 import { StyledButton } from '@/components';
 import { Carrier, CarrierAccountTypeEnum, carrierConfig, carrierMessages, generalMessages } from '@/constants';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
-import FormItems from './FormItems';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+
+import FormItems from './FormItems';
 
 type CreateCarrierAccountProps = {
   open: boolean;

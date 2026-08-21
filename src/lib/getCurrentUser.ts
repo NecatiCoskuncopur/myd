@@ -1,10 +1,9 @@
 import { cookies } from 'next/headers';
-
 import jwt from 'jsonwebtoken';
 
+import { UserRole } from '@/constants';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
-import { UserRole } from '@/constants';
 
 /**
  * Request cookie'sinde bulunan JWT token'ı doğrular

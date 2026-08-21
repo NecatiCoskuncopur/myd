@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import { carrierMessages } from '@/constants';
+
 import createCarrierAccountSchema from './createCarrierAccount.schema';
 
 const updateCarrierAccountSchema = createCarrierAccountSchema.shape({

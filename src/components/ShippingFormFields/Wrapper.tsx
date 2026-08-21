@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, useTheme, Grid } from '@mui/material';
+import { Box, Grid, Typography, useTheme } from '@mui/material';
 
 type WrapperProps = {
   children: React.ReactNode;

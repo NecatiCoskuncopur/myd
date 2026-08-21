@@ -2,17 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-
 import { Alert, Box, CircularProgress, Grid, useTheme } from '@mui/material';
 
 import getShipping from '@/app/actions/shipping/getShipping';
 import { generalMessages, shippingMessages } from '@/constants';
+import { ShippingTypes } from '@/types/shipping';
+
 import ConsigneeSection from './ConsigneeSection';
 import ContentSection from './ContentSection';
 import Header from './Header';
 import SenderSection from './SenderSection';
 import ShippingDetailSection from './ShippingDetailSection';
-import { ShippingTypes } from '@/types/shipping';
 
 const { NOT_FOUND } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

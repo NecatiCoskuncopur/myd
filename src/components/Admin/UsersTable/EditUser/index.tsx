@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -10,12 +9,13 @@ import getPricingLists from '@/app/actions/admin/getPricingLists';
 import setUser from '@/app/actions/admin/setUser';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, userMessages } from '@/constants';
-import FormItems from './FormItems';
-import { UserTypes } from '@/types/user';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { useSnackbar } from '@/providers/SnackbarProvider';
 import { PricingListTypes } from '@/types/pricingList';
+import { UserTypes } from '@/types/user';
+
+import FormItems from './FormItems';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { EDITUSER } = userMessages;

@@ -6,11 +6,11 @@ import moment from 'moment';
 import { PaginateModel } from 'mongoose';
 
 import { generalMessages } from '@/constants';
+import excelColumns from '@/constants/excelColumns';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
 import { ShippingTypes } from '@/types/shipping';
-import excelColumns from '@/constants/excelColumns';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 

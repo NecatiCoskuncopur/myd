@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { DashboardShell } from '@/components';
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {

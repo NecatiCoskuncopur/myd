@@ -1,4 +1,4 @@
-import { UserRole, CarrierAccountTypeEnum } from '@/constants';
+import { CarrierAccountTypeEnum, UserRole } from '@/constants';
 import { IUser } from '@/models/User.model';
 
 declare namespace UserTypes {

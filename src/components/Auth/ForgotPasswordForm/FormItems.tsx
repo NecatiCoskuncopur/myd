@@ -1,11 +1,10 @@
 import React from 'react';
-
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
 
-import { captchaMessages, userMessages } from '@/constants';
 import { HCaptcha } from '@/components';
+import { captchaMessages, userMessages } from '@/constants';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.IForgotPasswordPayload>;

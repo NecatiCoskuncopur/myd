@@ -1,10 +1,11 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import mongoose from 'mongoose';
+
 import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
-import mongoose from 'mongoose';
 import { Balance } from '@/models';
 
 export type YearlyStatsResponse = Record<number, SummaryTypes.ITransactionStats>;

@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
+
 import { UserTypes } from '@/types/user';
 
 type Props = {

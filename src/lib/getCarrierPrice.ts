@@ -1,5 +1,5 @@
-import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { countries } from '@/constants';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 interface GetCarrierPriceParams {
   countryCode: string;

@@ -3,11 +3,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-import { Wrapper, TableHeader, GenericDataGrid } from '@/components';
 import getUserBalance from '@/app/actions/user/getUserBalance';
+import { GenericDataGrid, TableHeader, Wrapper } from '@/components';
+import { BalanceTypes } from '@/types/balance';
+
 import columns from './columns';
 import CurrentBalance from './CurrentBalance';
-import { BalanceTypes } from '@/types/balance';
 
 const UserBalanceTable = () => {
   const searchParams = useSearchParams();

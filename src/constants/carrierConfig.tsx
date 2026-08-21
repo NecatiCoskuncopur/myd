@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+
 import { Carrier } from '@/constants';
 
 export interface ICarrierCredential {

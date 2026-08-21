@@ -1,9 +1,9 @@
+import React from 'react';
 import { Grid } from '@mui/material';
 import { Control, FieldErrors } from 'react-hook-form';
 
-import { AdminTypes } from '@/types/admin';
 import { AddressFields, ContactFields, NickNameField, PasswordField, PersonalFields, TaxFields } from '@/components';
-import React from 'react';
+import { AdminTypes } from '@/types/admin';
 
 type FormItemsProps = {
   errors: FieldErrors<AdminTypes.ICreateUser>;

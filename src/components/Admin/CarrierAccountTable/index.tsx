@@ -4,14 +4,16 @@ import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
 import { GridColDef } from '@mui/x-data-grid';
+
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
+
+import CarrierAccountActionsMenu from './CarrierAccountActionsMenu';
 import columns from './columns';
 import FilterSection from './FilterSection';
 import CreateCarrierAccountForm from './Forms/CreateCarrierAccountForm';
 import UpdateCarrierAccountForm from './Forms/UpdateCarrierAccountForm';
-import CarrierAccountActionsMenu from './CarrierAccountActionsMenu';
-import useCarrierAccountsList from './hooks/useCarrierAccountsList';
 import useCarrierAccountActions from './hooks/useCarrierAccountActions';
+import useCarrierAccountsList from './hooks/useCarrierAccountsList';
 
 const CarrierAccountTable = () => {
   const searchParams = useSearchParams();

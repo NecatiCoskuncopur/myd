@@ -1,9 +1,10 @@
+import * as Sentry from '@sentry/node';
+import latinize from 'latinize';
+
+import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
-import latinize from 'latinize';
-import * as Sentry from '@sentry/node';
-import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 
 const { SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 

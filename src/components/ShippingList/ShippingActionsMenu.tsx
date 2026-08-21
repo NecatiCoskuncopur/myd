@@ -1,15 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
 import { DeleteOutlined } from '@mui/icons-material';
-
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-
 import { CheckCircleOutlined } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 

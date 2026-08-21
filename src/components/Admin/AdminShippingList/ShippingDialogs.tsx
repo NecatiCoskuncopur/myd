@@ -1,7 +1,6 @@
 'use client';
 
 import { DeleteShipping } from '@/components';
-
 import { ShippingTypes } from '@/types/shipping';
 
 import BarcodeResultDialog from './BarcodeResultDialog';

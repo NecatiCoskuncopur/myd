@@ -1,5 +1,7 @@
 import mongoose, { HydratedDocument, InferSchemaType, Schema, Types } from 'mongoose';
-import { Carrier, emailRegex, phoneRegex, userMessages, CarrierAccountTypeEnum } from '@/constants';
+
+import { Carrier, CarrierAccountTypeEnum, emailRegex, phoneRegex, userMessages } from '@/constants';
+
 import PricingZoneSchema from './PricingZoneSchema.model';
 
 const { EMAIL, PHONE } = userMessages;

@@ -1,19 +1,18 @@
 'use client';
 
 import React from 'react';
-
 import { useSearchParams } from 'next/navigation';
-
 import { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, TableHeader, Wrapper } from '@/components';
+
 import AddTransaction from './AddTransaction';
 import columns from './columns';
 import EditUser from './EditUser';
 import FilterSection from './FilterSection';
-import UserActionsMenu from './UserActionsMenu';
 import useUserActions from './hooks/useUserActions';
 import useUsersList from './hooks/useUsersList';
+import UserActionsMenu from './UserActionsMenu';
 
 const Users = () => {
   const searchParams = useSearchParams();

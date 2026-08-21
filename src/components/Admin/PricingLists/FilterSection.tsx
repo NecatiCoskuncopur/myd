@@ -2,14 +2,12 @@
 
 import React, { useState } from 'react';
 import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
-
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SearchIcon from '@mui/icons-material/Search';
-
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';
 import { CarrierAccountTypeEnum } from '@/constants';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;

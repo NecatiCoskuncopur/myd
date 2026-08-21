@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
-
 import { Box, Grid, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -9,9 +8,10 @@ import editUser from '@/app/actions/user/editUser';
 import getUser from '@/app/actions/user/getUser';
 import { StyledButton } from '@/components';
 import { generalMessages, userMessages } from '@/constants';
-import { UserTypes } from '@/types/user';
-import FormItems from './FormItems';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { UserTypes } from '@/types/user';
+
+import FormItems from './FormItems';
 
 const { EMAIL, EDITUSER, NOT_FOUND } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

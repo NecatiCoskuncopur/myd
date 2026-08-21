@@ -1,16 +1,17 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import {
   AccountCircle,
-  LightMode as LightModeIcon,
-  NightlightRound as NightlightRoundIcon,
-  WhatsApp as WhatsAppIcon,
-  Phone as PhoneIcon,
   Email as EmailIcon,
+  LightMode as LightModeIcon,
   Logout,
+  NightlightRound as NightlightRoundIcon,
+  Phone as PhoneIcon,
+  WhatsApp as WhatsAppIcon,
 } from '@mui/icons-material';
+import { Box, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+
 import { company } from '@/constants';
 
 type Props = {

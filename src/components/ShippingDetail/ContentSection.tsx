@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 

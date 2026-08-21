@@ -1,12 +1,12 @@
 'use client';
 
 import CancelIcon from '@mui/icons-material/Cancel';
-import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
 import { Box, Typography } from '@mui/material';
+import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
-import getCarrierIcon from '@/lib/getCarrierIcon';
 import { Carrier } from '@/constants';
+import getCarrierIcon from '@/lib/getCarrierIcon';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Hesap Adı', flex: 1, minWidth: 100 },

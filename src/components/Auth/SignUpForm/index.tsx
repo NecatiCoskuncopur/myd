@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-
 import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import signUp from '@/app/actions/auth/signUp';
 import { authMessages, generalMessages } from '@/constants';
-import SignUpSuccess from './SignUpSuccess';
+
 import FormItems from './FormItems';
+import SignUpSuccess from './SignUpSuccess';
 
 const SignUpForm = () => {
   const [pending, startTransition] = useTransition();

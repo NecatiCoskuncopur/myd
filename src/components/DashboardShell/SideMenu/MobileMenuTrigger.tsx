@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Box, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Box, IconButton } from '@mui/material';
 
 type Props = {
   onClick: () => void;

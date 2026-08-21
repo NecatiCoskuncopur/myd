@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
+
 import { Carrier, CarrierAccountTypeEnum, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
 
 const ShippingSchema = new mongoose.Schema(

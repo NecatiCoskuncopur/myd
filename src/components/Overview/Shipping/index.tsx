@@ -1,8 +1,9 @@
 'use client';
 
 import { Grid } from '@mui/material';
-import ShippingStats from './ShippingStats';
+
 import HeatMap from './HeatMap';
+import ShippingStats from './ShippingStats';
 
 const Shipping = () => {
   return (

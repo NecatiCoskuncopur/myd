@@ -1,10 +1,11 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import mongoose from 'mongoose';
+
 import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
-import mongoose from 'mongoose';
 import { Shipping } from '@/models';
 
 const getShippingStats = async (): Promise<ResponseTypes.IActionResponse<SummaryTypes.IShippingStats>> => {

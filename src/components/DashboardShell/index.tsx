@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-
 import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 
 import getUser from '@/app/actions/user/getUser';
 import getDashboardTheme from '@/theme';
-import SideMenu from './SideMenu';
 import { UserTypes } from '@/types/user';
+
+import SideMenu from './SideMenu';
 
 type Props = {
   children: React.ReactNode;

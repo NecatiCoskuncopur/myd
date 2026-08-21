@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react';
 import getPricingList from '@/app/actions/admin/getPricingList';
 import getUser from '@/app/actions/user/getUser';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
-
 import { generalMessages } from '@/constants';
-
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { UserTypes } from '@/types/user';

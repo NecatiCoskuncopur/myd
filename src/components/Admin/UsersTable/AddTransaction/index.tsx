@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
-
 import { AddCircleOutlined } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -9,9 +8,10 @@ import { useForm } from 'react-hook-form';
 import addTransactionUserBalance from '@/app/actions/admin/addTransactionUserBalance';
 import StyledButton from '@/components/StyledButton';
 import { generalMessages, transactionMessages } from '@/constants';
-import FormItems from './FormItems';
-import { AdminTypes } from '@/types/admin';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { AdminTypes } from '@/types/admin';
+
+import FormItems from './FormItems';
 
 const { SUCCESS } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

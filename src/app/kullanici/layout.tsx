@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-
 import styled from '@emotion/styled';
 import { Box, CssBaseline, Grid, ThemeProvider, Typography } from '@mui/material';
 

@@ -1,17 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { Alert, Box, Button, CircularProgress, ClickAwayListener, Dialog, DialogContent, Paper, Popper, Typography } from '@mui/material';
 
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
 import getUserPricingLists from '@/app/actions/user/getUserPricingList';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { ShippingTypes } from '@/types/shipping';
-import { PricingListTypes } from '@/types/pricingList';
 import { Carrier } from '@/constants';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { PricingListTypes } from '@/types/pricingList';
+import { ShippingTypes } from '@/types/shipping';
 
 interface Props {
   shipping: ShippingTypes.IShipping;

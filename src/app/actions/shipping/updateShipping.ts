@@ -5,12 +5,12 @@ import mongoose from 'mongoose';
 import { ValidationError } from 'yup';
 
 import { generalMessages, shippingMessages } from '@/constants';
+import { UserRole } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping } from '@/models';
 import updateShippingSchema from '@/schemas/updateShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
-import { UserRole } from '@/constants';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { ALREADY_LABELED, CONSIGNEE, ID, NOT_FOUND, UPDATESHIPPING } = shippingMessages;

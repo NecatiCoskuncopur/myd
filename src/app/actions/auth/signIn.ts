@@ -1,6 +1,5 @@
 'use server';
 import { cookies } from 'next/headers';
-
 import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -11,8 +10,8 @@ import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
-import loginSchema from '@/schemas/login.schema';
 import { UserDocument } from '@/models/User.model';
+import loginSchema from '@/schemas/login.schema';
 
 const signIn = async (data: AuthTypes.ISignInPayload): Promise<ResponseTypes.IActionResponse<AuthTypes.ISignInResponse>> => {
   try {

@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Alert, Box, CircularProgress, Divider, FormControl, Grid, MenuItem, Paper, Select, Typography, useTheme } from '@mui/material';
+import { BarChart } from '@mui/x-charts/BarChart';
+
 import getBalanceDashboardData, { YearlyStatsResponse } from '@/app/actions/summary/getBalanceStats';
 import { generalMessages, transactionMessages } from '@/constants';
-import { Alert, Box, CircularProgress, Grid, Typography, useTheme, Select, MenuItem, FormControl, Paper, Divider } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const { BALANCE } = transactionMessages;
 const { UNEXPECTED_ERROR } = generalMessages;

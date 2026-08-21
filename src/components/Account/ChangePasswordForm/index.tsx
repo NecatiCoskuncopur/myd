@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-
 import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import changePassword from '@/app/actions/user/changePassword';
 import StyledButton from '@/components/StyledButton';
 import { userMessages } from '@/constants';
-import FormItems from './FormItems';
-import { UserTypes } from '@/types/user';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { UserTypes } from '@/types/user';
+
+import FormItems from './FormItems';
 
 const { PASSWORD } = userMessages;
 

@@ -1,13 +1,12 @@
 import React from 'react';
-
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PriceChangeOutlinedIcon from '@mui/icons-material/PriceChangeOutlined';
 import { Autocomplete, Divider, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
-import { CarrierAccountTypeEnum } from '@/constants';
 import { AddressFields, ContactFields, NickNameField, PersonalFields, TaxFields } from '@/components';
+import { CarrierAccountTypeEnum } from '@/constants';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';

@@ -1,7 +1,9 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import PricingZoneSchema from './PricingZoneSchema.model';
+
 import { CarrierAccountTypeEnum } from '@/constants';
+
+import PricingZoneSchema from './PricingZoneSchema.model';
 
 const PricingListSchema = new mongoose.Schema(
   {

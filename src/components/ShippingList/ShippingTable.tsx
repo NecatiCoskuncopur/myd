@@ -5,8 +5,10 @@ import { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+
 import { GenericDataGrid } from '@/components';
 import { ShippingTypes } from '@/types/shipping';
+
 import columns from './columns';
 
 interface ShippingTableProps {

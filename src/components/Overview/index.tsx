@@ -1,5 +1,6 @@
 'use client';
 import { Box } from '@mui/material';
+
 import BalanceStats from './BalanceStats';
 import Shipping from './Shipping';
 

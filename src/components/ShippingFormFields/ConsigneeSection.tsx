@@ -4,12 +4,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Autocomplete, Grid, TextField, Typography } from '@mui/material';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
+import getConsignees from '@/app/actions/consignee/getConsignees';
 import { addressMessages, countries, countryStates, shippingMessages, userMessages } from '@/constants';
+import { ConsigneeTypes } from '@/types/consignee';
+import { ShippingTypes } from '@/types/shipping';
+
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
-import { ShippingTypes } from '@/types/shipping';
-import { ConsigneeTypes } from '@/types/consignee';
-import getConsignees from '@/app/actions/consignee/getConsignees';
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;

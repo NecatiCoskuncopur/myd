@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
-
 import { Carrier, CarrierAccountTypeEnum } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 

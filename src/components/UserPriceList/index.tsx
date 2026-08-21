@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-
 import { Box, Tab, Tabs, useTheme } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
@@ -9,6 +8,7 @@ import getUserPricingList from '@/app/actions/user/getUserPricingList';
 import { TableHeader, TableWrapper, Wrapper } from '@/components';
 import { CarrierAccountTypeEnum, generalMessages } from '@/constants';
 import { PricingListTypes } from '@/types/pricingList';
+
 import PriceCalculator from './PriceCalculator';
 
 type Row = {

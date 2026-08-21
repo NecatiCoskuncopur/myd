@@ -1,15 +1,15 @@
 import React, { useEffect, useTransition } from 'react';
-
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { useForm, useWatch } from 'react-hook-form';
 
 import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
 import { StyledButton } from '@/components';
 import { carrierMessages, generalMessages } from '@/constants';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
-import FormItems from './FormItems';
 import getCarrierCredentials from '@/lib/getCarrierCredentials';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+
+import FormItems from './FormItems';
 
 type UpdateCarrierAccountProps = {
   open: boolean;

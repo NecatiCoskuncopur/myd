@@ -1,8 +1,9 @@
 'use client';
 
-import TableWrapper from './TableWrapper';
-import { DataGrid, type DataGridProps } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
+import { DataGrid, type DataGridProps } from '@mui/x-data-grid';
+
+import TableWrapper from './TableWrapper';
 
 type GenericDataGridProps = DataGridProps & {
   totalCount?: number;

@@ -1,11 +1,13 @@
-import { carrierMessages } from '@/constants';
-import { ShippingTypes } from '@/types/shipping';
-import { CarrierTypes } from '@/types/carrier';
-import latinize from 'latinize';
-import mergePdfLabels from '@/lib/mergedPdfLabels';
-import saveShippingDocument from '../../app/actions/shippingDocument/saveShippingDocument';
 import * as Sentry from '@sentry/nextjs';
+import latinize from 'latinize';
+
+import { carrierMessages } from '@/constants';
+import mergePdfLabels from '@/lib/mergedPdfLabels';
+import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { ShippingTypes } from '@/types/shipping';
+
+import saveShippingDocument from '../../app/actions/shippingDocument/saveShippingDocument';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Balance, User } from '@/models';
+import * as Sentry from '@sentry/nextjs';
 
 import connectMongoDB from '@/lib/db';
 import sendSms from '@/lib/sendSms';
-import * as Sentry from '@sentry/nextjs';
+import { Balance, User } from '@/models';
 
 export async function GET(req: Request) {
   const secret = req.headers.get('x-cron-secret');

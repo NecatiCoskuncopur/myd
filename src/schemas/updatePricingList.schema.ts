@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import { pricingListMessages } from '@/constants';
+
 import createPricingListSchema from './createPricingList.schema';
 
 const updatePricingListSchema = createPricingListSchema.shape({

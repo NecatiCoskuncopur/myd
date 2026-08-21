@@ -1,4 +1,5 @@
 import { countries } from '@/constants';
+import { PricingListTypes } from '@/types/pricingList';
 
 interface GetCustomerPriceParams {
   countryCode: string;

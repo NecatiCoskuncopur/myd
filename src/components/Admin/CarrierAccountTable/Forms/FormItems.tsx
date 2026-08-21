@@ -1,11 +1,12 @@
 import React from 'react';
-
-import { Control, Controller, FieldError, FieldErrors, FieldPath, UseFormSetValue } from 'react-hook-form';
 import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography, useTheme } from '@mui/material';
-import PricingZoneEditor from './PricingZoneEditor';
+import { Control, Controller, FieldError, FieldErrors, FieldPath, UseFormSetValue } from 'react-hook-form';
+
 import { Carrier, CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+
 import CustomInfoSection from '../CustomInfoSection';
+import PricingZoneEditor from './PricingZoneEditor';
 
 type CarrierAccountFormPayload = CarrierAccountTypes.ICreateCarrierAccountPayload | CarrierAccountTypes.IUpdateCarrierAccountPayload;
 

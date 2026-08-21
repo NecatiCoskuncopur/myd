@@ -1,15 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
 import getAllUsers from '@/app/actions/admin/getAllUsers';
-
 import { generalMessages } from '@/constants';
-
 import { useSnackbar } from '@/providers/SnackbarProvider';
-
 import { AdminTypes } from '@/types/admin';
 
 const useUsersList = (searchParams: ReadonlyURLSearchParams) => {

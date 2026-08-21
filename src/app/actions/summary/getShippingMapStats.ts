@@ -1,11 +1,12 @@
 'use server';
 
 import * as Sentry from '@sentry/nextjs';
+import mongoose from 'mongoose';
+
 import { generalMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
-import { Shipping } from '@/models';
 import { getCurrentUser } from '@/lib/getCurrentUser';
-import mongoose from 'mongoose';
+import { Shipping } from '@/models';
 
 const getShippingMapStats = async (): Promise<ResponseTypes.IActionResponse<SummaryTypes.IHeatMap>> => {
   try {

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-
 import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import forgotPassword from '@/app/actions/auth/forgotPassword';
 import { authMessages, generalMessages } from '@/constants';
+
 import ForgotPasswordSuccess from './ForgotPasswordSuccess';
 import FormItems from './FormItems';
 

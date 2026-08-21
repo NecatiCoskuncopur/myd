@@ -2,16 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 
 import getUser from '@/app/actions/user/getUser';
-import { shippingMessages, userMessages } from '@/constants';
-import { UserTypes } from '@/types/user';
 import { CreateBarcodeButton, DeleteShipping } from '@/components';
-import { ShippingTypes } from '@/types/shipping';
+import { shippingMessages, userMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { ShippingTypes } from '@/types/shipping';
+import { UserTypes } from '@/types/user';
 
 const { DELETE } = shippingMessages;
 const { NOT_FOUND } = userMessages;

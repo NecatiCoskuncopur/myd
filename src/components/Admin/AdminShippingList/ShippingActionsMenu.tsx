@@ -1,22 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { DeleteOutlined } from '@mui/icons-material';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
 import { Carrier } from '@/constants';
-
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import { getCarrierPrice } from '@/lib/getCarrierPrice';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
-
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';

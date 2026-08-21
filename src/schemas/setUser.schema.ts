@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import { transactionMessages, userMessages } from '@/constants';
+
 import editUserSchema from './editUser.schema';
 
 const { ROLE, ISACTIVE, BARCODE_PERMITS, NICKNAME } = userMessages;

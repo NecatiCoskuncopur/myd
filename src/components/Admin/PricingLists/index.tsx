@@ -2,23 +2,20 @@
 
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-
 import AddIcon from '@mui/icons-material/Add';
 import { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
-
 import { useSnackbar } from '@/providers/SnackbarProvider';
 
 import columns from './columns';
-import CreateList from './Forms/CreateList';
 import DeleteList from './DeleteList';
 import FilterSection from './FilterSection';
-import PriceListActionsMenu from './PriceListActionsMenu';
+import CreateList from './Forms/CreateList';
 import UpdateList from './Forms/UpdateList';
-
 import usePriceListActions from './hooks/usePriceListActions';
 import usePriceLists from './hooks/usePriceLists';
+import PriceListActionsMenu from './PriceListActionsMenu';
 
 const PriceLists = () => {
   const searchParams = useSearchParams();

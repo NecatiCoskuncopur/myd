@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
 import { Grid } from '@mui/material';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import React from 'react';
-import { captchaMessages } from '@/constants';
+
 import { HCaptcha } from '@/components';
+import { captchaMessages } from '@/constants';
 
 type CaptchaFieldProps<T extends FieldValues & { recaptchaToken: string }> = {
   captchaKey: number;

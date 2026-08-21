@@ -1,10 +1,10 @@
 import React from 'react';
-
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { Grid, Typography } from '@mui/material';
 
-import CardHeader from './CardHeader';
 import { ShippingTypes } from '@/types/shipping';
+
+import CardHeader from './CardHeader';
 
 type ShippingDetailSectionProps = {
   detail: ShippingTypes.IShippingDetail | undefined;

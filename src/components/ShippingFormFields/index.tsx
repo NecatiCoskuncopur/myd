@@ -1,12 +1,13 @@
 import { usePathname } from 'next/navigation';
 import { Box } from '@mui/material';
 
+import { UserTypes } from '@/types/user';
+
 import ConsigneeSection from './ConsigneeSection';
 import PackageContentSection from './PackageContentSection';
 import PackageDetailSection from './PackageDetailSection';
 import SenderSection from './SenderSection';
 import ShippingDetailSection from './ShippingDetailSection';
-import { UserTypes } from '@/types/user';
 
 type ShippingFormFieldsProps = {
   user?: UserTypes.UserDto | null;

@@ -21,7 +21,10 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
     const userDoc = await User.findById(userId).select('-password').lean();
 
     if (!userDoc) {
-      return { status: 'ERROR', message: userMessages.NOT_FOUND };
+      return {
+        status: 'ERROR',
+        message: userMessages.NOT_FOUND,
+      };
     }
 
     const cleanUser: UserTypes.UserDto = {
@@ -31,12 +34,19 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
       lastName: userDoc.lastName,
       nickname: userDoc.nickname || '',
       company: userDoc.company || '',
+      taxId: userDoc.taxId || '',
+      taxOffice: userDoc.taxOffice || '',
       phone: userDoc.phone,
       role: userDoc.role as UserTypes.UserDto['role'],
       isActive: userDoc.isActive,
       barcodePermits: userDoc.barcodePermits || [],
       address: userDoc.address,
-      priceListId: userDoc.priceListId ? String(userDoc.priceListId) : undefined,
+
+      priceLists: (userDoc.priceLists || []).map(item => ({
+        serviceType: item.serviceType,
+        priceListId: String(item.priceListId),
+      })),
+
       createdAt: userDoc.createdAt,
       updatedAt: userDoc.updatedAt,
     };
@@ -53,7 +63,10 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
       });
     }
 
-    return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };
+    return {
+      status: 'ERROR',
+      message: generalMessages.UNEXPECTED_ERROR,
+    };
   }
 };
 

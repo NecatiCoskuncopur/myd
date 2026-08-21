@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';

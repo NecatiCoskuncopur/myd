@@ -1,10 +1,9 @@
 import React from 'react';
-
 import { Grid } from '@mui/material';
 import { Control, FieldErrors } from 'react-hook-form';
 
-import { UserTypes } from '@/types/user';
 import { AddressFields, ContactFields, NickNameField, PersonalFields, TaxFields } from '@/components';
+import { UserTypes } from '@/types/user';
 
 type FormFieldsProps = {
   errors: FieldErrors<UserTypes.IEditUserPayload>;

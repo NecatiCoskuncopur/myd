@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Box, Typography } from '@mui/material';
 type TableHeaderProps = {
   children: React.ReactNode;

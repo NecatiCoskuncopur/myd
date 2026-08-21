@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, PaginateModel, Schema, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
+
 import { CarrierAccountTypeEnum, emailRegex, phoneRegex, userMessages, UserRole } from '@/constants';
 
 const { EMAIL, PHONE } = userMessages;

@@ -2,9 +2,8 @@
 
 import React, { useState } from 'react';
 import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
-
-import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SearchIcon from '@mui/icons-material/Search';
 import { Grid, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';

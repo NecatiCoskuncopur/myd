@@ -1,7 +1,9 @@
+import { Types } from 'mongoose';
+
 import { addressMessages, generalMessages, pricingListMessages } from '@/constants';
 import { PricingList } from '@/models';
+
 import getCountry from './getCountry';
-import { Types } from 'mongoose';
 
 const { COUNTRY } = addressMessages;
 const { PRICE, PRICING } = pricingListMessages;
