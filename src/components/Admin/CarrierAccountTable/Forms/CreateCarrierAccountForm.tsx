@@ -1,10 +1,10 @@
 import React, { useEffect, useTransition } from 'react';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import createCarrierAccount from '@/app/actions/admin/createCarrierAccount';
-import StyledButton from '@/components/StyledButton';
+import { StyledButton } from '@/components';
 import { Carrier, CarrierAccountTypeEnum, carrierConfig, carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import FormItems from './FormItems';
@@ -28,7 +28,6 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const {
     control,
     handleSubmit,
-    watch,
     setValue,
     reset,
     formState: { errors },
@@ -39,10 +38,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       accountNumber: '',
       carrier: Carrier.FEDEX,
       accountType: CarrierAccountTypeEnum.ECONOMY,
-      credentials: [
-        { key: 'apiKey', value: '' },
-        { key: 'secretKey', value: '' },
-      ],
+      credentials: carrierConfig[Carrier.FEDEX]?.credentials?.map(credential => ({ ...credential })) ?? [],
       pricing: {},
       hasCustomInfo: false,
       customInfo: {
@@ -62,8 +58,20 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
     },
   });
 
-  const selectedCarrier = watch('carrier');
-  const hasCustomInfo = watch('hasCustomInfo');
+  const selectedCarrier = useWatch({
+    control,
+    name: 'carrier',
+  });
+
+  const hasCustomInfo = useWatch({
+    control,
+    name: 'hasCustomInfo',
+  });
+
+  const credentials = useWatch({
+    control,
+    name: 'credentials',
+  });
 
   useEffect(() => {
     if (!selectedCarrier) return;
@@ -99,7 +107,6 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
     }
   }, [open, reset]);
 
-  const credentials = watch('credentials');
   return (
     <>
       <Dialog
@@ -119,7 +126,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
         <form>
           <DialogTitle>Kargo Hesabı Oluştur</DialogTitle>
           <DialogContent>
-            <FormItems control={control} setValue={setValue} credentials={credentials} hasCustomInfo={hasCustomInfo} errors={errors} />
+            <FormItems mode="create" control={control} setValue={setValue} credentials={credentials} hasCustomInfo={hasCustomInfo} errors={errors} />
           </DialogContent>
 
           <DialogActions sx={{ px: 3, pb: 3 }}>

@@ -1,93 +1,37 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useSearchParams } from 'next/navigation';
-
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-
-import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
-import { Wrapper, TableHeader, StyledButton, GenericDataGrid } from '@/components';
-import { Carrier, CarrierAccountTypeEnum } from '@/constants';
+import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
 import columns from './columns';
-import CreateCarrierAccountForm from './CreateCarrierAccountForm';
 import FilterSection from './FilterSection';
-import UpdateCarrierAccountForm from './UpdateCarrierAccountForm';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
+import CreateCarrierAccountForm from './Forms/CreateCarrierAccountForm';
+import UpdateCarrierAccountForm from './Forms/UpdateCarrierAccountForm';
+import CarrierAccountActionsMenu from './CarrierAccountActionsMenu';
+import useCarrierAccountsList from './hooks/useCarrierAccountsList';
+import useCarrierAccountActions from './hooks/useCarrierAccountActions';
 
 const CarrierAccountTable = () => {
   const searchParams = useSearchParams();
 
-  const [isClient, setIsClient] = useState(false);
-  const [data, setData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { data, rows, loading, page, limit, refetch } = useCarrierAccountsList(searchParams);
 
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = useState<CarrierAccountTypes.ICarrierAccount | null>(null);
+  const {
+    selectedRow,
+    menuAnchorEl,
 
-  const [modalState, setModalState] = useState<{
-    type: 'edit' | 'create' | '';
-    open: boolean;
-  }>({ type: '', open: false });
+    isCreateModalOpen,
+    isEditModalOpen,
 
-  const requestIdRef = useRef(0);
+    openMenu,
+    closeMenu,
 
-  const page = Number(searchParams.get('sayfa')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
-
-  useEffect(() => setIsClient(true), []);
-
-  const fetchCarrierAccounts = useCallback(async () => {
-    const requestId = ++requestIdRef.current;
-
-    setLoading(true);
-
-    const response = await getCarrierAccounts({
-      page,
-      limit,
-      name: searchParams.get('name') || undefined,
-      displayName: searchParams.get('displayName') || undefined,
-      accountType: (searchParams.get('accountType') as CarrierAccountTypeEnum) || undefined,
-      accountNumber: searchParams.get('accountNumber') || undefined,
-      carrier: (searchParams.get('carrier') as Carrier) || undefined,
-      isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
-    });
-
-    if (requestId === requestIdRef.current) {
-      if (response.status === 'OK' && response.data) {
-        setData(response.data);
-      } else {
-        console.error(response.message);
-      }
-
-      setLoading(false);
-    }
-  }, [page, limit, searchParams]);
-
-  useEffect(() => {
-    if (!isClient) return;
-
-    fetchCarrierAccounts();
-  }, [isClient, fetchCarrierAccounts]);
-
-  const rows =
-    data?.carrierAccounts.map(account => ({
-      id: account._id,
-      ...account,
-    })) ?? [];
-
-  const handleOpenModal = (type: 'edit' | 'create') => {
-    setModalState({ type, open: true });
-    setMenuAnchorEl(null);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedRow(null);
-    setModalState({ type: '', open: false });
-  };
+    openCreateModal,
+    openEditModal,
+    closeModal,
+  } = useCarrierAccountActions();
 
   const accountColumns: GridColDef[] = [
     ...columns,
@@ -99,38 +43,22 @@ const CarrierAccountTable = () => {
       sortable: false,
       filterable: false,
       renderCell: params => (
-        <>
-          <IconButton
-            size="small"
-            onClick={e => {
-              setSelectedRow(params.row);
-              setMenuAnchorEl(e.currentTarget);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={menuAnchorEl !== null && selectedRow?._id === params.row.id}
-            onClose={() => {
-              setMenuAnchorEl(null);
-              setSelectedRow(null);
-            }}
-          >
-            <MenuItem onClick={() => handleOpenModal('edit')}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Düzenle</ListItemText>
-            </MenuItem>
-          </Menu>
-        </>
+        <CarrierAccountActionsMenu
+          row={params.row}
+          selectedRow={selectedRow}
+          anchorEl={menuAnchorEl}
+          onOpen={openMenu}
+          onClose={closeMenu}
+          onEdit={openEditModal}
+        />
       ),
     },
   ];
 
-  if (!isClient) return null;
+  const handleFormSuccess = () => {
+    closeModal();
+    void refetch();
+  };
 
   return (
     <Wrapper>
@@ -138,13 +66,22 @@ const CarrierAccountTable = () => {
         <StyledButton
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => handleOpenModal('create')}
-          sx={{ flexShrink: 0, whiteSpace: 'nowrap', alignSelf: { xs: 'stretch', sm: 'center' } }}
+          onClick={openCreateModal}
+          sx={{
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+            alignSelf: {
+              xs: 'stretch',
+              sm: 'center',
+            },
+          }}
         >
           Yeni Hesap Oluştur
         </StyledButton>
       </TableHeader>
+
       <FilterSection searchParams={searchParams} />
+
       <GenericDataGrid
         rows={rows}
         columns={accountColumns}
@@ -155,24 +92,10 @@ const CarrierAccountTable = () => {
         searchParams={searchParams}
         noRowsMessage="Sistemde tanımlı kargo hesabı bulunamadı. Yeni bir taşıyıcı firma hesabı ekleyerek başlayabilirsiniz."
       />
-      <CreateCarrierAccountForm
-        open={modalState.type === 'create' && modalState.open}
-        onClose={handleCloseModal}
-        onSuccess={() => {
-          handleCloseModal();
-          void fetchCarrierAccounts();
-        }}
-      />
 
-      <UpdateCarrierAccountForm
-        open={modalState.type === 'edit' && modalState.open}
-        account={selectedRow}
-        onClose={handleCloseModal}
-        onSuccess={() => {
-          handleCloseModal();
-          void fetchCarrierAccounts();
-        }}
-      />
+      <CreateCarrierAccountForm open={isCreateModalOpen} onClose={closeModal} onSuccess={handleFormSuccess} />
+
+      <UpdateCarrierAccountForm open={isEditModalOpen} account={selectedRow} onClose={closeModal} onSuccess={handleFormSuccess} />
     </Wrapper>
   );
 };

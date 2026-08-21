@@ -5,16 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/BarcodeResultDialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingDialogs.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingUser.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/utils/openBase64Pdf.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CarrierAccountActionsMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/PricingZoneEditor.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountActions.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountsList.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/FormItems.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CreateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/CreateCarrierAccountForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/FormItems.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/UpdateCarrierAccountForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/UpdateCarrierAccountForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PricingZoneEditor.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/adminCreateUser.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/baseUserSchema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/baseUserSchema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,11 +84,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\CarrierAccountTable\Forms" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Table" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\public\images\fedex" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\public\images" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\public" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">

@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } f
 import { useForm, useWatch } from 'react-hook-form';
 
 import updateCarrierAccount from '@/app/actions/admin/updateCarrierAccount';
-import StyledButton from '@/components/StyledButton';
+import { StyledButton } from '@/components';
 import { carrierMessages, generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import FormItems from './FormItems';
@@ -107,7 +107,15 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
         <form>
           <DialogTitle>Kargo Hesabını Düzenle</DialogTitle>
           <DialogContent>
-            <FormItems control={control} setValue={setValue} credentials={credentials} hasCustomInfo={hasCustomInfo} errors={errors} account={account} />
+            <FormItems
+              mode="update"
+              control={control}
+              setValue={setValue}
+              credentials={credentials}
+              hasCustomInfo={hasCustomInfo}
+              errors={errors}
+              account={account}
+            />
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>
             <Button onClick={handleClose} color="inherit">
