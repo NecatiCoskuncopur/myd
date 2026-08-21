@@ -5,11 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/BarcodeResultDialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/ShippingTable.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingActions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingList.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingUser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/openBase64Pdf.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/utils/openBase64Pdf.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -13,7 +13,7 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 import useShippingActions from './hooks/useShippingActions';
 import useShippingList from './hooks/useShippingList';
 import useShippingUser from './hooks/useShippingUser';
-import openBase64Pdf from './utils/openBase64Pdf';
+import openBase64Pdf from '@/lib/openBase64Pdf';
 import FilterSection from './FilterSection';
 import ShippingActionsMenu from './ShippingActionsMenu';
 import ShippingDialogs from './ShippingDialogs';
