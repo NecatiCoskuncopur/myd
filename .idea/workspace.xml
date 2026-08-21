@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/Forms/CreateList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/Forms/FormItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/Forms/UpdateList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/PriceListActionsMenu.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceListActions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceLists.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/CreateList.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/UpdateList.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
