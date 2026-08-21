@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/BarcodeResultDialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingDialogs.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingUser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/utils/openBase64Pdf.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/PriceCalculator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/PriceCalculator.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/PricingList.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/PricingList.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/calculateShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/calculateShipping.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/pricingList.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/pricingList.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,232 +1,93 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import getCarrierIcon from '@/lib/getCarrierIcon';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import { DeleteOutlined } from '@mui/icons-material';
-import EditIcon from '@mui/icons-material/Edit';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  Divider,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-
-import listAllShipping from '@/app/actions/admin/listAllShipping';
-import getUser from '@/app/actions/user/getUser';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
-import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
-import { TableHeader, Wrapper, DeleteShipping, GenericDataGrid } from '@/components';
+import { TableHeader, Wrapper } from '@/components';
 import { Carrier, generalMessages } from '@/constants';
-import columns from './columns';
-import { UserTypes } from '@/types/user';
-import FilterSection from './FilterSection';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
-import { ShippingTypes } from '@/types/shipping';
 import { useSnackbar } from '@/providers/SnackbarProvider';
-import { getCarrierPrice } from '@/lib/getCarrierPrice';
-import getPricingList from '@/app/actions/admin/getPricingList';
-import { getCustomerPrice } from '@/lib/getCustomerPrice';
-import PackageDimensionsDialog from '@/components/Admin/AdminShippingList/PackageDimensionDialog';
-import { PricingListTypes } from '@/types/pricingList';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
+import useShippingActions from './hooks/useShippingActions';
+import useShippingList from './hooks/useShippingList';
+import useShippingUser from './hooks/useShippingUser';
+import openBase64Pdf from './utils/openBase64Pdf';
+import FilterSection from './FilterSection';
+import ShippingActionsMenu from './ShippingActionsMenu';
+import ShippingDialogs from './ShippingDialogs';
+import ShippingTable from './ShippingTable';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const AdminShippingList = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [isClient, setIsClient] = useState(false);
-  const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
-  const [loading, setLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
-  const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [pricingLists, setPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
-  const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
-  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
 
-  const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
-  const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
-  const [barcodeLoading, setBarcodeLoading] = useState(false);
-  const [barcodeError, setBarcodeError] = useState<string | null>(null);
-  const [packageDialogOpen, setPackageDialogOpen] = useState(false);
+  const { data, rows, loading, page, limit, refetch } = useShippingList(searchParams);
 
-  const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
+  const { pricingLists, accounts, canCreateBarcode } = useShippingUser();
 
-  const requestIdRef = useRef(0);
-  const page = Number(searchParams.get('sayfa')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
-
-  useEffect(() => setIsClient(true), []);
-
-  const filters = useMemo(
-    () => ({
-      consigneeName: searchParams.get('consigneeName') || undefined,
-      consigneePhone: searchParams.get('consigneePhone') || undefined,
-      trackingNumber: searchParams.get('trackingNumber') || undefined,
-      startDate: searchParams.get('startDate') || undefined,
-      endDate: searchParams.get('endDate') || undefined,
-    }),
-    [searchParams],
-  );
-
-  const fetchList = useCallback(async () => {
-    const requestId = ++requestIdRef.current;
-
-    setLoading(true);
-
-    try {
-      const response = await listAllShipping({
-        page,
-        limit,
-        ...filters,
-      });
-
-      if (requestId !== requestIdRef.current) return;
-
-      if (response.status === 'OK' && response.data && 'shippings' in response.data) {
-        setData(response.data);
-        return;
-      }
-
-      setData(null);
-
-      showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
-    } catch {
-      if (requestId !== requestIdRef.current) return;
-
-      setData(null);
-
-      showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
-    } finally {
-      if (requestId === requestIdRef.current) {
-        setLoading(false);
-      }
-    }
-  }, [page, limit, filters]);
+  const {
+    selectedRow,
+    actionIconButton,
+    menuOpen,
+    deleteOpen,
+    packageDialogOpen,
+    barcodeDialogOpen,
+    barcodeLoading,
+    barcodeError,
+    openActionsMenu,
+    closeActionsMenu,
+    openDeleteDialog,
+    closeDeleteDialog,
+    openPackageDialog,
+    closePackageDialog,
+    closeBarcodeDialog,
+    startBarcodeLoading,
+    finishBarcodeLoading,
+    setBarcodeFailure,
+    clearBarcodeError,
+  } = useShippingActions();
 
   useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const result = await getUser();
-      if (result.status === 'OK' && result.data) {
-        setUser(result.data);
-      }
-    };
-    fetchUser();
+    setIsClient(true);
   }, []);
-
-  useEffect(() => {
-    const fetchPricingLists = async () => {
-      const userPriceLists = user?.priceLists ?? [];
-
-      if (userPriceLists.length === 0) {
-        setPricingLists({});
-        return;
-      }
-
-      const results = await Promise.all(
-        userPriceLists.map(async ({ serviceType, priceListId }) => {
-          const result = await getPricingList(priceListId);
-
-          return result.status === 'OK' && result.data ? ([serviceType, result.data] as const) : null;
-        }),
-      );
-
-      setPricingLists(Object.fromEntries(results.filter((entry): entry is NonNullable<typeof entry> => entry !== null)));
-    };
-
-    fetchPricingLists();
-  }, [user?.priceLists]);
-
-  useEffect(() => {
-    if (!canCreateBarcode) return;
-
-    const fetchAccounts = async () => {
-      const res = await getUserPermittedAccounts();
-      if (res.status === 'OK' && res.data) {
-        setAccounts(res.data);
-      } else {
-        console.error(res.message || UNEXPECTED_ERROR);
-      }
-    };
-
-    fetchAccounts();
-  }, [canCreateBarcode]);
-
-  const closeActionsMenu = () => {
-    setMenuOpen(false);
-    setTimeout(() => {
-      if (!deleteOpen) {
-        setActionIconButton(null);
-        setSelectedRow(null);
-      }
-    }, 200);
-  };
-
-  const handleOpenDeletePopup = () => {
-    setMenuOpen(false);
-    setDeleteOpen(true);
-  };
-
-  const handleCloseDeletePopup = () => {
-    setDeleteOpen(false);
-    setActionIconButton(null);
-    setSelectedRow(null);
-  };
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
-    if (!shippingId || !account.carrier || !account.accountNumber) return;
+
+    if (!shippingId || !account.carrier || !account.accountNumber || !account._id) {
+      return;
+    }
 
     closeActionsMenu();
-    setBarcodeDialogOpen(true);
-    setBarcodeLoading(true);
-    setBarcodeError(null);
+    startBarcodeLoading();
 
     try {
-      const res = await createBarcode({
+      const response = await createBarcode({
         customInfo: account.customInfo,
         hasCustomInfo: !!account.hasCustomInfo,
         displayName: account.displayName!,
         shippingId,
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
-        carrierAccountId: account._id!.toString(),
+        carrierAccountId: account._id.toString(),
       });
 
-      if (res.status === 'OK') {
-        await fetchList();
-      } else {
-        setBarcodeError(res.message || 'Barkod oluşturulamadı');
+      if (response.status === 'OK') {
+        await refetch();
+        return;
       }
+      setBarcodeFailure(response.message || 'Barkod oluşturulamadı');
     } catch {
-      setBarcodeError('Sistem hatası oluştu');
+      setBarcodeFailure('Sistem hatası oluştu');
     } finally {
-      setBarcodeLoading(false);
+      finishBarcodeLoading();
     }
   };
 
@@ -238,7 +99,10 @@ const AdminShippingList = () => {
     if (!shippingId) return;
 
     try {
-      const response = await getPaper({ shippingId, type });
+      const response = await getPaper({
+        shippingId,
+        type,
+      });
 
       if (response.status !== 'OK' || !response.data?.file) {
         showSnackbar(response.message ?? 'Evrak indirilirken bir hata oluştu.', 'error');
@@ -246,11 +110,7 @@ const AdminShippingList = () => {
         return;
       }
 
-      const binary = atob(response.data.file);
-      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank', 'noopener,noreferrer');
+      openBase64Pdf(response.data.file);
     } catch (error) {
       console.error(error);
 
@@ -258,182 +118,57 @@ const AdminShippingList = () => {
     }
   };
 
-  const handleOpenPackageDialog = () => {
-    if (!selectedRow) return;
-
-    setMenuOpen(false);
-    setActionIconButton(null);
-    setPackageDialogOpen(true);
-  };
-
-  const rows = useMemo(() => data?.shippings ?? [], [data]);
-
-  const shippingColumns: GridColDef[] = useMemo(
-    () => [
-      ...columns,
-      {
-        field: 'actions',
-        headerName: 'İşlemler',
-        flex: 1,
-        minWidth: 120,
-        sortable: false,
-        filterable: false,
-        renderCell: params => (
-          <IconButton
-            size="small"
-            onClick={e => {
-              setSelectedRow(params.row);
-              setActionIconButton(e.currentTarget);
-              setMenuOpen(true);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        ),
-      },
-    ],
-    [],
-  );
-
   if (!isClient) return null;
 
-  const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
-  const hasLabel = selectedRow?.labeledAt ? new Date(selectedRow.labeledAt).setMonth(new Date(selectedRow.labeledAt).getMonth() + 3) > Date.now() : false;
-  const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Wrapper>
-        <TableHeader title="Gönderiler" subTitle="Tüm kullanıcılara ait gönderilerin detayları ve güncel durum bilgileri." stacked={true}>
+        <TableHeader title="Gönderiler" subTitle="Tüm kullanıcılara ait gönderilerin detayları ve güncel durum bilgileri." stacked>
           <FilterSection searchParams={searchParams} />
         </TableHeader>
-        <GenericDataGrid
+
+        <ShippingTable
           rows={rows}
-          columns={shippingColumns}
-          loading={loading}
           totalCount={data?.totalCount}
+          loading={loading}
           page={page}
           limit={limit}
           searchParams={searchParams}
-          noRowsMessage="Henüz kayıtlı bir gönderi bulunmuyor."
+          onOpenActions={openActionsMenu}
         />
-        <Menu anchorEl={actionIconButton} open={menuOpen} onClose={closeActionsMenu}>
-          <MenuItem onClick={handleOpenPackageDialog}>
-            <ListItemIcon>
-              <Inventory2OutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Paket Bilgilerini Güncelle</ListItemText>
-          </MenuItem>
 
-          {!hasTrackingNumber && (
-            <MenuItem
-              onClick={() => {
-                const id = selectedRow?._id;
-                closeActionsMenu();
-                router.push(`/panel/gonderilerim/${id}/duzenle`);
-              }}
-            >
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Düzenle</ListItemText>
-            </MenuItem>
-          )}
-
-          {!hasTrackingNumber && (
-            <MenuItem onClick={handleOpenDeletePopup}>
-              <ListItemIcon>
-                <DeleteOutlined fontSize="small" color="error" />
-              </ListItemIcon>
-              <ListItemText sx={{ color: 'error.main' }}>Sil</ListItemText>
-            </MenuItem>
-          )}
-
-          {showBarcodeItem && <Divider />}
-          {showBarcodeItem &&
-            (accounts.length === 0 ? (
-              <MenuItem disabled>
-                <ListItemIcon>
-                  <QrCode2OutlinedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Barkod Hesabı Bulunamadı</ListItemText>
-              </MenuItem>
-            ) : (
-              accounts.map(acc => {
-                const icon = getCarrierIcon(acc.carrier as Carrier);
-                const cost = getCarrierPrice({
-                  countryCode: selectedRow?.consignee?.address.country ?? '',
-                  weight: selectedRow?.package.weight ?? 0,
-                  pricing: acc.pricing,
-                });
-
-                const customerPrice = getCustomerPrice({
-                  countryCode: selectedRow?.consignee?.address.country ?? '',
-                  weight: selectedRow?.package.weight ?? 0,
-                  pricingList: acc.accountType ? pricingLists[acc.accountType] : null,
-                });
-
-                return (
-                  <MenuItem key={acc._id} onClick={() => handleCreateBarcode(acc)}>
-                    <ListItemIcon sx={{ minWidth: 32, display: 'flex', alignItems: 'center' }}>{icon}</ListItemIcon>
-
-                    <ListItemText primary={acc.name} secondary={`Maliyet: ${cost ?? '-'} $ | Müşteri Fiyatı: ${customerPrice ?? '-'} $`} />
-                  </MenuItem>
-                );
-              })
-            ))}
-
-          {hasTrackingNumber && hasLabel && <Divider />}
-          {hasTrackingNumber && hasLabel && (
-            <MenuItem onClick={() => handleDownloadPaper('labels')}>
-              <ListItemIcon>
-                <DescriptionOutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Barkod İndir (Label)</ListItemText>
-            </MenuItem>
-          )}
-          {hasTrackingNumber && hasLabel && (
-            <MenuItem onClick={() => handleDownloadPaper('invoices')}>
-              <ListItemIcon>
-                <ReceiptLongOutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Proforma Fatura İndir</ListItemText>
-            </MenuItem>
-          )}
-        </Menu>
-        <Dialog open={barcodeDialogOpen} onClose={() => !barcodeLoading && setBarcodeDialogOpen(false)}>
-          <DialogContent sx={{ minWidth: 300, textAlign: 'center' }}>
-            {barcodeLoading && (
-              <Box>
-                <CircularProgress />
-                <Typography sx={{ mt: 2 }}>Barkod oluşturuluyor...</Typography>
-              </Box>
-            )}
-
-            {!barcodeLoading && barcodeError && (
-              <Alert severity="error" onClose={() => setBarcodeError(null)}>
-                {barcodeError}
-              </Alert>
-            )}
-
-            {!barcodeLoading && !barcodeError && <Typography>Barkod başarıyla oluşturuldu</Typography>}
-          </DialogContent>
-        </Dialog>
-        <PackageDimensionsDialog
-          open={packageDialogOpen}
-          shipping={selectedRow}
-          onClose={() => setPackageDialogOpen(false)}
-          onSuccess={fetchList}
-          showSnackbar={showSnackbar}
-        />
-        <DeleteShipping
-          id={selectedRow?._id ?? ''}
-          open={deleteOpen}
+        <ShippingActionsMenu
           anchorEl={actionIconButton}
-          onClose={handleCloseDeletePopup}
-          onSuccess={() => {
-            handleCloseDeletePopup();
-            fetchList();
+          open={menuOpen}
+          selectedRow={selectedRow}
+          accounts={accounts}
+          pricingLists={pricingLists}
+          canCreateBarcode={canCreateBarcode}
+          onClose={closeActionsMenu}
+          onOpenDelete={openDeleteDialog}
+          onOpenPackage={openPackageDialog}
+          onCreateBarcode={handleCreateBarcode}
+          onDownloadPaper={handleDownloadPaper}
+        />
+
+        <ShippingDialogs
+          selectedRow={selectedRow}
+          packageDialogOpen={packageDialogOpen}
+          onClosePackageDialog={closePackageDialog}
+          onPackageSuccess={refetch}
+          barcodeDialogOpen={barcodeDialogOpen}
+          barcodeLoading={barcodeLoading}
+          barcodeError={barcodeError}
+          onCloseBarcodeDialog={closeBarcodeDialog}
+          onClearBarcodeError={clearBarcodeError}
+          deleteOpen={deleteOpen}
+          deleteAnchorEl={actionIconButton}
+          onCloseDeleteDialog={closeDeleteDialog}
+          onDeleteSuccess={() => {
+            closeDeleteDialog();
+            refetch();
           }}
+          showSnackbar={showSnackbar}
         />
       </Wrapper>
     </LocalizationProvider>
