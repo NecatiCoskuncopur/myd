@@ -1,11 +1,12 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { generalMessages, userMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import { User } from '@/models';
 import editUserSchema from '@/schemas/editUser.schema';
 import { UserTypes } from '@/types/user';
@@ -23,28 +24,33 @@ const editUser = async (data: UserTypes.IEditUserPayload): Promise<ResponseTypes
 
     const currentUser = await getCurrentUser();
     if (!currentUser?.id) {
-      return { status: 'ERROR', message: UNAUTHORIZED };
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       currentUser.id,
       { $set: validatedData },
       {
-        new: true,
         runValidators: true,
       },
     );
 
-    if (!updatedUser) {
-      return { status: 'ERROR', message: NOT_FOUND };
+    if (!user) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
 
     return {
       status: 'OK',
       message: EDITUSER.SUCCESS,
     };
-  } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+  } catch (error) {
+    if (isMongoDuplicateKeyError(error)) {
       return {
         status: 'ERROR',
         message: EMAIL.EXIST,
@@ -59,10 +65,7 @@ const editUser = async (data: UserTypes.IEditUserPayload): Promise<ResponseTypes
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'editUser');
-        scope.captureException(error);
-      });
+      captureActionError('editUser', error);
     }
 
     return {

@@ -1,36 +1,47 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
 import { generalMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import serialize from '@/lib/serialize';
 import { CarrierAccount } from '@/models';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
-const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse<Partial<CarrierAccountTypes.ICarrierAccount>[]>> => {
+const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
+
+const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse<CarrierAccountTypes.IUserPermittedAccount[]>> => {
   try {
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
-      return { status: 'ERROR', message: generalMessages.UNAUTHORIZED };
+
+    if (!currentUser?.id) {
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    const permittedIds = currentUser.barcodePermits.reduce<Types.ObjectId[]>((acc, id) => {
+    const permittedIds = (currentUser.barcodePermits ?? []).reduce<Types.ObjectId[]>((acc, id) => {
       if (Types.ObjectId.isValid(id)) {
         acc.push(new Types.ObjectId(id));
       }
+
       return acc;
     }, []);
 
     if (permittedIds.length === 0) {
-      return { status: 'OK', data: [] };
+      return {
+        status: 'OK',
+        data: [],
+      };
     }
 
     const permittedAccounts = await CarrierAccount.find({
-      _id: { $in: currentUser.barcodePermits.filter(id => Types.ObjectId.isValid(id)).map(id => new Types.ObjectId(id)) },
+      _id: { $in: permittedIds },
       isActive: true,
     })
       .select('name displayName carrier pricing accountNumber accountType _id')
@@ -38,16 +49,17 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
 
     return {
       status: 'OK',
-      data: JSON.parse(JSON.stringify(permittedAccounts)),
+      data: serialize<CarrierAccountTypes.IUserPermittedAccount[]>(permittedAccounts),
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getUserPermittedAccounts');
-        scope.captureException(error);
-      });
+      captureActionError('getUserPermittedAccounts', error);
     }
-    return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };
+
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

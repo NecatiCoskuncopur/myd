@@ -1,41 +1,51 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
 import { generalMessages, userMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import serialize from '@/lib/serialize';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
+
+const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
+const { NOT_FOUND } = userMessages;
 
 const getUser = async (): Promise<ResponseTypes.IActionResponse<UserTypes.UserDto>> => {
   try {
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
-      return { status: 'ERROR', message: generalMessages.UNAUTHORIZED };
+
+    if (!currentUser?.id) {
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    const userDoc = await User.findById(currentUser.id).select('-password').lean();
+    const user = await User.findById(currentUser.id).select('-password').lean();
 
-    if (!userDoc) {
-      return { status: 'ERROR', message: userMessages.NOT_FOUND };
+    if (!user) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
 
     return {
       status: 'OK',
-      data: JSON.parse(JSON.stringify(userDoc)),
+      data: serialize<UserTypes.UserDto>(user),
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getUser');
-        scope.captureException(error);
-      });
+      captureActionError('getUser', error);
     }
 
-    return { status: 'ERROR', message: generalMessages.UNEXPECTED_ERROR };
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

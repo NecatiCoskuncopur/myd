@@ -5,10 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/constants/security.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/captureActionError.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/isMongoDuplicateKeyError.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/serialize.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/changePassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/changePassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/editUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/editUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPermittedAccounts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/balance.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/balance.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +26,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="290" />
+    <option name="cachedIndexableFilesCount" value="313" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -170,6 +180,7 @@
       <workItem from="1787074134696" duration="15885000" />
       <workItem from="1787102452578" duration="13252000" />
       <workItem from="1787165102767" duration="16743000" />
+      <workItem from="1787424425877" duration="4513000" />
     </task>
     <servers />
   </component>

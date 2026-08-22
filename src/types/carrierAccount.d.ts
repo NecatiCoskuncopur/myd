@@ -55,6 +55,8 @@ declare namespace CarrierAccountTypes {
     updatedAt: string;
   }
 
+  type IUserPermittedAccount = Pick<ICarrierAccount, '_id' | 'name' | 'displayName' | 'carrier' | 'pricing' | 'accountNumber' | 'accountType'>;
+
   interface ICreateCarrierAccountPayload {
     name: string;
     displayName: string;

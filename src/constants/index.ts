@@ -26,3 +26,4 @@ export { default as ShippingActivities } from './enums/shippingActivities';
 export { default as ExcelColumns } from './excelColumns';
 export { default as carrierConfig } from './carrierConfig';
 export { default as CarrierAccountTypeEnum } from './enums/carrierAccountTypeEnum';
+export { default as BCRYPT_SALT_ROUNDS } from './security';

@@ -5,6 +5,17 @@ declare namespace BalanceTypes {
     balanceId: string;
     userId: string;
     total?: number;
-    transactions: ITransaction[];
+    transactions: ISerializedTransaction[];
   }
+
+  type ISerializedTransaction = Omit<ITransaction, 'shippingId' | 'createdAt'> & {
+    shippingId?: string;
+    createdAt: string;
+  };
+
+  type ISerializedBalance = Omit<IBalance, 'userId' | 'transactions'> & {
+    _id: string;
+    userId: string;
+    transactions: ISerializedTransaction[];
+  };
 }

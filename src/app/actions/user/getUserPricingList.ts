@@ -1,8 +1,7 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
 import { generalMessages, pricingListMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { PricingList, User } from '@/models';
@@ -16,7 +15,8 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
+
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
@@ -35,10 +35,10 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
     const priceListIds = user.priceLists.map(priceList => priceList.priceListId);
 
     const pricingListDocs = await PricingList.find({
-      _id: {
-        $in: priceListIds,
-      },
-    }).lean();
+      _id: { $in: priceListIds },
+    })
+      .select('name listType zone createdAt updatedAt')
+      .lean();
 
     if (!pricingListDocs.length) {
       return {
@@ -47,10 +47,11 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
       };
     }
 
+    const pricingListMap = new Map(pricingListDocs.map(pricingList => [pricingList._id.toString(), pricingList]));
     const pricingLists: Record<string, PricingListTypes.IPricingList> = {};
 
     for (const userPriceList of user.priceLists) {
-      const pricingListDoc = pricingListDocs.find(pricingList => pricingList._id.toString() === userPriceList.priceListId.toString());
+      const pricingListDoc = pricingListMap.get(userPriceList.priceListId.toString());
 
       if (!pricingListDoc) {
         continue;
@@ -60,20 +61,15 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
         _id: pricingListDoc._id.toString(),
         name: pricingListDoc.name,
         listType: pricingListDoc.listType,
-
-        zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
-          number: z.number,
-
-          prices: z.prices.map((p: PricingListTypes.IPrice) => ({
-            weight: p.weight ?? 0,
-            price: p.price ?? 0,
+        zone: pricingListDoc.zone.map(zone => ({
+          number: zone.number,
+          prices: zone.prices.map(price => ({
+            weight: price.weight ?? 0,
+            price: price.price ?? 0,
           })),
-
-          than: z.than,
+          than: zone.than,
         })),
-
         createdAt: new Date(pricingListDoc.createdAt).toISOString(),
-
         updatedAt: new Date(pricingListDoc.updatedAt).toISOString(),
       };
     }
@@ -91,11 +87,7 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getUserPricingLists');
-
-        scope.captureException(error);
-      });
+      captureActionError('getUserPricingLists', error);
     }
 
     return {

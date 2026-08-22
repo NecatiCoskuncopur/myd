@@ -1,10 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { generalMessages, userMessages } from '@/constants';
+import { BCRYPT_SALT_ROUNDS, generalMessages, userMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { User } from '@/models';
@@ -38,6 +38,15 @@ const changePassword = async (data: UserTypes.IChangePasswordPayload): Promise<R
       };
     }
 
+    const isCurrentPasswordValid = await bcrypt.compare(validatedData.currentPassword, user.password);
+
+    if (!isCurrentPasswordValid) {
+      return {
+        status: 'ERROR',
+        message: PASSWORD.CURRENT_INVALID,
+      };
+    }
+
     if (validatedData.currentPassword === validatedData.newPassword) {
       return {
         status: 'ERROR',
@@ -45,16 +54,7 @@ const changePassword = async (data: UserTypes.IChangePasswordPayload): Promise<R
       };
     }
 
-    const isCorrect = await bcrypt.compare(validatedData.currentPassword, user.password);
-
-    if (!isCorrect) {
-      return {
-        status: 'ERROR',
-        message: PASSWORD.CURRENT_INVALID,
-      };
-    }
-
-    user.password = await bcrypt.hash(validatedData.newPassword, 12);
+    user.password = await bcrypt.hash(validatedData.newPassword, BCRYPT_SALT_ROUNDS);
     await user.save();
 
     return {
@@ -70,10 +70,7 @@ const changePassword = async (data: UserTypes.IChangePasswordPayload): Promise<R
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'changePassword');
-        scope.captureException(error);
-      });
+      captureActionError('changePassword', error);
     }
 
     return {
