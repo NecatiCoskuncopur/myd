@@ -1,13 +1,16 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 import { generalMessages, shippingMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping, ShippingDocument } from '@/models';
 import { ShippingTypes } from '@/types/shipping';
+
+const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
+const { ID, PAPER } = shippingMessages;
 
 const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<ResponseTypes.IActionResponse<{ file: string }>> => {
   try {
@@ -15,24 +18,24 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
 
     const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
-        message: generalMessages.UNAUTHORIZED,
+        message: UNAUTHORIZED,
       };
     }
 
-    if (!mongoose.Types.ObjectId.isValid(params.shippingId)) {
+    if (!Types.ObjectId.isValid(params.shippingId)) {
       return {
         status: 'ERROR',
-        message: shippingMessages.ID.INVALID,
+        message: ID.INVALID,
       };
     }
 
     if (!['labels', 'invoices'].includes(params.type)) {
       return {
         status: 'ERROR',
-        message: shippingMessages.PAPER.INVALID_TYPE,
+        message: PAPER.INVALID_TYPE,
       };
     }
 
@@ -49,43 +52,40 @@ const getPaper = async (params: ShippingTypes.IGetPaperParams): Promise<Response
       if (!shipping) {
         return {
           status: 'ERROR',
-          message: shippingMessages.PAPER.NOT_FOUND,
+          message: PAPER.NOT_FOUND,
         };
       }
     }
 
     const field = params.type === 'labels' ? 'label' : 'invoice';
 
-    const shippingBarcode = await ShippingDocument.findOne({
+    const shippingDocument = await ShippingDocument.findOne({
       shippingId: params.shippingId,
     })
       .select(field)
       .lean();
 
-    if (!shippingBarcode?.[field]) {
+    if (!shippingDocument?.[field]) {
       return {
         status: 'ERROR',
-        message: shippingMessages.PAPER.NOT_FOUND,
+        message: PAPER.NOT_FOUND,
       };
     }
 
     return {
       status: 'OK',
       data: {
-        file: shippingBarcode[field].toString('base64'),
+        file: shippingDocument[field].toString('base64'),
       },
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getPaper');
-        scope.captureException(error);
-      });
+      captureActionError('getPaper', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

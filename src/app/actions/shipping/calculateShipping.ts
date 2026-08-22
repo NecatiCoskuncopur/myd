@@ -1,9 +1,9 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { generalMessages, pricingListMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
@@ -12,7 +12,7 @@ import calculateShippingSchema from '@/schemas/calculateShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
-const { NOT_FOUND } = pricingListMessages;
+const { NOT_FOUND, USER_LIST_UNDEFINED } = pricingListMessages;
 
 const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload): Promise<ResponseTypes.IActionResponse<number>> => {
   try {
@@ -25,7 +25,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
 
     const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
@@ -37,7 +37,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
     if (!user?.priceLists?.length) {
       return {
         status: 'ERROR',
-        message: NOT_FOUND,
+        message: USER_LIST_UNDEFINED,
       };
     }
 
@@ -72,10 +72,7 @@ const calculateShipping = async (data: ShippingTypes.ICalculateShippingPayload):
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'calculateShipping');
-        scope.captureException(error);
-      });
+      captureActionError('calculateShipping', error);
     }
 
     return {

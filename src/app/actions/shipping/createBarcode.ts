@@ -1,9 +1,8 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
 import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingStatus, userMessages } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
+import captureActionError from '@/lib/captureActionError';
 import createFedexPaper from '@/lib/carriers/fedex';
 import createQuickShipperPaper from '@/lib/carriers/quickShipper';
 import createUpsPaper from '@/lib/carriers/ups';
@@ -35,7 +34,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     await connectMongoDB();
     const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
@@ -120,7 +119,17 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const shippingCostRes = await getShippingCost(userPriceList.priceListId, shipping!.package!.weight, shipping!.consignee!.address!.country);
+    const weight = shipping.package?.weight;
+    const country = shipping.consignee?.address?.country;
+
+    if (!weight || !country) {
+      return {
+        status: 'ERROR',
+        message: 'HATA',
+      };
+    }
+
+    const shippingCostRes = await getShippingCost(userPriceList.priceListId, weight, country);
 
     if (shippingCostRes.status !== 'OK') {
       return {
@@ -129,7 +138,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const carrierCostRes = await getCarrierCost(carrierAccount!.pricing!, shipping!.package!.weight, shipping!.consignee!.address!.country);
+    const carrierCostRes = await getCarrierCost(carrierAccount!.pricing!, weight, country);
     if (carrierCostRes.status !== 'OK') {
       return {
         status: 'ERROR',
@@ -202,10 +211,9 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       },
     };
   } catch (error) {
-    Sentry.withScope(scope => {
-      scope.setTag('action', 'createBarcode');
-      scope.captureException(error);
-    });
+    if (error instanceof Error) {
+      captureActionError('createBarcode', error);
+    }
 
     return {
       status: 'ERROR',

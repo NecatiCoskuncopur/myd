@@ -1,9 +1,9 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 import { generalMessages, shippingMessages, ShippingStatus, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Shipping } from '@/models';
@@ -16,22 +16,22 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
+
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
       };
     }
 
-    if (!mongoose.Types.ObjectId.isValid(shippingId)) {
+    if (!Types.ObjectId.isValid(shippingId)) {
       return {
         status: 'ERROR',
         message: ID.INVALID,
       };
     }
 
-    const objectId = new mongoose.Types.ObjectId(shippingId);
-
+    const objectId = new Types.ObjectId(shippingId);
     const query = {
       _id: objectId,
       ...(currentUser.role === UserRole.CUSTOMER && {
@@ -55,24 +55,24 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
       };
     }
 
-    const deleteResult = await Shipping.deleteOne(query);
+    const deleteResult = await Shipping.deleteOne({
+      ...query,
+      status: { $ne: ShippingStatus.LABELED },
+    });
 
     if (deleteResult.deletedCount === 0) {
       return {
         status: 'ERROR',
-        message: NOT_FOUND,
+        message: ALREADY_LABELED,
       };
     }
     return {
       status: 'OK',
       message: DELETE.SUCCESS,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'deleteShipping');
-        scope.captureException(error);
-      });
+      captureActionError('deleteShipping', error);
     }
 
     return {

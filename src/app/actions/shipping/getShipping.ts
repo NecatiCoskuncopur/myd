@@ -1,11 +1,12 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 import { generalMessages, shippingMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import serialize from '@/lib/serialize';
 import { Shipping } from '@/models';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -14,18 +15,25 @@ const { ID, NOT_FOUND } = shippingMessages;
 
 const getShipping = async (shippingId: string): Promise<ResponseTypes.IActionResponse<ShippingTypes.IShipping>> => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(shippingId)) {
-      return { status: 'ERROR', message: ID.INVALID };
+    if (!Types.ObjectId.isValid(shippingId)) {
+      return {
+        status: 'ERROR',
+        message: ID.INVALID,
+      };
     }
 
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
-      return { status: 'ERROR', message: UNAUTHORIZED };
+
+    if (!currentUser?.id) {
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    const objectId = new mongoose.Types.ObjectId(shippingId);
+    const objectId = new Types.ObjectId(shippingId);
 
     const query = {
       _id: objectId,
@@ -34,22 +42,22 @@ const getShipping = async (shippingId: string): Promise<ResponseTypes.IActionRes
       }),
     };
 
-    const shipping = await Shipping.findOne(query).lean<ShippingTypes.IShipping>();
+    const shipping = await Shipping.findOne(query).lean();
 
     if (!shipping) {
-      return { status: 'ERROR', message: NOT_FOUND };
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
 
     return {
       status: 'OK',
-      data: JSON.parse(JSON.stringify(shipping)),
+      data: serialize<ShippingTypes.IShipping>(shipping),
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getShipping');
-        scope.captureException(error);
-      });
+      captureActionError('getShipping', error);
     }
 
     return {

@@ -1,11 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 import { ValidationError } from 'yup';
 
-import { generalMessages, shippingMessages } from '@/constants';
-import { UserRole } from '@/constants';
+import { generalMessages, shippingMessages, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping } from '@/models';
@@ -21,83 +20,141 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) return { status: 'ERROR', message: UNAUTHORIZED };
+
+    if (!currentUser?.id) {
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
+    }
 
     const { shippingId, consignee, ...rest } = validatedData;
 
-    if (rest.package) {
-      const { width, height, length } = rest.package;
-      if (width && height && length) {
-        rest.package.volumetricWeight = Number(((width * height * length) / 5000).toFixed(2));
-      }
+    if (!Types.ObjectId.isValid(shippingId)) {
+      return {
+        status: 'ERROR',
+        message: ID.INVALID,
+      };
     }
 
-    if (!mongoose.Types.ObjectId.isValid(shippingId)) {
-      return { status: 'ERROR', message: ID.INVALID };
+    const shipping = await Shipping.findById(shippingId).select('userId carrier status').lean();
+
+    if (!shipping) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
-
-    const shipping = await Shipping.findById(shippingId).select('userId carrier').lean();
-
-    if (!shipping) return { status: 'ERROR', message: NOT_FOUND };
 
     let userId = currentUser.id;
+
     if (currentUser.role === UserRole.ADMIN || currentUser.role === UserRole.OPERATOR) {
       userId = shipping.userId.toString();
     } else if (shipping.userId.toString() !== currentUser.id) {
-      return { status: 'ERROR', message: UNAUTHORIZED };
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
     }
 
-    if (shipping.carrier?.trackingNumber) {
-      return { status: 'ERROR', message: ALREADY_LABELED };
+    if (shipping.carrier?.trackingNumber || shipping.status === ShippingStatus.LABELED) {
+      return {
+        status: 'ERROR',
+        message: ALREADY_LABELED,
+      };
     }
 
-    if (consignee?._id) {
-      const updatedConsignee = await Consignee.findOneAndUpdate({ _id: consignee._id, userId }, { $set: consignee }, { new: true });
+    if (rest.package) {
+      const { width, height, length } = rest.package;
 
-      if (!updatedConsignee) {
-        return { status: 'ERROR', message: CONSIGNEE.NOT_FOUND };
+      if (width != null && height != null && length != null) {
+        rest.package.volumetricWeight = Number(((width * height * length) / VOLUMETRIC_WEIGHT_DIVISOR).toFixed(2));
       }
     }
 
-    const totalProductValue = validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0);
-    const insurance = validatedData.content.insurance ?? 0;
+    const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
+    const insurance = Number((validatedData.content.insurance ?? 0).toFixed(2));
     const currency = validatedData.content.currency;
 
-    if (insurance && totalProductValue !== insurance) {
+    if (insurance > 0 && totalProductValue !== insurance) {
       return {
         status: 'ERROR',
         message: `Sigorta bedeli (${insurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir!.`,
       };
     }
 
+    if (consignee?._id) {
+      const { _id: consigneeId, ...consigneeData } = consignee;
+
+      const updatedConsignee = await Consignee.findOneAndUpdate(
+        {
+          _id: consigneeId,
+          userId,
+        },
+        {
+          $set: consigneeData,
+        },
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
+
+      if (!updatedConsignee) {
+        return {
+          status: 'ERROR',
+          message: CONSIGNEE.NOT_FOUND,
+        };
+      }
+    }
+
     const result = await Shipping.updateOne(
-      { _id: shippingId, userId },
+      {
+        _id: shippingId,
+        userId,
+        status: { $ne: ShippingStatus.LABELED },
+      },
       {
         $set: {
           ...rest,
           consignee,
         },
       },
+      {
+        runValidators: true,
+      },
     );
+
     if (result.modifiedCount === 0) {
-      return { status: 'ERROR', message: UPDATESHIPPING.NOCHANGE };
+      return {
+        status: 'ERROR',
+        message: UPDATESHIPPING.NOCHANGE,
+      };
     }
 
-    return { status: 'OK', message: UPDATESHIPPING.SUCCESS };
-  } catch (error: unknown) {
+    return {
+      status: 'OK',
+      message: UPDATESHIPPING.SUCCESS,
+    };
+  } catch (error) {
     if (error instanceof ValidationError) {
-      return { status: 'ERROR', message: error.errors.join(', ') };
+      return {
+        status: 'ERROR',
+        message: error.errors.join(', '),
+      };
     }
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'updateShipping');
-        scope.captureException(error);
-      });
+      captureActionError('updateShipping', error);
     }
-    return { status: 'ERROR', message: UNEXPECTED_ERROR };
+
+    return {
+      status: 'ERROR',
+      message: UNEXPECTED_ERROR,
+    };
   }
 };
 

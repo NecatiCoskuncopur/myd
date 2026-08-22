@@ -1,9 +1,9 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { generalMessages, shippingMessages, userMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { Consignee, Shipping, User } from '@/models';
@@ -14,23 +14,53 @@ const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { CONSIGNEE, CREATESHIPPING } = shippingMessages;
 const { NOT_FOUND } = userMessages;
 
+const VOLUMETRIC_WEIGHT_DIVISOR = 5000;
+
 const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promise<ResponseTypes.IActionResponse<{ _id: string }>> => {
   try {
     const validatedData = await createShippingSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
+
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
       };
     }
 
-    const userId = (currentUser.role === 'ADMIN' || currentUser.role === 'OPERATOR') && validatedData.senderId ? validatedData.senderId : currentUser.id;
+    const isStaff = currentUser.role === 'ADMIN' || currentUser.role === 'OPERATOR';
+    const userId = isStaff && validatedData.senderId ? validatedData.senderId : currentUser.id;
+    const user = await User.findById(userId).select('firstName lastName nickname company phone email address').lean();
+
+    if (!user) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
+    }
+
+    const { width, height, length, weight, numberOfPackage } = validatedData.package;
+
+    const volumetricWeight = width != null && height != null && length != null ? Number(((width * height * length) / VOLUMETRIC_WEIGHT_DIVISOR).toFixed(2)) : 0;
+
+    const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
+
+    const insurance = validatedData.content.insurance ?? 0;
+    const normalizedInsurance = Number(insurance.toFixed(2));
+    const currency = validatedData.content.currency;
+
+    if (normalizedInsurance > 0 && totalProductValue !== normalizedInsurance) {
+      return {
+        status: 'ERROR',
+        message: `Sigorta bedeli (${normalizedInsurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir.`,
+      };
+    }
 
     let consigneeDoc;
 
@@ -53,30 +83,8 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       });
     }
 
-    const user = await User.findById(userId).select('firstName lastName nickname company phone email address').lean();
-    if (!user) {
-      return {
-        status: 'ERROR',
-        message: NOT_FOUND,
-      };
-    }
-    const { width, height, length, weight, numberOfPackage } = validatedData.package;
-
-    const volumetricWeight = width != null && height != null && length != null ? Number(((width * height * length) / 5000).toFixed(2)) : 0;
-    const totalProductValue = validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0);
-    const insurance = validatedData.content.insurance ?? 0;
-    const currency = validatedData.content.currency;
-
-    if (insurance && totalProductValue !== insurance) {
-      return {
-        status: 'ERROR',
-        message: `Sigorta bedeli (${insurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir!.`,
-      };
-    }
-
     const shipping = await Shipping.create({
       userId,
-
       sender: {
         name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
         nickname: user.nickname,
@@ -123,10 +131,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'createShipping');
-        scope.captureException(error);
-      });
+      captureActionError('createShipping', error);
     }
 
     return {

@@ -1,14 +1,15 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import json2xls from 'json2xls';
 import moment from 'moment';
 import { PaginateModel } from 'mongoose';
 
 import { generalMessages } from '@/constants';
 import excelColumns from '@/constants/excelColumns';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import serialize from '@/lib/serialize';
 import { Shipping } from '@/models';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -21,7 +22,8 @@ const listShipping = async (
     await connectMongoDB();
 
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
+
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
         message: UNAUTHORIZED,
@@ -117,7 +119,7 @@ const listShipping = async (
     return {
       status: 'OK',
       data: {
-        shippings: JSON.parse(JSON.stringify(result.docs)),
+        shippings: serialize<ShippingTypes.IShipping[]>(result.docs),
         totalCount: result.totalDocs,
         limit: result.limit ?? safeLimit,
         page: result.page ?? safePage,
@@ -128,10 +130,7 @@ const listShipping = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'listShipping');
-        scope.captureException(error);
-      });
+      captureActionError('listShipping', error);
     }
 
     return {
