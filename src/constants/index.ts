@@ -30,3 +30,6 @@ export { default as BCRYPT_SALT_ROUNDS } from './security';
 export { default as shippingDocumentMessages } from './messages/shippingDocumentMessages';
 export { default as VOLUMETRIC_WEIGHT_DIVISOR } from './volumetricWeightDivisor';
 export { default as escapeRegex } from './regex/escape';
+export { default as AUTH_COOKIE_NAME } from './cookieName';
+export { default as AUTH_TOKEN_TTL_SECONDS } from './authToken';
+export { default as DUMMY_PASSWORD_HASH } from './dummyHash';

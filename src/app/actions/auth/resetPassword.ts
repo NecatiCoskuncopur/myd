@@ -1,11 +1,12 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Types } from 'mongoose';
 import { ValidationError } from 'yup';
 
-import { authMessages, generalMessages } from '@/constants';
+import { authMessages, BCRYPT_SALT_ROUNDS, generalMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import MydMail from '@/lib/mailer';
@@ -14,11 +15,6 @@ import resetPasswordSchema from '@/schemas/resetPassword.schema';
 
 const { INVALID_TOKEN, RESETPASSWORD } = authMessages;
 
-interface ResetTokenPayload extends JwtPayload {
-  sub: string;
-  type: 'PASSWORD_RESET';
-}
-
 const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const validatedData = await resetPasswordSchema.validate(data, {
@@ -26,31 +22,63 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
       stripUnknown: true,
     });
 
-    await connectMongoDB();
-    const decoded = jwt.decode(validatedData.token) as ResetTokenPayload;
+    const decoded = jwt.decode(validatedData.token);
 
-    if (!decoded || typeof decoded !== 'object' || !('sub' in decoded) || decoded.type !== 'PASSWORD_RESET') {
-      return { status: 'ERROR', message: INVALID_TOKEN };
+    if (
+      !decoded ||
+      typeof decoded === 'string' ||
+      typeof decoded.sub !== 'string' ||
+      decoded.type !== 'PASSWORD_RESET' ||
+      !Types.ObjectId.isValid(decoded.sub)
+    ) {
+      return {
+        status: 'ERROR',
+        message: INVALID_TOKEN,
+      };
     }
+
+    await connectMongoDB();
 
     const user = await User.findById(decoded.sub).select('_id email +password');
 
     if (!user) {
-      return { status: 'ERROR', message: INVALID_TOKEN };
+      return {
+        status: 'ERROR',
+        message: INVALID_TOKEN,
+      };
     }
 
     const dynamicSecret = `${env.JWT_SECRET}:${user.password}`;
 
+    let verifiedToken: string | JwtPayload;
+
     try {
-      jwt.verify(validatedData.token, dynamicSecret);
+      verifiedToken = jwt.verify(validatedData.token, dynamicSecret, {
+        algorithms: ['HS256'],
+      });
     } catch (verifyError) {
       if (verifyError instanceof jwt.TokenExpiredError) {
-        return { status: 'ERROR', message: RESETPASSWORD.EXPIRED };
+        return {
+          status: 'ERROR',
+          message: RESETPASSWORD.EXPIRED,
+        };
       }
-      return { status: 'ERROR', message: INVALID_TOKEN };
+
+      return {
+        status: 'ERROR',
+        message: INVALID_TOKEN,
+      };
     }
 
-    user.password = await bcrypt.hash(validatedData.newPassword, 12);
+    if (typeof verifiedToken === 'string' || verifiedToken.sub !== decoded.sub || verifiedToken.type !== 'PASSWORD_RESET') {
+      return {
+        status: 'ERROR',
+        message: INVALID_TOKEN,
+      };
+    }
+
+    user.password = await bcrypt.hash(validatedData.newPassword, BCRYPT_SALT_ROUNDS);
+
     await user.save();
 
     try {
@@ -60,10 +88,17 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
         html: 'Parolanız başarıyla sıfırlandı. Bu işlemi siz yapmadıysanız iletişime geçin.',
       });
     } catch (mailError) {
-      Sentry.captureException(mailError);
+      captureActionError('resetPassword.sendMail', mailError, {
+        extras: {
+          userId: user._id.toString(),
+        },
+      });
     }
 
-    return { status: 'OK', message: RESETPASSWORD.SUCCESS };
+    return {
+      status: 'OK',
+      message: RESETPASSWORD.SUCCESS,
+    };
   } catch (error) {
     if (error instanceof ValidationError) {
       return {
@@ -73,10 +108,7 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'resetPassword');
-        scope.captureException(error);
-      });
+      captureActionError('resetPassword', error);
     }
 
     return {

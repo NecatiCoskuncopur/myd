@@ -1,10 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'yup';
 
 import { forgotPasswordMail, generalMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import MydMail from '@/lib/mailer';
@@ -19,16 +19,26 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
       stripUnknown: true,
     });
 
-    await connectMongoDB();
-
     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+
     if (!captchaResult.success) {
-      return { status: 'ERROR', message: captchaResult.message };
+      return {
+        status: 'ERROR',
+        message: captchaResult.message,
+      };
     }
 
-    const user = await User.findOne({ email: validatedData.email.trim().toLowerCase() }).select('_id email +password');
+    await connectMongoDB();
 
-    if (!user) return { status: 'OK' };
+    const user = await User.findOne({
+      email: validatedData.email.trim().toLowerCase(),
+    }).select('_id email +password');
+
+    if (!user) {
+      return {
+        status: 'OK',
+      };
+    }
 
     const secret = `${env.JWT_SECRET}:${user.password}`;
 
@@ -38,7 +48,10 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
         type: 'PASSWORD_RESET',
       },
       secret,
-      { expiresIn: '15m' },
+      {
+        algorithm: 'HS256',
+        expiresIn: '15m',
+      },
     );
 
     try {
@@ -49,14 +62,16 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
         html: forgotPasswordMail(`${env.FRONT_URL}/kullanici/parolami-unuttum/${token}`),
       });
     } catch (mailError) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'forgotPassword');
-        scope.setExtra('email', user.email);
-        Sentry.captureException(mailError);
+      captureActionError('forgotPassword.sendMail', mailError, {
+        extras: {
+          userId: user._id.toString(),
+        },
       });
     }
 
-    return { status: 'OK' };
+    return {
+      status: 'OK',
+    };
   } catch (error) {
     if (error instanceof ValidationError) {
       return {
@@ -66,10 +81,7 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'forgotPassword');
-        scope.captureException(error);
-      });
+      captureActionError('forgotPassword', error);
     }
 
     return {

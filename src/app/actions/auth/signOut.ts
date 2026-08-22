@@ -1,16 +1,16 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import * as Sentry from '@sentry/nextjs';
 
-import { authMessages } from '@/constants';
+import { AUTH_COOKIE_NAME, authMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 
 const signOut = async (): Promise<ResponseTypes.IActionResponse> => {
   try {
     const cookieStore = await cookies();
 
     cookieStore.delete({
-      name: 'token',
+      name: AUTH_COOKIE_NAME,
       path: '/',
     });
 
@@ -18,7 +18,9 @@ const signOut = async (): Promise<ResponseTypes.IActionResponse> => {
       status: 'OK',
     };
   } catch (error) {
-    Sentry.captureException(error);
+    if (error instanceof Error) {
+      captureActionError('signOut', error);
+    }
 
     return {
       status: 'ERROR',

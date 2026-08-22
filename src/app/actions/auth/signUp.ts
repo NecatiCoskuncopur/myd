@@ -1,11 +1,12 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { authMessages, generalMessages, userMessages, welcomeMail } from '@/constants';
+import { authMessages, BCRYPT_SALT_ROUNDS, generalMessages, userMessages, welcomeMail } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import MydMail from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
 import validateRecaptcha from '@/lib/validateRecaptcha';
@@ -18,15 +19,24 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+
     if (!captchaResult.success) {
-      return { status: 'ERROR', message: captchaResult.message };
+      return {
+        status: 'ERROR',
+        message: captchaResult.message,
+      };
     }
 
-    const emailLower = validatedData.email.trim().toLowerCase();
-    const existingUser = await User.findOne({ email: emailLower });
+    const { recaptchaToken: recaptchaToken, password, ...userData } = validatedData;
+
+    const email = userData.email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({ email }).select('_id').lean();
+
     if (existingUser) {
       return {
         status: 'ERROR',
@@ -34,19 +44,24 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       };
     }
 
-    const hashedPassword = await bcrypt.hash(validatedData.password, 12);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
     const newUser = await User.create({
-      ...validatedData,
-      email: emailLower,
+      ...userData,
+      email,
       password: hashedPassword,
     });
 
     try {
-      await Balance.create({ userId: newUser._id, total: 0 });
+      await Balance.create({
+        userId: newUser._id,
+        total: 0,
+      });
     } catch (balanceError) {
-      Sentry.captureException(balanceError, {
-        extra: { userId: newUser._id, context: 'SignUp - Balance Creation Failed' },
+      captureActionError('signUp.createBalance', balanceError, {
+        extras: {
+          userId: newUser._id.toString(),
+        },
       });
 
       await User.findByIdAndDelete(newUser._id);
@@ -57,34 +72,56 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       };
     }
 
-    void MydMail.sendMail({
-      from: '"MYD Export" <noreply@mydexport.com>',
-      to: newUser.email,
-      subject: '🎉 Hoşgeldiniz!',
-      html: welcomeMail,
-    }).catch(error => {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'signUp');
-        scope.setExtra('email', newUser.email);
-        Sentry.captureException(error);
-      });
-    });
+    const smsText =
+      `Sayın ${newUser.firstName} ${newUser.lastName}, ` +
+      `MYD Export'a hoşgeldiniz! Gönderi oluşturmaya başlayabilirsiniz, ` +
+      `detaylar için sizi arayacağız, iyi çalışmalar ve bol kazançlar dileriz.`;
 
-    const smsText = `Sayın ${newUser.firstName} ${newUser.lastName}, MYD Export'a hoşgeldiniz! Gönderi oluşturmaya başlayabilirsiniz, detaylar için sizi arayacağız, iyi çalışmalar ve bol kazançlar dileriz.`;
-    if (!newUser.phone) {
-      void sendSms(newUser.phone, smsText).catch(error => {
-        Sentry.withScope(scope => {
-          scope.setTag('action', 'signUp');
-          scope.setExtra('phone', newUser.phone);
-          Sentry.captureException(error);
-        });
+    const notificationTasks: Promise<unknown>[] = [
+      MydMail.sendMail({
+        from: '"MYD Export" <noreply@mydexport.com>',
+        to: newUser.email,
+        subject: '🎉 Hoşgeldiniz!',
+        html: welcomeMail,
+      }),
+    ];
+
+    if (newUser.phone) {
+      notificationTasks.push(sendSms(newUser.phone, smsText));
+    }
+
+    const notificationResults = await Promise.allSettled(notificationTasks);
+
+    const [mailResult, smsResult] = notificationResults;
+
+    if (mailResult.status === 'rejected') {
+      captureActionError('signUp.sendMail', mailResult.reason, {
+        extras: {
+          userId: newUser._id.toString(),
+        },
       });
     }
+
+    if (smsResult?.status === 'rejected') {
+      captureActionError('signUp.sendSms', smsResult.reason, {
+        extras: {
+          userId: newUser._id.toString(),
+        },
+      });
+    }
+
     return {
       status: 'OK',
       message: authMessages.SIGNUP.SUCCESS,
     };
   } catch (error) {
+    if (isMongoDuplicateKeyError(error)) {
+      return {
+        status: 'ERROR',
+        message: userMessages.EXIST,
+      };
+    }
+
     if (error instanceof ValidationError) {
       return {
         status: 'ERROR',
@@ -93,10 +130,7 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'signUp');
-        scope.captureException(error);
-      });
+      captureActionError('signUp', error);
     }
     return {
       status: 'ERROR',
