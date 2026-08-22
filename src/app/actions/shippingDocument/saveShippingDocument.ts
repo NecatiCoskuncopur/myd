@@ -1,46 +1,63 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
+import { ValidationError } from 'yup';
 
-import { generalMessages } from '@/constants';
+import { generalMessages, shippingMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import { getCurrentUser } from '@/lib/getCurrentUser';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import { ShippingDocument } from '@/models';
+import saveShippingDocumentSchema from '@/schemas/saveShippingDocument.schema';
 
-const { UNEXPECTED_ERROR } = generalMessages;
+const { UNEXPECTED_ERROR, UNAUTHORIZED } = generalMessages;
 
-interface ISaveShippingDocumentPayload {
-  shippingId: string;
-  label: Buffer;
-  invoice?: Buffer;
-}
+const { LABEL } = shippingMessages;
 
-const saveShippingDocument = async (data: ISaveShippingDocumentPayload): Promise<ResponseTypes.IActionResponse> => {
+const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDocumentPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
+    const validatedData = await saveShippingDocumentSchema.validate(data, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
     await connectMongoDB();
 
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser?.id) {
+      return {
+        status: 'ERROR',
+        message: UNAUTHORIZED,
+      };
+    }
+
     await ShippingDocument.create({
-      shippingId: data.shippingId,
-      label: data.label,
-      ...(data.invoice ? { invoice: data.invoice } : {}),
+      shippingId: validatedData.shippingId,
+      label: validatedData.label,
+      ...(validatedData.invoice ? { invoice: validatedData.invoice } : {}),
     });
 
     return {
       status: 'OK',
-      message: 'Shipping label başarıyla kaydedildi.',
+      message: LABEL.SUCCESS,
     };
-  } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+  } catch (error) {
+    if (isMongoDuplicateKeyError(error)) {
       return {
         status: 'ERROR',
-        message: 'Bu shipping için zaten bir label mevcut.',
+        message: LABEL.EXISTS,
+      };
+    }
+
+    if (error instanceof ValidationError) {
+      return {
+        status: 'ERROR',
+        message: error.errors.join(', '),
       };
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'saveShippingLabel');
-        scope.captureException(error);
-      });
+      captureActionError('saveShippingDocument', error);
     }
 
     return {

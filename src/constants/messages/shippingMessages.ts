@@ -126,6 +126,10 @@ const shippingMessages = {
     INVALID_TYPE: 'Geçersiz evrak türü',
     ERROR: 'Evrak indirilemedi.',
   },
+  LABEL: {
+    EXISTS: 'Bu gönderi için zaten bir etiket mevcut.',
+    SUCCESS: 'Gönderi etiketi başarıyla kaydedildi.',
+  },
 } as const;
 
 export default shippingMessages;
