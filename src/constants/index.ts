@@ -29,3 +29,4 @@ export { default as CarrierAccountTypeEnum } from './enums/carrierAccountTypeEnu
 export { default as BCRYPT_SALT_ROUNDS } from './security';
 export { default as shippingDocumentMessages } from './messages/shippingDocumentMessages';
 export { default as VOLUMETRIC_WEIGHT_DIVISOR } from './volumetricWeightDivisor';
+export { default as escapeRegex } from './regex/escape';

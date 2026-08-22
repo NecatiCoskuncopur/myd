@@ -1,14 +1,14 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
-import { generalMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import serialize from '@/lib/serialize';
 import { Consignee } from '@/models';
 import { ConsigneeTypes } from '@/types/consignee';
 
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
 const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<ResponseTypes.IActionResponse<ConsigneeTypes.IConsigneeData>> => {
   try {
@@ -16,10 +16,10 @@ const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<R
 
     const currentUser = await getCurrentUser();
 
-    if (!currentUser) {
+    if (!currentUser?.id) {
       return {
         status: 'ERROR',
-        message: generalMessages.UNAUTHORIZED,
+        message: UNAUTHORIZED,
       };
     }
 
@@ -44,7 +44,7 @@ const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<R
     }
 
     const skip = (page - 1) * limit;
-    const safeName = escapeRegex(params.name.trim());
+    const safeName = escapeRegex(name.trim());
 
     const filter =
       currentUser.role === UserRole.ADMIN
@@ -69,7 +69,7 @@ const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<R
     return {
       status: 'OK',
       data: {
-        consignees: JSON.parse(JSON.stringify(results)),
+        consignees: serialize<ConsigneeTypes.IConsigneeResponse[]>(results),
         totalCount,
         page,
         limit,
@@ -80,15 +80,12 @@ const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<R
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getConsignees');
-        scope.captureException(error);
-      });
+      captureActionError('getConsignees', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

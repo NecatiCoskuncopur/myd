@@ -4,7 +4,7 @@ import json2xls from 'json2xls';
 import moment from 'moment';
 import { PaginateModel } from 'mongoose';
 
-import { generalMessages } from '@/constants';
+import { escapeRegex, generalMessages } from '@/constants';
 import excelColumns from '@/constants/excelColumns';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
@@ -47,7 +47,7 @@ const listShipping = async (
     }
 
     const createRegex = (val: string) => ({
-      $regex: val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+      $regex: escapeRegex(val),
       $options: 'i',
     });
 

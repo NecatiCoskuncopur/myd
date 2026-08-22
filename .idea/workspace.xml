@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/constants/volumetricWeightDivisor.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/regex/escape.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/calculateShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/consignee/getConsignees.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/consignee/getConsignees.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/getShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/volumetricWeightDivisor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/volumetricWeightDivisor.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +172,7 @@
       <workItem from="1787074134696" duration="15885000" />
       <workItem from="1787102452578" duration="13252000" />
       <workItem from="1787165102767" duration="16743000" />
-      <workItem from="1787424425877" duration="10549000" />
+      <workItem from="1787424425877" duration="11079000" />
     </task>
     <servers />
   </component>

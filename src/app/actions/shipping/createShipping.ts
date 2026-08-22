@@ -2,7 +2,7 @@
 
 import { ValidationError } from 'yup';
 
-import { generalMessages, shippingMessages, userMessages } from '@/constants';
+import { generalMessages, shippingMessages, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -13,8 +13,6 @@ import { ShippingTypes } from '@/types/shipping';
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { CONSIGNEE, CREATESHIPPING } = shippingMessages;
 const { NOT_FOUND } = userMessages;
-
-const VOLUMETRIC_WEIGHT_DIVISOR = 5000;
 
 const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promise<ResponseTypes.IActionResponse<{ _id: string }>> => {
   try {
