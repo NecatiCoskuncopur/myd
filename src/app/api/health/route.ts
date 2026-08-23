@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 
 export async function GET() {
@@ -17,7 +18,16 @@ export async function GET() {
     const db = mongoose.connection.db;
 
     if (!db) {
-      throw new Error('Database connection unavailable');
+      captureActionError('healthCheck.databaseUnavailable', new Error('Database connection unavailable'));
+
+      return NextResponse.json(
+        {
+          status: 'error',
+          timestamp: new Date().toISOString(),
+          database: result,
+        },
+        { status: 503 },
+      );
     }
 
     result.connection = true;
@@ -48,7 +58,11 @@ export async function GET() {
       database: result,
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    captureActionError('healthCheck', error, {
+      extras: {
+        database: result,
+      },
+    });
 
     return NextResponse.json(
       {
