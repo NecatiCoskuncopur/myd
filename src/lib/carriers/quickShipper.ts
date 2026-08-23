@@ -29,208 +29,189 @@ const createQuickShipperPaper = async ({
 
   const senderEmail = hasCustomInfo && customInfo ? customInfo.email : sender.email;
 
-  try {
-    const senderData = {
-      firstName: latinize(senderName),
-      lastName: '',
-      companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
-      phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
-      email: senderEmail,
-      zipCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
-      countryCode: 'TR',
-      cityName: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
-      address1: latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : shippingInstance.sender.address.line1),
-      address2: latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 || '' : shippingInstance.sender.address.line2 || ''),
-      isCorporate: false,
-      saveAddress: false,
-    };
+  const senderData = {
+    firstName: latinize(senderName),
+    lastName: '',
+    companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
+    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
+    email: senderEmail,
+    zipCode: hasCustomInfo && customInfo ? customInfo.address?.postalCode : sender.address.postalCode,
+    countryCode: 'TR',
+    cityName: latinize(hasCustomInfo && customInfo ? customInfo.address?.city : sender.address.city),
+    address1: latinize(hasCustomInfo && customInfo ? customInfo.address?.line1 : shippingInstance.sender.address.line1),
+    address2: latinize(hasCustomInfo && customInfo ? customInfo.address?.line2 || '' : shippingInstance.sender.address.line2 || ''),
+    isCorporate: false,
+    saveAddress: false,
+  };
 
-    const consigneeData = {
-      firstName: latinize(consignee.name),
-      lastName: '',
-      companyName: latinize(consignee.company || consignee.name),
-      countryCode: consignee.address.country,
-      address1: latinize(consignee.address.line1),
-      address2: latinize(consignee.address.line2 || ''),
-      cityName: latinize(consignee.address.city),
-      phoneNumber: consignee.phone ? String('+' + consignee.phone).replace('-', '') : '111111111111',
-      email: consignee.email,
-      zipCode: String(consignee.address.postalCode).split('-')[0],
-      stateProvinceCode: consignee.address.state,
-      addressType: 0,
-      isCorporate: false,
-      saveAddress: false,
-    };
+  const consigneeData = {
+    firstName: latinize(consignee.name),
+    lastName: '',
+    companyName: latinize(consignee.company || consignee.name),
+    countryCode: consignee.address.country,
+    address1: latinize(consignee.address.line1),
+    address2: latinize(consignee.address.line2 || ''),
+    cityName: latinize(consignee.address.city),
+    phoneNumber: consignee.phone ? String(`+${consignee.phone}`).replace('-', '') : '111111111111',
+    email: consignee.email,
+    zipCode: String(consignee.address.postalCode).split('-')[0],
+    stateProvinceCode: consignee.address.state,
+    addressType: 0,
+    isCorporate: false,
+    saveAddress: false,
+  };
 
-    const body = {
-      currency: 'USD',
-      ioss: detail.iossNumber,
-      serviceTypeId: '1',
-      integratorId: '2',
-      contentId: 1,
-      customsExpensesId: detail.payor?.customs === 'SENDER' ? 1 : 0,
-      shipmentStatusId: 0,
-      totalWeight: shippingInstance.package.weight * shippingInstance.package.numberOfPackage,
-      applyInsurance: shippingInstance.content.insurance > 0,
-      shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
-      shippingAddress: senderData,
-      consigneeAddress: consigneeData,
+  const body = {
+    currency: 'USD',
+    ioss: detail.iossNumber,
+    serviceTypeId: '1',
+    integratorId: '2',
+    contentId: 1,
+    customsExpensesId: detail.payor?.customs === 'SENDER' ? 1 : 0,
+    shipmentStatusId: 0,
+    totalWeight: shippingInstance.package.weight * shippingInstance.package.numberOfPackage,
+    applyInsurance: shippingInstance.content.insurance > 0,
+    shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
+    shippingAddress: senderData,
+    consigneeAddress: consigneeData,
 
-      items: [...Array(pkg.numberOfPackage).keys()].map(() => ({
-        quantity: 1,
-        weight: pkg.weight,
-        width: pkg.width,
-        size: pkg.length,
-        height: pkg.height,
-      })),
+    items: [...Array(pkg.numberOfPackage).keys()].map(() => ({
+      quantity: 1,
+      weight: pkg.weight,
+      width: pkg.width,
+      size: pkg.length,
+      height: pkg.height,
+    })),
 
-      goods: content.products.map((product: ShippingTypes.IProduct) => ({
-        description: product.name,
-        price: product.unitPrice,
-        quantity: product.piece,
-        gtip: product.gtip || '',
-        productOriginCountry: '',
-      })),
-    };
+    goods: content.products.map((product: ShippingTypes.IProduct) => ({
+      description: product.name,
+      price: product.unitPrice,
+      quantity: product.piece,
+      gtip: product.gtip || '',
+      productOriginCountry: '',
+    })),
+  };
 
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        accountNumber,
-        'qs-key': credentials.apiKey,
-        'qs-secret': credentials.apiSecret,
-      },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(BASE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      accountNumber,
+      'qs-key': credentials.apiKey,
+      'qs-secret': credentials.apiSecret,
+    },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      const responseText = await response.text();
+  if (!response.ok) {
+    const responseText = await response.text();
 
-      let errorData: unknown;
+    let errorData: unknown;
 
-      try {
-        errorData = JSON.parse(responseText);
-      } catch {
-        errorData = responseText;
-      }
-
-      const error = new Error(`${SHIPMENT_FAILED}: HTTP ${response.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData)}`);
-
-      Sentry.captureException(error, {
-        extra: {
-          shippingId,
-          senderName,
-          senderEmail,
-          quickShipperError: errorData,
-          responseStatus: response.status,
-          responseStatusText: response.statusText,
-          responseBody: errorData,
-        },
-      });
-
-      throw error;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      errorData = responseText;
     }
 
-    const shipmentData = await response.json();
-    const output = shipmentData?.data;
+    const error = new Error(`${SHIPMENT_FAILED}: HTTP ${response.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData)}`);
 
-    const trackingNumber = output?.integratorAWBNumber;
-
-    if (!trackingNumber) {
-      const error = new Error(TRACKING_NUMBER_NOT_FOUND);
-
-      Sentry.captureException(error, {
-        extra: {
-          shippingId,
-          senderName,
-          senderEmail,
-          quickShipperResponse: shipmentData,
-        },
-      });
-
-      throw error;
-    }
-
-    const label = output?.labels?.[0] || '';
-
-    if (!label) {
-      const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label bulunamadı.`);
-
-      Sentry.captureException(error, {
-        extra: {
-          shippingId,
-          senderName,
-          senderEmail,
-          trackingNumber,
-          quickShipperResponse: shipmentData,
-        },
-      });
-
-      throw error;
-    }
-
-    const labelBuffer = Buffer.from(label, 'base64');
-
-    if (!labelBuffer.length) {
-      const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label boş.`);
-
-      Sentry.captureException(error, {
-        extra: {
-          shippingId,
-          senderName,
-          senderEmail,
-          trackingNumber,
-        },
-      });
-
-      throw error;
-    }
-
-    const saveLabelResult = await saveShippingDocument({
-      shippingId,
-      label: labelBuffer,
-    });
-
-    if (saveLabelResult.status === 'ERROR') {
-      const error = new Error(saveLabelResult.message);
-
-      Sentry.captureException(error, {
-        extra: {
-          shippingId,
-          senderName,
-          senderEmail,
-          trackingNumber,
-          documentSaveError: saveLabelResult,
-        },
-      });
-
-      throw error;
-    }
-
-    return {
-      trackingNumber,
-      label: labelBuffer.toString('base64'),
-      invoice: '',
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-
-    const unknownError = new Error(`${SHIPMENT_FAILED}: Unknown QuickShipper error`);
-
-    Sentry.captureException(unknownError, {
+    Sentry.captureException(error, {
       extra: {
         shippingId,
         senderName,
         senderEmail,
-        originalError: error,
+        quickShipperError: errorData,
+        responseStatus: response.status,
+        responseStatusText: response.statusText,
+        responseBody: errorData,
       },
     });
 
-    throw unknownError;
+    throw error;
   }
+
+  const shipmentData = await response.json();
+  const output = shipmentData?.data;
+
+  const trackingNumber = output?.integratorAWBNumber;
+
+  if (!trackingNumber) {
+    const error = new Error(TRACKING_NUMBER_NOT_FOUND);
+
+    Sentry.captureException(error, {
+      extra: {
+        shippingId,
+        senderName,
+        senderEmail,
+        quickShipperResponse: shipmentData,
+      },
+    });
+
+    throw error;
+  }
+
+  const label = output?.labels?.[0] || '';
+
+  if (!label) {
+    const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label bulunamadı.`);
+
+    Sentry.captureException(error, {
+      extra: {
+        shippingId,
+        senderName,
+        senderEmail,
+        trackingNumber,
+        quickShipperResponse: shipmentData,
+      },
+    });
+
+    throw error;
+  }
+
+  const labelBuffer = Buffer.from(label, 'base64');
+
+  if (!labelBuffer.length) {
+    const error = new Error(`${SHIPMENT_FAILED}: QuickShipper label boş.`);
+
+    Sentry.captureException(error, {
+      extra: {
+        shippingId,
+        senderName,
+        senderEmail,
+        trackingNumber,
+      },
+    });
+
+    throw error;
+  }
+
+  const saveLabelResult = await saveShippingDocument({
+    shippingId,
+    label: labelBuffer,
+  });
+
+  if (saveLabelResult.status === 'ERROR') {
+    const error = new Error(saveLabelResult.message);
+
+    Sentry.captureException(error, {
+      extra: {
+        shippingId,
+        senderName,
+        senderEmail,
+        trackingNumber,
+        documentSaveError: saveLabelResult,
+      },
+    });
+
+    throw error;
+  }
+
+  return {
+    trackingNumber,
+    label: labelBuffer.toString('base64'),
+    invoice: '',
+  };
 };
 
 export default createQuickShipperPaper;

@@ -4,8 +4,7 @@ import json2xls from 'json2xls';
 import moment from 'moment';
 import { PaginateModel } from 'mongoose';
 
-import { escapeRegex, generalMessages } from '@/constants';
-import excelColumns from '@/constants/excelColumns';
+import { escapeRegex, excelColumns, generalMessages } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';

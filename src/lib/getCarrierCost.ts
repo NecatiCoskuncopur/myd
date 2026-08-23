@@ -19,6 +19,25 @@ interface IPricing {
 
 type CarrierCostResponse = { status: 'OK'; data: number } | { status: 'ERROR'; message: string };
 
+/**
+ * Taşıyıcı fiyatlandırma bilgilerine göre gönderim maliyetini hesaplar.
+ *
+ * Ülke kodundan ilgili ülkeyi ve fiyatlandırma bölgesini belirler.
+ * Ağırlık yukarı doğru en yakın 0.5 birime yuvarlanır ve uygun fiyat
+ * kademesi bulunarak taşıyıcı maliyeti hesaplanır.
+ *
+ * Normalize edilmiş ağırlık tanımlı en yüksek ağırlığı aşarsa,
+ * aşan kısım için bölgenin `than` değeri kullanılarak ek ücret hesaplanır.
+ *
+ * Ülke, bölge veya uygun fiyat bilgisi bulunamazsa hata durumuyla birlikte
+ * ilgili mesajı döndürür.
+ *
+ * @param pricing - Taşıyıcıya ait bölge ve fiyatlandırma bilgileri
+ * @param weight - Gönderinin hesaplamada kullanılacak ağırlığı
+ * @param countryCode - Gönderinin hedef ülke kodu
+ * @returns Hesaplanan taşıyıcı maliyetini veya hata bilgisini içeren sonuç
+ */
+
 const getCarrierCost = async (pricing: IPricing, weight: number, countryCode: string): Promise<CarrierCostResponse> => {
   try {
     const country = await getCountry(countryCode);

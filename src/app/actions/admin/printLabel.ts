@@ -6,12 +6,12 @@ import { generalMessages, printerMessages, shippingMessages, UserRole } from '@/
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
-import { Storage } from '@/lib/storage';
-import { Shipping } from '@/models';
+import { ShippingDocument } from '@/models';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND } = shippingMessages;
 const { ENV_NOT_FOUND, PRINTERNOT_FOUND } = printerMessages;
+
 const PRINTER_TIMEOUT_MS = 10_000;
 
 const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResponse<null>> => {
@@ -31,11 +31,11 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
 
     await connectMongoDB();
 
-    const shippingExists = await Shipping.exists({
-      _id: shippingId,
-    });
+    const shippingDocument = await ShippingDocument.findOne({
+      shippingId,
+    }).select('label');
 
-    if (!shippingExists) {
+    if (!shippingDocument?.label) {
       return {
         status: 'ERROR',
         message: NOT_FOUND,
@@ -59,27 +59,7 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
       };
     }
 
-    let data: { Body: Buffer };
-
-    try {
-      data = await Storage.getObject({
-        Bucket: 'labels',
-        Key: `${shippingId}.pdf`,
-      });
-    } catch (storageError) {
-      captureActionError('printLabel.getLabel', storageError, {
-        extras: {
-          shippingId,
-        },
-      });
-
-      return {
-        status: 'ERROR',
-        message: NOT_FOUND,
-      };
-    }
-
-    const base64Label = data.Body.toString('base64');
+    const base64Label = shippingDocument.label.toString('base64');
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), PRINTER_TIMEOUT_MS);

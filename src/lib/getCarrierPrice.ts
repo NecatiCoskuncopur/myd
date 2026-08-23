@@ -7,6 +7,22 @@ interface GetCarrierPriceParams {
   pricing?: CarrierAccountTypes.IPricing;
 }
 
+/**
+ * Ülke ve ağırlık bilgisine göre taşıyıcı maliyetini hesaplar.
+ *
+ * Ülkenin bağlı olduğu fiyatlandırma bölgesini bulur ve ağırlığa uygun ilk fiyatı döndürür.
+ * Ağırlık tanımlı en yüksek ağırlık sınırını aşarsa, aşan kısım için bölgenin `than`
+ * değeri kullanılarak ek ücret hesaplanır.
+ *
+ * Fiyatlandırma bilgisi, ülke, bölge veya geçerli fiyat bulunamazsa `null` döner.
+ *
+ * @param params - Taşıyıcı fiyat hesaplama parametreleri
+ * @param params.countryCode - Gönderinin ülke kodu
+ * @param params.weight - Gönderinin hesaplamada kullanılacak ağırlığı
+ * @param params.pricing - Taşıyıcı hesabına ait fiyatlandırma bilgisi
+ * @returns Hesaplanan taşıyıcı maliyeti veya fiyat hesaplanamazsa `null`
+ */
+
 export const getCarrierPrice = ({ countryCode, weight, pricing }: GetCarrierPriceParams) => {
   if (!pricing) {
     return null;

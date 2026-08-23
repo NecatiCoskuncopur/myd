@@ -37,8 +37,7 @@ const sendSms = async (phone: string, message: string) => {
     throw new Error('NetGSM SMS failed');
   }
 
-  const text = await res.text();
-  return text;
+  return res.text();
 };
 
 export default sendSms;

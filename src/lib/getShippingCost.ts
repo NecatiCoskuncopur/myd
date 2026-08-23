@@ -118,7 +118,6 @@ const getShippingCost = async (pricingListId: Types.ObjectId, weight: number, co
     }
 
     const sortedPrices = [...prices].sort((a, b) => a.weight - b.weight);
-
     const maxItem = sortedPrices[sortedPrices.length - 1];
 
     const normalizeWeight = (w: number) => Math.ceil(w * 2) / 2;

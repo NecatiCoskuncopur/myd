@@ -172,7 +172,7 @@ const createUpsPaper = async ({
             })),
           },
         },
-        Package: [...new Array(pkg.numberOfPackage)].map(x => ({
+        Package: [...new Array(pkg.numberOfPackage)].map(() => ({
           Packaging: {
             Code: '02',
           },

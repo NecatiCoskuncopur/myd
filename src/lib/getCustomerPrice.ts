@@ -7,6 +7,22 @@ interface GetCustomerPriceParams {
   pricingList?: PricingListTypes.IPricingList | null;
 }
 
+/**
+ * Ülke ve ağırlık bilgisine göre müşteriye uygulanacak gönderim fiyatını hesaplar.
+ *
+ * Ülkenin bağlı olduğu fiyatlandırma bölgesini bulur ve ağırlığa uygun ilk fiyatı döndürür.
+ * Ağırlık tanımlı en yüksek ağırlık sınırını aşarsa, aşan kısım için bölgenin `than`
+ * değeri kullanılarak ek ücret hesaplanır.
+ *
+ * Fiyat listesi, ülke, bölge veya geçerli fiyat bilgisi bulunamazsa `null` döner.
+ *
+ * @param params - Fiyat hesaplama parametreleri
+ * @param params.countryCode - Gönderinin ülke kodu
+ * @param params.weight - Gönderinin hesaplamada kullanılacak ağırlığı
+ * @param params.pricingList - Fiyat hesaplamasında kullanılacak müşteri fiyat listesi
+ * @returns Hesaplanan gönderim fiyatı veya fiyat hesaplanamazsa `null`
+ */
+
 export const getCustomerPrice = ({ countryCode, weight, pricingList }: GetCustomerPriceParams) => {
   if (!pricingList) {
     return null;
@@ -20,9 +36,7 @@ export const getCustomerPrice = ({ countryCode, weight, pricingList }: GetCustom
 
   const pricingZone = pricingList.zone.find(zone => zone.number === country.zone);
 
-  if (!pricingZone) {
-    return null;
-  }
+  if (!pricingZone) return null;
 
   const price = pricingZone.prices.find(item => weight <= item.weight);
 
