@@ -5,27 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/captureActionError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/captureActionError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierCost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierCost.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierCredentials.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierCredentials.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierIcon.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierIcon.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierPrice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierPrice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierTrackingUrl.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierTrackingUrl.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCustomerPrice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCustomerPrice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getShippingCost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getShippingCost.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/isMongoDuplicateKeyError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/isMongoDuplicateKeyError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/openBase64Pdf.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/openBase64Pdf.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/sendSms.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/sendSms.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/serialize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/serialize.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/storage.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +169,7 @@
       <workItem from="1787102452578" duration="13252000" />
       <workItem from="1787165102767" duration="16743000" />
       <workItem from="1787424425877" duration="14239000" />
-      <workItem from="1787519505488" duration="8433000" />
+      <workItem from="1787519505488" duration="9153000" />
     </task>
     <servers />
   </component>
