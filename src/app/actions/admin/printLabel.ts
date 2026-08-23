@@ -1,33 +1,44 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
+import { Types } from 'mongoose';
 
-import { generalMessages, shippingMessages, UserRole } from '@/constants';
+import { generalMessages, printerMessages, shippingMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { Storage } from '@/lib/storage';
 import { Shipping } from '@/models';
 
+const { UNEXPECTED_ERROR } = generalMessages;
+const { NOT_FOUND } = shippingMessages;
+const { ENV_NOT_FOUND, PRINTERNOT_FOUND } = printerMessages;
+const PRINTER_TIMEOUT_MS = 10_000;
+
 const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResponse<null>> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
-    if (authError) return authError;
 
-    if (!shippingId) {
+    if (authError) {
+      return authError;
+    }
+
+    if (!Types.ObjectId.isValid(shippingId)) {
       return {
         status: 'ERROR',
-        message: shippingMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
     await connectMongoDB();
 
-    const shipping = await Shipping.findById(shippingId).select('_id');
+    const shippingExists = await Shipping.exists({
+      _id: shippingId,
+    });
 
-    if (!shipping) {
+    if (!shippingExists) {
       return {
         status: 'ERROR',
-        message: shippingMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
@@ -35,11 +46,16 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
     const printerPassword = process.env.OFFICE_PRINTER_PASSWORD;
 
     if (!printerUrl || !printerPassword) {
-      console.error('Printer environment variables missing');
+      captureActionError('printLabel.config', new Error(ENV_NOT_FOUND), {
+        extras: {
+          hasPrinterUrl: Boolean(printerUrl),
+          hasPrinterPassword: Boolean(printerPassword),
+        },
+      });
 
       return {
         status: 'ERROR',
-        message: generalMessages.UNEXPECTED_ERROR,
+        message: UNEXPECTED_ERROR,
       };
     }
 
@@ -50,38 +66,54 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
         Bucket: 'labels',
         Key: `${shippingId}.pdf`,
       });
-    } catch {
+    } catch (storageError) {
+      captureActionError('printLabel.getLabel', storageError, {
+        extras: {
+          shippingId,
+        },
+      });
+
       return {
         status: 'ERROR',
-        message: shippingMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
     const base64Label = data.Body.toString('base64');
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), PRINTER_TIMEOUT_MS);
 
-    const response = await fetch(printerUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        password: printerPassword,
-      },
-      body: JSON.stringify({
-        label: base64Label,
-      }),
-      signal: controller.signal,
-    });
+    let response: Response;
 
-    clearTimeout(timeout);
+    try {
+      response = await fetch(printerUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          password: printerPassword,
+        },
+        body: JSON.stringify({
+          label: base64Label,
+        }),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
-      Sentry.captureException(response.status);
+      captureActionError('printLabel.printer', new Error(`Printer API returned HTTP ${response.status}`), {
+        extras: {
+          shippingId,
+          status: response.status,
+          statusText: response.statusText,
+        },
+      });
 
       return {
         status: 'ERROR',
-        message: 'Aktif yazıcı bulunamadı.',
+        message: PRINTERNOT_FOUND,
       };
     }
 
@@ -91,15 +123,12 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'printLabel');
-        scope.captureException(error);
-      });
+      captureActionError('printLabel', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

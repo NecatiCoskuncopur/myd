@@ -1,10 +1,11 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
-import { generalMessages, pricingListMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, pricingListMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
 import updatePricingListSchema from '@/schemas/updatePricingList.schema';
@@ -16,38 +17,72 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const updatePricingList = async (data: PricingListTypes.IUpdatePricingListPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN]);
-    if (authError) return authError;
+
+    if (authError) {
+      return authError;
+    }
 
     const validatedData = await updatePricingListSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const { pricingListId, ...updateFields } = validatedData;
 
-    const existingWithName = await PricingList.findOne({
-      name: { $regex: `^${updateFields.name?.trim()}$`, $options: 'i' },
-      _id: { $ne: pricingListId },
-    });
+    const normalizedName = updateFields.name?.trim();
 
-    if (existingWithName) {
-      return { status: 'ERROR', message: EXIST };
+    if (normalizedName) {
+      const existingPricingList = await PricingList.findOne({
+        name: {
+          $regex: `^${escapeRegex(normalizedName)}$`,
+          $options: 'i',
+        },
+        _id: {
+          $ne: pricingListId,
+        },
+      })
+        .select('_id')
+        .lean();
+
+      if (existingPricingList) {
+        return {
+          status: 'ERROR',
+          message: EXIST,
+        };
+      }
+
+      updateFields.name = normalizedName;
     }
 
-    const updated = await PricingList.findByIdAndUpdate(pricingListId, { $set: updateFields }, { new: true, runValidators: true });
+    const updatedPricingList = await PricingList.findByIdAndUpdate(
+      pricingListId,
+      {
+        $set: updateFields,
+      },
+      {
+        runValidators: true,
+      },
+    );
 
-    if (!updated) {
-      return { status: 'ERROR', message: NOT_FOUND };
+    if (!updatedPricingList) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
     }
 
     return {
       status: 'OK',
       message: UPDATE,
     };
-  } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
-      return { status: 'ERROR', message: EXIST };
+  } catch (error) {
+    if (isMongoDuplicateKeyError(error)) {
+      return {
+        status: 'ERROR',
+        message: EXIST,
+      };
     }
 
     if (error instanceof ValidationError) {
@@ -58,10 +93,7 @@ const updatePricingList = async (data: PricingListTypes.IUpdatePricingListPayloa
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'updatePricingList');
-        scope.captureException(error);
-      });
+      captureActionError('updatePricingList', error);
     }
 
     return {

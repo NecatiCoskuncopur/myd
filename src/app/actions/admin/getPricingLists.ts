@@ -1,13 +1,16 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import type { PaginateModel } from 'mongoose';
 
-import { generalMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
+import serialize from '@/lib/serialize';
 import { PricingList } from '@/models';
 import { PricingListTypes } from '@/types/pricingList';
+
+const { UNEXPECTED_ERROR } = generalMessages;
 
 const getPricingLists = async (
   params: PricingListTypes.IPricingListsParams = {},
@@ -27,7 +30,7 @@ const getPricingLists = async (
 
     if (name) {
       query.name = {
-        $regex: `^${name}`,
+        $regex: `^${escapeRegex(name.trim())}`,
         $options: 'i',
       };
     }
@@ -47,7 +50,7 @@ const getPricingLists = async (
     return {
       status: 'OK',
       data: {
-        pricingLists: JSON.parse(JSON.stringify(result.docs)),
+        pricingLists: serialize<PricingListTypes.IPricingList[]>(result.docs),
         totalCount: result.totalDocs,
         page: result.page ?? currentPage,
         limit: result.limit,
@@ -58,15 +61,12 @@ const getPricingLists = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getPricingLists');
-        scope.captureException(error);
-      });
+      captureActionError('getPricingLists', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

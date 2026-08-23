@@ -1,20 +1,23 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
 import { generalMessages, pricingListMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList, User } from '@/models';
 
-const { NOT_FOUND } = pricingListMessages;
+const { DELETE, NOT_FOUND } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
-    if (authError) return authError;
+
+    if (authError) {
+      return authError;
+    }
 
     if (!Types.ObjectId.isValid(listId)) {
       return {
@@ -25,9 +28,11 @@ const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionR
 
     await connectMongoDB();
 
-    const pricingListDoc = await PricingList.findById(listId);
+    const priceListId = new Types.ObjectId(listId);
 
-    if (!pricingListDoc) {
+    const pricingList = await PricingList.findById(priceListId).select('_id').lean();
+
+    if (!pricingList) {
       return {
         status: 'ERROR',
         message: NOT_FOUND,
@@ -35,28 +40,36 @@ const deletePricingList = async (listId: string): Promise<ResponseTypes.IActionR
     }
 
     await User.updateMany(
-      { 'priceLists.priceListId': listId },
+      {
+        'priceLists.priceListId': priceListId,
+      },
       {
         $pull: {
           priceLists: {
-            priceListId: listId,
+            priceListId,
           },
         },
       },
     );
 
-    await pricingListDoc.deleteOne();
+    const deleteResult = await PricingList.deleteOne({
+      _id: priceListId,
+    });
+
+    if (deleteResult.deletedCount === 0) {
+      return {
+        status: 'ERROR',
+        message: NOT_FOUND,
+      };
+    }
 
     return {
       status: 'OK',
-      message: pricingListMessages.DELETE.SUCCESS,
+      message: DELETE.SUCCESS,
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'deletePricingList');
-        scope.captureException(error);
-      });
+      captureActionError('deletePricingList', error);
     }
 
     return {

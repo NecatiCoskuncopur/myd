@@ -1,10 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
-import { generalMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
+import serialize from '@/lib/serialize';
 import { User } from '@/models';
 import { AdminTypes } from '@/types/admin';
 
@@ -23,12 +23,27 @@ const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
 
     await connectMongoDB();
 
-    const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const createSearchRegex = (value: string) => ({
+      $regex: `^${escapeRegex(value.trim())}`,
+      $options: 'i',
+    });
 
     const matchArray = [];
-    if (firstName) matchArray.push({ firstName: { $regex: `^${escape(firstName)}`, $options: 'i' } });
-    if (lastName) matchArray.push({ lastName: { $regex: `^${escape(lastName)}`, $options: 'i' } });
-    if (company) matchArray.push({ company: { $regex: `^${escape(company)}`, $options: 'i' } });
+    if (firstName) {
+      matchArray.push({ firstName: createSearchRegex(firstName) });
+    }
+
+    if (lastName) {
+      matchArray.push({
+        lastName: createSearchRegex(lastName),
+      });
+    }
+
+    if (company) {
+      matchArray.push({
+        company: createSearchRegex(company),
+      });
+    }
 
     const query = { $or: matchArray };
 
@@ -36,14 +51,11 @@ const searchSenderUser = async (params: AdminTypes.ISearchSenderUserParams) => {
 
     return {
       status: 'OK',
-      data: JSON.parse(JSON.stringify(result)),
+      data: serialize(result),
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'searchSenderUser');
-        scope.captureException(error);
-      });
+      captureActionError('searchSenderUser', error);
     }
     return { status: 'ERROR', message: UNEXPECTED_ERROR };
   }

@@ -1,10 +1,11 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
-import { generalMessages, pricingListMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, pricingListMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
 import createPricingListSchema from '@/schemas/createPricingList.schema';
@@ -16,22 +17,35 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const createPricingList = async (data: PricingListTypes.ICreatePricingListPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN]);
-    if (authError) return authError;
+
+    if (authError) {
+      return authError;
+    }
 
     const validatedData = await createPricingListSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const listName = validatedData.name.trim();
+    const safeListName = escapeRegex(listName);
 
-    const existing = await PricingList.findOne({
-      name: { $regex: `^${listName}$`, $options: 'i' },
-    });
+    const existingPricingList = await PricingList.findOne({
+      name: {
+        $regex: `^${safeListName}$`,
+        $options: 'i',
+      },
+    })
+      .select('_id')
+      .lean();
 
-    if (existing) {
-      return { status: 'ERROR', message: EXIST };
+    if (existingPricingList) {
+      return {
+        status: 'ERROR',
+        message: EXIST,
+      };
     }
 
     await PricingList.create({
@@ -43,9 +57,12 @@ const createPricingList = async (data: PricingListTypes.ICreatePricingListPayloa
       status: 'OK',
       message: SUCCESS,
     };
-  } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
-      return { status: 'ERROR', message: EXIST };
+  } catch (error) {
+    if (isMongoDuplicateKeyError(error)) {
+      return {
+        status: 'ERROR',
+        message: EXIST,
+      };
     }
 
     if (error instanceof ValidationError) {
@@ -56,10 +73,7 @@ const createPricingList = async (data: PricingListTypes.ICreatePricingListPayloa
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'createPricingList');
-        scope.captureException(error);
-      });
+      captureActionError('createPricingList', error);
     }
 
     return {

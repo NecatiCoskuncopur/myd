@@ -1,14 +1,18 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { carrierMessages, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
 import createCarrierAccountSchema from '@/schemas/createCarrierAccount.schema';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+
+const { UNEXPECTED_ERROR } = generalMessages;
+const { ACCOUNTNUMBER, CREATE } = carrierMessages;
 
 const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
@@ -19,6 +23,7 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     await CarrierAccount.create({
@@ -28,13 +33,13 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
 
     return {
       status: 'OK',
-      message: carrierMessages.CREATE.SUCCESS,
+      message: CREATE.SUCCESS,
     };
   } catch (error) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+    if (isMongoDuplicateKeyError(error)) {
       return {
         status: 'ERROR',
-        message: carrierMessages.ACCOUNTNUMBER.ALREADY_EXISTS,
+        message: ACCOUNTNUMBER.ALREADY_EXISTS,
       };
     }
 
@@ -46,15 +51,12 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'createCarrierAccount');
-        scope.captureException(error);
-      });
+      captureActionError('createCarrierAccount', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

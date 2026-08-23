@@ -1,10 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { generalMessages, transactionMessages, UserRole } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import addTransactionSchema from '@/schemas/addTransaction.schema';
@@ -16,14 +16,16 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBalancePayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN]);
-    if (authError) return authError;
-
-    await connectMongoDB();
+    if (authError) {
+      return authError;
+    }
 
     const validatedData = await addTransactionSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
+    await connectMongoDB();
 
     const { userId, type, amount, note } = validatedData;
 
@@ -35,7 +37,11 @@ const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBal
         message: result.message,
       };
     }
-    return { status: 'OK', message: SUCCESS };
+
+    return {
+      status: 'OK',
+      message: SUCCESS,
+    };
   } catch (error) {
     if (error instanceof ValidationError) {
       return {
@@ -45,10 +51,7 @@ const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBal
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'addTransactionUserBalance');
-        scope.captureException(error);
-      });
+      captureActionError('addTransactionUserBalance', error);
     }
 
     return {

@@ -1,9 +1,9 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
 import { generalMessages, pricingListMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { PricingList } from '@/models';
@@ -25,9 +25,8 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     }
     await connectMongoDB();
 
-    const pricingListDoc = await PricingList.findById(listId).lean<PricingListTypes.IPricingList>();
-
-    if (!pricingListDoc) {
+    const pricingListData = await PricingList.findById(listId).lean();
+    if (!pricingListData) {
       return {
         status: 'ERROR',
         message: NOT_FOUND,
@@ -35,16 +34,19 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     }
 
     const pricingList: PricingListTypes.IPricingList = {
-      _id: pricingListDoc._id.toString(),
-      name: pricingListDoc.name,
-      listType: pricingListDoc.listType,
-      zone: pricingListDoc.zone.map((z: PricingListTypes.IZone) => ({
-        number: z.number,
-        prices: z.prices.map((p: PricingListTypes.IPrice) => ({ weight: p.weight, price: p.price })),
-        than: z.than,
+      _id: pricingListData._id.toString(),
+      name: pricingListData.name,
+      listType: pricingListData.listType,
+      zone: pricingListData.zone.map(zone => ({
+        number: zone.number,
+        prices: zone.prices.map(price => ({
+          weight: price.weight,
+          price: price.price,
+        })),
+        than: zone.than,
       })),
-      createdAt: pricingListDoc.createdAt,
-      updatedAt: pricingListDoc.updatedAt,
+      createdAt: pricingListData.createdAt.toISOString(),
+      updatedAt: pricingListData.updatedAt.toISOString(),
     };
 
     return {
@@ -53,10 +55,7 @@ const getPricingList = async (listId: string): Promise<ResponseTypes.IActionResp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getPricingList');
-        scope.captureException(error);
-      });
+      captureActionError('getPricingList', error);
     }
 
     return {

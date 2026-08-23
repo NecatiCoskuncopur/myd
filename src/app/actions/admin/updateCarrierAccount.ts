@@ -1,23 +1,29 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
 import { carrierMessages, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
 import updateCarrierAccountSchema from '@/schemas/updateCarrierAccount.schema';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
+const { UNEXPECTED_ERROR } = generalMessages;
+const { ACCOUNTNUMBER, NOT_FOUND, UPDATE } = carrierMessages;
+
 const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
+
     const validatedData = await updateCarrierAccountSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
+
     await connectMongoDB();
 
     const { id, ...updateFields } = validatedData;
@@ -39,19 +45,19 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
     if (!updatedAccount) {
       return {
         status: 'ERROR',
-        message: carrierMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
     return {
       status: 'OK',
-      message: carrierMessages.UPDATE.SUCCESS,
+      message: UPDATE.SUCCESS,
     };
   } catch (error) {
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 11000) {
+    if (isMongoDuplicateKeyError(error)) {
       return {
         status: 'ERROR',
-        message: carrierMessages.ACCOUNTNUMBER.ALREADY_EXISTS,
+        message: ACCOUNTNUMBER.ALREADY_EXISTS,
       };
     }
 
@@ -63,15 +69,12 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
     }
 
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'updateCarrierAccount');
-        scope.captureException(error);
-      });
+      captureActionError('updateCarrierAccount', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

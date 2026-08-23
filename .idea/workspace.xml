@@ -5,17 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/constants/authToken.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/constants/cookieName.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/constants/dummyHash.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/messages/printerMessages.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/deletePricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/searchSenderUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/searchSenderUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/captureActionError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/captureActionError.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +33,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="313" />
+    <option name="cachedIndexableFilesCount" value="325" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -177,7 +187,8 @@
       <workItem from="1787074134696" duration="15885000" />
       <workItem from="1787102452578" duration="13252000" />
       <workItem from="1787165102767" duration="16743000" />
-      <workItem from="1787424425877" duration="14035000" />
+      <workItem from="1787424425877" duration="14239000" />
+      <workItem from="1787519505488" duration="5092000" />
     </task>
     <servers />
   </component>

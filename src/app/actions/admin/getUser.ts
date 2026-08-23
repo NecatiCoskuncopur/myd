@@ -1,19 +1,23 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { Types } from 'mongoose';
 
 import { generalMessages, userMessages } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import serialize from '@/lib/serialize';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
+
+const { UNEXPECTED_ERROR } = generalMessages;
+const { NOT_FOUND } = userMessages;
 
 const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<UserTypes.UserDto>> => {
   try {
     if (!Types.ObjectId.isValid(userId)) {
       return {
         status: 'ERROR',
-        message: userMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
     await connectMongoDB();
@@ -23,49 +27,22 @@ const getUser = async (userId: string): Promise<ResponseTypes.IActionResponse<Us
     if (!userDoc) {
       return {
         status: 'ERROR',
-        message: userMessages.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
-    const cleanUser: UserTypes.UserDto = {
-      _id: String(userDoc._id),
-      email: userDoc.email,
-      firstName: userDoc.firstName,
-      lastName: userDoc.lastName,
-      nickname: userDoc.nickname || '',
-      company: userDoc.company || '',
-      taxId: userDoc.taxId || '',
-      taxOffice: userDoc.taxOffice || '',
-      phone: userDoc.phone,
-      role: userDoc.role as UserTypes.UserDto['role'],
-      isActive: userDoc.isActive,
-      barcodePermits: userDoc.barcodePermits || [],
-      address: userDoc.address,
-
-      priceLists: (userDoc.priceLists || []).map(item => ({
-        serviceType: item.serviceType,
-        priceListId: String(item.priceListId),
-      })),
-
-      createdAt: userDoc.createdAt,
-      updatedAt: userDoc.updatedAt,
-    };
-
     return {
       status: 'OK',
-      data: cleanUser,
+      data: serialize<UserTypes.UserDto>(userDoc),
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getUser');
-        scope.captureException(error);
-      });
+      captureActionError('getUser', error);
     }
 
     return {
       status: 'ERROR',
-      message: generalMessages.UNEXPECTED_ERROR,
+      message: UNEXPECTED_ERROR,
     };
   }
 };

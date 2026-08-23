@@ -1,10 +1,10 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
-import { generalMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
+import serialize from '@/lib/serialize';
 import { CarrierAccount } from '@/models';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
@@ -22,13 +22,18 @@ const getCarrierAccounts = async (
     const currentPage = Math.max(1, page);
     const currentLimit = Math.max(1, limit);
 
+    const createSearchRegex = (value: string) => ({
+      $regex: `^${escapeRegex(value.trim())}`,
+      $options: 'i',
+    });
+
     const match: Record<string, unknown> = {};
 
-    if (name) match.name = { $regex: name, $options: 'i' };
-    if (displayName) match.displayName = { $regex: displayName, $options: 'i' };
+    if (name) match.name = createSearchRegex(name);
+    if (displayName) match.displayName = createSearchRegex(displayName);
     if (carrier) match.carrier = carrier;
     if (accountType) match.accountType = accountType;
-    if (accountNumber) match.accountNumber = { $regex: accountNumber, $options: 'i' };
+    if (accountNumber) match.accountNumber = createSearchRegex(accountNumber);
     if (typeof isActive === 'boolean') match.isActive = isActive;
 
     const skip = (currentPage - 1) * currentLimit;
@@ -45,7 +50,7 @@ const getCarrierAccounts = async (
     return {
       status: 'OK',
       data: {
-        carrierAccounts: JSON.parse(JSON.stringify(carrierAccounts)),
+        carrierAccounts: serialize<CarrierAccountTypes.ICarrierAccount[]>(carrierAccounts),
         totalCount,
         page: currentPage,
         limit: currentLimit,
@@ -56,10 +61,7 @@ const getCarrierAccounts = async (
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getCarrierAccounts');
-        scope.captureException(error);
-      });
+      captureActionError('getCarrierAccounts', error);
     }
 
     return {

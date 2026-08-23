@@ -1,10 +1,11 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
 import { ValidationError } from 'yup';
 
-import { generalMessages, pricingListMessages, shippingMessages, ShippingStatus, UserRole } from '@/constants';
+import { generalMessages, pricingListMessages, shippingMessages, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
+import captureActionError from '@/lib/captureActionError';
+import connectMongoDB from '@/lib/db';
 import getShippingCost from '@/lib/getShippingCost';
 import requireRoles from '@/lib/requireRoles';
 import { Shipping, User } from '@/models';
@@ -13,6 +14,7 @@ import { AdminTypes } from '@/types/admin';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND, UPDATESHIPPING } = shippingMessages;
+const { PRICING, NOT_FOUND: PL_NOT_FOUND } = pricingListMessages;
 
 const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensionsPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
@@ -24,9 +26,11 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       stripUnknown: true,
     });
 
+    await connectMongoDB();
+
     const { shippingId, weight, width, height, length } = validatedData;
 
-    const volumetricWeight = (length * width * height) / 5000;
+    const volumetricWeight = (length * width * height) / VOLUMETRIC_WEIGHT_DIVISOR;
 
     const shipping = await Shipping.findById(shippingId);
 
@@ -61,7 +65,7 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     if (!userForPricing) {
       return {
         status: 'ERROR',
-        message: pricingListMessages.PRICING.USER_NOT_FOUND,
+        message: PRICING.USER_NOT_FOUND,
       };
     }
 
@@ -70,7 +74,7 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     if (!accountType) {
       return {
         status: 'ERROR',
-        message: pricingListMessages.NOT_FOUND,
+        message: PL_NOT_FOUND,
       };
     }
 
@@ -79,7 +83,7 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     if (!userPriceList) {
       return {
         status: 'ERROR',
-        message: pricingListMessages.NOT_FOUND,
+        message: PL_NOT_FOUND,
       };
     }
 
@@ -129,10 +133,7 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       };
     }
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'updatePackageDimensions');
-        scope.captureException(error);
-      });
+      captureActionError('updatePackageDimensions', error);
     }
     return {
       status: 'ERROR',

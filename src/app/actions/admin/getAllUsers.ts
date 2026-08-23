@@ -1,8 +1,7 @@
 'use server';
 
-import * as Sentry from '@sentry/nextjs';
-
-import { generalMessages, UserRole } from '@/constants';
+import { escapeRegex, generalMessages, UserRole } from '@/constants';
+import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import { Balance, User } from '@/models';
@@ -22,12 +21,17 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
     const safeLimit = Math.max(Number(limit), 1);
     const skip = (safePage - 1) * safeLimit;
 
+    const createSearchRegex = (value: string) => ({
+      $regex: `^${escapeRegex(value.trim())}`,
+      $options: 'i',
+    });
+
     const match: Record<string, unknown> = {};
-    if (firstName) match.firstName = { $regex: `^${firstName}`, $options: 'i' };
-    if (lastName) match.lastName = { $regex: `^${lastName}`, $options: 'i' };
-    if (company) match.company = { $regex: `^${company}`, $options: 'i' };
-    if (phone) match.phone = { $regex: `^${phone}`, $options: 'i' };
-    if (email) match.email = { $regex: `^${email}`, $options: 'i' };
+    if (firstName) match.firstName = createSearchRegex(firstName);
+    if (lastName) match.lastName = createSearchRegex(lastName);
+    if (company) match.company = createSearchRegex(company);
+    if (phone) match.phone = createSearchRegex(phone);
+    if (email) match.email = createSearchRegex(email);
 
     const sort: Record<string, 1 | -1> =
       balanceSorting === '1' || balanceSorting === '-1' ? { 'balance.total': Number(balanceSorting) as 1 | -1 } : { createdAt: -1 };
@@ -119,10 +123,7 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
     };
   } catch (error) {
     if (error instanceof Error) {
-      Sentry.withScope(scope => {
-        scope.setTag('action', 'getAllUsers');
-        scope.captureException(error);
-      });
+      captureActionError('getAllUsers', error);
     }
     return {
       status: 'ERROR',
