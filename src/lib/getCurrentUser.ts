@@ -1,50 +1,45 @@
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 
+import { auth } from '@/auth';
 import { UserRole } from '@/constants';
+import connectMongoDB from '@/lib/db';
 import { User } from '@/models';
 import { UserTypes } from '@/types/user';
 
 /**
- * Request cookie'sinde bulunan JWT token'ı doğrular
- * ve ilgili kullanıcıyı veritabanından getirir.
- *
- * İşleyiş:
- * - 'token' isimli cookie okunur
- * - JWT_SECRET ile doğrulama yapılır
- * - Token içindeki sub ile kullanıcı veritabanından sorgulanır
+ * Auth.js session'ındaki kullanıcı kimliğiyle
+ * güncel kullanıcı bilgilerini veritabanından getirir.
  *
  * @returns
- * - Kullanıcı bulunursa: { id, role, email, barcodePermits }
- * - Token yoksa, geçersizse veya kullanıcı bulunamazsa: null
+ * - Aktif kullanıcı bulunursa: { id, role, email, barcodePermits }
+ * - Session yoksa, kullanıcı bulunamazsa veya kullanıcı pasifse: null
  */
-
 export const getCurrentUser = async (): Promise<UserTypes.ICurrentUser | null> => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
-  if (!token) return null;
+  const session = await auth();
+  const userId = session?.user?.id;
 
-  let decoded: UserTypes.JwtPayload;
-
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserTypes.JwtPayload;
-  } catch {
+  if (!userId || !Types.ObjectId.isValid(userId)) {
     return null;
   }
 
-  const user = await User.findById(decoded.sub).select('_id role email barcodePermits').lean<{
-    _id: unknown;
+  await connectMongoDB();
+
+  const user = await User.findById(userId).select('_id role email barcodePermits isActive').lean<{
+    _id: Types.ObjectId;
     role: UserRole;
     email: string;
     barcodePermits?: string[];
+    isActive: boolean;
   }>();
 
-  if (!user) return null;
+  if (!user || !user.isActive) {
+    return null;
+  }
 
   return {
-    id: String(user._id),
+    id: user._id.toString(),
     role: user.role,
     email: user.email,
-    barcodePermits: user.barcodePermits || [],
+    barcodePermits: user.barcodePermits ?? [],
   };
 };

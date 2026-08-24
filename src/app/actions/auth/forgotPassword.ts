@@ -40,7 +40,7 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
       };
     }
 
-    const secret = `${env.JWT_SECRET}:${user.password}`;
+    const secret = `${env.PASSWORD_RESET_SECRET}:${user.password}`;
 
     const token = jwt.sign(
       {

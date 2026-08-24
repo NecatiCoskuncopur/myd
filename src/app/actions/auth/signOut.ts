@@ -1,30 +1,37 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { AuthError } from 'next-auth';
 
-import { AUTH_COOKIE_NAME, authMessages } from '@/constants';
+import { authSignOut } from '@/auth';
+import { authMessages } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
+
+const { SIGNOUT } = authMessages;
 
 const signOut = async (): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const cookieStore = await cookies();
-
-    cookieStore.delete({
-      name: AUTH_COOKIE_NAME,
-      path: '/',
+    await authSignOut({
+      redirect: false,
     });
 
     return {
       status: 'OK',
     };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        status: 'ERROR',
+        message: SIGNOUT.ERROR,
+      };
+    }
+
     if (error instanceof Error) {
       captureActionError('signOut', error);
     }
 
     return {
       status: 'ERROR',
-      message: authMessages.SIGNOUT.ERROR,
+      message: SIGNOUT.ERROR,
     };
   }
 };

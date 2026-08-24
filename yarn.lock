@@ -33,6 +33,17 @@
     debug "^4.4.1"
     module-details-from-path "^1.0.4"
 
+"@auth/core@0.41.3":
+  version "0.41.3"
+  resolved "https://registry.yarnpkg.com/@auth/core/-/core-0.41.3.tgz#9c03e881feb589d3e807b764c050b32e350fce51"
+  integrity sha512-sJ3JMHHkXMD3aOjopv7mOBTO1Ocw4b0fAEXJBz6k7YHLpYQI6C40jCUPc5fNvUKxXRXNE1/sRISA15UrwWJBTw==
+  dependencies:
+    "@panva/hkdf" "^1.2.1"
+    jose "^6.0.6"
+    oauth4webapi "^3.3.0"
+    preact "10.24.3"
+    preact-render-to-string "6.5.11"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.29.7":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.29.7.tgz#f2fbbfea87c44a21590ec515b778b2c26d8866e7"
@@ -950,6 +961,11 @@
   version "1.43.0"
   resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.43.0.tgz#f3f467e36c27332f0e735ec86cdcd78dd6f27865"
   integrity sha512-eSYWTm620tTk45EKSedaUL8MFYI8hW164hIXsgIHyxu3VobUB3fFCu5t0hQby6OoWRPsG1KkKUG2M5UadiLiVg==
+
+"@panva/hkdf@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@panva/hkdf/-/hkdf-1.2.1.tgz#cb0d111ef700136f4580349ff0226bf25c853f23"
+  integrity sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==
 
 "@pdf-lib/standard-fonts@^1.0.0":
   version "1.0.0"
@@ -3344,6 +3360,11 @@ iterator.prototype@^1.1.5:
     has-symbols "^1.1.0"
     set-function-name "^2.0.2"
 
+jose@^6.0.6:
+  version "6.2.10"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.10.tgz#b70436c920c4b3f97314c28a8b8612c15b1d9e7f"
+  integrity sha512-iiW7J9qRFlGxvCOIBDBDxFePQSn7ZMAnrYGhrrOo6siO/MIqwfyilLR27pkfDgUk+raLuzADS8A3S/KLBisc0g==
+
 jose@^6.2.3:
   version "6.2.5"
   resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.5.tgz#2db56ed2aa89786cd825843416136de10d6ad424"
@@ -3709,6 +3730,13 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
+next-auth@^5.0.0-beta.32:
+  version "5.0.0-beta.32"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-5.0.0-beta.32.tgz#699dba2616e017f1b062865ace95ab52fa8b53d2"
+  integrity sha512-CGlChIEWZ6LltNVxrE5yiySMID+Idpmry47JYA5lLwgD8Sx02a8M65VL0TWVz9nbnOioS/tCW/rP/0+mE7Qp4Q==
+  dependencies:
+    "@auth/core" "0.41.3"
+
 next@16.2.4:
   version "16.2.4"
   resolved "https://registry.yarnpkg.com/next/-/next-16.2.4.tgz#b1f708a283052e8ccb86ef16001d69e558e6ef5f"
@@ -3764,6 +3792,11 @@ nodemailer@^8.0.7:
   version "8.0.11"
   resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-8.0.11.tgz#ce46b7c2c8bbf17b0408122fbfb4e47f4bffc688"
   integrity sha512-nrO/pDAUKl+wXX+lx16tDLbnm0fW6sK/x8mgohaCpg+CdCEl482bD4tCuAZk2DyliruiNTIZxRCoWkDqJEnAiA==
+
+oauth4webapi@^3.3.0:
+  version "3.8.7"
+  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.8.7.tgz#e9ba31b5fd21d0f7b531293971ce0f55aabdfb6d"
+  integrity sha512-4RxcKxXjuItDFZ20RRPf4YTw3kpeXJyCgJFxVzJ068A7PNJ18st2Dg90tlC1LkSDS0GecroagCLHYEIVUhCAkw==
 
 object-assign@^4.1.1:
   version "4.1.1"
@@ -3968,6 +4001,16 @@ postcss@8.4.31:
     nanoid "^3.3.6"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
+
+preact-render-to-string@6.5.11:
+  version "6.5.11"
+  resolved "https://registry.yarnpkg.com/preact-render-to-string/-/preact-render-to-string-6.5.11.tgz#467e69908a453497bb93d4d1fc35fb749a78e027"
+  integrity sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==
+
+preact@10.24.3:
+  version "10.24.3"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.24.3.tgz#086386bd47071e3b45410ef20844c21e23828f64"
+  integrity sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==
 
 prelude-ls@^1.2.1:
   version "1.2.1"

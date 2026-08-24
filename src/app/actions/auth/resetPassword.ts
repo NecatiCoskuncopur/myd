@@ -48,7 +48,7 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
       };
     }
 
-    const dynamicSecret = `${env.JWT_SECRET}:${user.password}`;
+    const dynamicSecret = `${env.PASSWORD_RESET_SECRET}:${user.password}`;
 
     let verifiedToken: string | JwtPayload;
 
