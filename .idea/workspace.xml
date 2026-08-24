@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/public/images/mydLoading.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/loading.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/MydLoading.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,11 +68,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\public\images" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\public" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\CarrierAccountTable\Forms" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Table" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\public\images\fedex" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\public\images" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -169,7 +172,7 @@
       <workItem from="1787102452578" duration="13252000" />
       <workItem from="1787165102767" duration="16743000" />
       <workItem from="1787424425877" duration="14239000" />
-      <workItem from="1787519505488" duration="9153000" />
+      <workItem from="1787519505488" duration="10599000" />
     </task>
     <servers />
   </component>
