@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Alert, Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import adminCreateUser from '@/app/actions/admin/adminCreateUser';
 import { StyledButton } from '@/components';
 import { authMessages, generalMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 import { AdminTypes } from '@/types/admin';
 
 import FormItems from './FormItems';
@@ -17,13 +16,12 @@ interface CreateUserFormProps {
 }
 
 const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
-  const [pending, startTransition] = useTransition();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AdminTypes.ICreateUser>({
     defaultValues: {
       firstName: '',
@@ -44,52 +42,39 @@ const CreateUserForm = ({ onSuccess }: CreateUserFormProps) => {
     },
   });
 
-  const onSubmit = (values: AdminTypes.ICreateUser) => {
-    setErrorMessage(null);
+  const onSubmit = async (values: AdminTypes.ICreateUser) => {
+    try {
+      const response = await adminCreateUser(values);
 
-    startTransition(async () => {
-      try {
-        const response = await adminCreateUser(values);
-
-        if (response.status === 'ERROR') {
-          setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
-          return;
-        }
-
-        if (onSuccess && response.data) {
-          onSuccess(response.data);
-        }
-      } catch (error) {
-        console.error('Create User Failed:', error);
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+      if (response.status === 'ERROR') {
+        showSnackbar(response.message ?? authMessages.SIGNUP.ERROR, 'error');
+        return;
       }
-    });
+
+      if (response.data) {
+        onSuccess?.(response.data);
+      }
+    } catch {
+      showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
+    }
   };
-
   return (
-    <>
-      {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errorMessage}
-        </Alert>
-      )}
-      <Box component="div">
-        <FormItems errors={errors} control={control} />
+    <Box component="div">
+      <FormItems errors={errors} control={control} />
 
-        <StyledButton
-          type="button"
-          variant="contained"
-          size="large"
-          fullWidth
-          onClick={handleSubmit(onSubmit)}
-          sx={{ mt: 4 }}
-          startIcon={pending ? <CircularProgress size={20} color="inherit" /> : <PlayArrowIcon />}
-          disabled={pending}
-        >
-          {pending ? 'Kaydediliyor...' : 'Kaydet ve Seç'}
-        </StyledButton>
-      </Box>
-    </>
+      <StyledButton
+        type="button"
+        variant="contained"
+        size="large"
+        fullWidth
+        onClick={handleSubmit(onSubmit)}
+        sx={{ mt: 4 }}
+        disabled={isSubmitting}
+        loading={isSubmitting}
+      >
+        Kaydet ve Seç
+      </StyledButton>
+    </Box>
   );
 };
 
