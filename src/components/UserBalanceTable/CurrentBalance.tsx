@@ -1,15 +1,17 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 type CurrentBalanceProps = {
   total: number;
 };
 
 const CurrentBalance = ({ total }: CurrentBalanceProps) => {
-  const theme = useTheme();
+  const formattedTotal = Math.round((total + Number.EPSILON) * 100) / 100;
+
+  const balanceColor = total < 0 ? 'error.main' : total > 0 ? 'success.main' : 'text.primary';
 
   return (
     <Box
-      sx={{
+      sx={theme => ({
         px: 2.5,
         py: 1.25,
         borderRadius: '12px',
@@ -19,9 +21,15 @@ const CurrentBalance = ({ total }: CurrentBalanceProps) => {
         display: 'flex',
         alignItems: 'center',
         gap: 1.5,
-        alignSelf: { xs: 'stretch', sm: 'auto' },
-        justifyContent: { xs: 'space-between', sm: 'flex-start' },
-      }}
+        alignSelf: {
+          xs: 'stretch',
+          sm: 'auto',
+        },
+        justifyContent: {
+          xs: 'space-between',
+          sm: 'flex-start',
+        },
+      })}
     >
       <Typography
         variant="caption"
@@ -34,15 +42,16 @@ const CurrentBalance = ({ total }: CurrentBalanceProps) => {
       >
         Güncel Bakiye
       </Typography>
+
       <Typography
         variant="h6"
         sx={{
           fontWeight: 700,
-          color: '#22c55e',
+          color: balanceColor,
           lineHeight: 1,
         }}
       >
-        {total ? Math.round((total + Number.EPSILON) * 100) / 100 : 0}$
+        {formattedTotal}$
       </Typography>
     </Box>
   );
