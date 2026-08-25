@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Alert, Box, Button, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import forgotPassword from '@/app/actions/auth/forgotPassword';
@@ -12,16 +12,14 @@ import FormItems from './FormItems';
 
 const ForgotPasswordForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [pending, startTransition] = useTransition();
+  const [isSuccess, setIsSuccess] = useState(false);
   const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
     handleSubmit,
     setValue,
-    resetField,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AuthTypes.IForgotPasswordPayload>({
     defaultValues: {
       email: '',
@@ -29,33 +27,32 @@ const ForgotPasswordForm = () => {
     },
   });
 
-  const onSubmit = (values: AuthTypes.IForgotPasswordPayload) => {
-    setErrorMessage(null);
-
-    startTransition(async () => {
-      try {
-        const response = await forgotPassword(values);
-
-        if (response.status === 'ERROR') {
-          resetField('email');
-          setCaptchaKey(prev => prev + 1);
-          setErrorMessage(response.message ?? authMessages.FORGOTPASSWORD.ERROR);
-          return;
-        }
-
-        setSuccess(true);
-      } catch {
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
-      }
-    });
+  const resetCaptcha = () => {
+    setValue('recaptchaToken', '');
+    setCaptchaKey(prev => prev + 1);
   };
 
-  if (success) {
-    return (
-      <>
-        <ForgotPasswordSuccess />
-      </>
-    );
+  const onSubmit = async (values: AuthTypes.IForgotPasswordPayload) => {
+    setErrorMessage(null);
+
+    try {
+      const response = await forgotPassword(values);
+
+      if (response.status === 'ERROR') {
+        resetCaptcha();
+        setErrorMessage(response.message ?? authMessages.FORGOTPASSWORD.ERROR);
+        return;
+      }
+
+      setIsSuccess(true);
+    } catch {
+      resetCaptcha();
+      setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+    }
+  };
+
+  if (isSuccess) {
+    return <ForgotPasswordSuccess />;
   }
 
   return (
@@ -70,18 +67,10 @@ const ForgotPasswordForm = () => {
       )}
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
+        <FormItems errors={errors} control={control} captchaKey={captchaKey} />
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          fullWidth
-          sx={{ mt: 3 }}
-          startIcon={pending && <CircularProgress size={20} />}
-          disabled={pending}
-        >
-          {pending ? '' : 'Sıfırlama Linkini Gönder'}
+        <Button type="submit" variant="contained" size="large" fullWidth sx={{ mt: 3 }} disabled={isSubmitting} loading={isSubmitting}>
+          Sıfırlama Linkini Gönder
         </Button>
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
           <Link

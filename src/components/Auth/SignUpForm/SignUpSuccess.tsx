@@ -1,6 +1,3 @@
-'use client';
-
-import Link from 'next/link';
 import { CheckCircleOutlined } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 
@@ -23,7 +20,7 @@ const SignUpSuccess = () => {
             Artık MYD Export üyesisin, hemen Türkiyenin en avantajlı fiyatlarıyla gönderim yapmaya başla
           </Typography>
 
-          <Button component={Link} href="/kullanici/giris" variant="contained" size="large">
+          <Button href="/kullanici/giris" variant="contained" size="large">
             Giriş Yap
           </Button>
         </Box>

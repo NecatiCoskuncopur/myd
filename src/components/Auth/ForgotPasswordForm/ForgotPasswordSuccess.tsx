@@ -1,6 +1,3 @@
-'use client';
-
-import Link from 'next/link';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -29,7 +26,7 @@ const ForgotPasswordSuccess = () => {
         </Typography>
 
         <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Button component={Link} href="/kullanici/giris" variant="contained">
+          <Button href="/kullanici/giris" variant="contained">
             Geri Dön
           </Button>
 

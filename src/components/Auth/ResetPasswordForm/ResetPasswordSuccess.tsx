@@ -1,6 +1,3 @@
-'use client';
-
-import Link from 'next/link';
 import { CheckCircleOutlined } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 
@@ -23,7 +20,7 @@ const ResetPasswordSuccess = () => {
             Parolanız başarıyla güncellendi, giriş yapabilirsiniz
           </Typography>
 
-          <Button component={Link} href="/kullanici/giris" variant="contained" size="large">
+          <Button href="/kullanici/giris" variant="contained" size="large">
             Giriş Yap
           </Button>
         </Box>

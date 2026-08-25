@@ -6,9 +6,9 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material';
 
-type PasswordFieldProps = TextFieldProps;
+type PasswordTextFieldProps = Omit<TextFieldProps, 'type' | 'slotProps'>;
 
-const PasswordField = (props: PasswordFieldProps) => {
+const PasswordTextField = ({ fullWidth = true, ...props }: PasswordTextFieldProps) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleTogglePassword = () => {
@@ -19,7 +19,7 @@ const PasswordField = (props: PasswordFieldProps) => {
     <TextField
       {...props}
       type={isPasswordVisible ? 'text' : 'password'}
-      fullWidth
+      fullWidth={fullWidth}
       slotProps={{
         input: {
           startAdornment: (
@@ -40,4 +40,4 @@ const PasswordField = (props: PasswordFieldProps) => {
   );
 };
 
-export default PasswordField;
+export default PasswordTextField;

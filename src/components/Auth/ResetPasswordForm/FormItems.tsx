@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+'use client';
 
+import { Control, Controller, FieldErrors, useWatch } from 'react-hook-form';
+
+import { PasswordTextField } from '@/components';
 import { userMessages } from '@/constants';
-
-type FormItemsProps = {
-  errors: FieldErrors<AuthTypes.IResetPasswordForm>;
-  control: Control<AuthTypes.IResetPasswordForm, AuthTypes.IResetPasswordForm>;
-  newPassword: string;
-};
 
 const { PASSWORD } = userMessages;
 
-const FormItems = ({ errors, control, newPassword }: FormItemsProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+type FormItemsProps = {
+  errors: FieldErrors<AuthTypes.IResetPasswordForm>;
+  control: Control<AuthTypes.IResetPasswordForm>;
+};
+
+const FormItems = ({ errors, control }: FormItemsProps) => {
+  const newPassword = useWatch({
+    control,
+    name: 'newPassword',
+  });
+
   return (
     <>
       <Controller
@@ -24,38 +25,20 @@ const FormItems = ({ errors, control, newPassword }: FormItemsProps) => {
         control={control}
         rules={{
           required: PASSWORD.REQUIRED,
-          minLength: { value: 8, message: PASSWORD.MIN },
-          maxLength: { value: 255, message: PASSWORD.MAX },
+          minLength: {
+            value: 8,
+            message: PASSWORD.MIN,
+          },
+          maxLength: {
+            value: 255,
+            message: PASSWORD.MAX,
+          },
         }}
         render={({ field }) => (
-          <TextField
-            {...field}
-            label="Yeni Parola"
-            type={showPassword ? 'text' : 'password'}
-            autoComplete="new-password"
-            fullWidth
-            margin="normal"
-            error={!!errors.newPassword}
-            helperText={errors.newPassword?.message}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ mr: 1 }}>
-                    <LockOutlinedIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end" size="small" onClick={() => setShowPassword(prev => !prev)}>
-                      {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          <PasswordTextField {...field} label="Yeni Parola" margin="normal" error={!!errors.newPassword} helperText={errors.newPassword?.message} />
         )}
       />
+
       <Controller
         name="newPasswordRepeat"
         control={control}
@@ -64,31 +47,12 @@ const FormItems = ({ errors, control, newPassword }: FormItemsProps) => {
           validate: value => value === newPassword || PASSWORD.DO_NOT_MATCH,
         }}
         render={({ field }) => (
-          <TextField
+          <PasswordTextField
             {...field}
             label="Yeni Parola Tekrar"
-            type={showPassword ? 'text' : 'password'}
-            autoComplete="new-password"
-            fullWidth
             margin="normal"
             error={!!errors.newPasswordRepeat}
             helperText={errors.newPasswordRepeat?.message}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ mr: 1 }}>
-                    <LockOutlinedIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end" size="small" onClick={() => setShowPassword(prev => !prev)}>
-                      {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
           />
         )}
       />

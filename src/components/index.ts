@@ -32,3 +32,4 @@ export { default as NickNameField } from './FormFields/NickNameField';
 export { default as TaxFields } from './FormFields/TaxFields';
 export { default as GenericDataGrid } from './Table/GenericDataGrid';
 export { default as MydLoading } from './MydLoading';
+export { default as PasswordTextField } from './PasswordTextField';

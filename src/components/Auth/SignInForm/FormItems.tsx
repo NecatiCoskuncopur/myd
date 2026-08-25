@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
-import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
+import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { Control, Controller, FieldErrors } from 'react-hook-form';
 
-import { HCaptcha } from '@/components';
+import { HCaptcha, PasswordTextField } from '@/components';
 import { captchaMessages, userMessages } from '@/constants';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.ISignInPayload>;
-  control: Control<AuthTypes.ISignInPayload, AuthTypes.ISignInPayload>;
-  setValue: UseFormSetValue<AuthTypes.ISignInPayload>;
+  control: Control<AuthTypes.ISignInPayload>;
   captchaKey: number;
 };
 
 const { EMAIL, PASSWORD } = userMessages;
 
-const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+const FormItems = ({ errors, control, captchaKey }: FormItemsProps) => {
   return (
     <>
       <Controller
@@ -38,6 +32,7 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
             label="E-Posta"
             type="email"
             inputMode="email"
+            autoComplete="email"
             fullWidth
             margin="normal"
             error={!!errors.email}
@@ -61,39 +56,23 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
         control={control}
         rules={{
           required: PASSWORD.REQUIRED,
-          minLength: { value: 8, message: PASSWORD.MIN },
-          maxLength: { value: 255, message: PASSWORD.MAX },
+          minLength: {
+            value: 8,
+            message: PASSWORD.MIN,
+          },
+          maxLength: {
+            value: 255,
+            message: PASSWORD.MAX,
+          },
         }}
         render={({ field }) => (
-          <TextField
+          <PasswordTextField
             {...field}
             label="Parola"
-            type={showPassword ? 'text' : 'password'}
-            fullWidth
+            autoComplete="current-password"
             margin="normal"
             error={!!errors.password}
             helperText={errors.password?.message}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start" sx={{ mr: 1 }}>
-                    <LockOutlinedIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(prev => !prev)}
-                      edge="end"
-                      size="small"
-                      aria-label={showPassword ? 'Parolayı gizle' : 'Parolayı göster'}
-                    >
-                      {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
           />
         )}
       />
@@ -101,24 +80,22 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
       <Controller
         name="recaptchaToken"
         control={control}
-        rules={{ required: captchaMessages.REQUIRED }}
-        render={() => (
+        rules={{
+          required: captchaMessages.REQUIRED,
+        }}
+        render={({ field }) => (
           <Box sx={{ mt: 2 }}>
-            <HCaptcha
-              key={captchaKey}
-              onVerify={token =>
-                setValue('recaptchaToken', token, {
-                  shouldValidate: true,
-                })
-              }
-              onExpire={() =>
-                setValue('recaptchaToken', '', {
-                  shouldValidate: true,
-                })
-              }
-            />
+            <HCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
+
             {errors.recaptchaToken && (
-              <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{
+                  mt: 1,
+                  display: 'block',
+                }}
+              >
                 {errors.recaptchaToken.message}
               </Typography>
             )}

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Alert, Box, Button, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import signUp from '@/app/actions/auth/signUp';
@@ -10,18 +10,19 @@ import { authMessages, generalMessages } from '@/constants';
 import FormItems from './FormItems';
 import SignUpSuccess from './SignUpSuccess';
 
+const { SIGNUP } = authMessages;
+const { UNEXPECTED_ERROR } = generalMessages;
+
 const SignUpForm = () => {
-  const [pending, startTransition] = useTransition();
-  const [success, setSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     control,
     handleSubmit,
-    setValue,
     resetField,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AuthTypes.ISignUpPayload>({
     defaultValues: {
       firstName: '',
@@ -43,32 +44,37 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = (values: AuthTypes.ISignUpPayload) => {
-    setErrorMessage(null);
-
-    startTransition(async () => {
-      try {
-        const response = await signUp(values);
-
-        if (response.status === 'OK') {
-          setSuccess(true);
-          return;
-        }
-
-        resetField('password');
-        setErrorMessage(response.message ?? authMessages.SIGNUP.ERROR);
-      } catch {
-        resetField('password');
-        setCaptchaKey(prev => prev + 1);
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
-      }
-    });
+  const resetCaptcha = () => {
+    resetField('recaptchaToken');
+    setCaptchaKey(prev => prev + 1);
   };
 
-  if (success) {
+  const onSubmit = async (values: AuthTypes.ISignUpPayload) => {
+    setErrorMessage(null);
+
+    try {
+      const response = await signUp(values);
+
+      if (response.status === 'ERROR') {
+        resetField('password');
+        resetCaptcha();
+
+        setErrorMessage(response.message ?? SIGNUP.ERROR);
+
+        return;
+      }
+
+      setIsSuccess(true);
+    } catch {
+      resetField('password');
+      resetCaptcha();
+      setErrorMessage(UNEXPECTED_ERROR);
+    }
+  };
+
+  if (isSuccess) {
     return <SignUpSuccess />;
   }
-
   return (
     <>
       <Typography variant="h5" gutterBottom sx={{ textAlign: 'center', fontWeight: '500' }}>
@@ -82,7 +88,7 @@ const SignUpForm = () => {
       )}
 
       <Box>
-        <FormItems errors={errors} control={control} setValue={setValue} captchaKey={captchaKey} />
+        <FormItems errors={errors} control={control} captchaKey={captchaKey} />
         <Button
           type="button"
           onClick={handleSubmit(onSubmit)}
@@ -90,10 +96,10 @@ const SignUpForm = () => {
           size="large"
           fullWidth
           sx={{ mt: 4 }}
-          startIcon={pending ? <CircularProgress size={20} color="inherit" /> : undefined}
-          disabled={pending}
+          disabled={isSubmitting}
+          loading={isSubmitting}
         >
-          {pending ? '' : 'Kayıt Ol'}
+          Kayıt Ol
         </Button>
 
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>

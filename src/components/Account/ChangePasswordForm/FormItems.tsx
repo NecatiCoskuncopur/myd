@@ -1,10 +1,9 @@
 import { Grid } from '@mui/material';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
+import { PasswordTextField } from '@/components';
 import { userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
-
-import PasswordField from './PasswordField';
 
 const { PASSWORD } = userMessages;
 
@@ -18,7 +17,7 @@ const FormItems = ({ register, errors, pending }: FormItemsProps) => {
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
-        <PasswordField
+        <PasswordTextField
           label="Mevcut Parola"
           disabled={pending}
           {...register('currentPassword', {
@@ -38,7 +37,7 @@ const FormItems = ({ register, errors, pending }: FormItemsProps) => {
       </Grid>
 
       <Grid size={12}>
-        <PasswordField
+        <PasswordTextField
           label="Yeni Parola"
           disabled={pending}
           {...register('newPassword', {
@@ -58,7 +57,7 @@ const FormItems = ({ register, errors, pending }: FormItemsProps) => {
       </Grid>
 
       <Grid size={12}>
-        <PasswordField
+        <PasswordTextField
           label="Yeni Parola (Tekrar)"
           disabled={pending}
           {...register('newPasswordRepeat', {

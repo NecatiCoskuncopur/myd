@@ -1,19 +1,17 @@
-import React from 'react';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
-import { Control, Controller, FieldErrors, UseFormSetValue } from 'react-hook-form';
+import { Control, Controller, FieldErrors } from 'react-hook-form';
 
 import { HCaptcha } from '@/components';
 import { captchaMessages, userMessages } from '@/constants';
 
 type FormItemsProps = {
   errors: FieldErrors<AuthTypes.IForgotPasswordPayload>;
-  control: Control<AuthTypes.IForgotPasswordPayload, AuthTypes.IForgotPasswordPayload>;
-  setValue: UseFormSetValue<AuthTypes.IForgotPasswordPayload>;
+  control: Control<AuthTypes.IForgotPasswordPayload>;
   captchaKey: number;
 };
 
-const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) => {
+const FormItems = ({ errors, control, captchaKey }: FormItemsProps) => {
   return (
     <>
       <Controller
@@ -51,24 +49,22 @@ const FormItems = ({ errors, control, setValue, captchaKey }: FormItemsProps) =>
       <Controller
         name="recaptchaToken"
         control={control}
-        rules={{ required: captchaMessages.REQUIRED }}
-        render={() => (
+        rules={{
+          required: captchaMessages.REQUIRED,
+        }}
+        render={({ field }) => (
           <Box sx={{ mt: 2 }}>
-            <HCaptcha
-              key={captchaKey}
-              onVerify={token =>
-                setValue('recaptchaToken', token, {
-                  shouldValidate: true,
-                })
-              }
-              onExpire={() =>
-                setValue('recaptchaToken', '', {
-                  shouldValidate: true,
-                })
-              }
-            />
+            <HCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
+
             {errors.recaptchaToken && (
-              <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1 }}>
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{
+                  display: 'block',
+                  mt: 1,
+                }}
+              >
                 {errors.recaptchaToken.message}
               </Typography>
             )}

@@ -1,30 +1,29 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
-import { useParams } from 'next/navigation';
-import { Alert, Box, Button, CircularProgress, Link, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Alert, Box, Button, Link, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import resetPassword from '@/app/actions/auth/resetPassword';
-import { authMessages, generalMessages, userMessages } from '@/constants';
+import { authMessages, generalMessages } from '@/constants';
 
 import FormItems from './FormItems';
 import ResetPasswordSuccess from './ResetPasswordSuccess';
 
 const { RESETPASSWORD } = authMessages;
-const { PASSWORD } = userMessages;
 
-const ResetPasswordForm = () => {
-  const { secret } = useParams<{ secret: string }>();
-  const [pending, startTransition] = useTransition();
-  const [success, setSuccess] = useState(false);
+type ResetPasswordFormProps = {
+  secret: string;
+};
+
+const ResetPasswordForm = ({ secret }: ResetPasswordFormProps) => {
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     control,
     handleSubmit,
-    watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AuthTypes.IResetPasswordForm>({
     defaultValues: {
       newPassword: '',
@@ -32,36 +31,27 @@ const ResetPasswordForm = () => {
     },
   });
 
-  const newPassword = watch('newPassword');
-
-  const onSubmit = (values: AuthTypes.IResetPasswordForm) => {
-    if (values.newPassword !== values.newPasswordRepeat) {
-      setErrorMessage(PASSWORD.DO_NOT_MATCH);
-      return;
-    }
-
+  const onSubmit = async (values: AuthTypes.IResetPasswordForm) => {
     setErrorMessage(null);
 
-    startTransition(async () => {
-      try {
-        const response = await resetPassword({
-          token: secret,
-          newPassword: values.newPassword,
-        });
+    try {
+      const response = await resetPassword({
+        token: secret,
+        newPassword: values.newPassword,
+      });
 
-        if (response.status === 'ERROR') {
-          setErrorMessage(response.message ?? RESETPASSWORD.ERROR);
-          return;
-        }
-
-        setSuccess(true);
-      } catch {
-        setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+      if (response.status === 'ERROR') {
+        setErrorMessage(response.message ?? RESETPASSWORD.ERROR);
+        return;
       }
-    });
+
+      setIsSuccess(true);
+    } catch {
+      setErrorMessage(generalMessages.UNEXPECTED_ERROR);
+    }
   };
 
-  if (success) {
+  if (isSuccess) {
     return <ResetPasswordSuccess />;
   }
 
@@ -77,17 +67,9 @@ const ResetPasswordForm = () => {
         </Alert>
       )}
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormItems errors={errors} control={control} newPassword={newPassword} />
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          fullWidth
-          sx={{ mt: 3 }}
-          startIcon={pending && <CircularProgress size={20} />}
-          disabled={pending}
-        >
-          {pending ? '' : 'Parolayı Ayarla'}
+        <FormItems errors={errors} control={control} />
+        <Button type="submit" variant="contained" size="large" fullWidth sx={{ mt: 3 }} disabled={isSubmitting} loading={isSubmitting}>
+          Parolayı Ayarla
         </Button>
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
           <Link
