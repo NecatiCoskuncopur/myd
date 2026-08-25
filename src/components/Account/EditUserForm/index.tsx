@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useTransition } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import editUser from '@/app/actions/user/editUser';
-import getUser from '@/app/actions/user/getUser';
 import { StyledButton } from '@/components';
 import { generalMessages, userMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
@@ -13,70 +11,59 @@ import { UserTypes } from '@/types/user';
 
 import FormItems from './FormItems';
 
-const { EMAIL, EDITUSER, NOT_FOUND } = userMessages;
+const { EMAIL, EDITUSER } = userMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const EditUserForm = () => {
-  const [pending, startTransition] = useTransition();
+type EditUserFormProps = {
+  user: UserTypes.UserDto | undefined;
+};
+
+const EditUserForm = ({ user }: EditUserFormProps) => {
   const { showSnackbar } = useSnackbar();
 
   const {
     control,
     handleSubmit,
-    reset,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<UserTypes.IEditUserPayload>({
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      nickname: '',
-      company: '',
-      taxId: '',
-      taxOffice: '',
-      phone: '',
-      email: '',
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+      nickname: user?.nickname ?? '',
+      company: user?.company ?? '',
+      taxId: user?.taxId ?? '',
+      taxOffice: user?.taxOffice ?? '',
+      phone: user?.phone ?? '',
+      email: user?.email ?? '',
       address: {
-        line1: '',
-        line2: '',
-        district: '',
-        city: '',
-        postalCode: '',
+        line1: user?.address?.line1 ?? '',
+        line2: user?.address?.line2 ?? '',
+        district: user?.address?.district ?? '',
+        city: user?.address?.city ?? '',
+        postalCode: user?.address?.postalCode ?? '',
       },
     },
   });
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const result = await getUser();
-      if (result.status === 'OK' && result.data) {
-        reset(result.data);
-      } else {
-        showSnackbar(result.message || NOT_FOUND, 'error');
-      }
-    };
-    fetchUser();
-  }, [reset]);
+  const onSubmit = async (data: UserTypes.IEditUserPayload) => {
+    const result = await editUser(data);
 
-  const onSubmit = (data: UserTypes.IEditUserPayload) => {
-    startTransition(async () => {
-      const result = await editUser(data);
+    if (result.status === 'ERROR') {
+      if (result.message === EMAIL.EXIST) {
+        setError('email', {
+          type: 'manual',
+          message: EMAIL.EXIST,
+        });
 
-      if (result.status === 'ERROR') {
-        if (result.message === EMAIL.EXIST) {
-          setError('email', {
-            type: 'manual',
-            message: EMAIL.EXIST,
-          });
-          return;
-        }
-
-        showSnackbar(result.message || UNEXPECTED_ERROR, 'error');
         return;
       }
 
-      showSnackbar(result.message || EDITUSER.SUCCESS, 'success');
-    });
+      showSnackbar(result.message || UNEXPECTED_ERROR, 'error');
+      return;
+    }
+
+    showSnackbar(result.message || EDITUSER.SUCCESS, 'success');
   };
 
   return (
@@ -96,7 +83,7 @@ const EditUserForm = () => {
               mt: 6,
               float: 'right',
             }}
-            loading={pending}
+            loading={isSubmitting}
           >
             Bilgileri Kaydet
           </StyledButton>

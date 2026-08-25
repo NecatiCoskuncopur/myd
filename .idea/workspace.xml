@@ -5,21 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/loginError.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/proxy.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/next-auth.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/PasswordField.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signIn.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signOut.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/env.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/getCurrentUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCurrentUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/middleware.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/hesabim/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/hesabim/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/ChangePasswordForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/EditUserForm/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +19,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="331" />
+    <option name="cachedIndexableFilesCount" value="332" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -184,7 +176,8 @@
       <workItem from="1787424425877" duration="14239000" />
       <workItem from="1787519505488" duration="11640000" />
       <workItem from="1787542442196" duration="2953000" />
-      <workItem from="1787545449307" duration="1342000" />
+      <workItem from="1787545449307" duration="9755000" />
+      <workItem from="1787650506388" duration="2253000" />
     </task>
     <servers />
   </component>

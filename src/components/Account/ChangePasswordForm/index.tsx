@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -15,32 +14,27 @@ import FormItems from './FormItems';
 const { PASSWORD } = userMessages;
 
 const ChangePasswordForm = () => {
-  const [loading, setLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<UserTypes.IChangePasswordFormUI>();
 
-  const onSubmit = async (values: UserTypes.IChangePasswordFormUI) => {
-    setLoading(true);
+  const onSubmit = async ({ currentPassword, newPassword }: UserTypes.IChangePasswordFormUI) => {
+    const response = await changePassword({
+      currentPassword,
+      newPassword,
+    });
 
-    try {
-      const response = await changePassword({
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword,
-      });
+    const isSuccess = response.status === 'OK';
 
-      showSnackbar(response.message || PASSWORD.SUCCESS, response.status === 'OK' ? 'success' : 'error');
+    showSnackbar(response.message || PASSWORD.SUCCESS, isSuccess ? 'success' : 'error');
 
-      if (response.status === 'OK') {
-        reset();
-      }
-    } finally {
-      setLoading(false);
+    if (isSuccess) {
+      reset();
     }
   };
 
@@ -51,17 +45,17 @@ const ChangePasswordForm = () => {
       </Typography>
 
       <Box component="form" noValidate>
-        <FormItems register={register} errors={errors} pending={loading} />
+        <FormItems register={register} errors={errors} pending={isSubmitting} />
         <StyledButton
           type="button"
-          disabled={loading}
+          disabled={isSubmitting}
           onClick={handleSubmit(onSubmit)}
           variant="contained"
           sx={{
             mt: 3,
             float: 'right',
           }}
-          loading={loading}
+          loading={isSubmitting}
         >
           Parolayı Güncelle
         </StyledButton>

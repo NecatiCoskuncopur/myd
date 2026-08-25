@@ -1,92 +1,65 @@
-import React, { useState } from 'react';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Grid, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import { userMessages } from '@/constants';
 import { UserTypes } from '@/types/user';
 
+import PasswordField from './PasswordField';
+
 const { PASSWORD } = userMessages;
 
-type FormItemProps = {
+type FormItemsProps = {
   register: UseFormRegister<UserTypes.IChangePasswordFormUI>;
   errors: FieldErrors<UserTypes.IChangePasswordFormUI>;
   pending: boolean;
 };
 
-const FormItems = ({ register, errors, pending }: FormItemProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+const FormItems = ({ register, errors, pending }: FormItemsProps) => {
   return (
     <Grid container spacing={3}>
       <Grid size={12}>
-        <TextField
+        <PasswordField
           label="Mevcut Parola"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
           disabled={pending}
           {...register('currentPassword', {
             required: PASSWORD.REQUIRED,
-            minLength: { value: 8, message: PASSWORD.MIN },
-            maxLength: { value: 255, message: PASSWORD.MAX },
+            minLength: {
+              value: 8,
+              message: PASSWORD.MIN,
+            },
+            maxLength: {
+              value: 255,
+              message: PASSWORD.MAX,
+            },
           })}
           error={!!errors.currentPassword}
           helperText={errors.currentPassword?.message}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockOutlinedIcon />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                    {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
         />
       </Grid>
+
       <Grid size={12}>
-        <TextField
+        <PasswordField
           label="Yeni Parola"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
           disabled={pending}
           {...register('newPassword', {
             required: PASSWORD.REQUIRED,
-            minLength: { value: 8, message: PASSWORD.MIN },
-            maxLength: { value: 255, message: PASSWORD.MAX },
+            minLength: {
+              value: 8,
+              message: PASSWORD.MIN,
+            },
+            maxLength: {
+              value: 255,
+              message: PASSWORD.MAX,
+            },
           })}
           error={!!errors.newPassword}
           helperText={errors.newPassword?.message}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockOutlinedIcon />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                    {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
         />
       </Grid>
+
       <Grid size={12}>
-        <TextField
+        <PasswordField
           label="Yeni Parola (Tekrar)"
-          type={showPassword ? 'text' : 'password'}
-          fullWidth
           disabled={pending}
           {...register('newPasswordRepeat', {
             required: PASSWORD.REPEAT,
@@ -94,22 +67,6 @@ const FormItems = ({ register, errors, pending }: FormItemProps) => {
           })}
           error={!!errors.newPasswordRepeat}
           helperText={errors.newPasswordRepeat?.message}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockOutlinedIcon />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                    {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
         />
       </Grid>
     </Grid>

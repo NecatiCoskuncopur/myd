@@ -2,10 +2,16 @@
 
 import { Divider, Grid, useMediaQuery, useTheme } from '@mui/material';
 
+import { UserTypes } from '@/types/user';
+
 import ChangePasswordForm from './ChangePasswordForm';
 import EditUserForm from './EditUserForm';
 
-const Account = () => {
+type AccountProps = {
+  user: UserTypes.UserDto | undefined;
+};
+
+const Account = ({ user }: AccountProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -14,8 +20,11 @@ const Account = () => {
       container
       spacing={3}
       sx={{
-        alignItems: 'stretch',
-        minHeight: { xs: '100vh', sm: 'calc(100vh - 32px)', md: 'calc(100vh - 48px)' },
+        minHeight: {
+          xs: '100vh',
+          sm: 'calc(100vh - 32px)',
+          md: 'calc(100vh - 48px)',
+        },
         p: { xs: 2, sm: 3, md: 4 },
         borderRadius: '12px',
         backgroundColor: theme.palette.dashboard.sidebar,
@@ -23,7 +32,7 @@ const Account = () => {
       }}
     >
       <Grid size={{ xs: 12, md: 7.5 }}>
-        <EditUserForm />
+        <EditUserForm user={user} />
       </Grid>
 
       <Divider
