@@ -1,12 +1,12 @@
 'use client';
 
-import * as React from 'react';
+import { useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Box, Divider, Drawer, List, useMediaQuery, useTheme } from '@mui/material';
 
 import signOut from '@/app/actions/auth/signOut';
 import { getSidebarItems } from '@/constants';
-import { IUser } from '@/models/User.model';
+import type { IUser } from '@/models/User.model';
 import { UserTypes } from '@/types/user';
 
 import MenuFooter from './MenuFooter';
@@ -17,52 +17,59 @@ import MobileMenuTrigger from './MobileMenuTrigger';
 const DRAWER_WIDTH = 280;
 const MINI_DRAWER_WIDTH = 70;
 
-type Props = {
+type SideMenuProps = {
   role: IUser['role'] | '';
   open: boolean;
   toggleDrawer: () => void;
   toggleTheme: () => void;
-  mode: 'light' | 'dark' | null;
+  mode: 'light' | 'dark';
   userName: string;
 };
 
-const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Props) => {
+const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: SideMenuProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-  const [openKeys, setOpenKeys] = React.useState<string[]>([]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   const isExpanded = isMobile || open;
-  const menuItems = React.useMemo(() => getSidebarItems(role), [role]);
 
-  const handleToggle = (key: string): void => {
+  const menuItems = useMemo(() => getSidebarItems(role), [role]);
+
+  const handleToggle = (key: string) => {
     if (!isExpanded) {
       toggleDrawer();
       setOpenKeys([key]);
       return;
     }
-    setOpenKeys(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]));
+
+    setOpenKeys(currentKeys => (currentKeys.includes(key) ? currentKeys.filter(currentKey => currentKey !== key) : [...currentKeys, key]));
   };
 
-  const handleNavigate = (item: UserTypes.ISidebarItem): void => {
+  const handleNavigate = (item: UserTypes.ISidebarItem) => {
     if (item.action) {
       item.action();
     } else if (item.path) {
       if (item.external) {
-        window.open(item.path, '_blank');
+        window.open(item.path, '_blank', 'noopener,noreferrer');
       } else {
         router.push(item.path);
       }
     }
-    if (isMobile) toggleDrawer();
+
+    if (isMobile) {
+      toggleDrawer();
+    }
   };
 
-  const handleSignOut = async (): Promise<void> => {
+  const handleSignOut = async () => {
     await signOut();
-    router.push('/kullanici/giris');
+    router.replace('/kullanici/giris');
   };
+
+  const drawerWidth = isExpanded ? DRAWER_WIDTH : MINI_DRAWER_WIDTH;
 
   return (
     <>
@@ -71,7 +78,7 @@ const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Pro
       <Box
         component="nav"
         sx={{
-          width: isMobile ? 0 : isExpanded ? DRAWER_WIDTH : MINI_DRAWER_WIDTH,
+          width: isMobile ? 0 : drawerWidth,
           flexShrink: 0,
           transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.easeInOut,
@@ -83,10 +90,12 @@ const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Pro
           variant={isMobile ? 'temporary' : 'permanent'}
           open={open}
           onClose={toggleDrawer}
-          ModalProps={{ keepMounted: true }}
+          ModalProps={{
+            keepMounted: true,
+          }}
           sx={{
             '& .MuiDrawer-paper': {
-              width: isMobile ? DRAWER_WIDTH : isExpanded ? DRAWER_WIDTH : MINI_DRAWER_WIDTH,
+              width: isMobile ? DRAWER_WIDTH : drawerWidth,
               backgroundImage: 'none',
               backgroundColor: theme.palette.dashboard.sidebar,
               color: theme.palette.dashboard.textSidebar,
@@ -97,21 +106,36 @@ const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Pro
                 easing: theme.transitions.easing.easeInOut,
                 duration: theme.transitions.duration.enteringScreen,
               }),
+
               '& .MuiListItemIcon-root': {
                 justifyContent: 'center',
                 color: theme.palette.dashboard.textSidebar,
               },
-              '& .MuiListItemButton-root': { borderRadius: 2 },
+
+              '& .MuiListItemButton-root': {
+                borderRadius: 2,
+              },
+
               '& .Mui-selected': {
                 backgroundColor: '#5F4AFE !important',
                 color: '#fff',
-                '& .MuiListItemIcon-root': { color: '#fff' },
+
+                '& .MuiListItemIcon-root': {
+                  color: '#fff',
+                },
               },
             },
           }}
         >
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             <MenuHeader isExpanded={isExpanded} onToggle={toggleDrawer} />
+
             <Divider />
 
             <Box

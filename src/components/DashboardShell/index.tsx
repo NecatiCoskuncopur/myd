@@ -1,31 +1,30 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 
-import getUser from '@/app/actions/user/getUser';
 import getDashboardTheme from '@/theme';
 import { UserTypes } from '@/types/user';
 
 import SideMenu from './SideMenu';
 
-type Props = {
+type DashboardShellProps = {
   children: React.ReactNode;
+  user?: UserTypes.UserDto;
 };
 
-const DashboardShell = ({ children }: Props) => {
+const DashboardShell = ({ children, user }: DashboardShellProps) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
   const [mode, setMode] = useState<'light' | 'dark' | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
-  const [user, setUser] = useState<UserTypes.UserDto | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      const target = e.target as HTMLElement;
+    const handleWheel = (event: WheelEvent) => {
+      const target = event.target as HTMLElement;
 
       if (target instanceof HTMLInputElement && target.type === 'number' && document.activeElement === target) {
-        e.preventDefault();
+        event.preventDefault();
       }
     };
 
@@ -39,53 +38,50 @@ const DashboardShell = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
-    const initShell = async () => {
-      setLoading(true);
-      try {
-        const response = await getUser();
-        if (response.status === 'OK') {
-          setUser(response.data ?? null);
-        }
+    const savedTheme = localStorage.getItem('dashboard-theme');
 
-        const savedTheme = localStorage.getItem('dashboard-theme') as 'light' | 'dark' | null;
-        if (savedTheme) {
-          setMode(savedTheme);
-        } else {
-          setMode(prefersDarkMode ? 'dark' : 'light');
-        }
-      } catch (error) {
-        console.error('Shell Initialization Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setMode(savedTheme);
+      return;
+    }
 
-    initShell();
+    setMode(prefersDarkMode ? 'dark' : 'light');
   }, [prefersDarkMode]);
 
-  const theme = useMemo(() => getDashboardTheme(mode || 'light'), [mode]);
+  const theme = useMemo(() => getDashboardTheme(mode ?? 'light'), [mode]);
 
   const toggleTheme = () => {
-    const newMode = mode === 'light' ? 'dark' : 'light';
-    setMode(newMode);
-    localStorage.setItem('dashboard-theme', newMode);
+    setMode(currentMode => {
+      const newMode = currentMode === 'dark' ? 'light' : 'dark';
+
+      localStorage.setItem('dashboard-theme', newMode);
+
+      return newMode;
+    });
   };
 
-  const toggleDrawer = () => setIsDrawerOpen(prev => !prev);
-  if (mode === null) return null; // LOADING GELECEK
+  const toggleDrawer = () => {
+    setIsDrawerOpen(current => !current);
+  };
+
+  if (mode === null) {
+    return null;
+  }
+
+  const userName = user ? `${user.firstName} ${user.lastName?.charAt(0) ?? ''}.` : '';
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <SideMenu
-          role={user?.role || ''}
-          open={isDrawerOpen}
-          toggleDrawer={toggleDrawer}
-          toggleTheme={toggleTheme}
-          mode={mode}
-          userName={`${user?.firstName} ${user?.lastName?.charAt(0)}.`}
-        />
+
+      <Box
+        sx={{
+          display: 'flex',
+          minHeight: '100vh',
+        }}
+      >
+        <SideMenu role={user?.role ?? ''} open={isDrawerOpen} toggleDrawer={toggleDrawer} toggleTheme={toggleTheme} mode={mode} userName={userName} />
+
         <Box
           component="main"
           sx={{
@@ -98,9 +94,21 @@ const DashboardShell = ({ children }: Props) => {
             sx={{
               flex: 1,
               minWidth: 0,
-              paddingTop: { xs: '56px', sm: '70px', md: 3 },
-              px: { xs: 0, sm: 2, md: 3 },
-              paddingBottom: { xs: 0, sm: 2, md: 3 },
+              paddingTop: {
+                xs: '56px',
+                sm: '70px',
+                md: 3,
+              },
+              px: {
+                xs: 0,
+                sm: 2,
+                md: 3,
+              },
+              paddingBottom: {
+                xs: 0,
+                sm: 2,
+                md: 3,
+              },
               display: 'flex',
               flexDirection: 'column',
             }}
