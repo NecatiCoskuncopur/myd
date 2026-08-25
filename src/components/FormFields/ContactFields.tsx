@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import HelpIcon from '@mui/icons-material/Help';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';

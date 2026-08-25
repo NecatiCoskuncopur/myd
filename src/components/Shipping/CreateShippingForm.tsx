@@ -7,7 +7,6 @@ import cleanDeep from 'clean-deep';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { StyledButton } from '@//components';
-import ShippingFormFields from './ShippingFormFields';
 import { CurrencyEnum, generalMessages, shippingMessages, ShippingPayor, ShippingPurpose } from '@//constants';
 import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';
@@ -15,11 +14,13 @@ import { UserTypes } from '@//types/user';
 import createShipping from '@/app/actions/shipping/createShipping';
 import { TableHeader } from '@/components/index';
 
+import ShippingFormFields from './ShippingFormFields';
+
 const { CREATESHIPPING } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 type CreateShippingFormProps = {
-  user: UserTypes.UserDto;
+  user: UserTypes.UserDto | undefined;
 };
 
 const CreateShippingForm = ({ user }: CreateShippingFormProps) => {

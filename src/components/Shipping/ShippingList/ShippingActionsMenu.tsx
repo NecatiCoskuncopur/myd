@@ -20,12 +20,12 @@ type ShippingActionsMenuProps = {
   anchorEl: HTMLElement | null;
   open: boolean;
   selectedRow: ShippingTypes.IShipping | null;
-  accounts: CarrierAccountTypes.BarcodeCarrierAccount[];
+  accounts: CarrierAccountTypes.IUserPermittedAccount[];
   pricingLists: Record<string, PricingListTypes.IPricingList>;
   canCreateBarcode: boolean;
   onClose: () => void;
   onDelete: () => void;
-  onCreateBarcode: (account: CarrierAccountTypes.BarcodeCarrierAccount) => Promise<void>;
+  onCreateBarcode: (account: CarrierAccountTypes.IUserPermittedAccount) => Promise<void>;
   onDownloadPaper: (type: PaperType) => Promise<void>;
 };
 

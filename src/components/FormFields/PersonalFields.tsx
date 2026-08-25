@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import BankOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';

@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';

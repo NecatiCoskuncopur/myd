@@ -23,7 +23,7 @@ import ShippingTable from './ShippingTable';
 const { UNEXPECTED_ERROR } = generalMessages;
 
 type ShippingListProps = {
-  accounts: CarrierAccountTypes.BarcodeCarrierAccount[];
+  accounts: CarrierAccountTypes.IUserPermittedAccount[];
   pricingLists: Record<string, PricingListTypes.IPricingList>;
   canCreateBarcode: boolean;
 };

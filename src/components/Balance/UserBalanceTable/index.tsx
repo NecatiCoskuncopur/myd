@@ -70,14 +70,14 @@ const UserBalanceTable = () => {
     };
   }, [page, limit, showSnackbar]);
 
-  const rows =
+  type BalanceRow = BalanceTypes.IUserBalanceData['transactions'][number] & {
+    id: string;
+  };
+
+  const rows: BalanceRow[] =
     data?.transactions.map((transaction, index) => ({
+      ...transaction,
       id: `${transaction.createdAt}-${index}`,
-      transactionId: `${transaction.createdAt}-${index}`,
-      amount: transaction.amount,
-      transactionType: transaction.transactionType,
-      createdAt: transaction.createdAt,
-      shippingId: transaction.shippingId,
     })) ?? [];
 
   return (
