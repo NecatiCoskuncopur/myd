@@ -6,12 +6,20 @@ import { ShippingTypes } from '@/types/shipping';
 
 const useShippingActions = () => {
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
+
   const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
   const [barcodeLoading, setBarcodeLoading] = useState(false);
   const [barcodeError, setBarcodeError] = useState<string | null>(null);
+
+  const clearSelection = () => {
+    setSelectedRow(null);
+    setActionIconButton(null);
+  };
 
   const openActionsMenu = (row: ShippingTypes.IShipping, anchorEl: HTMLElement) => {
     setSelectedRow(row);
@@ -21,13 +29,7 @@ const useShippingActions = () => {
 
   const closeActionsMenu = () => {
     setMenuOpen(false);
-
-    setTimeout(() => {
-      if (!deleteOpen) {
-        setActionIconButton(null);
-        setSelectedRow(null);
-      }
-    }, 200);
+    clearSelection();
   };
 
   const openDeleteDialog = () => {
@@ -37,14 +39,7 @@ const useShippingActions = () => {
 
   const closeDeleteDialog = () => {
     setDeleteOpen(false);
-    setActionIconButton(null);
-    setSelectedRow(null);
-  };
-
-  const closeBarcodeDialog = () => {
-    if (barcodeLoading) return;
-
-    setBarcodeDialogOpen(false);
+    clearSelection();
   };
 
   const startBarcodeLoading = () => {
@@ -61,7 +56,12 @@ const useShippingActions = () => {
     setBarcodeError(message);
   };
 
-  const clearBarcodeError = () => {
+  const closeBarcodeDialog = () => {
+    if (barcodeLoading) {
+      return;
+    }
+
+    setBarcodeDialogOpen(false);
     setBarcodeError(null);
   };
 
@@ -81,7 +81,6 @@ const useShippingActions = () => {
     startBarcodeLoading,
     finishBarcodeLoading,
     setBarcodeFailure,
-    clearBarcodeError,
   };
 };
 

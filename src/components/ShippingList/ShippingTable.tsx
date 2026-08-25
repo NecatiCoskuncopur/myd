@@ -11,21 +11,15 @@ import { ShippingTypes } from '@/types/shipping';
 
 import columns from './columns';
 
-interface ShippingTableProps {
+type ShippingTableProps = {
   rows: ShippingTypes.IShipping[];
-
   totalCount?: number;
-
   loading: boolean;
-
   page: number;
-
   limit: number;
-
   searchParams: ReadonlyURLSearchParams;
-
   onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLElement) => void;
-}
+};
 
 const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions }: ShippingTableProps) => {
   const shippingColumns = useMemo<GridColDef[]>(
@@ -38,13 +32,15 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         minWidth: 120,
         sortable: false,
         filterable: false,
+        align: 'center',
+        headerAlign: 'center',
 
         renderCell: params => (
           <IconButton
+            type="button"
             size="small"
-            onClick={event => {
-              onOpenActions(params.row, event.currentTarget);
-            }}
+            aria-label="Gönderi işlemlerini aç"
+            onClick={event => onOpenActions(params.row as ShippingTypes.IShipping, event.currentTarget)}
           >
             <MoreVertIcon />
           </IconButton>

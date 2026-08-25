@@ -1,8 +1,4 @@
-'use client';
-
-import NextLink from 'next/link';
-import { Box, Typography } from '@mui/material';
-import Link from '@mui/material/Link';
+import { Box, Link, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
@@ -10,54 +6,72 @@ import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { ShippingTypes } from '@/types/shipping';
 
-const columns: GridColDef[] = [
+const columns: GridColDef<ShippingTypes.IShipping>[] = [
   {
     field: 'consigneeName',
     headerName: 'Alıcı',
     flex: 1,
     minWidth: 150,
-    valueGetter: (value, row) => row.consignee?.name || '-',
+    valueGetter: (_value, row) => row.consignee?.name || '-',
   },
   {
     field: 'senderName',
     headerName: 'Gönderen',
     flex: 1,
     minWidth: 150,
-    valueGetter: (value, row) => row.sender?.name || '-',
+    valueGetter: (_value, row) => row.sender?.name || '-',
   },
   {
     field: 'destination',
     headerName: 'Varış Bölgesi',
     flex: 1,
     minWidth: 200,
-    renderCell: params => {
-      const address = params.row.consignee?.address;
-      if (!address) return '-';
+    renderCell: ({ row }) => {
+      const address = row.consignee?.address;
+
+      if (!address) {
+        return '-';
+      }
 
       const countryCode = address.country?.trim();
       const city = address.city;
 
-      if (!countryCode && !city) return '-';
+      if (!countryCode && !city) {
+        return '-';
+      }
 
-      const flagUrl = getCountryFlagUrl(countryCode);
+      const flagUrl = countryCode ? getCountryFlagUrl(countryCode) : null;
 
       return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            width: '100%',
+            gap: 1,
+          }}
+        >
           {flagUrl && (
-            <img
+            <Box
+              component="img"
               src={flagUrl}
-              alt={countryCode}
-              style={{
-                width: '20px',
-                height: '14px',
+              alt={countryCode ? `${countryCode} bayrağı` : ''}
+              sx={{
+                width: 20,
+                height: 14,
                 objectFit: 'cover',
                 borderRadius: '2px',
                 display: 'block',
+                flexShrink: 0,
               }}
             />
           )}
-          <span>{[countryCode, city].filter(Boolean).join(' / ')}</span>
-        </div>
+
+          <Typography variant="body2" noWrap>
+            {[countryCode, city].filter(Boolean).join(' / ')}
+          </Typography>
+        </Box>
       );
     },
   },
@@ -66,25 +80,33 @@ const columns: GridColDef[] = [
     headerName: 'Takip No',
     flex: 1,
     minWidth: 170,
-    renderCell: params => {
-      const carrierName = params.row.carrier?.name;
-      const trackingNo = params.row.carrier?.trackingNumber;
+    renderCell: ({ row }) => {
+      const carrierName = row.carrier?.name;
+      const trackingNumber = row.carrier?.trackingNumber;
 
-      if (!trackingNo) return '-';
+      if (!trackingNumber) {
+        return '-';
+      }
 
-      const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNo);
+      if (!carrierName) {
+        return (
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {trackingNumber}
+          </Typography>
+        );
+      }
+
+      const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNumber);
 
       if (hasLink && url) {
         return (
           <Link
-            component={NextLink}
             href={url}
             target="_blank"
             rel="noopener noreferrer"
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 1,
               color: 'primary.main',
               fontWeight: 500,
               textDecoration: 'none',
@@ -104,18 +126,16 @@ const columns: GridColDef[] = [
                 fontSize: '0.875rem',
               }}
             >
-              {trackingNo}
+              {trackingNumber}
             </Typography>
           </Link>
         );
       }
 
       return (
-        <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {trackingNo}
-          </Typography>
-        </Box>
+        <Typography variant="body2" color="text.secondary" noWrap>
+          {trackingNumber}
+        </Typography>
       );
     },
   },
@@ -124,9 +144,9 @@ const columns: GridColDef[] = [
     headerName: 'Paket',
     flex: 1,
     minWidth: 160,
-    renderCell: params => {
-      const count = params.row.package?.numberOfPackage ?? '-';
-      const weight = params.row.package?.weight ?? '-';
+    renderCell: ({ row }) => {
+      const packageCount = row.package?.numberOfPackage ?? '-';
+      const weight = row.package?.weight ?? '-';
 
       return (
         <Box
@@ -137,17 +157,33 @@ const columns: GridColDef[] = [
             height: '100%',
           }}
         >
-          <Typography variant="body2" sx={{ color: 'text.primary' }}>
-            <Box component="span" sx={{ color: 'text.secondary', lineHeight: 1.3, marginRight: 1 }}>
+          <Typography variant="body2">
+            <Box
+              component="span"
+              sx={{
+                color: 'text.secondary',
+                lineHeight: 1.3,
+                mr: 1,
+              }}
+            >
               Paket Sayısı
             </Box>
-            {count}
+
+            {packageCount}
           </Typography>
 
-          <Typography variant="body2" sx={{ color: 'text.primary' }}>
-            <Box component="span" sx={{ color: 'text.secondary', lineHeight: 1.3, marginRight: 1 }}>
+          <Typography variant="body2">
+            <Box
+              component="span"
+              sx={{
+                color: 'text.secondary',
+                lineHeight: 1.3,
+                mr: 1,
+              }}
+            >
               Desi / KG
             </Box>
+
             {weight}
           </Typography>
         </Box>
@@ -159,12 +195,15 @@ const columns: GridColDef[] = [
     headerName: 'İçerik (Ürünler)',
     flex: 1,
     minWidth: 180,
-    valueGetter: (value, row) => {
+    valueGetter: (_value, row) => {
       const products = row.content?.products;
-      if (!products || products.length === 0) return '-';
+
+      if (!products?.length) {
+        return '-';
+      }
 
       return products
-        .map((p: ShippingTypes.IProduct) => p.name)
+        .map(product => product.name)
         .filter(Boolean)
         .join(', ');
     },
@@ -174,7 +213,7 @@ const columns: GridColDef[] = [
     headerName: 'Oluşturulma Tarihi',
     flex: 1,
     minWidth: 160,
-    renderCell: params => (params.value ? moment(params.value).format('DD.MM.YYYY HH:mm') : '-'),
+    renderCell: ({ value }) => (value ? moment(value).format('DD.MM.YYYY HH:mm') : '-'),
   },
 ];
 

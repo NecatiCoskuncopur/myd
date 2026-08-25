@@ -14,18 +14,31 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
 
-interface ShippingActionsMenuProps {
+type PaperType = 'labels' | 'invoices';
+
+type ShippingActionsMenuProps = {
   anchorEl: HTMLElement | null;
   open: boolean;
   selectedRow: ShippingTypes.IShipping | null;
-  accounts: Partial<CarrierAccountTypes.ICarrierAccount>[];
+  accounts: CarrierAccountTypes.BarcodeCarrierAccount[];
   pricingLists: Record<string, PricingListTypes.IPricingList>;
   canCreateBarcode: boolean;
   onClose: () => void;
   onDelete: () => void;
-  onCreateBarcode: (account: Partial<CarrierAccountTypes.ICarrierAccount>) => void;
-  onDownloadPaper: (type: 'labels' | 'invoices') => void;
-}
+  onCreateBarcode: (account: CarrierAccountTypes.BarcodeCarrierAccount) => Promise<void>;
+  onDownloadPaper: (type: PaperType) => Promise<void>;
+};
+
+const isPaperAvailable = (labeledAt?: Date) => {
+  if (!labeledAt) {
+    return false;
+  }
+
+  const expiresAt = new Date(labeledAt);
+  expiresAt.setMonth(expiresAt.getMonth() + 3);
+
+  return expiresAt.getTime() > Date.now();
+};
 
 const ShippingActionsMenu = ({
   anchorEl,
@@ -41,30 +54,29 @@ const ShippingActionsMenu = ({
 }: ShippingActionsMenuProps) => {
   const router = useRouter();
 
-  const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
-
-  const hasLabel = selectedRow?.labeledAt ? new Date(selectedRow.labeledAt).setMonth(new Date(selectedRow.labeledAt).getMonth() + 3) > Date.now() : false;
-
-  const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
+  const shippingId = selectedRow?._id;
+  const hasTrackingNumber = Boolean(selectedRow?.carrier?.trackingNumber);
+  const canCreateShippingBarcode = !hasTrackingNumber && canCreateBarcode;
+  const canDownloadPaper = hasTrackingNumber && isPaperAvailable(selectedRow?.labeledAt);
+  const handleNavigate = (path: string) => {
+    onClose();
+    router.push(path);
+  };
 
   const handleView = () => {
-    const id = selectedRow?._id;
+    if (!shippingId) {
+      return;
+    }
 
-    if (!id) return;
-
-    onClose();
-
-    router.push(`/panel/gonderilerim/${id}`);
+    handleNavigate(`/panel/gonderilerim/${shippingId}`);
   };
 
   const handleEdit = () => {
-    const id = selectedRow?._id;
+    if (!shippingId) {
+      return;
+    }
 
-    if (!id) return;
-
-    onClose();
-
-    router.push(`/panel/gonderilerim/${id}/duzenle`);
+    handleNavigate(`/panel/gonderilerim/${shippingId}/duzenle`);
   };
 
   return (
@@ -88,74 +100,80 @@ const ShippingActionsMenu = ({
 
             <ListItemText>Düzenle</ListItemText>
           </MenuItem>
+
+          <MenuItem onClick={onDelete}>
+            <ListItemIcon>
+              <DeleteOutlined fontSize="small" color="error" />
+            </ListItemIcon>
+
+            <ListItemText sx={{ color: 'error.main' }}>Sil</ListItemText>
+          </MenuItem>
         </>
       )}
 
-      {!hasTrackingNumber && (
-        <MenuItem onClick={onDelete}>
-          <ListItemIcon>
-            <DeleteOutlined fontSize="small" color="error" />
-          </ListItemIcon>
+      {canCreateShippingBarcode && (
+        <>
+          <Divider />
 
-          <ListItemText
-            sx={{
-              color: 'error.main',
+          {accounts.length === 0 ? (
+            <MenuItem disabled>
+              <ListItemIcon>
+                <QrCode2OutlinedIcon fontSize="small" />
+              </ListItemIcon>
+
+              <ListItemText>Barkod Hesabı Bulunamadı</ListItemText>
+            </MenuItem>
+          ) : (
+            accounts.map(account => {
+              const customerPrice = getCustomerPrice({
+                countryCode: selectedRow?.consignee?.address.country ?? '',
+                weight: selectedRow?.package.weight ?? 0,
+                pricingList: account.accountType ? pricingLists[account.accountType] : null,
+              });
+
+              return (
+                <MenuItem
+                  key={account._id.toString()}
+                  onClick={() => {
+                    void onCreateBarcode(account);
+                  }}
+                >
+                  <ListItemText primary={account.displayName} secondary={`Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
+                </MenuItem>
+              );
+            })
+          )}
+        </>
+      )}
+
+      {canDownloadPaper && (
+        <>
+          <Divider />
+
+          <MenuItem
+            onClick={() => {
+              void onDownloadPaper('labels');
             }}
           >
-            Sil
-          </ListItemText>
-        </MenuItem>
-      )}
-
-      {showBarcodeItem && <Divider />}
-
-      {showBarcodeItem &&
-        (accounts.length === 0 ? (
-          <MenuItem disabled>
             <ListItemIcon>
-              <QrCode2OutlinedIcon fontSize="small" />
+              <DescriptionOutlinedIcon fontSize="small" />
             </ListItemIcon>
 
-            <ListItemText>Barkod Hesabı Bulunamadı</ListItemText>
+            <ListItemText>Barkod İndir (Label)</ListItemText>
           </MenuItem>
-        ) : (
-          accounts.map(account => {
-            const customerPrice = getCustomerPrice({
-              countryCode: selectedRow?.consignee?.address.country ?? '',
 
-              weight: selectedRow?.package.weight ?? 0,
+          <MenuItem
+            onClick={() => {
+              void onDownloadPaper('invoices');
+            }}
+          >
+            <ListItemIcon>
+              <ReceiptLongOutlinedIcon fontSize="small" />
+            </ListItemIcon>
 
-              pricingList: account.accountType ? pricingLists[account.accountType] : null,
-            });
-
-            return (
-              <MenuItem key={account._id?.toString()} onClick={() => onCreateBarcode(account)}>
-                <ListItemText primary={account.displayName} secondary={`Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
-              </MenuItem>
-            );
-          })
-        ))}
-
-      {hasTrackingNumber && hasLabel && <Divider />}
-
-      {hasTrackingNumber && hasLabel && (
-        <MenuItem onClick={() => onDownloadPaper('labels')}>
-          <ListItemIcon>
-            <DescriptionOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-
-          <ListItemText>Barkod İndir (Label)</ListItemText>
-        </MenuItem>
-      )}
-
-      {hasTrackingNumber && hasLabel && (
-        <MenuItem onClick={() => onDownloadPaper('invoices')}>
-          <ListItemIcon>
-            <ReceiptLongOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-
-          <ListItemText>Proforma Fatura İndir</ListItemText>
-        </MenuItem>
+            <ListItemText>Proforma Fatura İndir</ListItemText>
+          </MenuItem>
+        </>
       )}
     </Menu>
   );

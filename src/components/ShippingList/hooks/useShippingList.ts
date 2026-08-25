@@ -11,9 +11,12 @@ import { ShippingTypes } from '@/types/shipping';
 const useShippingList = (searchParams: ReadonlyURLSearchParams) => {
   const { showSnackbar } = useSnackbar();
 
-  const [data, setData] = useState<ShippingTypes.IShippingData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<ShippingTypes.IShipping[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
   const requestIdRef = useRef(0);
+
   const page = Number(searchParams.get('sayfa')) || 1;
   const limit = Number(searchParams.get('limit')) || 5;
 
@@ -33,7 +36,7 @@ const useShippingList = (searchParams: ReadonlyURLSearchParams) => {
   const fetchList = useCallback(async () => {
     const requestId = ++requestIdRef.current;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await listShipping({
@@ -46,25 +49,29 @@ const useShippingList = (searchParams: ReadonlyURLSearchParams) => {
         return;
       }
 
-      if (response.status === 'OK' && response.data && 'shippings' in response.data) {
-        setData(response.data);
+      if (response.status === 'ERROR' || !response.data || !('shippings' in response.data)) {
+        setRows([]);
+        setTotalCount(0);
+
+        showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
+
         return;
       }
 
-      setData(null);
-
-      showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
+      setRows(response.data.shippings);
+      setTotalCount(response.data.totalCount);
     } catch {
       if (requestId !== requestIdRef.current) {
         return;
       }
 
-      setData(null);
+      setRows([]);
+      setTotalCount(0);
 
       showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
     } finally {
       if (requestId === requestIdRef.current) {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   }, [page, limit, filters, showSnackbar]);
@@ -73,12 +80,10 @@ const useShippingList = (searchParams: ReadonlyURLSearchParams) => {
     void fetchList();
   }, [fetchList]);
 
-  const rows = useMemo(() => data?.shippings ?? [], [data]);
-
   return {
-    data,
     rows,
-    loading,
+    totalCount,
+    isLoading,
     page,
     limit,
     refetch: fetchList,

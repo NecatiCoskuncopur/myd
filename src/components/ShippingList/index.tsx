@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -12,25 +11,28 @@ import { Carrier, generalMessages } from '@/constants';
 import openBase64Pdf from '@/lib/openBase64Pdf';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { PricingListTypes } from '@/types/pricingList';
 
 import BarcodeResultDialog from './BarcodeResultDialog';
 import FilterSection from './FilterSection';
 import useShippingActions from './hooks/useShippingActions';
 import useShippingList from './hooks/useShippingList';
-import useShippingUser from './hooks/useShippingUser';
 import ShippingActionsMenu from './ShippingActionsMenu';
 import ShippingTable from './ShippingTable';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const ShippingList = () => {
-  const searchParams = useSearchParams();
+type ShippingListProps = {
+  accounts: CarrierAccountTypes.BarcodeCarrierAccount[];
+  pricingLists: Record<string, PricingListTypes.IPricingList>;
+  canCreateBarcode: boolean;
+};
 
+const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingListProps) => {
+  const searchParams = useSearchParams();
   const { showSnackbar } = useSnackbar();
 
-  const { data, rows, loading, page, limit, refetch } = useShippingList(searchParams);
-
-  const { pricingLists, accounts, canCreateBarcode } = useShippingUser();
+  const { rows, totalCount, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
   const {
     selectedRow,
@@ -53,13 +55,12 @@ const ShippingList = () => {
     startBarcodeLoading,
     finishBarcodeLoading,
     setBarcodeFailure,
-    clearBarcodeError,
   } = useShippingActions();
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
 
-    if (!shippingId || !account.carrier || !account.accountNumber || !account._id) {
+    if (!shippingId || !account._id || !account.carrier || !account.accountNumber || !account.displayName) {
       return;
     }
 
@@ -68,29 +69,23 @@ const ShippingList = () => {
 
     try {
       const response = await createBarcode({
-        hasCustomInfo: !!account.hasCustomInfo,
-
-        customInfo: account.customInfo,
-
         shippingId,
-
-        displayName: account.displayName!,
-
-        firm: account.carrier as Carrier,
-
-        accountNumber: account.accountNumber,
-
         carrierAccountId: account._id.toString(),
+        firm: account.carrier as Carrier,
+        accountNumber: account.accountNumber,
+        displayName: account.displayName,
+        hasCustomInfo: Boolean(account.hasCustomInfo),
+        customInfo: account.customInfo,
       });
 
-      if (response.status === 'OK') {
-        await refetch();
+      if (response.status === 'ERROR') {
+        setBarcodeFailure(response.message || 'Barkod oluşturulamadı.');
         return;
       }
 
-      setBarcodeFailure(response.message || 'Barkod oluşturulamadı');
+      await refetch();
     } catch {
-      setBarcodeFailure('Sistem hatası oluştu');
+      setBarcodeFailure(UNEXPECTED_ERROR);
     } finally {
       finishBarcodeLoading();
     }
@@ -99,9 +94,11 @@ const ShippingList = () => {
   const handleDownloadPaper = async (type: 'labels' | 'invoices') => {
     const shippingId = selectedRow?._id;
 
-    closeActionsMenu();
+    if (!shippingId) {
+      return;
+    }
 
-    if (!shippingId) return;
+    closeActionsMenu();
 
     try {
       const response = await getPaper({
@@ -111,16 +108,18 @@ const ShippingList = () => {
 
       if (response.status !== 'OK' || !response.data?.file) {
         showSnackbar(response.message ?? 'Evrak indirilirken bir hata oluştu.', 'error');
-
         return;
       }
 
       openBase64Pdf(response.data.file);
-    } catch (error) {
-      console.error(error);
-
+    } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
     }
+  };
+
+  const handleDeleteSuccess = () => {
+    closeDeleteDialog();
+    void refetch();
   };
 
   return (
@@ -132,8 +131,8 @@ const ShippingList = () => {
 
         <ShippingTable
           rows={rows}
-          totalCount={data?.totalCount}
-          loading={loading}
+          totalCount={totalCount}
+          loading={isLoading}
           page={page}
           limit={limit}
           searchParams={searchParams}
@@ -153,24 +152,9 @@ const ShippingList = () => {
           onDownloadPaper={handleDownloadPaper}
         />
 
-        <BarcodeResultDialog
-          open={barcodeDialogOpen}
-          loading={barcodeLoading}
-          error={barcodeError}
-          onClose={closeBarcodeDialog}
-          onClearError={clearBarcodeError}
-        />
+        <BarcodeResultDialog open={barcodeDialogOpen} loading={barcodeLoading} error={barcodeError} onClose={closeBarcodeDialog} />
 
-        <DeleteShipping
-          id={selectedRow?._id ?? ''}
-          open={deleteOpen}
-          anchorEl={actionIconButton}
-          onClose={closeDeleteDialog}
-          onSuccess={() => {
-            closeDeleteDialog();
-            void refetch();
-          }}
-        />
+        <DeleteShipping id={selectedRow?._id ?? ''} open={deleteOpen} anchorEl={actionIconButton} onClose={closeDeleteDialog} onSuccess={handleDeleteSuccess} />
       </Wrapper>
     </LocalizationProvider>
   );

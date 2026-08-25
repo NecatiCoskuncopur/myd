@@ -5,15 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/ShippingDetail/DetailGrid.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/CardHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/CardHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ContentSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/gonderilerim/listele/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/gonderilerim/listele/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/BarcodeResultDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/BarcodeResultDialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/FilterSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingUser.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +24,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="332" />
+    <option name="cachedIndexableFilesCount" value="334" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -179,7 +182,7 @@
       <workItem from="1787519505488" duration="11640000" />
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
-      <workItem from="1787650506388" duration="8803000" />
+      <workItem from="1787650506388" duration="11093000" />
     </task>
     <servers />
   </component>

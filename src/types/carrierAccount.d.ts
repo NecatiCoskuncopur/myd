@@ -74,6 +74,8 @@ declare namespace CarrierAccountTypes {
     carrierAccounts: ICarrierAccount[];
   }
 
+  type BarcodeCarrierAccount = Pick<ICarrierAccount, '_id' | 'displayName' | 'carrier' | 'accountNumber' | 'accountType' | 'hasCustomInfo' | 'customInfo'>;
+
   interface ICarrierAccountsParams extends ParamsTypes.IPaginationParams {
     name?: string;
     displayName?: string;
