@@ -1,10 +1,10 @@
-import React from 'react';
 import { Box, Grid, Typography, useTheme } from '@mui/material';
+import type { ReactNode } from 'react';
 
 type WrapperProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
-  headerAction?: React.ReactNode;
+  headerAction?: ReactNode;
 };
 
 const Wrapper = ({ children, title, headerAction }: WrapperProps) => {

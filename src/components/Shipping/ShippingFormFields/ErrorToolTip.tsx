@@ -1,9 +1,9 @@
-import React from 'react';
 import { Tooltip } from '@mui/material';
+import type { ReactElement } from 'react';
 
 type Props = {
   message?: string;
-  children: React.ReactElement;
+  children: ReactElement;
 };
 
 const ErrorTooltip = ({ message, children }: Props) => {

@@ -38,6 +38,7 @@ const PackageContentSection = () => {
               if (value === 'USD' || value === 'EUR' || value === 'GBP') {
                 return true;
               }
+
               return CURRENCY.INVALID;
             },
           }}
@@ -56,13 +57,17 @@ const PackageContentSection = () => {
           }}
         />
       </Grid>
+
       <Grid size={{ xs: 12, md: 8 }}>
         <Controller
           name="content.freight"
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value < 1) return FREIGHT.MIN;
+              if (value < 1) {
+                return FREIGHT.MIN;
+              }
+
               return true;
             },
           }}
@@ -74,6 +79,7 @@ const PackageContentSection = () => {
               <ErrorTooltip message={errorMessage}>
                 <TextField
                   {...field}
+                  type="number"
                   label="Navlun Bedeli"
                   fullWidth
                   value={field.value ?? ''}
@@ -101,13 +107,17 @@ const PackageContentSection = () => {
           }}
         />
       </Grid>
+
       <Grid size={12}>
         <Controller
           name="content.description"
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value.length > 50) return DESCRIPTION.MAX;
+              if (value.length > 50) {
+                return DESCRIPTION.MAX;
+              }
+
               return true;
             },
           }}
@@ -131,8 +141,14 @@ const PackageContentSection = () => {
               name={`content.products.${index}.name`}
               rules={{
                 required: PRODUCT.NAME.REQUIRED,
-                minLength: { value: 2, message: PRODUCT.NAME.MIN },
-                maxLength: { value: 25, message: PRODUCT.NAME.MAX },
+                minLength: {
+                  value: 2,
+                  message: PRODUCT.NAME.MIN,
+                },
+                maxLength: {
+                  value: 25,
+                  message: PRODUCT.NAME.MAX,
+                },
               }}
               control={control}
               render={({ field }) => {
@@ -140,7 +156,7 @@ const PackageContentSection = () => {
 
                 return (
                   <ErrorTooltip message={errorMessage}>
-                    <TextField {...field} label="Ürün Adı *" fullWidth error={!!errorMessage} />
+                    <TextField {...field} label="Ürün Adı *" fullWidth value={field.value ?? ''} error={!!errorMessage} />
                   </ErrorTooltip>
                 );
               }}
@@ -152,7 +168,10 @@ const PackageContentSection = () => {
               name={`content.products.${index}.piece`}
               rules={{
                 required: PRODUCT.PIECE.REQUIRED,
-                min: { value: 1, message: PRODUCT.PIECE.MIN },
+                min: {
+                  value: 1,
+                  message: PRODUCT.PIECE.MIN,
+                },
               }}
               control={control}
               render={({ field }) => {
@@ -160,7 +179,7 @@ const PackageContentSection = () => {
 
                 return (
                   <ErrorTooltip message={errorMessage}>
-                    <TextField {...field} label="Adet *" type="number" fullWidth error={!!errorMessage} />
+                    <TextField {...field} label="Adet *" type="number" fullWidth value={field.value ?? ''} error={!!errorMessage} />
                   </ErrorTooltip>
                 );
               }}
@@ -179,14 +198,19 @@ const PackageContentSection = () => {
 
                 return (
                   <ErrorTooltip message={errorMessage}>
-                    <TextField {...field} label="Birim Fiyat *" type="number" fullWidth error={!!errorMessage} />
+                    <TextField {...field} label="Birim Fiyat *" type="number" fullWidth value={field.value ?? ''} error={!!errorMessage} />
                   </ErrorTooltip>
                 );
               }}
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: hasMultipleProducts ? 3 : 5 }}>
+          <Grid
+            size={{
+              xs: 12,
+              md: hasMultipleProducts ? 3 : 5,
+            }}
+          >
             <Controller
               name={`content.products.${index}.gtip`}
               control={control}
@@ -206,7 +230,15 @@ const PackageContentSection = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <Tooltip title="GTİP kodunu bulmak için tıkla">
-                                <IconButton component="a" href="https://uygulama.gtb.gov.tr/Tara" target="_blank" rel="noopener noreferrer" sx={{ padding: 0 }}>
+                                <IconButton
+                                  component="a"
+                                  href="https://uygulama.gtb.gov.tr/Tara"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  sx={{
+                                    padding: 0,
+                                  }}
+                                >
                                   <HelpIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
@@ -222,8 +254,21 @@ const PackageContentSection = () => {
           </Grid>
 
           {hasMultipleProducts && (
-            <Grid size={{ xs: 12, md: 2 }}>
-              <Button color="error" onClick={() => remove(index)} fullWidth sx={{ height: '100%' }}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 2,
+              }}
+            >
+              <Button
+                type="button"
+                color="error"
+                onClick={() => remove(index)}
+                fullWidth
+                sx={{
+                  height: '100%',
+                }}
+              >
                 <RemoveCircleOutlined />
               </Button>
             </Grid>
@@ -233,6 +278,7 @@ const PackageContentSection = () => {
 
       <Grid size={{ xs: 12 }}>
         <Button
+          type="button"
           variant="outlined"
           fullWidth
           onClick={() =>
@@ -247,13 +293,17 @@ const PackageContentSection = () => {
           + Farklı Ürün Ekle
         </Button>
       </Grid>
+
       <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="content.insurance"
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value < 1) return INSURANCE.MIN;
+              if (value < 1) {
+                return INSURANCE.MIN;
+              }
+
               return true;
             },
           }}
@@ -265,6 +315,7 @@ const PackageContentSection = () => {
               <ErrorTooltip message={errorMessage}>
                 <TextField
                   {...field}
+                  type="number"
                   label="Sigorta Bedeli"
                   fullWidth
                   value={field.value ?? ''}

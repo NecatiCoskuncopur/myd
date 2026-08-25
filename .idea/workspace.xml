@@ -5,23 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/DeleteShipping.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/DesiKgCalculator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/DesiKgCalculator.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ErrorToolTip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ErrorToolTip.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/DesiKgCalculator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/DesiKgCalculator.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ErrorToolTip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ErrorToolTip.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/PackageContentSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/PackageDetailSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/SenderSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ShippingDetailSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/Wrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/Wrapper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,10 +77,10 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Shipping" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\public\images" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\public" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\CarrierAccountTable\Forms" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Account" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\PriceList" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Balance" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -188,7 +184,7 @@
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
       <workItem from="1787650506388" duration="12764000" />
-      <workItem from="1787663969475" duration="3166000" />
+      <workItem from="1787663969475" duration="5631000" />
     </task>
     <servers />
   </component>

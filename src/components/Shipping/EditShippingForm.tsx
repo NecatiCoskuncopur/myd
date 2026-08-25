@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import updateShipping from '@//app/actions/shipping/updateShipping';
-import ShippingFormFields from '@//components/ShippingFormFields';
+import ShippingFormFields from './ShippingFormFields';
 import { generalMessages, shippingMessages } from '@//constants';
 import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';

@@ -7,7 +7,7 @@ import cleanDeep from 'clean-deep';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { StyledButton } from '@//components';
-import ShippingFormFields from '@//components/ShippingFormFields';
+import ShippingFormFields from './ShippingFormFields';
 import { CurrencyEnum, generalMessages, shippingMessages, ShippingPayor, ShippingPurpose } from '@//constants';
 import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';

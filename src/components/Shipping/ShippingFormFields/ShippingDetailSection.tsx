@@ -1,7 +1,7 @@
 'use client';
 
 import HelpIcon from '@mui/icons-material/Help';
-import { Box, Grid, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
+import { Box, Grid, MenuItem, TextField, Tooltip } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { shippingMessages, ShippingPurpose } from '@/constants';
@@ -30,6 +30,7 @@ const ShippingDetailSection = () => {
               if (value === 'SENDER' || value === 'CONSIGNEE') {
                 return true;
               }
+
               return PAYOR.SHIPMENT.TYPE_INVALID;
             },
           }}
@@ -38,11 +39,17 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <Box sx={{ position: 'relative' }}>
-                  <TextField {...field} select label="Kargo Ücreti *" fullWidth error={!!errorMessage}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                  }}
+                >
+                  <TextField {...field} select label="Kargo Ücreti *" fullWidth value={field.value ?? ''} error={!!errorMessage}>
                     <MenuItem value="SENDER">Gönderici</MenuItem>
+
                     <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
                   </TextField>
+
                   <Tooltip title="Kargonun gönderimi esnasında oluşan masrafları kim ödeyecek?">
                     <HelpIcon
                       sx={{
@@ -74,6 +81,7 @@ const ShippingDetailSection = () => {
               if (value === 'SENDER' || value === 'CONSIGNEE') {
                 return true;
               }
+
               return PAYOR.CUSTOMS.TYPE_INVALID;
             },
           }}
@@ -82,11 +90,17 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <Box sx={{ position: 'relative' }}>
-                  <TextField {...field} select label="Gümrük Ücreti *" fullWidth error={!!errorMessage}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                  }}
+                >
+                  <TextField {...field} select label="Gümrük Ücreti *" fullWidth value={field.value ?? ''} error={!!errorMessage}>
                     <MenuItem value="SENDER">Gönderici</MenuItem>
+
                     <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
                   </TextField>
+
                   <Tooltip title="Alıcı ülkede oluşabilecek olan gümrük masraflarını kim ödeyecek?">
                     <HelpIcon
                       sx={{
@@ -114,7 +128,11 @@ const ShippingDetailSection = () => {
           rules={{
             validate: value => {
               if (!value) return true;
-              if (value.length !== 12) return IOSSNUMBER.LENGTH;
+
+              if (value.length !== 12) {
+                return IOSSNUMBER.LENGTH;
+              }
+
               return true;
             },
           }}
@@ -144,11 +162,15 @@ const ShippingDetailSection = () => {
 
             return (
               <ErrorTooltip message={errorMessage}>
-                <TextField {...field} select label="Gönderi Açıklaması *" fullWidth error={!!errorMessage}>
+                <TextField {...field} select label="Gönderi Açıklaması *" fullWidth value={field.value ?? ''} error={!!errorMessage}>
                   <MenuItem value="SAMPLE">Numune (SAMPLE)</MenuItem>
+
                   <MenuItem value="COMMERICAL">Ticari (COMMERICAL)</MenuItem>
+
                   <MenuItem value="GIFT">Hediyelik (GIFT)</MenuItem>
+
                   <MenuItem value="PERSONAL">Kişisel (PERSONAL)</MenuItem>
+
                   <MenuItem value="REPAIR_OR_RETURN">REPAIR OR RETURN (Tamirat & İade)</MenuItem>
                 </TextField>
               </ErrorTooltip>
