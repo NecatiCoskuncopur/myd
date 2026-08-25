@@ -1,13 +1,12 @@
-import React from 'react';
 import PersonIcon from '@mui/icons-material/Person';
-import { Grid, Typography } from '@mui/material';
 
 import { ShippingTypes } from '@/types/shipping';
 
 import CardHeader from './CardHeader';
+import DetailGrid from './DetailGrid';
 
 type SenderSectionProps = {
-  sender: ShippingTypes.ISender | undefined;
+  sender?: ShippingTypes.ISender;
 };
 
 const SenderSection = ({ sender }: SenderSectionProps) => {
@@ -15,7 +14,7 @@ const SenderSection = ({ sender }: SenderSectionProps) => {
     { label: 'Ad Soyad', value: sender?.name },
     { label: 'Firma', value: sender?.company },
     { label: 'Telefon', value: sender?.phone },
-    { label: 'Email', value: sender?.email },
+    { label: 'E-Posta', value: sender?.email },
     {
       label: 'Adres',
       value: [sender?.address?.line1, sender?.address?.line2].filter(Boolean).join(', '),
@@ -31,19 +30,7 @@ const SenderSection = ({ sender }: SenderSectionProps) => {
         <PersonIcon />
       </CardHeader>
 
-      <Grid container spacing={2} sx={{ mt: '12px' }}>
-        {rows.map(row => (
-          <Grid size={{ xs: 12, sm: 6 }} key={row.label}>
-            <Typography variant="caption" color="text.primary">
-              {row.label}
-            </Typography>
-
-            <Typography variant="body1" sx={{ fontSize: 14 }}>
-              {row.value || '-'}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
+      <DetailGrid rows={rows} />
     </>
   );
 };

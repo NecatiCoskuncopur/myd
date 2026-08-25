@@ -5,14 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/ShippingDetail/DetailGrid.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuFooter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MobileMenuTrigger.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MobileMenuTrigger.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/CardHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/CardHeader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ContentSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,7 +179,7 @@
       <workItem from="1787519505488" duration="11640000" />
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
-      <workItem from="1787650506388" duration="7675000" />
+      <workItem from="1787650506388" duration="8803000" />
     </task>
     <servers />
   </component>

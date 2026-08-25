@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 import CardHeader from './CardHeader';
+
+type Currency = 'USD' | 'EUR' | 'GBP';
 
 type Product = {
   name?: string;
@@ -12,30 +13,35 @@ type Product = {
 };
 
 type ContentSectionProps = {
-  products: Product[] | undefined;
-  currency: 'USD' | 'EUR' | 'GBP' | undefined;
+  products?: Product[];
+  currency?: Currency;
+};
+
+const currencySymbols: Record<Currency, string> = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+};
+
+const getRowTotal = (product: Product) => {
+  return (product.unitPrice ?? 0) * (product.piece ?? 0);
+};
+
+const formatPrice = (value: number, currency?: Currency) => {
+  const symbol = currency ? currencySymbols[currency] : '';
+
+  return `${value.toFixed(2)}${symbol ? ` ${symbol}` : ''}`;
 };
 
 const ContentSection = ({ products = [], currency }: ContentSectionProps) => {
-  const getRowTotal = (product: Product) => {
-    const price = product.unitPrice || 0;
-    const piece = product.piece || 0;
-    return price * piece;
-  };
-
-  const grandTotal = useMemo(() => {
-    return products.reduce((acc, product) => acc + getRowTotal(product), 0);
-  }, [products]);
-
-  const formatPrice = (value: number) => {
-    return `${value.toFixed(2)} ${currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£'}`;
-  };
+  const grandTotal = products.reduce((total, product) => total + getRowTotal(product), 0);
 
   return (
     <>
       <CardHeader title="İçerik Özeti">
         <Inventory2Icon />
       </CardHeader>
+
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table size="small">
           <TableHead>
@@ -54,12 +60,12 @@ const ContentSection = ({ products = [], currency }: ContentSectionProps) => {
                 const total = getRowTotal(product);
 
                 return (
-                  <TableRow key={index}>
+                  <TableRow key={`${product.gtip ?? product.name}-${index}`}>
                     <TableCell>{product.name || '-'}</TableCell>
-                    <TableCell align="right">{product.piece || 0}</TableCell>
-                    <TableCell align="right">{formatPrice(product.unitPrice || 0)}</TableCell>
+                    <TableCell align="right">{product.piece ?? 0}</TableCell>
+                    <TableCell align="right">{formatPrice(product.unitPrice ?? 0, currency)}</TableCell>
                     <TableCell align="right">{product.gtip || '-'}</TableCell>
-                    <TableCell align="right">{formatPrice(total)}</TableCell>
+                    <TableCell align="right">{formatPrice(total, currency)}</TableCell>
                   </TableRow>
                 );
               })
@@ -75,8 +81,9 @@ const ContentSection = ({ products = [], currency }: ContentSectionProps) => {
               <TableCell colSpan={4}>
                 <Typography sx={{ fontWeight: 600 }}>Genel Toplam</Typography>
               </TableCell>
+
               <TableCell align="right">
-                <Typography sx={{ fontWeight: 600 }}>{formatPrice(grandTotal)}</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{formatPrice(grandTotal, currency)}</Typography>
               </TableCell>
             </TableRow>
           </TableBody>

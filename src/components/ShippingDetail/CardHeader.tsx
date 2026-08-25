@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 
 type CardHeaderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
 };
 

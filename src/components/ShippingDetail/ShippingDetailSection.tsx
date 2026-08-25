@@ -1,36 +1,68 @@
-import React from 'react';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import { Grid, Typography } from '@mui/material';
 
 import { ShippingTypes } from '@/types/shipping';
 
 import CardHeader from './CardHeader';
+import DetailGrid from './DetailGrid';
 
 type ShippingDetailSectionProps = {
-  detail: ShippingTypes.IShippingDetail | undefined;
+  detail?: ShippingTypes.IShippingDetail;
   currency?: 'USD' | 'EUR' | 'GBP';
-  numberOfPackage: number | undefined;
-  createdAt: string | undefined;
+  numberOfPackage?: number;
+  createdAt?: string;
+};
+
+const getPayorLabel = (payor?: string) => {
+  if (payor === 'SENDER') {
+    return 'Gönderici';
+  }
+
+  if (payor === 'RECEIVER') {
+    return 'Alıcı';
+  }
+
+  return undefined;
+};
+
+const formatDate = (date?: string) => {
+  if (!date) {
+    return undefined;
+  }
+
+  return new Date(date).toLocaleString('tr-TR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 };
 
 const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }: ShippingDetailSectionProps) => {
   const rows = [
-    { label: 'Gönderim Tipi', value: detail?.purpose },
-    { label: 'Para Birimi', value: currency },
-    { label: 'Kargo Ücreti', value: detail?.payor?.shipping === 'SENDER' ? 'Gönderici' : 'Alıcı' },
-    { label: 'Gümrük Masrafı', value: detail?.payor?.customs === 'SENDER' ? 'Gönderici' : 'Alıcı' },
-    { label: 'Paket Sayısı', value: numberOfPackage },
+    {
+      label: 'Gönderim Tipi',
+      value: detail?.purpose,
+    },
+    {
+      label: 'Para Birimi',
+      value: currency,
+    },
+    {
+      label: 'Kargo Ücreti',
+      value: getPayorLabel(detail?.payor?.shipping),
+    },
+    {
+      label: 'Gümrük Masrafı',
+      value: getPayorLabel(detail?.payor?.customs),
+    },
+    {
+      label: 'Paket Sayısı',
+      value: numberOfPackage,
+    },
     {
       label: 'Oluşturulma Tarihi',
-      value: createdAt
-        ? new Date(createdAt).toLocaleString('tr-TR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          })
-        : '-',
+      value: formatDate(createdAt),
     },
   ];
 
@@ -40,19 +72,7 @@ const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }:
         <LocalShippingIcon />
       </CardHeader>
 
-      <Grid container spacing={2} sx={{ mt: '12px' }}>
-        {rows.map(row => (
-          <Grid size={{ xs: 12, sm: 6 }} key={row.label}>
-            <Typography variant="caption" color="text.primary">
-              {row.label}
-            </Typography>
-
-            <Typography variant="body1" sx={{ fontSize: 14 }}>
-              {row.value || '-'}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
+      <DetailGrid rows={rows} />
     </>
   );
 };

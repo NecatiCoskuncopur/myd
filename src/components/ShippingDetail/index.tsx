@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Alert, Box, CircularProgress, Grid, useTheme } from '@mui/material';
 
@@ -17,47 +17,57 @@ import ShippingDetailSection from './ShippingDetailSection';
 const { NOT_FOUND } = shippingMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
-const ShippingDetail = () => {
+type ShippingDetailProps = {
+  canCreateBarcode: boolean;
+};
+
+const ShippingDetail = ({ canCreateBarcode }: ShippingDetailProps) => {
   const { id } = useParams<{ id: string }>();
   const theme = useTheme();
+
   const [shipping, setShipping] = useState<ShippingTypes.IShipping | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    let mounted = true;
+    let isActive = true;
 
     const fetchShipping = async () => {
       if (!id) {
         setShipping(null);
-        setError('');
-        setLoading(false);
+        setErrorMessage(NOT_FOUND);
+        setIsLoading(false);
         return;
       }
 
-      setLoading(true);
-      setError('');
+      setIsLoading(true);
+      setErrorMessage(null);
 
       try {
         const response = await getShipping(id);
 
-        if (!mounted) return;
-
-        if (response.status === 'OK' && response.data) {
-          setShipping(response.data);
-        } else {
-          setShipping(null);
-          setError(response.message || NOT_FOUND);
+        if (!isActive) {
+          return;
         }
+
+        if (response.status === 'ERROR' || !response.data) {
+          setShipping(null);
+          setErrorMessage(response.message || NOT_FOUND);
+          return;
+        }
+
+        setShipping(response.data);
       } catch {
-        if (!mounted) return;
+        if (!isActive) {
+          return;
+        }
 
         setShipping(null);
-        setError(UNEXPECTED_ERROR);
+        setErrorMessage(UNEXPECTED_ERROR);
       } finally {
-        if (mounted) {
-          setLoading(false);
+        if (isActive) {
+          setIsLoading(false);
         }
       }
     };
@@ -65,124 +75,106 @@ const ShippingDetail = () => {
     fetchShipping();
 
     return () => {
-      mounted = false;
+      isActive = false;
     };
   }, [id, refreshKey]);
 
   const handleShippingRefresh = () => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey(current => current + 1);
   };
 
-  if (!shipping) return null;
-  if (loading) {
+  if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: 400,
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
-  if (error) {
+  if (errorMessage) {
     return (
       <Alert severity="error" sx={{ m: 2 }}>
-        {error}
+        {errorMessage}
       </Alert>
     );
   }
+
+  if (!shipping) {
+    return null;
+  }
+
+  const sectionSx = {
+    borderRadius: '12px',
+    backgroundColor: theme.palette.dashboard.sidebar,
+    color: theme.palette.dashboard.textSidebar,
+    p: 3,
+  };
 
   return (
     <>
       <Box
         sx={{
+          ...sectionSx,
           width: '100%',
-          backgroundColor: theme.palette.dashboard.sidebar,
-          color: theme.palette.dashboard.textSidebar,
-          p: '24px',
-          borderRadius: '12px',
           display: 'flex',
           justifyContent: 'space-between',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+          },
+          alignItems: {
+            xs: 'flex-start',
+            sm: 'center',
+          },
           gap: 2,
         }}
       >
-        <Header hasTrackingNumber={!!shipping?.carrier?.trackingNumber} id={id} shipping={shipping} handleShippingRefresh={handleShippingRefresh} />
+        <Header id={id} shipping={shipping} canCreateBarcode={canCreateBarcode} onShippingRefresh={handleShippingRefresh} />
       </Box>
 
-      <Grid container spacing={2} sx={{ mt: '24px' }}>
+      <Grid container spacing={2} sx={{ mt: 3 }}>
         <Grid
+          size={{ xs: 12, md: 6 }}
           sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
+            ...sectionSx,
             display: 'flex',
             alignItems: 'center',
             gap: 1,
           }}
-          size={{ xs: 12, md: 6 }}
         >
-          Taşıyıcı Hesabı: {shipping?.carrier?.displayName || 'Henüz barkod oluşturulmadı.'}
+          Taşıyıcı Hesabı: {shipping.carrier?.displayName || 'Henüz barkod oluşturulmadı.'}
         </Grid>
-        <Grid
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
-          }}
-          size={{ xs: 12, md: 6 }}
-        >
-          Takip Numarası: {shipping?.carrier?.trackingNumber || 'Henüz barkod oluşturulmadı.'}
+
+        <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
+          Takip Numarası: {shipping.carrier?.trackingNumber || 'Henüz barkod oluşturulmadı.'}
         </Grid>
-        <Grid
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
-          }}
-          size={{ xs: 12, md: 6 }}
-        >
-          <SenderSection sender={shipping?.sender} />
+
+        <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
+          <SenderSection sender={shipping.sender} />
         </Grid>
-        <Grid
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
-          }}
-          size={{ xs: 12, md: 6 }}
-        >
-          <ConsigneeSection consignee={shipping?.consignee} />
+
+        <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
+          <ConsigneeSection consignee={shipping.consignee} />
         </Grid>
-        <Grid
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
-          }}
-          size={{ xs: 12, md: 6 }}
-        >
+
+        <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
           <ShippingDetailSection
-            detail={shipping?.detail}
-            currency={shipping?.content?.currency}
-            numberOfPackage={shipping?.package?.numberOfPackage}
-            createdAt={shipping?.createdAt}
+            detail={shipping.detail}
+            currency={shipping.content?.currency}
+            numberOfPackage={shipping.package?.numberOfPackage}
+            createdAt={shipping.createdAt}
           />
         </Grid>
-        <Grid
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.dashboard.sidebar,
-            color: theme.palette.dashboard.textSidebar,
-            p: '24px',
-          }}
-          size={{ xs: 12, md: 6 }}
-        >
-          <ContentSection products={shipping?.content?.products} currency={shipping?.content?.currency} />
+
+        <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
+          <ContentSection products={shipping.content?.products} currency={shipping.content?.currency} />
         </Grid>
       </Grid>
     </>
