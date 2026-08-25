@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserBalanceTable/CurrentBalance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserBalanceTable/CurrentBalance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserBalanceTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserBalanceTable/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserBalanceTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/fiyat-listem/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/fiyat-listem/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +173,7 @@
       <workItem from="1787519505488" duration="11640000" />
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
-      <workItem from="1787650506388" duration="11379000" />
+      <workItem from="1787650506388" duration="12039000" />
     </task>
     <servers />
   </component>

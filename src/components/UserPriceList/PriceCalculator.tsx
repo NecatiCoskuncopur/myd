@@ -1,79 +1,98 @@
 'use client';
 
-import { useState } from 'react';
-import { Autocomplete, Box, CircularProgress, TextField, Typography } from '@mui/material';
+import { FormEvent, useEffect, useState } from 'react';
+import { Autocomplete, Box, TextField, Typography } from '@mui/material';
 
 import calculateShipping from '@/app/actions/shipping/calculateShipping';
 import { StyledButton } from '@/components';
-import { CarrierAccountTypeEnum, countries, pricingListMessages, shippingMessages } from '@/constants';
+import { CarrierAccountTypeEnum, countries, generalMessages, pricingListMessages, shippingMessages } from '@/constants';
 
 const { PRICE } = pricingListMessages;
 
-interface CountryOption {
+type CountryOption = {
   code: string;
   turkishName: string;
   [key: string]: unknown;
-}
+};
 
-interface PriceCalculatorProps {
+type PriceCalculatorProps = {
   serviceType: CarrierAccountTypeEnum;
-}
+};
 
 const PriceCalculator = ({ serviceType }: PriceCalculatorProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
+
   const [weight, setWeight] = useState<number | ''>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleCalculate = async () => {
-    if (!selectedCountry || weight === '' || weight < 0.1) {
+  useEffect(() => {
+    setResult(null);
+    setErrorMessage(null);
+  }, [serviceType]);
+
+  const isWeightInvalid = weight !== '' && weight < 0.1;
+
+  const canCalculate = Boolean(selectedCountry) && weight !== '' && !isWeightInvalid;
+
+  const resetResult = () => {
+    setResult(null);
+    setErrorMessage(null);
+  };
+
+  const handleCalculate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!selectedCountry || !canCalculate) {
       return;
     }
 
-    setLoading(true);
-    setResult(null);
-    setErrorMessage(null);
+    setIsLoading(true);
+    resetResult();
 
     try {
-      const res = await calculateShipping({
+      const response = await calculateShipping({
         serviceType,
         countryCode: selectedCountry.code,
         weight,
       });
 
-      if (res.status === 'ERROR') {
-        setErrorMessage(res.message || PRICE.NOT_FOUND);
+      if (response.status !== 'OK' || response.data == null) {
+        setErrorMessage(response.message ?? PRICE.NOT_FOUND);
         return;
       }
 
-      setResult(res.data!);
+      setResult(response.data);
     } catch {
-      setErrorMessage('Ağ hatası oluştu, lütfen tekrar deneyin.');
+      setErrorMessage(generalMessages.UNEXPECTED_ERROR);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const isWeightInvalid = weight !== '' && Number(weight) < 0.1;
-
   return (
     <Box
+      component="form"
+      onSubmit={handleCalculate}
       sx={{
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
         width: '100%',
-        paddingTop: '20px',
+        pt: 2.5,
         borderTop: '1px solid',
-        borderColor: 'rgba(255, 255, 255, 0.08)',
+        borderColor: 'divider',
       }}
     >
       <Box
         sx={{
           display: 'flex',
           gap: 2,
-          flexDirection: { xs: 'column', lg: 'row' },
+          flexDirection: {
+            xs: 'column',
+            lg: 'row',
+          },
         }}
       >
         <Typography variant="h6" sx={{ alignSelf: 'center' }}>
@@ -86,10 +105,14 @@ const PriceCalculator = ({ serviceType }: PriceCalculatorProps) => {
           value={selectedCountry}
           onChange={(_, newValue) => {
             setSelectedCountry(newValue);
-            setErrorMessage(null);
-            setResult(null);
+            resetResult();
           }}
-          sx={{ width: { xs: '100%', lg: 200 } }}
+          sx={{
+            width: {
+              xs: '100%',
+              lg: 200,
+            },
+          }}
           renderInput={params => <TextField {...params} label="Varış Ülkesi" placeholder="Ülke ara..." />}
         />
 
@@ -99,12 +122,12 @@ const PriceCalculator = ({ serviceType }: PriceCalculatorProps) => {
           value={weight}
           error={isWeightInvalid}
           helperText={isWeightInvalid ? shippingMessages.WEIGHT.MIN : ''}
-          onChange={e => {
-            const val = e.target.value;
+          onChange={event => {
+            const value = event.target.value;
 
-            setWeight(val === '' ? '' : Number(val));
-            setErrorMessage(null);
-            setResult(null);
+            setWeight(value === '' ? '' : Number(value));
+
+            resetResult();
           }}
           slotProps={{
             htmlInput: {
@@ -112,20 +135,39 @@ const PriceCalculator = ({ serviceType }: PriceCalculatorProps) => {
               min: 0.1,
             },
           }}
-          sx={{ width: { xs: '100%', lg: 200 } }}
+          sx={{
+            width: {
+              xs: '100%',
+              lg: 200,
+            },
+          }}
         />
 
         <StyledButton
+          type="submit"
           variant="contained"
-          onClick={handleCalculate}
-          disabled={loading || !selectedCountry || weight === '' || isWeightInvalid}
-          sx={{ width: { xs: '100%', lg: 'auto' } }}
+          loading={isLoading}
+          disabled={!canCalculate}
+          sx={{
+            width: {
+              xs: '100%',
+              lg: 'auto',
+            },
+          }}
         >
-          {loading ? <CircularProgress size={20} color="inherit" /> : 'Hesapla'}
+          Hesapla
         </StyledButton>
 
         {result !== null && (
-          <Typography sx={{ alignSelf: 'center', ml: 1 }}>
+          <Typography
+            sx={{
+              alignSelf: 'center',
+              ml: {
+                xs: 0,
+                lg: 1,
+              },
+            }}
+          >
             Sonuç: <strong>{result} $</strong>
           </Typography>
         )}
