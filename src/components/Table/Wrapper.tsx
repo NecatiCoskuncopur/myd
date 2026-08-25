@@ -1,8 +1,8 @@
-import React from 'react';
 import { Box, useTheme } from '@mui/material';
+import type { ReactNode } from 'react';
 
 type WrapperProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const Wrapper = ({ children }: WrapperProps) => {

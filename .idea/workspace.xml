@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/fiyat-listem/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/fiyat-listem/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/UserPriceList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingList/FilterSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table/GenericDataGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table/GenericDataGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table/TableHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table/TableHeader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table/TableWrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table/TableWrapper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table/Wrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table/Wrapper.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +176,7 @@
       <workItem from="1787519505488" duration="11640000" />
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
-      <workItem from="1787650506388" duration="12039000" />
+      <workItem from="1787650506388" duration="12484000" />
     </task>
     <servers />
   </component>

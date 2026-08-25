@@ -1,8 +1,8 @@
-import React from 'react';
 import { Box } from '@mui/material';
+import type { ReactNode } from 'react';
 
 type TableWrapperProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const TableWrapper = ({ children }: TableWrapperProps) => {

@@ -1,25 +1,37 @@
 'use client';
 
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { DataGrid, type DataGridProps } from '@mui/x-data-grid';
+import { DataGrid, type DataGridProps, type GridPaginationModel, type GridValidRowModel } from '@mui/x-data-grid';
 
 import TableWrapper from './TableWrapper';
 
-type GenericDataGridProps = DataGridProps & {
+type GenericDataGridProps<Row extends GridValidRowModel> = DataGridProps<Row> & {
   totalCount?: number;
   page: number;
   limit: number;
-  searchParams?: URLSearchParams;
+  searchParams?: ReadonlyURLSearchParams;
   noRowsMessage: string;
 };
 
-const GenericDataGrid = ({ rows, columns, loading, totalCount = 0, page, limit, searchParams, noRowsMessage, sx, ...props }: GenericDataGridProps) => {
+const GenericDataGrid = <Row extends GridValidRowModel>({
+  rows,
+  columns,
+  loading,
+  totalCount = 0,
+  page,
+  limit,
+  searchParams,
+  noRowsMessage,
+  sx,
+  ...props
+}: GenericDataGridProps<Row>) => {
   const router = useRouter();
 
-  const handlePaginationChange = (model: { page: number; pageSize: number }) => {
+  const handlePaginationChange = (model: GridPaginationModel) => {
     const isPageSizeChanged = model.pageSize !== limit;
 
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams?.toString());
 
     params.set('sayfa', String(isPageSizeChanged ? 1 : model.page + 1));
 
@@ -48,12 +60,14 @@ const GenericDataGrid = ({ rows, columns, loading, totalCount = 0, page, limit, 
             children: noRowsMessage,
           },
         }}
-        sx={{
-          '& .MuiDataGrid-main': {
-            overflowX: 'hidden',
+        sx={[
+          {
+            '& .MuiDataGrid-main': {
+              overflowX: 'hidden',
+            },
           },
-          ...sx,
-        }}
+          ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+        ]}
         {...props}
       />
     </TableWrapper>

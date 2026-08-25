@@ -1,7 +1,8 @@
-import React from 'react';
 import { Box, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
+
 type TableHeaderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
   subTitle: string;
   stacked?: boolean;
