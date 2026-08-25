@@ -5,32 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/BarcodeResultDialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/FilterSection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/columns.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingList.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Shipping/DeleteShipping.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/CardHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/CardHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/ConsigneeSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/ContentSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/DetailGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/DetailGrid.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/SenderSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/SenderSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/BarcodeResultDialog.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/FilterSection.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/ShippingActionsMenu.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/ShippingTable.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/columns.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingActions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/hooks/useShippingList.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ShippingList/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateBarcodeButton.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DeleteShipping.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/EditShippingForm.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/DesiKgCalculator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/DesiKgCalculator.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/ErrorToolTip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/ErrorToolTip.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageContentSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ShippingFormFields/PackageDetailSection.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +188,7 @@
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
       <workItem from="1787650506388" duration="12764000" />
-      <workItem from="1787663969475" duration="70000" />
+      <workItem from="1787663969475" duration="3166000" />
     </task>
     <servers />
   </component>

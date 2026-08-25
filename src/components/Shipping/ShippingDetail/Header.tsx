@@ -6,7 +6,7 @@ import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import type { MouseEvent } from 'react';
 
-import { CreateBarcodeButton, DeleteShipping } from '@/components/index';
+import { CreateBarcodeButton, DeleteShipping } from '@/components';
 import { shippingMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { ShippingTypes } from '@/types/shipping';
