@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -8,7 +7,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import { TableHeader, Wrapper } from '@/components';
-import { Carrier, generalMessages } from '@/constants';
+import { generalMessages } from '@/constants';
 import openBase64Pdf from '@/lib/openBase64Pdf';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -25,12 +24,9 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const AdminShippingList = () => {
   const searchParams = useSearchParams();
-
   const { showSnackbar } = useSnackbar();
 
-  const [isClient, setIsClient] = useState(false);
-
-  const { data, rows, loading, page, limit, refetch } = useShippingList(searchParams);
+  const { data, rows, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
   const { pricingLists, accounts, canCreateBarcode } = useShippingUser();
 
@@ -53,17 +49,12 @@ const AdminShippingList = () => {
     startBarcodeLoading,
     finishBarcodeLoading,
     setBarcodeFailure,
-    clearBarcodeError,
   } = useShippingActions();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
 
-    if (!shippingId || !account.carrier || !account.accountNumber || !account._id) {
+    if (!shippingId || !account.carrier || !account.accountNumber || !account._id || !account.displayName) {
       return;
     }
 
@@ -73,21 +64,22 @@ const AdminShippingList = () => {
     try {
       const response = await createBarcode({
         customInfo: account.customInfo,
-        hasCustomInfo: !!account.hasCustomInfo,
-        displayName: account.displayName!,
+        hasCustomInfo: Boolean(account.hasCustomInfo),
+        displayName: account.displayName,
         shippingId,
-        firm: account.carrier as Carrier,
+        firm: account.carrier,
         accountNumber: account.accountNumber,
         carrierAccountId: account._id.toString(),
       });
 
-      if (response.status === 'OK') {
-        await refetch();
+      if (response.status !== 'OK') {
+        setBarcodeFailure(response.message ?? 'Barkod oluşturulamadı.');
         return;
       }
-      setBarcodeFailure(response.message || 'Barkod oluşturulamadı');
+
+      await refetch();
     } catch {
-      setBarcodeFailure('Sistem hatası oluştu');
+      setBarcodeFailure(UNEXPECTED_ERROR);
     } finally {
       finishBarcodeLoading();
     }
@@ -96,9 +88,11 @@ const AdminShippingList = () => {
   const handleDownloadPaper = async (type: 'labels' | 'invoices') => {
     const shippingId = selectedRow?._id;
 
-    closeActionsMenu();
+    if (!shippingId) {
+      return;
+    }
 
-    if (!shippingId) return;
+    closeActionsMenu();
 
     try {
       const response = await getPaper({
@@ -113,14 +107,10 @@ const AdminShippingList = () => {
       }
 
       openBase64Pdf(response.data.file);
-    } catch (error) {
-      console.error(error);
-
+    } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
     }
   };
-
-  if (!isClient) return null;
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -131,8 +121,8 @@ const AdminShippingList = () => {
 
         <ShippingTable
           rows={rows}
-          totalCount={data?.totalCount}
-          loading={loading}
+          totalCount={data?.totalCount ?? 0}
+          loading={isLoading}
           page={page}
           limit={limit}
           searchParams={searchParams}
@@ -157,18 +147,19 @@ const AdminShippingList = () => {
           selectedRow={selectedRow}
           packageDialogOpen={packageDialogOpen}
           onClosePackageDialog={closePackageDialog}
-          onPackageSuccess={refetch}
+          onPackageSuccess={() => {
+            void refetch();
+          }}
           barcodeDialogOpen={barcodeDialogOpen}
           barcodeLoading={barcodeLoading}
           barcodeError={barcodeError}
           onCloseBarcodeDialog={closeBarcodeDialog}
-          onClearBarcodeError={clearBarcodeError}
           deleteOpen={deleteOpen}
           deleteAnchorEl={actionIconButton}
           onCloseDeleteDialog={closeDeleteDialog}
           onDeleteSuccess={() => {
             closeDeleteDialog();
-            refetch();
+            void refetch();
           }}
           showSnackbar={showSnackbar}
         />

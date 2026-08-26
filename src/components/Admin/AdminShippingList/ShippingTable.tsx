@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ReadonlyURLSearchParams } from 'next/navigation';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
 import { ShippingTypes } from '@/types/shipping';
@@ -19,11 +19,11 @@ interface ShippingTableProps {
   limit: number;
   searchParams: ReadonlyURLSearchParams;
 
-  onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLElement) => void;
+  onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLButtonElement) => void;
 }
 
 const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions }: ShippingTableProps) => {
-  const shippingColumns: GridColDef[] = useMemo(
+  const shippingColumns = useMemo<GridColDef<ShippingTypes.IShipping>[]>(
     () => [
       ...columns,
       {
@@ -33,14 +33,8 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         minWidth: 120,
         sortable: false,
         filterable: false,
-
         renderCell: params => (
-          <IconButton
-            size="small"
-            onClick={event => {
-              onOpenActions(params.row as ShippingTypes.IShipping, event.currentTarget);
-            }}
-          >
+          <IconButton type="button" size="small" aria-label="Gönderi işlemleri" onClick={event => onOpenActions(params.row, event.currentTarget)}>
             <MoreVertIcon />
           </IconButton>
         ),

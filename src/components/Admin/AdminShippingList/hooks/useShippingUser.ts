@@ -5,48 +5,53 @@ import { useEffect, useState } from 'react';
 import getPricingList from '@/app/actions/admin/getPricingList';
 import getUser from '@/app/actions/user/getUser';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
-import { generalMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { UserTypes } from '@/types/user';
 
-const { UNEXPECTED_ERROR } = generalMessages;
-
 const useShippingUser = () => {
   const [user, setUser] = useState<UserTypes.UserDto | null>(null);
+
   const [pricingLists, setPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
-  const [accounts, setAccounts] = useState<Partial<CarrierAccountTypes.ICarrierAccount>[]>([]);
-  const [loadingUser, setLoadingUser] = useState(false);
-  const [loadingPricingLists, setLoadingPricingLists] = useState(false);
-  const [loadingAccounts, setLoadingAccounts] = useState(false);
+
+  const [accounts, setAccounts] = useState<CarrierAccountTypes.IUserPermittedAccount[]>([]);
 
   const canCreateBarcode = (user?.barcodePermits?.length ?? 0) > 0;
 
   useEffect(() => {
+    let isActive = true;
+
     const fetchUser = async () => {
-      setLoadingUser(true);
-
       try {
-        const result = await getUser();
+        const response = await getUser();
 
-        if (result.status === 'OK' && result.data) {
-          setUser(result.data);
+        if (!isActive) {
+          return;
+        }
+
+        if (response.status === 'OK' && response.data) {
+          setUser(response.data);
           return;
         }
 
         setUser(null);
-      } catch (error) {
-        console.error(error);
-        setUser(null);
-      } finally {
-        setLoadingUser(false);
+      } catch {
+        if (isActive) {
+          setUser(null);
+        }
       }
     };
 
-    fetchUser();
+    void fetchUser();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   useEffect(() => {
+    let isActive = true;
+
     const fetchPricingLists = async () => {
       const userPriceLists = user?.priceLists ?? [];
 
@@ -55,74 +60,80 @@ const useShippingUser = () => {
         return;
       }
 
-      setLoadingPricingLists(true);
-
       try {
         const results = await Promise.all(
           userPriceLists.map(async ({ serviceType, priceListId }) => {
-            const result = await getPricingList(priceListId);
+            const response = await getPricingList(priceListId);
 
-            if (result.status !== 'OK' || !result.data) {
+            if (response.status !== 'OK' || !response.data) {
               return null;
             }
 
-            return [serviceType, result.data] as const;
+            return [serviceType, response.data] as const;
           }),
         );
 
-        const pricingListMap = Object.fromEntries(results.filter((entry): entry is NonNullable<typeof entry> => entry !== null));
+        if (!isActive) {
+          return;
+        }
 
-        setPricingLists(pricingListMap);
-      } catch (error) {
-        console.error(error);
-        setPricingLists({});
-      } finally {
-        setLoadingPricingLists(false);
+        const entries = results.filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+
+        setPricingLists(Object.fromEntries(entries));
+      } catch {
+        if (isActive) {
+          setPricingLists({});
+        }
       }
     };
 
-    fetchPricingLists();
+    void fetchPricingLists();
+
+    return () => {
+      isActive = false;
+    };
   }, [user?.priceLists]);
 
   useEffect(() => {
+    let isActive = true;
+
     if (!canCreateBarcode) {
       setAccounts([]);
       return;
     }
 
     const fetchAccounts = async () => {
-      setLoadingAccounts(true);
-
       try {
-        const result = await getUserPermittedAccounts();
+        const response = await getUserPermittedAccounts();
 
-        if (result.status === 'OK' && result.data) {
-          setAccounts(result.data);
+        if (!isActive) {
           return;
         }
 
-        console.error(result.message || UNEXPECTED_ERROR);
+        if (response.status === 'OK' && response.data) {
+          setAccounts(response.data);
+          return;
+        }
+
         setAccounts([]);
-      } catch (error) {
-        console.error(error);
-        setAccounts([]);
-      } finally {
-        setLoadingAccounts(false);
+      } catch {
+        if (isActive) {
+          setAccounts([]);
+        }
       }
     };
 
-    fetchAccounts();
+    void fetchAccounts();
+
+    return () => {
+      isActive = false;
+    };
   }, [canCreateBarcode]);
 
   return {
-    user,
     pricingLists,
     accounts,
     canCreateBarcode,
-
-    loadingUser,
-    loadingPricingLists,
-    loadingAccounts,
   };
 };
 

@@ -9,7 +9,6 @@ import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
-import { Carrier } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import { getCarrierPrice } from '@/lib/getCarrierPrice';
 import { getCustomerPrice } from '@/lib/getCustomerPrice';
@@ -18,12 +17,12 @@ import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
 
 interface ShippingActionsMenuProps {
-  anchorEl: HTMLElement | null;
+  anchorEl: HTMLButtonElement | null;
   open: boolean;
 
   selectedRow: ShippingTypes.IShipping | null;
 
-  accounts: Partial<CarrierAccountTypes.ICarrierAccount>[];
+  accounts: CarrierAccountTypes.IUserPermittedAccount[];
 
   pricingLists: Record<string, PricingListTypes.IPricingList>;
 
@@ -33,7 +32,7 @@ interface ShippingActionsMenuProps {
   onOpenDelete: () => void;
   onOpenPackage: () => void;
 
-  onCreateBarcode: (account: Partial<CarrierAccountTypes.ICarrierAccount>) => void;
+  onCreateBarcode: (account: CarrierAccountTypes.IUserPermittedAccount) => void;
 
   onDownloadPaper: (type: 'labels' | 'invoices') => void;
 }
@@ -53,16 +52,28 @@ const ShippingActionsMenu = ({
 }: ShippingActionsMenuProps) => {
   const router = useRouter();
 
-  const hasTrackingNumber = !!selectedRow?.carrier?.trackingNumber;
+  const hasTrackingNumber = Boolean(selectedRow?.carrier?.trackingNumber);
 
-  const hasLabel = selectedRow?.labeledAt ? new Date(selectedRow.labeledAt).setMonth(new Date(selectedRow.labeledAt).getMonth() + 3) > Date.now() : false;
+  const hasLabel = (() => {
+    if (!selectedRow?.labeledAt) {
+      return false;
+    }
+
+    const expiryDate = new Date(selectedRow.labeledAt);
+
+    expiryDate.setMonth(expiryDate.getMonth() + 3);
+
+    return expiryDate.getTime() > Date.now();
+  })();
 
   const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
 
   const handleEdit = () => {
     const id = selectedRow?._id;
 
-    if (!id) return;
+    if (!id) {
+      return;
+    }
 
     onClose();
 
@@ -118,7 +129,7 @@ const ShippingActionsMenu = ({
           </MenuItem>
         ) : (
           accounts.map(account => {
-            const icon = getCarrierIcon(account.carrier as Carrier);
+            const icon = getCarrierIcon(account.carrier);
 
             const cost = getCarrierPrice({
               countryCode: selectedRow?.consignee?.address.country ?? '',
@@ -129,11 +140,11 @@ const ShippingActionsMenu = ({
             const customerPrice = getCustomerPrice({
               countryCode: selectedRow?.consignee?.address.country ?? '',
               weight: selectedRow?.package.weight ?? 0,
-              pricingList: account.accountType ? pricingLists[account.accountType] : null,
+              pricingList: pricingLists[account.accountType] ?? null,
             });
 
             return (
-              <MenuItem key={account._id?.toString()} onClick={() => onCreateBarcode(account)}>
+              <MenuItem key={account._id} onClick={() => onCreateBarcode(account)}>
                 <ListItemIcon
                   sx={{
                     minWidth: 32,
