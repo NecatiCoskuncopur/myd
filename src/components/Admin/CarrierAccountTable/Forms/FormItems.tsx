@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography, useTheme } from '@mui/material';
-import { Control, Controller, FieldError, FieldErrors, FieldPath, UseFormSetValue } from 'react-hook-form';
+import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import type { Control, FieldError, FieldErrors, FieldPath, UseFormSetValue } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import { Carrier, CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -14,46 +14,41 @@ type FormItemsProps<T extends CarrierAccountFormPayload> = {
   control: Control<T>;
   errors: FieldErrors<T>;
   setValue: UseFormSetValue<T>;
-
   credentials: CarrierAccountTypes.ICarrierCredential[] | undefined;
-
   hasCustomInfo: boolean | undefined;
-
   mode: 'create' | 'update';
-
   account?: CarrierAccountTypes.ICarrierAccount | null;
 };
 
 const { ACCOUNTNUMBER, NAME } = carrierMessages;
 
 const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setValue, credentials, hasCustomInfo, mode, account }: FormItemsProps<T>) => {
-  const theme = useTheme();
-
-  const borderDashed = theme.palette.mode === 'light' ? '1px dashed rgba(0,0,0,0.12)' : '1px dashed rgba(255,255,255,0.2)';
-
   const fieldName = <K extends FieldPath<T>>(name: K) => name;
 
   const handleCustomInfoChange = (checked: boolean) => {
-    if (checked && !account?.customInfo) {
-      setValue(fieldName('customInfo' as FieldPath<T>), {
-        email: '',
-        firstName: '',
-        lastName: '',
-        company: '',
-        phone: '',
-        address: {
-          line1: '',
-          line2: '',
-          city: '',
-          district: '',
-          postalCode: '',
-        },
-      } as never);
+    if (checked) {
+      setValue(
+        fieldName('customInfo' as FieldPath<T>),
+        (account?.customInfo ?? {
+          email: '',
+          firstName: '',
+          lastName: '',
+          company: '',
+          phone: '',
+          address: {
+            line1: '',
+            line2: '',
+            city: '',
+            district: '',
+            postalCode: '',
+          },
+        }) as never,
+      );
+
+      return;
     }
 
-    if (!checked) {
-      setValue(fieldName('customInfo' as FieldPath<T>), undefined as never);
-    }
+    setValue(fieldName('customInfo' as FieldPath<T>), undefined as never);
   };
 
   const credentialErrors = errors.credentials as
@@ -65,7 +60,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
 
   return (
     <Grid container spacing={2} sx={{ mt: 0.5 }}>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+        }}
+      >
         <Controller
           name={fieldName('name' as FieldPath<T>)}
           control={control}
@@ -85,7 +85,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+        }}
+      >
         <Controller
           name={fieldName('displayName' as FieldPath<T>)}
           control={control}
@@ -113,7 +118,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+        }}
+      >
         <Controller
           name={fieldName('accountNumber' as FieldPath<T>)}
           control={control}
@@ -134,7 +144,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
       </Grid>
 
       {mode === 'update' && (
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <Controller
             name={fieldName('isActive' as FieldPath<T>)}
             control={control}
@@ -156,7 +171,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         </Grid>
       )}
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+        }}
+      >
         <Controller
           name={fieldName('carrier' as FieldPath<T>)}
           control={control}
@@ -172,7 +192,12 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+        }}
+      >
         <Controller
           name={fieldName('accountType' as FieldPath<T>)}
           control={control}
@@ -220,18 +245,24 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
 
       <Grid size={{ xs: 12 }}>
         <Box
-          sx={{
+          sx={theme => ({
             p: 2,
-            border: borderDashed,
+            border: theme.palette.mode === 'light' ? '1px dashed rgba(0,0,0,0.12)' : '1px dashed rgba(255,255,255,0.2)',
             borderRadius: 1,
-          }}
+          })}
         >
           <Grid container spacing={2}>
             {credentials?.map((credential, index) => {
               const credentialError = credentialErrors?.[index]?.value;
 
               return (
-                <Grid size={{ xs: 12, md: 6 }} key={credential.key}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6,
+                  }}
+                  key={credential.key}
+                >
                   <Controller
                     name={`credentials.${index}.value` as FieldPath<T>}
                     control={control}
@@ -252,6 +283,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
           </Grid>
         </Box>
       </Grid>
+
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ mb: 2 }}>
           <Typography variant="subtitle2">Fiyatlandırma</Typography>

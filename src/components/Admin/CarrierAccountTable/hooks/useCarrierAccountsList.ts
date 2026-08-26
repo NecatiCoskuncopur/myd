@@ -1,20 +1,24 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ReadonlyURLSearchParams } from 'next/navigation';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 import getCarrierAccounts from '@/app/actions/admin/getCarrierAccounts';
-import { Carrier, CarrierAccountTypeEnum } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, generalMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const useCarrierAccountsList = (searchParams: ReadonlyURLSearchParams) => {
+  const { showSnackbar } = useSnackbar();
+
   const [data, setData] = useState<CarrierAccountTypes.ICarrierAccountData | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const requestIdRef = useRef(0);
 
   const page = Number(searchParams.get('sayfa')) || 1;
+
   const limit = Number(searchParams.get('limit')) || 5;
 
   const filters = useMemo(
@@ -37,7 +41,7 @@ const useCarrierAccountsList = (searchParams: ReadonlyURLSearchParams) => {
   const fetchCarrierAccounts = useCallback(async () => {
     const requestId = ++requestIdRef.current;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await getCarrierAccounts({
@@ -57,24 +61,24 @@ const useCarrierAccountsList = (searchParams: ReadonlyURLSearchParams) => {
 
       setData(null);
 
-      console.error(response.message);
-    } catch (error) {
+      showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
+    } catch {
       if (requestId !== requestIdRef.current) {
         return;
       }
 
       setData(null);
 
-      console.error(error);
+      showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
     } finally {
       if (requestId === requestIdRef.current) {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
-  }, [page, limit, filters]);
+  }, [page, limit, filters, showSnackbar]);
 
   useEffect(() => {
-    fetchCarrierAccounts();
+    void fetchCarrierAccounts();
   }, [fetchCarrierAccounts]);
 
   const rows = useMemo(
@@ -89,7 +93,7 @@ const useCarrierAccountsList = (searchParams: ReadonlyURLSearchParams) => {
   return {
     data,
     rows,
-    loading,
+    isLoading,
     page,
     limit,
     refetch: fetchCarrierAccounts,

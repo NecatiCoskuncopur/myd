@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
 
@@ -18,22 +17,10 @@ import useCarrierAccountsList from './hooks/useCarrierAccountsList';
 const CarrierAccountTable = () => {
   const searchParams = useSearchParams();
 
-  const { data, rows, loading, page, limit, refetch } = useCarrierAccountsList(searchParams);
+  const { data, rows, isLoading, page, limit, refetch } = useCarrierAccountsList(searchParams);
 
-  const {
-    selectedRow,
-    menuAnchorEl,
-
-    isCreateModalOpen,
-    isEditModalOpen,
-
-    openMenu,
-    closeMenu,
-
-    openCreateModal,
-    openEditModal,
-    closeModal,
-  } = useCarrierAccountActions();
+  const { selectedRow, menuAnchorEl, isCreateModalOpen, isEditModalOpen, openMenu, closeMenu, openCreateModal, openEditModal, closeModal } =
+    useCarrierAccountActions();
 
   const accountColumns: GridColDef[] = [
     ...columns,
@@ -58,7 +45,6 @@ const CarrierAccountTable = () => {
   ];
 
   const handleFormSuccess = () => {
-    closeModal();
     void refetch();
   };
 
@@ -66,6 +52,7 @@ const CarrierAccountTable = () => {
     <Wrapper>
       <TableHeader title="Kargo Hesapları" subTitle="Entegre taşıyıcı firma hesaplarınızın listesi ve bağlantı detayları.">
         <StyledButton
+          type="button"
           variant="contained"
           startIcon={<AddIcon />}
           onClick={openCreateModal}
@@ -87,8 +74,8 @@ const CarrierAccountTable = () => {
       <GenericDataGrid
         rows={rows}
         columns={accountColumns}
-        loading={loading}
-        totalCount={data?.totalCount}
+        loading={isLoading}
+        totalCount={data?.totalCount ?? 0}
         page={page}
         limit={limit}
         searchParams={searchParams}

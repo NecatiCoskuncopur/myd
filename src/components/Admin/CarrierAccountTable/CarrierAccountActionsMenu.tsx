@@ -9,10 +9,8 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 interface CarrierAccountActionsMenuProps {
   row: CarrierAccountTypes.ICarrierAccount;
   selectedRow: CarrierAccountTypes.ICarrierAccount | null;
-  anchorEl: HTMLElement | null;
-
-  onOpen: (row: CarrierAccountTypes.ICarrierAccount, anchorEl: HTMLElement) => void;
-
+  anchorEl: HTMLButtonElement | null;
+  onOpen: (row: CarrierAccountTypes.ICarrierAccount, anchorEl: HTMLButtonElement) => void;
   onClose: () => void;
   onEdit: () => void;
 }
@@ -22,12 +20,7 @@ const CarrierAccountActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose
 
   return (
     <>
-      <IconButton
-        size="small"
-        onClick={event => {
-          onOpen(row, event.currentTarget);
-        }}
-      >
+      <IconButton size="small" aria-label="Kargo hesabı işlemleri" onClick={event => onOpen(row, event.currentTarget)}>
         <MoreVertIcon />
       </IconButton>
 

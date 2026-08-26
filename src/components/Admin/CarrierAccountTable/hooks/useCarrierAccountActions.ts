@@ -7,8 +7,10 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 type ModalType = 'edit' | 'create' | '';
 
 const useCarrierAccountActions = () => {
-  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null);
+
   const [selectedRow, setSelectedRow] = useState<CarrierAccountTypes.ICarrierAccount | null>(null);
+
   const [modalState, setModalState] = useState<{
     type: ModalType;
     open: boolean;
@@ -17,7 +19,7 @@ const useCarrierAccountActions = () => {
     open: false,
   });
 
-  const openMenu = (row: CarrierAccountTypes.ICarrierAccount, anchorEl: HTMLElement) => {
+  const openMenu = (row: CarrierAccountTypes.ICarrierAccount, anchorEl: HTMLButtonElement) => {
     setSelectedRow(row);
     setMenuAnchorEl(anchorEl);
   };
@@ -29,28 +31,30 @@ const useCarrierAccountActions = () => {
 
   const openCreateModal = () => {
     setSelectedRow(null);
+    setMenuAnchorEl(null);
 
     setModalState({
       type: 'create',
       open: true,
     });
-
-    setMenuAnchorEl(null);
   };
 
   const openEditModal = () => {
-    if (!selectedRow) return;
+    if (!selectedRow) {
+      return;
+    }
+
+    setMenuAnchorEl(null);
 
     setModalState({
       type: 'edit',
       open: true,
     });
-
-    setMenuAnchorEl(null);
   };
 
   const closeModal = () => {
     setSelectedRow(null);
+    setMenuAnchorEl(null);
 
     setModalState({
       type: '',
@@ -65,7 +69,6 @@ const useCarrierAccountActions = () => {
   return {
     selectedRow,
     menuAnchorEl,
-    modalState,
     isCreateModalOpen,
     isEditModalOpen,
     openMenu,

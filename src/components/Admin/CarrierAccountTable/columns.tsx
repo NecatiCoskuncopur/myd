@@ -1,16 +1,27 @@
 'use client';
 
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Box, Typography } from '@mui/material';
-import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
 import { Carrier } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 
 const columns: GridColDef[] = [
-  { field: 'name', headerName: 'Hesap Adı', flex: 1, minWidth: 100 },
-  { field: 'displayName', headerName: 'Görünen Hesap Adı', flex: 1, minWidth: 100 },
+  {
+    field: 'name',
+    headerName: 'Hesap Adı',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'displayName',
+    headerName: 'Görünen Hesap Adı',
+    flex: 1,
+    minWidth: 100,
+  },
   {
     field: 'carrier',
     headerName: 'Taşıyıcı Firma',
@@ -18,11 +29,27 @@ const columns: GridColDef[] = [
     minWidth: 140,
     renderCell: params => {
       const carrier = params.value as Carrier;
+
       const icon = getCarrierIcon(carrier);
 
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', fontSize: 18 }}>{icon}</Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            height: '100%',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: 18,
+            }}
+          >
+            {icon}
+          </Box>
 
           <Typography variant="body2" sx={{ fontWeight: 500 }}>
             {carrier}
@@ -31,14 +58,24 @@ const columns: GridColDef[] = [
       );
     },
   },
-  { field: 'accountType', headerName: 'Hesap Tipi', flex: 1, minWidth: 100 },
-  { field: 'accountNumber', headerName: 'Hesap Numarası', flex: 1, minWidth: 100 },
+  {
+    field: 'accountType',
+    headerName: 'Hesap Tipi',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'accountNumber',
+    headerName: 'Hesap Numarası',
+    flex: 1,
+    minWidth: 100,
+  },
   {
     field: 'isActive',
     headerName: 'Durum',
     flex: 1,
-    minWidth: 50,
-    renderCell: params => (params.value ? <GridCheckCircleIcon color="success" /> : <CancelIcon color="error" />),
+    minWidth: 80,
+    renderCell: params => (params.value ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />),
   },
   {
     field: 'createdAt',
