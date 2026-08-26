@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
-import { useSnackbar } from '@/providers/SnackbarProvider';
 
 import columns from './columns';
 import DeleteList from './DeleteList';
@@ -19,9 +17,8 @@ import PriceListActionsMenu from './PriceListActionsMenu';
 
 const PriceLists = () => {
   const searchParams = useSearchParams();
-  const { showSnackbar } = useSnackbar();
 
-  const { data, rows, loading, page, limit, refetch } = usePriceLists(searchParams);
+  const { data, rows, isLoading, page, limit, refetch } = usePriceLists(searchParams);
 
   const {
     selectedRow,
@@ -41,36 +38,31 @@ const PriceLists = () => {
     closeModal,
   } = usePriceListActions();
 
-  const priceListsColumns = useMemo<GridColDef[]>(
-    () => [
-      ...columns,
-      {
-        field: 'actions',
-        headerName: 'İşlemler',
-        flex: 1,
-        minWidth: 100,
-        sortable: false,
-        filterable: false,
+  const priceListsColumns: GridColDef[] = [
+    ...columns,
+    {
+      field: 'actions',
+      headerName: 'İşlemler',
+      flex: 1,
+      minWidth: 100,
+      sortable: false,
+      filterable: false,
+      renderCell: params => (
+        <PriceListActionsMenu
+          row={params.row}
+          selectedRow={selectedRow}
+          anchorEl={actionIconButton}
+          menuOpen={menuOpen}
+          onOpen={openMenu}
+          onClose={closeMenu}
+          onEdit={openEditModal}
+          onDelete={openDeleteModal}
+        />
+      ),
+    },
+  ];
 
-        renderCell: params => (
-          <PriceListActionsMenu
-            row={params.row}
-            selectedRow={selectedRow}
-            anchorEl={actionIconButton}
-            menuOpen={menuOpen}
-            onOpen={openMenu}
-            onClose={closeMenu}
-            onEdit={openEditModal}
-            onDelete={openDeleteModal}
-          />
-        ),
-      },
-    ],
-    [selectedRow, actionIconButton, menuOpen, openMenu, closeMenu, openEditModal, openDeleteModal],
-  );
-
-  const handleFormSuccess = () => {
-    closeModal();
+  const handleSuccess = () => {
     void refetch();
   };
 
@@ -78,6 +70,7 @@ const PriceLists = () => {
     <Wrapper>
       <TableHeader title="Fiyat Listeleri" subTitle="Müşteri fiyatlandırmalarında kullanılacak fiyat listelerini yönetin.">
         <StyledButton
+          type="button"
           variant="contained"
           startIcon={<AddIcon />}
           onClick={openCreateModal}
@@ -99,29 +92,17 @@ const PriceLists = () => {
       <GenericDataGrid
         rows={rows}
         columns={priceListsColumns}
-        loading={loading}
-        totalCount={data?.totalCount}
+        loading={isLoading}
+        totalCount={data?.totalCount ?? 0}
         page={page}
         limit={limit}
         searchParams={searchParams}
         noRowsMessage="Sistemde tanımlı fiyat listesi bulunamadı."
       />
 
-      <CreateList open={isCreateModalOpen} onClose={closeModal} onSuccess={handleFormSuccess} />
-
-      <UpdateList list={selectedRow} open={isEditModalOpen} onClose={closeModal} onSuccess={handleFormSuccess} />
-
-      <DeleteList
-        list={selectedRow}
-        anchorEl={actionIconButton}
-        open={isDeleteModalOpen}
-        onClose={closeModal}
-        onSuccess={message => {
-          closeModal();
-          showSnackbar(message, 'success');
-          void refetch();
-        }}
-      />
+      <CreateList open={isCreateModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
+      <UpdateList list={selectedRow} open={isEditModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
+      <DeleteList list={selectedRow} anchorEl={actionIconButton} open={isDeleteModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
     </Wrapper>
   );
 };

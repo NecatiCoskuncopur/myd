@@ -1,6 +1,6 @@
 'use client';
 
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
 const columns: GridColDef[] = [

@@ -3,37 +3,27 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
 import { PricingListTypes } from '@/types/pricingList';
 
 interface PriceListActionsMenuProps {
   row: PricingListTypes.IPricingList;
   selectedRow: PricingListTypes.IPricingList | null;
-
-  anchorEl: HTMLElement | null;
+  anchorEl: HTMLButtonElement | null;
   menuOpen: boolean;
-
-  onOpen: (row: PricingListTypes.IPricingList, anchorEl: HTMLElement) => void;
-
+  onOpen: (row: PricingListTypes.IPricingList, anchorEl: HTMLButtonElement) => void;
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, onClose, onEdit, onDelete }: PriceListActionsMenuProps) => {
-  const theme = useTheme();
-
   const isOpen = menuOpen && anchorEl !== null && selectedRow?._id === row._id;
 
   return (
     <>
-      <IconButton
-        size="small"
-        onClick={event => {
-          onOpen(row, event.currentTarget);
-        }}
-      >
+      <IconButton size="small" aria-label="Fiyat listesi işlemleri" onClick={event => onOpen(row, event.currentTarget)}>
         <MoreVertIcon />
       </IconButton>
 
@@ -49,14 +39,14 @@ const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, on
         <MenuItem
           onClick={onDelete}
           sx={{
-            color: theme.palette.error.main,
+            color: 'error.main',
           }}
         >
           <ListItemIcon>
             <DeleteIcon
               fontSize="small"
               sx={{
-                color: theme.palette.error.main,
+                color: 'error.main',
               }}
             />
           </ListItemIcon>

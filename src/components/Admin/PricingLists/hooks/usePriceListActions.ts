@@ -9,7 +9,7 @@ type ModalType = 'create' | 'edit' | 'delete' | '';
 const usePriceListActions = () => {
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
 
-  const [actionIconButton, setActionIconButton] = useState<HTMLElement | null>(null);
+  const [actionIconButton, setActionIconButton] = useState<HTMLButtonElement | null>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -21,7 +21,7 @@ const usePriceListActions = () => {
     open: false,
   });
 
-  const openMenu = (row: PricingListTypes.IPricingList, anchorEl: HTMLElement) => {
+  const openMenu = (row: PricingListTypes.IPricingList, anchorEl: HTMLButtonElement) => {
     setSelectedRow(row);
     setActionIconButton(anchorEl);
     setMenuOpen(true);
@@ -35,6 +35,7 @@ const usePriceListActions = () => {
 
   const openCreateModal = () => {
     setSelectedRow(null);
+    setActionIconButton(null);
     setMenuOpen(false);
 
     setModalState({
@@ -44,7 +45,9 @@ const usePriceListActions = () => {
   };
 
   const openEditModal = () => {
-    if (!selectedRow) return;
+    if (!selectedRow) {
+      return;
+    }
 
     setMenuOpen(false);
 
@@ -55,8 +58,13 @@ const usePriceListActions = () => {
   };
 
   const openDeleteModal = () => {
-    if (!selectedRow) return;
+    if (!selectedRow) {
+      return;
+    }
 
+    // Delete Popover aynı butonu
+    // anchor olarak kullanacağı için
+    // actionIconButton burada korunuyor.
     setMenuOpen(false);
 
     setModalState({
@@ -68,6 +76,7 @@ const usePriceListActions = () => {
   const closeModal = () => {
     setSelectedRow(null);
     setActionIconButton(null);
+    setMenuOpen(false);
 
     setModalState({
       type: '',

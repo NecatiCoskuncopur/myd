@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ReadonlyURLSearchParams } from 'next/navigation';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 import getPricingLists from '@/app/actions/admin/getPricingLists';
 import { CarrierAccountTypeEnum, generalMessages } from '@/constants';
@@ -13,11 +13,12 @@ const usePriceLists = (searchParams: ReadonlyURLSearchParams) => {
 
   const [data, setData] = useState<PricingListTypes.IPricingListData | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const requestIdRef = useRef(0);
 
   const page = Number(searchParams.get('sayfa')) || 1;
+
   const limit = Number(searchParams.get('limit')) || 5;
 
   const filters = useMemo(
@@ -32,7 +33,7 @@ const usePriceLists = (searchParams: ReadonlyURLSearchParams) => {
   const fetchPricingLists = useCallback(async () => {
     const requestId = ++requestIdRef.current;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await getPricingLists({
@@ -63,13 +64,13 @@ const usePriceLists = (searchParams: ReadonlyURLSearchParams) => {
       showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
     } finally {
       if (requestId === requestIdRef.current) {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   }, [page, limit, filters, showSnackbar]);
 
   useEffect(() => {
-    fetchPricingLists();
+    void fetchPricingLists();
   }, [fetchPricingLists]);
 
   const rows = useMemo(
@@ -84,7 +85,7 @@ const usePriceLists = (searchParams: ReadonlyURLSearchParams) => {
   return {
     data,
     rows,
-    loading,
+    isLoading,
     page,
     limit,
     refetch: fetchPricingLists,

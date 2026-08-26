@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo, useState, useTransition } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import createPricingList from '@/app/actions/admin/createPricingList';
@@ -23,10 +23,6 @@ const { SUCCESS } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
-  const theme = useTheme();
-
-  const [pending, startTransition] = useTransition();
-
   const { showSnackbar } = useSnackbar();
 
   const matrix = useMemo(() => buildPricingMatrix(9), []);
@@ -39,7 +35,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<PricingListTypes.ICreatePricingListPayload>({
     defaultValues: {
       name: '',
@@ -82,16 +78,23 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
     return newRow;
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     reset();
 
     setRows(createInitialRows());
+  };
 
+  const handleClose = () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    resetForm();
     onClose();
   };
 
-  const onSubmit = (data: PricingListTypes.ICreatePricingListPayload) => {
-    startTransition(async () => {
+  const onSubmit = async (data: PricingListTypes.ICreatePricingListPayload) => {
+    try {
       const zones = matrix.rowsToZones(rows);
 
       const response = await createPricingList({
@@ -107,10 +110,13 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
 
       showSnackbar(response.message ?? SUCCESS, 'success');
 
-      onSuccess?.();
+      resetForm();
 
-      handleClose();
-    });
+      onSuccess?.();
+      onClose();
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
   };
 
   return (
@@ -121,38 +127,41 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
       fullWidth
       slotProps={{
         paper: {
-          sx: {
+          sx: theme => ({
             backgroundImage: 'none',
             backgroundColor: theme.palette.dashboard.sidebar,
-          },
+          }),
         },
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Fiyat Listesi Oluştur</DialogTitle>
+      <DialogTitle>Fiyat Listesi Oluştur</DialogTitle>
 
-        <DialogContent>
-          <FormItems
-            control={control}
-            errors={errors}
-            rows={rows}
-            columns={matrix.columns}
-            onAddRow={addRow}
-            onRemoveLastRow={removeLastRow}
-            onProcessRowUpdate={processRowUpdate}
-          />
-        </DialogContent>
+      <DialogContent>
+        <FormItems
+          control={control}
+          errors={errors}
+          rows={rows}
+          columns={matrix.columns}
+          onAddRow={addRow}
+          onRemoveLastRow={removeLastRow}
+          onProcessRowUpdate={processRowUpdate}
+        />
+      </DialogContent>
 
-        <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button type="button" onClick={handleClose} disabled={pending}>
-            İptal
-          </Button>
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 3,
+        }}
+      >
+        <Button type="button" onClick={handleClose} disabled={isSubmitting}>
+          İptal
+        </Button>
 
-          <StyledButton type="submit" variant="contained" loading={pending}>
-            Oluştur
-          </StyledButton>
-        </DialogActions>
-      </form>
+        <StyledButton type="button" variant="contained" loading={isSubmitting} disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+          Oluştur
+        </StyledButton>
+      </DialogActions>
     </Dialog>
   );
 };

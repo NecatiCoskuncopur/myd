@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useState, useTransition } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import updatePricingList from '@/app/actions/admin/updatePricingList';
@@ -24,10 +24,6 @@ const { UPDATE } = pricingListMessages;
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
-  const theme = useTheme();
-
-  const [pending, startTransition] = useTransition();
-
   const { showSnackbar } = useSnackbar();
 
   const matrix = useMemo(() => buildPricingMatrix(9), []);
@@ -40,7 +36,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<PricingListTypes.ICreatePricingListPayload>({
     defaultValues: {
       name: '',
@@ -137,20 +133,27 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
     return newRow;
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     reset();
 
     setRows(createInitialRows());
+  };
 
+  const handleClose = () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    resetForm();
     onClose();
   };
 
-  const onSubmit = (data: PricingListTypes.ICreatePricingListPayload) => {
+  const onSubmit = async (data: PricingListTypes.ICreatePricingListPayload) => {
     if (!list) {
       return;
     }
 
-    startTransition(async () => {
+    try {
       const zones = matrix.rowsToZones(rows);
 
       const response = await updatePricingList({
@@ -168,10 +171,13 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
 
       showSnackbar(response.message ?? UPDATE, 'success');
 
-      onSuccess?.();
+      resetForm();
 
-      handleClose();
-    });
+      onSuccess?.();
+      onClose();
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
   };
 
   return (
@@ -182,38 +188,41 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
       fullWidth
       slotProps={{
         paper: {
-          sx: {
+          sx: theme => ({
             backgroundImage: 'none',
             backgroundColor: theme.palette.dashboard.sidebar,
-          },
+          }),
         },
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Fiyat Listesini Düzenle</DialogTitle>
+      <DialogTitle>Fiyat Listesini Düzenle</DialogTitle>
 
-        <DialogContent>
-          <FormItems
-            control={control}
-            errors={errors}
-            rows={rows}
-            columns={matrix.columns}
-            onAddRow={addRow}
-            onRemoveLastRow={removeLastRow}
-            onProcessRowUpdate={processRowUpdate}
-          />
-        </DialogContent>
+      <DialogContent>
+        <FormItems
+          control={control}
+          errors={errors}
+          rows={rows}
+          columns={matrix.columns}
+          onAddRow={addRow}
+          onRemoveLastRow={removeLastRow}
+          onProcessRowUpdate={processRowUpdate}
+        />
+      </DialogContent>
 
-        <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button type="button" onClick={handleClose} disabled={pending}>
-            İptal
-          </Button>
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 3,
+        }}
+      >
+        <Button type="button" onClick={handleClose} disabled={isSubmitting}>
+          İptal
+        </Button>
 
-          <StyledButton type="submit" variant="contained" loading={pending}>
-            Güncelle
-          </StyledButton>
-        </DialogActions>
-      </form>
+        <StyledButton type="button" variant="contained" loading={isSubmitting} disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+          Güncelle
+        </StyledButton>
+      </DialogActions>
     </Dialog>
   );
 };

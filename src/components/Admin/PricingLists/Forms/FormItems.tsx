@@ -1,7 +1,8 @@
-import React from 'react';
-import { Button, Grid, MenuItem, Stack, TextField, useTheme } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+import { Button, Grid, MenuItem, Stack, TextField } from '@mui/material';
+import type { GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
+import type { Control, FieldErrors } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import { CarrierAccountTypeEnum, pricingListMessages } from '@/constants';
 import { GridRow } from '@/lib/buildPricingMatrix';
@@ -22,12 +23,15 @@ type FormItemsProps = {
 const { NAME } = pricingListMessages;
 
 const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, onProcessRowUpdate }: FormItemsProps) => {
-  const theme = useTheme();
-
   return (
     <Stack spacing={2} sx={{ mt: 1 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <Controller
             name="name"
             control={control}
@@ -42,16 +46,31 @@ const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, 
                 message: NAME.MAX,
               },
             }}
-            render={({ field }) => <TextField {...field} label="Liste Adı" fullWidth error={!!errors.name} helperText={errors.name?.message} />}
+            render={({ field }) => (
+              <TextField {...field} label="Liste Adı" fullWidth value={field.value ?? ''} error={!!errors.name} helperText={errors.name?.message} />
+            )}
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6,
+          }}
+        >
           <Controller
             name="listType"
             control={control}
             render={({ field }) => (
-              <TextField {...field} select fullWidth label="Liste Tipi" error={!!errors.listType} helperText={errors.listType?.message}>
+              <TextField
+                {...field}
+                select
+                fullWidth
+                label="Liste Tipi"
+                value={field.value ?? ''}
+                error={!!errors.listType}
+                helperText={errors.listType?.message}
+              >
                 {Object.values(CarrierAccountTypeEnum).map(accountType => (
                   <MenuItem key={accountType} value={accountType}>
                     {accountType}
@@ -64,11 +83,11 @@ const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, 
       </Grid>
 
       <Stack direction="row" spacing={2}>
-        <Button variant="outlined" onClick={onAddRow}>
+        <Button type="button" variant="outlined" onClick={onAddRow}>
           Ağırlık Satırı Ekle
         </Button>
 
-        <Button variant="outlined" color="error" onClick={onRemoveLastRow}>
+        <Button type="button" variant="outlined" color="error" onClick={onRemoveLastRow}>
           Son Satırı Sil
         </Button>
       </Stack>
@@ -80,7 +99,8 @@ const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, 
         rowHeight={22}
         hideFooter
         disableColumnMenu
-        sx={{
+        processRowUpdate={onProcessRowUpdate}
+        sx={theme => ({
           '& .MuiDataGrid-cell': {
             fontSize: 12,
             border: `1px solid ${theme.palette.dashboard.border}`,
@@ -88,11 +108,7 @@ const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, 
           '& .MuiDataGrid-columnHeader': {
             fontSize: 12,
           },
-        }}
-        onProcessRowUpdateError={error => {
-          console.error(error);
-        }}
-        processRowUpdate={onProcessRowUpdate}
+        })}
       />
     </Stack>
   );
