@@ -6,18 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/gonderilerim/ekle/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/gonderilerim/ekle/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/AddressFields.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/AddressFields.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/ContactFields.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/ContactFields.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/NickNameField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/NickNameField.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/PasswordField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/PasswordField.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/PersonalFields.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/PersonalFields.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FormFields/TaxFields.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FormFields/TaxFields.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +23,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="333" />
+    <option name="cachedIndexableFilesCount" value="331" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -184,7 +182,8 @@
       <workItem from="1787542442196" duration="2953000" />
       <workItem from="1787545449307" duration="9755000" />
       <workItem from="1787650506388" duration="12764000" />
-      <workItem from="1787663969475" duration="6517000" />
+      <workItem from="1787663969475" duration="8163000" />
+      <workItem from="1787709852194" duration="833000" />
     </task>
     <servers />
   </component>

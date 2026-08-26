@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import { Grid, TextField } from '@mui/material';
@@ -12,114 +13,220 @@ type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;
 };
 
+const getFiltersFromSearchParams = (searchParams: ReadonlyURLSearchParams) => ({
+  firstName: searchParams.get('firstName') ?? '',
+  lastName: searchParams.get('lastName') ?? '',
+  company: searchParams.get('company') ?? '',
+  phone: searchParams.get('phone') ?? '',
+  email: searchParams.get('email') ?? '',
+});
+
+const initialFilters = {
+  firstName: '',
+  lastName: '',
+  company: '',
+  phone: '',
+  email: '',
+};
+
 const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const router = useRouter();
 
-  const initialFilters = {
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    email: '',
-  };
+  const [filters, setFilters] = useState(() => getFiltersFromSearchParams(searchParams));
 
-  const [filters, setFilters] = useState({
-    firstName: searchParams.get('firstName') || '',
-    lastName: searchParams.get('lastName') || '',
-    company: searchParams.get('company') || '',
-    phone: searchParams.get('phone') || '',
-    email: searchParams.get('email') || '',
-  });
+  useEffect(() => {
+    setFilters(getFiltersFromSearchParams(searchParams));
+  }, [searchParams]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
 
     Object.entries(filters).forEach(([key, value]) => {
-      if (value.trim() !== '') params.set(key, value.trim());
+      const trimmedValue = value.trim();
+
+      if (trimmedValue) {
+        params.set(key, trimmedValue);
+      }
     });
 
     params.set('sayfa', '1');
-    params.set('limit', searchParams.get('limit') || '5');
+
+    params.set('limit', searchParams.get('limit') ?? '5');
+
     router.push(`?${params.toString()}`);
   };
 
   const handleReset = () => {
     setFilters(initialFilters);
-    router.push('?sayfa=1');
+
+    const params = new URLSearchParams();
+
+    params.set('sayfa', '1');
+
+    params.set('limit', searchParams.get('limit') ?? '5');
+
+    router.push(`?${params.toString()}`);
   };
 
   const isDirty = Object.values(filters).some(value => value !== '');
 
   return (
     <Grid container spacing={2} sx={{ mb: 3 }}>
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 1.8,
+        }}
+      >
         <TextField
           label="Ad"
           size="small"
           variant="outlined"
           fullWidth
           value={filters.firstName}
-          onChange={e => setFilters(prev => ({ ...prev, firstName: e.target.value }))}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              firstName: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 1.8,
+        }}
+      >
         <TextField
           label="Soyad"
           size="small"
           variant="outlined"
           fullWidth
           value={filters.lastName}
-          onChange={e => setFilters(prev => ({ ...prev, lastName: e.target.value }))}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              lastName: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 1.8,
+        }}
+      >
         <TextField
           label="Şirket"
           size="small"
           variant="outlined"
           fullWidth
           value={filters.company}
-          onChange={e => setFilters(prev => ({ ...prev, company: e.target.value }))}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              company: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 1.8,
+        }}
+      >
         <TextField
           label="Telefon"
           size="small"
           variant="outlined"
           fullWidth
           value={filters.phone}
-          onChange={e => setFilters(prev => ({ ...prev, phone: e.target.value }))}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              phone: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 1.8,
+        }}
+      >
         <TextField
           label="Eposta"
           size="small"
           variant="outlined"
           fullWidth
           value={filters.email}
-          onChange={e => setFilters(prev => ({ ...prev, email: e.target.value }))}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              email: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
       </Grid>
 
-      <Grid size={{ xs: 6, md: 3, lg: 1.5 }}>
-        <StyledButton variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
+      <Grid
+        size={{
+          xs: 6,
+          md: 3,
+          lg: 1.5,
+        }}
+      >
+        <StyledButton type="button" variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
           Ara
         </StyledButton>
       </Grid>
 
-      <Grid size={{ xs: 6, md: 3, lg: 1.5 }}>
-        <StyledButton disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
+      <Grid
+        size={{
+          xs: 6,
+          md: 3,
+          lg: 1.5,
+        }}
+      >
+        <StyledButton type="button" disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
           Sıfırla
         </StyledButton>
       </Grid>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ReadonlyURLSearchParams } from 'next/navigation';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 import getAllUsers from '@/app/actions/admin/getAllUsers';
 import { generalMessages } from '@/constants';
@@ -10,19 +10,24 @@ import { AdminTypes } from '@/types/admin';
 
 const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
   const { showSnackbar } = useSnackbar();
+
   const [data, setData] = useState<AdminTypes.IUsersData | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const requestIdRef = useRef(0);
+
   const page = Number(searchParams.get('sayfa')) || 1;
+
   const limit = Number(searchParams.get('limit')) || 5;
 
   const filters = useMemo(
     () => ({
-      firstName: searchParams.get('firstName') || '',
-      lastName: searchParams.get('lastName') || '',
-      company: searchParams.get('company') || '',
-      phone: searchParams.get('phone') || '',
-      email: searchParams.get('email') || '',
+      firstName: searchParams.get('firstName') ?? '',
+      lastName: searchParams.get('lastName') ?? '',
+      company: searchParams.get('company') ?? '',
+      phone: searchParams.get('phone') ?? '',
+      email: searchParams.get('email') ?? '',
       balanceSorting: searchParams.get('balanceSorting') ?? '',
     }),
     [searchParams],
@@ -31,7 +36,7 @@ const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
   const fetchUsers = useCallback(async () => {
     const requestId = ++requestIdRef.current;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await getAllUsers({
@@ -62,7 +67,7 @@ const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
       showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
     } finally {
       if (requestId === requestIdRef.current) {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   }, [page, limit, filters, showSnackbar]);
@@ -99,7 +104,7 @@ const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
   return {
     data,
     rows,
-    loading,
+    isLoading,
     page,
     limit,
     refetch: fetchUsers,

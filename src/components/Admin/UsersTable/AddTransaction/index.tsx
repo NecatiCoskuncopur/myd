@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useTransition } from 'react';
+import { useEffect } from 'react';
 import { AddCircleOutlined } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, useTheme } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import addTransactionUserBalance from '@/app/actions/admin/addTransactionUserBalance';
@@ -24,14 +24,13 @@ interface Props {
 }
 
 const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
-  const [pending, startTransition] = useTransition();
-  const theme = useTheme();
+  const { showSnackbar } = useSnackbar();
 
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AdminTypes.IAddTransactionUserBalancePayload>({
     defaultValues: {
       userId,
@@ -42,87 +41,92 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
   });
 
   useEffect(() => {
+    if (!open) {
+      return;
+    }
+
     reset({
       userId,
       amount: 0,
       type: 'PAY',
       note: '',
     });
-  }, [userId, reset]);
+  }, [open, userId, reset]);
 
-  const { showSnackbar } = useSnackbar();
+  const handleClose = () => {
+    if (isSubmitting) {
+      return;
+    }
 
-  const onSubmit = (values: AdminTypes.IAddTransactionUserBalancePayload) => {
-    startTransition(async () => {
-      try {
-        const response = await addTransactionUserBalance(values);
+    onClose();
+  };
 
-        if (response.status === 'ERROR') {
-          showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
-          return;
-        }
+  const onSubmit = async (values: AdminTypes.IAddTransactionUserBalancePayload) => {
+    try {
+      const response = await addTransactionUserBalance(values);
 
-        showSnackbar(response.message ?? SUCCESS, 'success');
+      if (response.status === 'ERROR') {
+        showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
 
-        onSuccess?.();
-        reset({
-          userId,
-          amount: 0,
-          type: 'PAY',
-          note: '',
-        });
-        onClose();
-      } catch (error) {
-        console.error('Add transaction failed:', error);
-
-        showSnackbar(UNEXPECTED_ERROR, 'error');
+        return;
       }
-    });
+
+      showSnackbar(response.message ?? SUCCESS, 'success');
+
+      reset({
+        userId,
+        amount: 0,
+        type: 'PAY',
+        note: '',
+      });
+
+      onSuccess?.();
+      onClose();
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
   };
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        maxWidth="sm"
-        fullWidth
-        slotProps={{
-          paper: {
-            sx: {
-              backgroundImage: 'none',
-              backgroundColor: theme.palette.dashboard.sidebar,
-            },
-          },
-        }}
-      >
-        <DialogTitle>Bakiye Hareketi Ekle</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      slotProps={{
+        paper: {
+          sx: theme => ({
+            backgroundImage: 'none',
+            backgroundColor: theme.palette.dashboard.sidebar,
+          }),
+        },
+      }}
+    >
+      <DialogTitle>Bakiye Hareketi Ekle</DialogTitle>
 
-        <Box component="form" noValidate>
-          <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1 }}>
-              <FormItems control={control} errors={errors} />
-            </Stack>
-          </DialogContent>
+      <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <FormItems control={control} errors={errors} />
+          </Stack>
+        </DialogContent>
 
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button onClick={onClose} disabled={pending}>
-              İptal
-            </Button>
+        <DialogActions
+          sx={{
+            px: 3,
+            pb: 2,
+          }}
+        >
+          <Button type="button" onClick={handleClose} disabled={isSubmitting}>
+            İptal
+          </Button>
 
-            <StyledButton
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-              variant="contained"
-              disabled={pending}
-              startIcon={pending ? <CircularProgress size={18} /> : <AddCircleOutlined />}
-            >
-              Ekle
-            </StyledButton>
-          </DialogActions>
-        </Box>
-      </Dialog>
-    </>
+          <StyledButton type="submit" variant="contained" loading={isSubmitting} disabled={isSubmitting} startIcon={<AddCircleOutlined />}>
+            Ekle
+          </StyledButton>
+        </DialogActions>
+      </Box>
+    </Dialog>
   );
 };
 

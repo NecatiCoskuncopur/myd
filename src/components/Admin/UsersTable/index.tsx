@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, TableHeader, Wrapper } from '@/components';
 
@@ -17,7 +16,7 @@ import UserActionsMenu from './UserActionsMenu';
 const Users = () => {
   const searchParams = useSearchParams();
 
-  const { data, rows, loading, page, limit, refetch } = useUsersList(searchParams);
+  const { data, rows, isLoading, page, limit, refetch } = useUsersList(searchParams);
 
   const { selectedRow, menuAnchorEl, isEditModalOpen, isBalanceModalOpen, openMenu, closeMenu, openEditModal, openBalanceModal, closeModal } = useUserActions();
 
@@ -30,7 +29,6 @@ const Users = () => {
       minWidth: 100,
       sortable: false,
       filterable: false,
-
       renderCell: params => (
         <UserActionsMenu
           row={params.row.originalUser}
@@ -59,8 +57,8 @@ const Users = () => {
       <GenericDataGrid
         rows={rows}
         columns={usersColumns}
-        loading={loading}
-        totalCount={data?.totalCount}
+        loading={isLoading}
+        totalCount={data?.totalCount ?? 0}
         page={page}
         limit={limit}
         searchParams={searchParams}

@@ -1,18 +1,44 @@
 'use client';
 
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Chip } from '@mui/material';
-import { GridCheckCircleIcon, GridColDef } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
 import { currency } from '@/constants';
 
 const columns: GridColDef[] = [
-  { field: 'firstName', headerName: 'Ad', flex: 1, minWidth: 100 },
-  { field: 'lastName', headerName: 'Soyad', flex: 1, minWidth: 100 },
-  { field: 'company', headerName: 'Firma', flex: 1, minWidth: 100 },
-  { field: 'phone', headerName: 'Telefon', flex: 1, minWidth: 100 },
-  { field: 'email', headerName: 'E-Posta', flex: 1, minWidth: 100 },
+  {
+    field: 'firstName',
+    headerName: 'Ad',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'lastName',
+    headerName: 'Soyad',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'company',
+    headerName: 'Firma',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'phone',
+    headerName: 'Telefon',
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: 'email',
+    headerName: 'E-Posta',
+    flex: 1,
+    minWidth: 100,
+  },
   {
     field: 'address',
     headerName: 'Adres',
@@ -20,7 +46,11 @@ const columns: GridColDef[] = [
     minWidth: 250,
     renderCell: params => {
       const address = params.row.address;
-      if (!address) return '-';
+
+      if (!address) {
+        return '-';
+      }
+
       return `${address.line1 ?? ''} ${address.line2 ?? ''}, ${address.district ?? ''}/${address.city ?? ''} ${address.postalCode ?? ''}`;
     },
   },
@@ -33,10 +63,13 @@ const columns: GridColDef[] = [
       switch (params.value) {
         case 'ADMIN':
           return <Chip label="Yönetici" color="error" size="small" />;
+
         case 'OPERATOR':
           return <Chip label="Operatör" color="secondary" size="small" />;
+
         case 'CUSTOMER':
           return <Chip label="Müşteri" size="small" />;
+
         default:
           return <Chip label="Bilinmiyor" size="small" />;
       }
@@ -48,19 +81,15 @@ const columns: GridColDef[] = [
     flex: 1,
     minWidth: 130,
     sortable: true,
-    renderCell: params => {
-      const balance = params.row.balance;
-      if (!balance) return `${0}${currency}`;
-      return `${balance}${currency}`;
-    },
+    renderCell: params => `${params.row.balance ?? 0}${currency}`,
   },
-  { field: 'priceList', headerName: 'Fiyat Listesi', flex: 1, minWidth: 100 },
   {
     field: 'isActive',
     headerName: 'Aktif',
     flex: 1,
-    minWidth: 50,
-    renderCell: params => (params.value ? <GridCheckCircleIcon color="success" /> : <CancelIcon color="error" />),
+    minWidth: 80,
+    sortable: true,
+    renderCell: params => (params.value ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />),
   },
   {
     field: 'createdAt',

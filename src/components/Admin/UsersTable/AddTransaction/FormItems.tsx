@@ -1,9 +1,9 @@
-import React from 'react';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import SwapVertOutlinedIcon from '@mui/icons-material/SwapVertOutlined';
 import { InputAdornment, MenuItem, TextField } from '@mui/material';
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+import type { Control, FieldErrors } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import { transactionMessages } from '@/constants';
 import { AdminTypes } from '@/types/admin';
@@ -12,7 +12,7 @@ const { AMOUNT, NOTE, TYPE } = transactionMessages;
 
 type FormItemsProps = {
   errors: FieldErrors<AdminTypes.IAddTransactionUserBalancePayload>;
-  control: Control<AdminTypes.IAddTransactionUserBalancePayload, AdminTypes.IAddTransactionUserBalancePayload>;
+  control: Control<AdminTypes.IAddTransactionUserBalancePayload>;
 };
 
 const FormItems = ({ errors, control }: FormItemsProps) => {
@@ -30,10 +30,13 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
             select
             label="İşlem Tipi"
             fullWidth
+            value={field.value ?? ''}
             error={!!errors.type}
             helperText={errors.type?.message}
             slotProps={{
-              inputLabel: { shrink: true },
+              inputLabel: {
+                shrink: true,
+              },
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
@@ -44,6 +47,7 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
             }}
           >
             <MenuItem value="PAY">Ödeme</MenuItem>
+
             <MenuItem value="SPEND">Harcama</MenuItem>
           </TextField>
         )}
@@ -54,7 +58,10 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
         control={control}
         rules={{
           required: AMOUNT.REQUIRED,
-          min: { value: 0.1, message: AMOUNT.MIN },
+          min: {
+            value: 0.1,
+            message: AMOUNT.MIN,
+          },
         }}
         render={({ field }) => (
           <TextField
@@ -62,10 +69,14 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
             label="Miktar"
             type="number"
             fullWidth
+            value={field.value ?? ''}
+            onChange={event => field.onChange(event.target.value === '' ? undefined : Number(event.target.value))}
             error={!!errors.amount}
             helperText={errors.amount?.message}
             slotProps={{
-              inputLabel: { shrink: true },
+              inputLabel: {
+                shrink: true,
+              },
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
@@ -82,17 +93,23 @@ const FormItems = ({ errors, control }: FormItemsProps) => {
         name="note"
         control={control}
         rules={{
-          maxLength: { value: 35, message: NOTE.MAX },
+          maxLength: {
+            value: 35,
+            message: NOTE.MAX,
+          },
         }}
         render={({ field }) => (
           <TextField
             {...field}
             label="Not"
             fullWidth
+            value={field.value ?? ''}
             error={!!errors.note}
             helperText={errors.note?.message}
             slotProps={{
-              inputLabel: { shrink: true },
+              inputLabel: {
+                shrink: true,
+              },
               input: {
                 startAdornment: (
                   <InputAdornment position="start">

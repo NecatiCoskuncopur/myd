@@ -7,8 +7,10 @@ import { UserTypes } from '@/types/user';
 type ModalType = 'edit' | 'balance' | '';
 
 const useUserActions = () => {
-  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null);
+
   const [selectedRow, setSelectedRow] = useState<UserTypes.IUserWithPopulatedBalance | null>(null);
+
   const [modalState, setModalState] = useState<{
     type: ModalType;
     open: boolean;
@@ -17,7 +19,7 @@ const useUserActions = () => {
     open: false,
   });
 
-  const openMenu = (row: UserTypes.IUserWithPopulatedBalance, anchorEl: HTMLElement) => {
+  const openMenu = (row: UserTypes.IUserWithPopulatedBalance, anchorEl: HTMLButtonElement) => {
     setSelectedRow(row);
     setMenuAnchorEl(anchorEl);
   };

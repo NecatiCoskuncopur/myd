@@ -10,8 +10,8 @@ import { UserTypes } from '@/types/user';
 interface UserActionsMenuProps {
   row: UserTypes.IUserWithPopulatedBalance;
   selectedRow: UserTypes.IUserWithPopulatedBalance | null;
-  anchorEl: HTMLElement | null;
-  onOpen: (row: UserTypes.IUserWithPopulatedBalance, anchorEl: HTMLElement) => void;
+  anchorEl: HTMLButtonElement | null;
+  onOpen: (row: UserTypes.IUserWithPopulatedBalance, anchorEl: HTMLButtonElement) => void;
   onClose: () => void;
   onEdit: () => void;
   onBalance: () => void;
@@ -22,12 +22,7 @@ const UserActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose, onEdit, 
 
   return (
     <>
-      <IconButton
-        size="small"
-        onClick={event => {
-          onOpen(row, event.currentTarget);
-        }}
-      >
+      <IconButton size="small" aria-label="Kullanıcı işlemleri" onClick={event => onOpen(row, event.currentTarget)}>
         <MoreVertIcon />
       </IconButton>
 
