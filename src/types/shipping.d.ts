@@ -62,7 +62,8 @@ declare namespace ShippingTypes {
     currency: CurrencyEnum;
     description?: string;
     freight?: number;
-    insurance?: number;
+    insurance?: boolean;
+    insuranceAmount?: number;
     products: IProduct[];
   }
 

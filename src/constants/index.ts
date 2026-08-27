@@ -34,3 +34,4 @@ export { default as userMessages } from './messages/userMessages';
 export { default as UserRole } from './enums/userRole';
 export { default as VOLUMETRIC_WEIGHT_DIVISOR } from './volumetricWeightDivisor';
 export { default as welcomeMail } from './mailTemplates/welcome.mail';
+export { default as INSURANCE_RATE } from './insuranceRate';

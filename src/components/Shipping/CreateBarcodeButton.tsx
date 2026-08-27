@@ -174,6 +174,9 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                   weight: shipping?.package.weight ?? 0,
                   pricingList: account.accountType ? pricingLists[account.accountType] : null,
                 });
+                const insuranceAmount = shipping?.content.insuranceAmount ?? 0;
+
+                const totalPrice = customerPrice != null ? customerPrice + insuranceAmount : null;
                 return (
                   <Box
                     key={account._id}
@@ -201,7 +204,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      Ödenecek Tutar: <strong>{customerPrice ?? '-'} $</strong>
+                      Ödenecek Tutar: <strong>{totalPrice ?? '-'} $</strong>
                     </Typography>
                   </Box>
                 );

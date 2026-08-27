@@ -123,7 +123,7 @@ const listShippingAdmin = async (
           name: 1,
           address: { country: 1, state: 1, city: 1 },
         },
-        content: { currency: 1, products: 1 },
+        content: { currency: 1, products: 1, insuranceAmount: 1 },
         package: 1,
         packageDimensionsUpdated: 1,
         carrier: 1,

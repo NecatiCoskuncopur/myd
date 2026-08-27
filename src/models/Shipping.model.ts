@@ -60,7 +60,14 @@ const ShippingSchema = new mongoose.Schema(
       },
       description: { type: String, maxlength: 50 },
       freight: Number,
-      insurance: Number,
+      insurance: {
+        type: Boolean,
+        default: false,
+      },
+      insuranceAmount: {
+        type: Number,
+        default: 0,
+      },
       products: [
         {
           _id: false,

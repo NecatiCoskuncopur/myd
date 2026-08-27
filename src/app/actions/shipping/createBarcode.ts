@@ -148,6 +148,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
 
     const carrierCost = carrierCostRes.data;
     const shippingCost = shippingCostRes.data;
+    const insuranceAmount = shipping.content?.insurance ? (shipping.content.insuranceAmount ?? 0) : 0;
+    const totalShippingCost = Number((shippingCost + insuranceAmount).toFixed(2));
 
     const credentials = carrierAccount.credentials.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
       acc[item.key] = item.value;
@@ -188,7 +190,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     }
 
     const { trackingNumber } = carrierResult;
-    await applyBalanceTransaction('SPEND', shipping.userId.toString(), shippingCost, shipping._id.toString());
+    await applyBalanceTransaction('SPEND', shipping.userId.toString(), totalShippingCost, shipping._id.toString());
 
     shipping.carrier = {
       trackingNumber,

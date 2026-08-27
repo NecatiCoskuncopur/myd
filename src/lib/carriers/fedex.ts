@@ -143,7 +143,7 @@ const createFedexPaper = async ({
       },
 
       shipmentSpecialServices: {
-        specialServiceTypes: ['ELECTRONIC_TRADE_DOCUMENTS', ...(content.insurance > 0 ? ['INSURED_VALUE'] : [])],
+        specialServiceTypes: ['ELECTRONIC_TRADE_DOCUMENTS', ...(content.insurance ? ['INSURED_VALUE'] : [])],
         etdDetail: {
           attributes: ['POST_SHIPMENT_UPLOAD_REQUESTED'],
         },

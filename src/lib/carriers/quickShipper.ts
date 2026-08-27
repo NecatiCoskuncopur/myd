@@ -70,7 +70,7 @@ const createQuickShipperPaper = async ({
     customsExpensesId: detail.payor?.customs === 'SENDER' ? 1 : 0,
     shipmentStatusId: 0,
     totalWeight: shippingInstance.package.weight * shippingInstance.package.numberOfPackage,
-    applyInsurance: shippingInstance.content.insurance > 0,
+    applyInsurance: shippingInstance.content.insurance ?? false,
     shipmentReasonId: ['GIFT', 'PERSONAL', 'SAMPLE'].includes(shippingInstance.detail.purpose) ? 0 : 2,
     shippingAddress: senderData,
     consigneeAddress: consigneeData,

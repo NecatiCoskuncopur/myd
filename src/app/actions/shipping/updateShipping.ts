@@ -3,7 +3,7 @@
 import { Types } from 'mongoose';
 import { ValidationError } from 'yup';
 
-import { generalMessages, shippingMessages, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -76,16 +76,14 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       }
     }
 
-    const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
-    const insurance = Number((validatedData.content.insurance ?? 0).toFixed(2));
-    const currency = validatedData.content.currency;
+    const totalProductValue = Number(rest.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
-    if (insurance > 0 && totalProductValue !== insurance) {
-      return {
-        status: 'ERROR',
-        message: `Sigorta bedeli (${insurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir!.`,
-      };
-    }
+    const insuranceAmount = rest.content.insurance ? Number((totalProductValue * INSURANCE_RATE).toFixed(2)) : 0;
+
+    const content = {
+      ...rest.content,
+      insuranceAmount,
+    };
 
     if (consignee?._id) {
       const { _id: consigneeId, ...consigneeData } = consignee;
@@ -121,6 +119,7 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       {
         $set: {
           ...rest,
+          content,
           consignee,
         },
       },
@@ -147,6 +146,7 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
         message: error.errors.join(', '),
       };
     }
+
     if (error instanceof Error) {
       captureActionError('updateShipping', error);
     }

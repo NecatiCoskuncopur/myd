@@ -40,7 +40,7 @@ const createUpsPaper = async ({
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const { content, consignee, detail, sender, package: pkg } = shippingInstance;
-
+  const totalValue = Number(content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0).toFixed(2));
   const shipperData = {
     name: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name),
     attentionName: latinize(hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : sender.nickname || sender.name),
@@ -182,15 +182,14 @@ const createUpsPaper = async ({
             },
             Weight: String(pkg.weight),
           },
-          PackageServiceOptions:
-            content.insurance > 0
-              ? {
-                  DeclaredValue: {
-                    CurrencyCode: content.currency,
-                    MonetaryValue: String(content.insurance),
-                  },
-                }
-              : undefined,
+          PackageServiceOptions: content.insurance
+            ? {
+                DeclaredValue: {
+                  CurrencyCode: content.currency,
+                  MonetaryValue: String(totalValue),
+                },
+              }
+            : undefined,
         })),
       },
       LabelSpecification: {

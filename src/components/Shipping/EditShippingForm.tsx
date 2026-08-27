@@ -72,9 +72,32 @@ const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
         >
           <ShippingFormFields />
 
-          <StyledButton type="submit" fullWidth loading={isSubmitting} disabled={isSubmitting} sx={{ mt: 3 }}>
-            Değişiklikleri Kaydet
-          </StyledButton>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              mt: 2,
+            }}
+          >
+            <StyledButton
+              type="submit"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+              sx={{
+                minWidth: {
+                  xs: '100%',
+                  md: '220px',
+                },
+                px: 4,
+                py: 1.2,
+                fontSize: '15px',
+                fontWeight: 600,
+              }}
+            >
+              Değişiklikleri Kaydet
+            </StyledButton>
+          </Box>
         </Box>
       </FormProvider>
     </Box>

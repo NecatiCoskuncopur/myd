@@ -140,8 +140,12 @@ const ShippingActionsMenu = ({
             const customerPrice = getCustomerPrice({
               countryCode: selectedRow?.consignee?.address.country ?? '',
               weight: selectedRow?.package.weight ?? 0,
-              pricingList: pricingLists[account.accountType] ?? null,
+              pricingList: account.accountType ? pricingLists[account.accountType] : null,
             });
+
+            const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
+
+            const totalPrice = customerPrice != null ? customerPrice + insuranceAmount : null;
 
             return (
               <MenuItem key={account._id} onClick={() => onCreateBarcode(account)}>
@@ -155,7 +159,7 @@ const ShippingActionsMenu = ({
                   {icon}
                 </ListItemIcon>
 
-                <ListItemText primary={account.name} secondary={`Maliyet: ${cost ?? '-'} $ | Müşteri Fiyatı: ${customerPrice ?? '-'} $`} />
+                <ListItemText primary={account.name} secondary={`Maliyet: ${cost ?? '-'} $ | Müşteri Fiyatı: ${totalPrice ?? '-'} $`} />
               </MenuItem>
             );
           })

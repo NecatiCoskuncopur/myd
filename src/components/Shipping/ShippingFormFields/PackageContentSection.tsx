@@ -2,7 +2,7 @@
 
 import { RemoveCircleOutlined } from '@mui/icons-material';
 import HelpIcon from '@mui/icons-material/Help';
-import { Button, Grid, IconButton, InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 
 import { shippingMessages } from '@/constants';
@@ -297,54 +297,27 @@ const PackageContentSection = () => {
       <Grid size={{ xs: 12, md: 5 }}>
         <Controller
           name="content.insurance"
-          rules={{
-            validate: value => {
-              if (!value) return true;
-              if (value < 1) {
-                return INSURANCE.MIN;
-              }
-
-              return true;
-            },
-          }}
           control={control}
-          render={({ field }) => {
-            const errorMessage = errors.content?.insurance?.message;
+          render={({ field }) => (
+            <FormControlLabel
+              control={<Checkbox checked={field.value ?? false} onChange={event => field.onChange(event.target.checked)} />}
+              label={
+                <Stack sx={{ alignItems: 'center' }} direction="row" spacing={0.5}>
+                  <Typography>Gönderiyi Sigortala</Typography>
 
-            return (
-              <ErrorTooltip message={errorMessage}>
-                <TextField
-                  {...field}
-                  type="number"
-                  label="Sigorta Bedeli"
-                  fullWidth
-                  value={field.value ?? ''}
-                  error={!!errorMessage}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Tooltip
-                            title="Gönderi sigortalanacaksa sigorta bedelini girebilirsiniz. Sigorta bedeli, gönderinin proforma değerine göre belirlenmelidir."
-                            arrow
-                            placement="top"
-                          >
-                            <HelpIcon
-                              sx={{
-                                fontSize: 18,
-                                color: 'action.active',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </Tooltip>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </ErrorTooltip>
-            );
-          }}
+                  <Tooltip title="Gönderinin sigortalanmasını istiyorsanız bu alanı işaretleyebilirsiniz." arrow placement="top">
+                    <HelpIcon
+                      sx={{
+                        fontSize: 18,
+                        color: 'action.active',
+                        cursor: 'pointer',
+                      }}
+                    />
+                  </Tooltip>
+                </Stack>
+              }
+            />
+          )}
         />
       </Grid>
     </Wrapper>

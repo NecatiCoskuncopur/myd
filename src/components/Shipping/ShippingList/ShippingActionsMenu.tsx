@@ -131,6 +131,10 @@ const ShippingActionsMenu = ({
                 pricingList: account.accountType ? pricingLists[account.accountType] : null,
               });
 
+              const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
+
+              const totalPrice = customerPrice != null ? customerPrice + insuranceAmount : null;
+
               return (
                 <MenuItem
                   key={account._id.toString()}
@@ -138,7 +142,7 @@ const ShippingActionsMenu = ({
                     void onCreateBarcode(account);
                   }}
                 >
-                  <ListItemText primary={account.displayName} secondary={`Ödenecek Tutar: ${customerPrice ?? '-'} $`} />
+                  <ListItemText primary={account.displayName} secondary={`Ödenecek Tutar: ${totalPrice ?? '-'} $`} />
                 </MenuItem>
               );
             })

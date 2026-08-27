@@ -2,7 +2,7 @@
 
 import { ValidationError } from 'yup';
 
-import { generalMessages, shippingMessages, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, INSURANCE_RATE, shippingMessages, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -49,16 +49,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
 
     const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
-    const insurance = validatedData.content.insurance ?? 0;
-    const normalizedInsurance = Number(insurance.toFixed(2));
-    const currency = validatedData.content.currency;
-
-    if (normalizedInsurance > 0 && totalProductValue !== normalizedInsurance) {
-      return {
-        status: 'ERROR',
-        message: `Sigorta bedeli (${normalizedInsurance} ${currency}) ürünlerin toplam tutarı (${totalProductValue} ${currency}) ile eşleşmelidir.`,
-      };
-    }
+    const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * INSURANCE_RATE).toFixed(2)) : 0;
 
     let consigneeDoc;
 
@@ -102,7 +93,12 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       },
 
       detail: validatedData.detail,
-      content: validatedData.content,
+
+      content: {
+        ...validatedData.content,
+        insuranceAmount,
+      },
+
       package: {
         weight,
         volumetricWeight,

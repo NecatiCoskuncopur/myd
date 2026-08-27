@@ -73,7 +73,7 @@ export default yup.object({
   content: yup.object({
     currency: yup.string().oneOf(Object.values(CurrencyEnum), CURRENCY.INVALID).required(CURRENCY.REQUIRED),
     description: yup.string().typeError(DESCRIPTION.TYPE).max(50, DESCRIPTION.MAX),
-    insurance: yup.number().typeError(INSURANCE.TYPE).min(1, INSURANCE.MIN),
+    insurance: yup.boolean(),
     freight: yup.number().typeError(FREIGHT.TYPE).min(1, FREIGHT.MIN),
     products: yup
       .array()
