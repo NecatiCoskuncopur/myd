@@ -100,6 +100,7 @@ declare namespace ShippingTypes {
     detail: IShippingDetail;
     content: IShippingContent;
     package: IPackage;
+    packageDimensionsUpdated: boolean;
     status: ShippingStatus;
     carrier?: ICarrier;
     labelLink?: string;

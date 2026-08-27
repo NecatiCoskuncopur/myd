@@ -50,6 +50,8 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
         length,
         volumetricWeight,
       };
+      shipping.packageDimensionsUpdated = true;
+
       await shipping.save();
 
       return {
@@ -114,6 +116,8 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       length,
       volumetricWeight,
     };
+
+    shipping.packageDimensionsUpdated = true;
 
     if (shipping.carrier) {
       shipping.carrier.amount = newShippingCost;

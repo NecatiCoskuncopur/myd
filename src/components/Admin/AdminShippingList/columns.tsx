@@ -1,7 +1,8 @@
 'use client';
 
 import NextLink from 'next/link';
-import { Box, Typography } from '@mui/material';
+import PublishedWithChangesOutlinedIcon from '@mui/icons-material/PublishedWithChangesOutlined';
+import { Box, Tooltip, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
@@ -127,33 +128,76 @@ const columns: GridColDef[] = [
     field: 'packageInfo',
     headerName: 'Paket',
     flex: 1,
-    minWidth: 160,
+    minWidth: 180,
     renderCell: params => {
       const count = params.row.package?.numberOfPackage ?? '-';
       const weight = params.row.package?.weight ?? '-';
+      const isUpdated = params.row.packageDimensionsUpdated;
 
       return (
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1,
             height: '100%',
           }}
         >
-          <Typography variant="body2" sx={{ color: 'text.primary' }}>
-            <Box component="span" sx={{ color: 'text.secondary', lineHeight: 1.3, marginRight: 1 }}>
-              Paket Sayısı
-            </Box>
-            {count}
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: 'text.primary' }}>
+              <Box
+                component="span"
+                sx={{
+                  color: 'text.secondary',
+                  lineHeight: 1.3,
+                  marginRight: 1,
+                }}
+              >
+                Paket Sayısı
+              </Box>
+              {count}
+            </Typography>
 
-          <Typography variant="body2" sx={{ color: 'text.primary' }}>
-            <Box component="span" sx={{ color: 'text.secondary', lineHeight: 1.3, marginRight: 1 }}>
-              Desi / KG
-            </Box>
-            {weight}
-          </Typography>
+            <Typography variant="body2" sx={{ color: 'text.primary' }}>
+              <Box
+                component="span"
+                sx={{
+                  color: 'text.secondary',
+                  lineHeight: 1.3,
+                  marginRight: 1,
+                }}
+              >
+                Desi / KG
+              </Box>
+              {weight}
+            </Typography>
+          </Box>
+
+          {isUpdated && (
+            <Tooltip title="Paket ölçüleri güncellendi" arrow>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  bgcolor: 'error.main',
+                  color: 'warning.contrastText',
+                  flexShrink: 0,
+                }}
+              >
+                <PublishedWithChangesOutlinedIcon sx={{ fontSize: 16 }} />
+              </Box>
+            </Tooltip>
+          )}
         </Box>
       );
     },

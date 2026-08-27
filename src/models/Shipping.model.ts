@@ -83,6 +83,11 @@ const ShippingSchema = new mongoose.Schema(
       length: { type: Number, min: 0.5, max: 500, required: true },
       volumetricWeight: Number,
     },
+    packageDimensionsUpdated: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
     status: {
       type: String,
       enum: Object.values(ShippingStatus),
