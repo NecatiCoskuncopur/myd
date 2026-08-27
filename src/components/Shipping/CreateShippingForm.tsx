@@ -50,8 +50,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
       },
       detail: {
         payor: {
-          shipping: ShippingPayor.SENDER,
-          customs: ShippingPayor.SENDER,
+          customs: ShippingPayor.CONSIGNEE,
         },
         iossNumber: '',
         purpose: ShippingPurpose.GIFT,

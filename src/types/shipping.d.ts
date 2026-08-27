@@ -45,7 +45,6 @@ declare namespace ShippingTypes {
 
   interface IShippingDetail {
     payor: {
-      shipping: ShippingPayor;
       customs: ShippingPayor;
     };
     iossNumber?: string;

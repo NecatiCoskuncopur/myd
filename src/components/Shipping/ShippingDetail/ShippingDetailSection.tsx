@@ -49,10 +49,6 @@ const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }:
       value: currency,
     },
     {
-      label: 'Kargo Ücreti',
-      value: getPayorLabel(detail?.payor?.shipping),
-    },
-    {
       label: 'Gümrük Masrafı',
       value: getPayorLabel(detail?.payor?.customs),
     },

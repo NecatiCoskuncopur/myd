@@ -1237,8 +1237,8 @@ const countries = [
   },
   {
     code: 'US',
-    name: 'United States of America',
-    turkishName: 'Amerika Birleşik Devletleri',
+    name: 'USA',
+    turkishName: 'ABD',
     zone: 5,
   },
   {

@@ -42,10 +42,6 @@ const ShippingSchema = new mongoose.Schema(
     },
     detail: {
       payor: {
-        shipping: {
-          type: String,
-          enum: Object.values(ShippingPayor),
-        },
         customs: {
           type: String,
           enum: Object.values(ShippingPayor),

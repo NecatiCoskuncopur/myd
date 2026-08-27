@@ -20,58 +20,7 @@ const ShippingDetailSection = () => {
 
   return (
     <Wrapper title="Gönderi Detayı">
-      <Grid size={{ xs: 12, md: 6 }}>
-        <Controller
-          name="detail.payor.shipping"
-          control={control}
-          rules={{
-            required: PAYOR.SHIPMENT.TYPE_REQUIRED,
-            validate: value => {
-              if (value === 'SENDER' || value === 'CONSIGNEE') {
-                return true;
-              }
-
-              return PAYOR.SHIPMENT.TYPE_INVALID;
-            },
-          }}
-          render={({ field }) => {
-            const errorMessage = errors.detail?.payor?.shipping?.message;
-
-            return (
-              <ErrorTooltip message={errorMessage}>
-                <Box
-                  sx={{
-                    position: 'relative',
-                  }}
-                >
-                  <TextField {...field} select label="Kargo Ücreti *" fullWidth value={field.value ?? ''} error={!!errorMessage}>
-                    <MenuItem value="SENDER">Gönderici</MenuItem>
-
-                    <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
-                  </TextField>
-
-                  <Tooltip title="Kargonun gönderimi esnasında oluşan masrafları kim ödeyecek?">
-                    <HelpIcon
-                      sx={{
-                        position: 'absolute',
-                        right: 32,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        fontSize: 18,
-                        cursor: 'pointer',
-                        color: 'action.active',
-                        zIndex: 2,
-                      }}
-                    />
-                  </Tooltip>
-                </Box>
-              </ErrorTooltip>
-            );
-          }}
-        />
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Controller
           name="detail.payor.customs"
           control={control}
@@ -96,9 +45,8 @@ const ShippingDetailSection = () => {
                   }}
                 >
                   <TextField {...field} select label="Gümrük Ücreti *" fullWidth value={field.value ?? ''} error={!!errorMessage}>
-                    <MenuItem value="SENDER">Gönderici</MenuItem>
-
                     <MenuItem value="CONSIGNEE">Alıcı</MenuItem>
+                    <MenuItem value="SENDER">Gönderici</MenuItem>
                   </TextField>
 
                   <Tooltip title="Alıcı ülkede oluşabilecek olan gümrük masraflarını kim ödeyecek?">
@@ -122,7 +70,7 @@ const ShippingDetailSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Controller
           name="detail.iossNumber"
           rules={{
@@ -149,7 +97,7 @@ const ShippingDetailSection = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Controller
           name="detail.purpose"
           control={control}

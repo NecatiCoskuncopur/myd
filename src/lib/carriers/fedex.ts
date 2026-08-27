@@ -151,7 +151,7 @@ const createFedexPaper = async ({
 
       customsClearanceDetail: {
         dutiesPayment: {
-          paymentType: 'SENDER',
+          paymentType: detail.payor.customs,
 
           payor: {
             responsibleParty: {

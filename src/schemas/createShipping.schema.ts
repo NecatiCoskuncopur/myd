@@ -59,7 +59,6 @@ export default yup.object({
   detail: yup.object({
     payor: yup
       .object({
-        shipping: yup.string().oneOf(Object.values(ShippingPayor), PAYOR.SHIPMENT.TYPE_INVALID).required(PAYOR.SHIPMENT.TYPE_REQUIRED),
         customs: yup.string().oneOf(Object.values(ShippingPayor), PAYOR.CUSTOMS.TYPE_INVALID).required(PAYOR.CUSTOMS.TYPE_REQUIRED),
       })
       .required(),
