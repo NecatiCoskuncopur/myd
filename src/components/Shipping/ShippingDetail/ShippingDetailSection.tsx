@@ -7,9 +7,9 @@ import DetailGrid from './DetailGrid';
 
 type ShippingDetailSectionProps = {
   detail?: ShippingTypes.IShippingDetail;
-  currency?: 'USD' | 'EUR' | 'GBP';
   numberOfPackage?: number;
   createdAt?: string;
+  content?: ShippingTypes.IShippingContent;
 };
 
 const getPayorLabel = (payor?: string) => {
@@ -17,7 +17,7 @@ const getPayorLabel = (payor?: string) => {
     return 'Gönderici';
   }
 
-  if (payor === 'RECEIVER') {
+  if (payor === 'CONSIGNEE') {
     return 'Alıcı';
   }
 
@@ -38,7 +38,7 @@ const formatDate = (date?: string) => {
   });
 };
 
-const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }: ShippingDetailSectionProps) => {
+const ShippingDetailSection = ({ detail, numberOfPackage, createdAt, content }: ShippingDetailSectionProps) => {
   const rows = [
     {
       label: 'Gönderim Tipi',
@@ -46,7 +46,7 @@ const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }:
     },
     {
       label: 'Para Birimi',
-      value: currency,
+      value: content?.currency,
     },
     {
       label: 'Gümrük Masrafı',
@@ -59,6 +59,10 @@ const ShippingDetailSection = ({ detail, currency, numberOfPackage, createdAt }:
     {
       label: 'Oluşturulma Tarihi',
       value: formatDate(createdAt),
+    },
+    {
+      label: 'Sigorta',
+      value: content?.insurance ? `Uygulandı (${content.insuranceAmount} ${content.currency})` : 'Uygulanmadı',
     },
   ];
 

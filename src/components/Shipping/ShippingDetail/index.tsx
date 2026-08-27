@@ -167,9 +167,9 @@ const ShippingDetail = ({ canCreateBarcode }: ShippingDetailProps) => {
         <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>
           <ShippingDetailSection
             detail={shipping.detail}
-            currency={shipping.content?.currency}
             numberOfPackage={shipping.package?.numberOfPackage}
             createdAt={shipping.createdAt}
+            content={shipping.content}
           />
         </Grid>
 
