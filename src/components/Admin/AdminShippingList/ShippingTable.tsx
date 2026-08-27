@@ -3,7 +3,8 @@
 import { useMemo } from 'react';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton } from '@mui/material';
+import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
+import { IconButton, Stack, Tooltip } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
@@ -18,11 +19,11 @@ interface ShippingTableProps {
   page: number;
   limit: number;
   searchParams: ReadonlyURLSearchParams;
-
   onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLButtonElement) => void;
+  onPrintLabel: (shippingId: string) => Promise<void>;
 }
 
-const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions }: ShippingTableProps) => {
+const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions, onPrintLabel }: ShippingTableProps) => {
   const shippingColumns = useMemo<GridColDef<ShippingTypes.IShipping>[]>(
     () => [
       ...columns,
@@ -33,11 +34,39 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         minWidth: 120,
         sortable: false,
         filterable: false,
-        renderCell: params => (
-          <IconButton type="button" size="small" aria-label="Gönderi işlemleri" onClick={event => onOpenActions(params.row, event.currentTarget)}>
-            <MoreVertIcon />
-          </IconButton>
-        ),
+        renderCell: params => {
+          const row = params.row;
+          const hasLabel = Boolean(row.carrier?.trackingNumber);
+
+          return (
+            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', height: '100%' }}>
+              <Tooltip title="İşlemler">
+                <IconButton
+                  size="small"
+                  onClick={event => {
+                    event.stopPropagation();
+                    onOpenActions(row, event.currentTarget);
+                  }}
+                >
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {hasLabel && (
+                <Tooltip title="Barkodu Yazdır">
+                  <IconButton
+                    size="small"
+                    onClick={event => {
+                      event.stopPropagation();
+                      void onPrintLabel(row._id);
+                    }}
+                  >
+                    <PrintOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Stack>
+          );
+        },
       },
     ],
     [onOpenActions],

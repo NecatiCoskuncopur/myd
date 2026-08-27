@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
+import printLabel from '@/app/actions/admin/printLabel';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import { TableHeader, Wrapper } from '@/components';
@@ -112,6 +113,21 @@ const AdminShippingList = () => {
     }
   };
 
+  const handlePrintLabel = async (shippingId: string) => {
+    try {
+      const response = await printLabel(shippingId);
+
+      if (response.status !== 'OK') {
+        showSnackbar(response.message ?? 'Barkod yazdırılamadı.', 'error');
+        return;
+      }
+
+      showSnackbar('Barkod yazdırma işlemi gönderildi.', 'success');
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Wrapper>
@@ -127,6 +143,7 @@ const AdminShippingList = () => {
           limit={limit}
           searchParams={searchParams}
           onOpenActions={openActionsMenu}
+          onPrintLabel={handlePrintLabel}
         />
 
         <ShippingActionsMenu

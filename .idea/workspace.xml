@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/ShippingDetailSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/ShippingDetailSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingDetail/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/insuranceRate.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/insuranceRate.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +178,7 @@
       <workItem from="1787663969475" duration="8163000" />
       <workItem from="1787709852194" duration="3401000" />
       <workItem from="1787779642253" duration="2393000" />
-      <workItem from="1787804275626" duration="16010000" />
+      <workItem from="1787804275626" duration="17797000" />
     </task>
     <servers />
   </component>
