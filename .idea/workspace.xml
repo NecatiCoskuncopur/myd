@@ -6,16 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/BarcodeResultDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/BarcodeResultDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/FilterSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/PackageDimensionDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/PackageDimensionDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingDialogs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingDialogs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/AddTransaction/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/MenuHeader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DashboardShell/SideMenu/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +176,9 @@
       <workItem from="1787545449307" duration="9755000" />
       <workItem from="1787650506388" duration="12764000" />
       <workItem from="1787663969475" duration="8163000" />
-      <workItem from="1787709852194" duration="3215000" />
+      <workItem from="1787709852194" duration="3401000" />
+      <workItem from="1787779642253" duration="2393000" />
+      <workItem from="1787804275626" duration="1143000" />
     </task>
     <servers />
   </component>

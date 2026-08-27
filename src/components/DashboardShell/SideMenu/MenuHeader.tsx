@@ -23,7 +23,14 @@ const MenuHeader = ({ isExpanded, onToggle }: MenuHeaderProps) => {
         </Typography>
       )}
 
-      <IconButton type="button" onClick={onToggle} aria-label={isExpanded ? 'Menüyü daralt' : 'Menüyü genişlet'}>
+      <IconButton
+        sx={{
+          color: '#A6A5B2',
+        }}
+        type="button"
+        onClick={onToggle}
+        aria-label={isExpanded ? 'Menüyü daralt' : 'Menüyü genişlet'}
+      >
         {isExpanded ? <ChevronLeft /> : <ChevronRight />}
       </IconButton>
     </Box>

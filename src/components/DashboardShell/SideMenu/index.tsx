@@ -97,8 +97,8 @@ const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Sid
             '& .MuiDrawer-paper': {
               width: isMobile ? DRAWER_WIDTH : drawerWidth,
               backgroundImage: 'none',
-              backgroundColor: theme.palette.dashboard.sidebar,
-              color: theme.palette.dashboard.textSidebar,
+              backgroundColor: '#1F1F21',
+              color: '#A6A5B2',
               boxSizing: 'border-box',
               borderRight: isMobile ? 'none' : `1px solid ${theme.palette.divider}`,
               overflowX: 'hidden',
@@ -107,9 +107,13 @@ const SideMenu = ({ role, open, toggleDrawer, toggleTheme, mode, userName }: Sid
                 duration: theme.transitions.duration.enteringScreen,
               }),
 
+              '& .MuiDivider-root': {
+                borderColor: '#333',
+              },
+
               '& .MuiListItemIcon-root': {
                 justifyContent: 'center',
-                color: theme.palette.dashboard.textSidebar,
+                color: '#A6A5B2',
               },
 
               '& .MuiListItemButton-root': {

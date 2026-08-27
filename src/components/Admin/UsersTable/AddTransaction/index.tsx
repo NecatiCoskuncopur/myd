@@ -34,7 +34,7 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
   } = useForm<AdminTypes.IAddTransactionUserBalancePayload>({
     defaultValues: {
       userId,
-      amount: 0,
+      amount: undefined,
       type: 'PAY',
       note: '',
     },
@@ -47,7 +47,7 @@ const AddTransaction = ({ userId, open, onClose, onSuccess }: Props) => {
 
     reset({
       userId,
-      amount: 0,
+      amount: undefined,
       type: 'PAY',
       note: '',
     });
