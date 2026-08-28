@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { UserTypes } from '@/types/user';
 
-type ModalType = 'edit' | 'balance' | '';
+type ModalType = 'edit' | 'addTransaction' | 'balanceTransactions' | '';
 
 const useUserActions = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -40,13 +40,24 @@ const useUserActions = () => {
     });
   };
 
-  const openBalanceModal = () => {
+  const openAddTransactionModal = () => {
     if (!selectedRow) return;
 
     setMenuAnchorEl(null);
 
     setModalState({
-      type: 'balance',
+      type: 'addTransaction',
+      open: true,
+    });
+  };
+
+  const openBalanceTransactionsModal = () => {
+    if (!selectedRow) return;
+
+    setMenuAnchorEl(null);
+
+    setModalState({
+      type: 'balanceTransactions',
       open: true,
     });
   };
@@ -63,17 +74,21 @@ const useUserActions = () => {
 
   const isEditModalOpen = modalState.type === 'edit' && modalState.open;
 
-  const isBalanceModalOpen = modalState.type === 'balance' && modalState.open;
+  const isAddTransactionModalOpen = modalState.type === 'addTransaction' && modalState.open;
+
+  const isBalanceTransactionsModalOpen = modalState.type === 'balanceTransactions' && modalState.open;
 
   return {
     selectedRow,
     menuAnchorEl,
     isEditModalOpen,
-    isBalanceModalOpen,
+    isAddTransactionModalOpen,
+    isBalanceTransactionsModalOpen,
     openMenu,
     closeMenu,
     openEditModal,
-    openBalanceModal,
+    openAddTransactionModal,
+    openBalanceTransactionsModal,
     closeModal,
   };
 };

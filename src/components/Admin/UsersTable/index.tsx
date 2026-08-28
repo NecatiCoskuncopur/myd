@@ -6,6 +6,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import { GenericDataGrid, TableHeader, Wrapper } from '@/components';
 
 import AddTransaction from './AddTransaction';
+import BalanceTransactions from './BalanceTransactions';
 import columns from './columns';
 import EditUser from './EditUser';
 import FilterSection from './FilterSection';
@@ -18,7 +19,19 @@ const Users = () => {
 
   const { data, rows, isLoading, page, limit, refetch } = useUsersList(searchParams);
 
-  const { selectedRow, menuAnchorEl, isEditModalOpen, isBalanceModalOpen, openMenu, closeMenu, openEditModal, openBalanceModal, closeModal } = useUserActions();
+  const {
+    selectedRow,
+    menuAnchorEl,
+    isEditModalOpen,
+    isAddTransactionModalOpen,
+    isBalanceTransactionsModalOpen,
+    openMenu,
+    closeMenu,
+    openEditModal,
+    openAddTransactionModal,
+    openBalanceTransactionsModal,
+    closeModal,
+  } = useUserActions();
 
   const usersColumns: GridColDef[] = [
     ...columns,
@@ -37,7 +50,8 @@ const Users = () => {
           onOpen={openMenu}
           onClose={closeMenu}
           onEdit={openEditModal}
-          onBalance={openBalanceModal}
+          onAddBalanceTransaction={openAddTransactionModal}
+          onViewBalanceTransactions={openBalanceTransactionsModal}
         />
       ),
     },
@@ -65,7 +79,14 @@ const Users = () => {
         noRowsMessage="Henüz kayıtlı bir üye bulunmuyor."
       />
 
-      <AddTransaction userId={selectedRow?._id ?? ''} open={isBalanceModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
+      <BalanceTransactions
+        userId={selectedRow?._id ?? ''}
+        userName={`${selectedRow?.firstName}  ${selectedRow?.lastName}`}
+        open={isBalanceTransactionsModalOpen}
+        onClose={closeModal}
+      />
+
+      <AddTransaction userId={selectedRow?._id ?? ''} open={isAddTransactionModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
       <EditUser open={isEditModalOpen} onClose={closeModal} user={selectedRow} onSuccess={handleSuccess} />
     </Wrapper>
   );

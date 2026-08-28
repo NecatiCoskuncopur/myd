@@ -1,6 +1,7 @@
 'use client';
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
@@ -14,10 +15,11 @@ interface UserActionsMenuProps {
   onOpen: (row: UserTypes.IUserWithPopulatedBalance, anchorEl: HTMLButtonElement) => void;
   onClose: () => void;
   onEdit: () => void;
-  onBalance: () => void;
+  onAddBalanceTransaction: () => void;
+  onViewBalanceTransactions: () => void;
 }
 
-const UserActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose, onEdit, onBalance }: UserActionsMenuProps) => {
+const UserActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose, onEdit, onAddBalanceTransaction, onViewBalanceTransactions }: UserActionsMenuProps) => {
   const isOpen = anchorEl !== null && selectedRow?._id === row._id;
 
   return (
@@ -35,9 +37,17 @@ const UserActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose, onEdit, 
           <ListItemText>Düzenle</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={onBalance}>
+        <MenuItem onClick={onViewBalanceTransactions}>
           <ListItemIcon>
             <AccountBalanceWalletIcon fontSize="small" />
+          </ListItemIcon>
+
+          <ListItemText>Bakiye Hareketlerini Görüntüle</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={onAddBalanceTransaction}>
+          <ListItemIcon>
+            <AddIcon fontSize="small" />
           </ListItemIcon>
 
           <ListItemText>Bakiye Hareketi Ekle</ListItemText>

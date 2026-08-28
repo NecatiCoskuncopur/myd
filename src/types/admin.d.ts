@@ -73,4 +73,8 @@ declare namespace AdminTypes {
     height: number;
     length: number;
   }
+
+  interface IGetBalanceParams extends ParamsTypes.IPaginationParams {
+    userId: string;
+  }
 }
