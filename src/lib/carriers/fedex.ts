@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import latinize from 'latinize';
 
-import { carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -40,7 +40,7 @@ const createFedexPaper = async ({
     throw new Error(AUTH_FAILED);
   }
 
-  const { sender, consignee, detail, content, package: pkg } = shippingInstance;
+  const { sender, consignee, detail, content, carrier, package: pkg } = shippingInstance;
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const totalValue = content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0);
@@ -89,6 +89,8 @@ const createFedexPaper = async ({
     residential: false,
   };
 
+  const serviceType = carrier.accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
+
   const payload = {
     labelResponseOptions: 'LABEL',
     accountNumber: {
@@ -97,7 +99,7 @@ const createFedexPaper = async ({
     requestedShipment: {
       shipDatestamp: new Date(Date.now() + 86_400_000).toISOString().split('T')[0],
       pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
-      serviceType: 'FEDEX_INTERNATIONAL_PRIORITY',
+      serviceType,
       packagingType: pkg.weight <= 5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
       totalWeight: pkg.weight * pkg.numberOfPackage,
       preferredCurrency: content.currency,

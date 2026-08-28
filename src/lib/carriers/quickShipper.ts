@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/node';
 import latinize from 'latinize';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
-import { carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -22,7 +22,7 @@ const createQuickShipperPaper = async ({
   label: string;
   invoice: string;
 }> => {
-  const { consignee, content, detail, sender, package: pkg } = shippingInstance;
+  const { consignee, content, detail, sender, carrier, package: pkg } = shippingInstance;
 
   const senderName =
     hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name;
@@ -61,11 +61,13 @@ const createQuickShipperPaper = async ({
     saveAddress: false,
   };
 
+  const serviceType = carrier.accountType === CarrierAccountTypeEnum.ECONOMY ? '48' : '2';
+
   const body = {
     currency: 'USD',
     ioss: detail.iossNumber,
     serviceTypeId: '1',
-    integratorId: '2',
+    integratorId: serviceType,
     contentId: 1,
     customsExpensesId: detail.payor?.customs === 'SENDER' ? 1 : 0,
     shipmentStatusId: 0,

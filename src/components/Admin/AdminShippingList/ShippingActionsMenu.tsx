@@ -146,6 +146,7 @@ const ShippingActionsMenu = ({
             const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
 
             const totalPrice = customerPrice != null ? customerPrice + insuranceAmount : null;
+            const totalCost = cost != null ? cost + insuranceAmount : null;
 
             return (
               <MenuItem key={account._id} onClick={() => onCreateBarcode(account)}>
@@ -159,7 +160,7 @@ const ShippingActionsMenu = ({
                   {icon}
                 </ListItemIcon>
 
-                <ListItemText primary={account.name} secondary={`Maliyet: ${cost ?? '-'} $ | Müşteri Fiyatı: ${totalPrice ?? '-'} $`} />
+                <ListItemText primary={account.name} secondary={`Maliyet: ${totalCost ?? '-'} $ | Müşteri Fiyatı: ${totalPrice ?? '-'} $`} />
               </MenuItem>
             );
           })

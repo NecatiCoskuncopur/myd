@@ -3,7 +3,7 @@ import latinize from 'latinize';
 import moment from 'moment';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
-import { carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -39,7 +39,7 @@ const createUpsPaper = async ({
 
   const authData = await authRes.json();
   const accessToken = authData.access_token;
-  const { content, consignee, detail, sender, package: pkg } = shippingInstance;
+  const { content, consignee, detail, sender, carrier, package: pkg } = shippingInstance;
   const totalValue = Number(content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0).toFixed(2));
   const shipperData = {
     name: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name),
@@ -67,6 +67,7 @@ const createUpsPaper = async ({
     state: consignee.address.state,
     countryCode: consignee.address.country,
   };
+  const serviceType = carrier.accountType === CarrierAccountTypeEnum.ECONOMY ? '08' : '65';
 
   const payload = {
     ShipmentRequest: {
@@ -118,7 +119,7 @@ const createUpsPaper = async ({
           ],
         },
         Service: {
-          Code: '65',
+          Code: serviceType,
         },
         ShipmentServiceOptions: {
           InternationalForms: {

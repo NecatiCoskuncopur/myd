@@ -150,6 +150,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const shippingCost = shippingCostRes.data;
     const insuranceAmount = shipping.content?.insurance ? (shipping.content.insuranceAmount ?? 0) : 0;
     const totalShippingCost = Number((shippingCost + insuranceAmount).toFixed(2));
+    const totalCarrierCost = Number((carrierCost + insuranceAmount).toFixed(2));
 
     const credentials = carrierAccount.credentials.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
       acc[item.key] = item.value;
@@ -198,8 +199,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       displayName,
       account: accountNumber,
       accountType: carrierAccount.accountType,
-      amount: shippingCost,
-      cost: carrierCost,
+      amount: totalShippingCost,
+      cost: totalCarrierCost,
     };
 
     shipping.status = ShippingStatus.LABELED;
