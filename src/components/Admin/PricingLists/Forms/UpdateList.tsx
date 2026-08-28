@@ -123,14 +123,109 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
         return prev;
       }
 
-      return [...others.slice(0, -1), thanRow];
+      const nextOthers = others.slice(0, -1);
+
+      const lastWeight = nextOthers[nextOthers.length - 1]?.weight ?? '';
+
+      return [
+        ...nextOthers,
+        {
+          ...thanRow,
+          weight: `>${lastWeight}`,
+        },
+      ];
     });
   };
 
   const processRowUpdate = (newRow: GridRow) => {
-    setRows(prev => prev.map(row => (row.id === newRow.id ? newRow : row)));
+    setRows(prev => {
+      const updatedRows = prev.map(row => (row.id === newRow.id ? newRow : row));
+
+      const normalRows = updatedRows.filter(row => row.id !== 'than');
+
+      const lastWeight = normalRows[normalRows.length - 1]?.weight ?? '';
+
+      return updatedRows.map(row =>
+        row.id === 'than'
+          ? {
+              ...row,
+              weight: `>${lastWeight}`,
+            }
+          : row,
+      );
+    });
 
     return newRow;
+  };
+
+  const parseNumber = (value: string): number | null => {
+    if (!value) {
+      return null;
+    }
+
+    const normalized = value.replace(/kg/gi, '').replace(/\s/g, '').replace(',', '.');
+
+    const number = Number(normalized);
+
+    return Number.isNaN(number) ? null : number;
+  };
+
+  const handlePastePrices = (text: string) => {
+    const pastedRows = text
+      .replace(/\r/g, '')
+      .split('\n')
+      .filter(line => line.trim().length > 0)
+      .map(line => line.split('\t').map(cell => cell.trim()));
+
+    if (pastedRows.length === 0) {
+      return;
+    }
+
+    const normalRows: GridRow[] = [];
+    let thanRow: GridRow | null = null;
+
+    pastedRows.forEach(cells => {
+      const firstCell = cells[0] ?? '';
+      if (!firstCell) {
+        const row = matrix.createThanRow();
+
+        for (let zoneIndex = 0; zoneIndex < 9; zoneIndex++) {
+          row[`zone${zoneIndex + 1}`] = parseNumber(cells[zoneIndex + 1] ?? '');
+        }
+
+        thanRow = row;
+
+        return;
+      }
+
+      const weight = parseNumber(firstCell);
+
+      if (weight === null) {
+        return;
+      }
+
+      const row = matrix.createEmptyRow();
+
+      row.weight = weight;
+
+      for (let zoneIndex = 0; zoneIndex < 9; zoneIndex++) {
+        row[`zone${zoneIndex + 1}`] = parseNumber(cells[zoneIndex + 1] ?? '');
+      }
+
+      normalRows.push(row);
+    });
+
+    if (normalRows.length === 0) {
+      return;
+    }
+
+    const lastWeight = normalRows[normalRows.length - 1]?.weight ?? '';
+
+    const finalThanRow = thanRow ?? matrix.createThanRow();
+
+    finalThanRow.weight = `>${lastWeight}`;
+
+    setRows([...normalRows, finalThanRow]);
   };
 
   const resetForm = () => {
@@ -206,6 +301,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
           onAddRow={addRow}
           onRemoveLastRow={removeLastRow}
           onProcessRowUpdate={processRowUpdate}
+          onPastePrices={handlePastePrices}
         />
       </DialogContent>
 

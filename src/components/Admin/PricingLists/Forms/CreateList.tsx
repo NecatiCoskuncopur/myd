@@ -47,7 +47,6 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   const addRow = () => {
     setRows(prev => {
       const thanRow = prev.find(row => row.id === 'than');
-
       const others = prev.filter(row => row.id !== 'than');
 
       if (!thanRow) {
@@ -61,7 +60,6 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
   const removeLastRow = () => {
     setRows(prev => {
       const thanRow = prev.find(row => row.id === 'than');
-
       const others = prev.filter(row => row.id !== 'than');
 
       if (!thanRow || others.length <= 1) {
@@ -78,9 +76,85 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
     return newRow;
   };
 
+  const parseNumber = (value: string): number | '' => {
+    if (!value) {
+      return '';
+    }
+
+    const normalized = value.replace(/kg/gi, '').replace(/\s/g, '').replace(',', '.');
+
+    const number = Number(normalized);
+
+    return Number.isNaN(number) ? '' : number;
+  };
+
+  const handlePastePrices = (text: string) => {
+    const pastedRows = text
+      .replace(/\r/g, '')
+      .split('\n')
+      .filter(line => line.trim().length > 0)
+      .map(line => line.split('\t').map(cell => cell.trim()));
+
+    if (pastedRows.length === 0) {
+      return;
+    }
+
+    const fields = matrix.columns.map(column => column.field).filter(field => field !== 'id');
+
+    const normalRows: GridRow[] = [];
+    let thanRow: GridRow | null = null;
+
+    pastedRows.forEach(cells => {
+      const firstCell = cells[0] ?? '';
+      if (firstCell) {
+        const weight = parseNumber(firstCell);
+        if (weight === '') {
+          return;
+        }
+
+        const row = {
+          ...matrix.createEmptyRow(),
+        } as GridRow & Record<string, unknown>;
+
+        fields.forEach((field, index) => {
+          if (index === 0) {
+            row[field] = weight;
+
+            return;
+          }
+
+          row[field] = parseNumber(cells[index] ?? '');
+        });
+
+        normalRows.push(row);
+
+        return;
+      }
+
+      const row = {
+        ...matrix.createThanRow(),
+      } as GridRow & Record<string, unknown>;
+
+      fields.forEach((field, index) => {
+        if (index === 0) {
+          return;
+        }
+
+        row[field] = parseNumber(cells[index] ?? '');
+      });
+
+      thanRow = row;
+    });
+
+    if (normalRows.length === 0) {
+      return;
+    }
+
+    setRows([...normalRows, thanRow ?? matrix.createThanRow()]);
+  };
+
   const resetForm = () => {
     reset();
-
     setRows(createInitialRows());
   };
 
@@ -145,6 +219,7 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
           onAddRow={addRow}
           onRemoveLastRow={removeLastRow}
           onProcessRowUpdate={processRowUpdate}
+          onPastePrices={handlePastePrices}
         />
       </DialogContent>
 
