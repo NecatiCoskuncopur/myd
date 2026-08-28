@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/BarcodePermitsTransferList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/FormItems.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,7 +179,7 @@
       <workItem from="1787779642253" duration="2393000" />
       <workItem from="1787804275626" duration="18850000" />
       <workItem from="1787884022509" duration="13911000" />
-      <workItem from="1787902650098" duration="438000" />
+      <workItem from="1787902650098" duration="3772000" />
     </task>
     <servers />
   </component>

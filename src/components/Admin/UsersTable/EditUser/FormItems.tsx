@@ -1,7 +1,7 @@
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PriceChangeOutlinedIcon from '@mui/icons-material/PriceChangeOutlined';
-import { Autocomplete, Divider, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Divider, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import type { Control, FieldErrors } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
@@ -10,6 +10,8 @@ import { CarrierAccountTypeEnum } from '@/constants';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
+
+import BarcodePermitsTransferList from './BarcodePermitsTransferList';
 
 type FormItemsProps = {
   control: Control<AdminTypes.ISetUserPayload>;
@@ -77,7 +79,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         </Typography>
       </Grid>
 
-      <Grid size={{ xs: 12, lg: 6 }}>
+      <Grid size={{ xs: 12, lg: 3 }}>
         <Controller
           name="role"
           control={control}
@@ -105,7 +107,7 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         />
       </Grid>
 
-      <Grid size={{ xs: 12, lg: 6 }}>
+      <Grid size={{ xs: 12, lg: 3 }}>
         <Controller
           name="isActive"
           control={control}
@@ -137,11 +139,11 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
 
         return (
           <Grid
+            key={type}
             size={{
               xs: 12,
               lg: 3,
             }}
-            key={type}
           >
             <Controller
               name={`priceLists.${index}.serviceType`}
@@ -180,30 +182,12 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
         );
       })}
 
-      <Grid size={{ xs: 12, lg: 6 }}>
+      <Grid size={12}>
         <Controller
           name="barcodePermits"
           control={control}
           render={({ field }) => (
-            <Autocomplete
-              multiple
-              options={carrierAccounts}
-              getOptionLabel={option => option.name ?? ''}
-              value={carrierAccounts.filter(account => field.value?.includes(account._id))}
-              onChange={(_, newValue) => {
-                field.onChange(newValue.map(item => item._id));
-              }}
-              isOptionEqualToValue={(option, value) => option._id === value._id}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Barkod Yetkileri"
-                  placeholder="Hesap Seçin"
-                  error={!!errors.barcodePermits}
-                  helperText={errors.barcodePermits?.message}
-                />
-              )}
-            />
+            <BarcodePermitsTransferList accounts={carrierAccounts} value={field.value ?? []} onChange={field.onChange} error={errors.barcodePermits?.message} />
           )}
         />
       </Grid>
