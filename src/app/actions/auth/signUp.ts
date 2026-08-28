@@ -3,13 +3,13 @@
 import bcrypt from 'bcryptjs';
 import { ValidationError } from 'yup';
 
-import { authMessages, BCRYPT_SALT_ROUNDS, generalMessages, userMessages, welcomeMail } from '@/constants';
+import { authMessages, BCRYPT_SALT_ROUNDS, captchaMessages, generalMessages, userMessages, welcomeMail } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import MydMail from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
-import validateRecaptcha from '@/lib/validateRecaptcha';
+import { validateTurnstile } from '@/lib/validateTurnstile';
 import { Balance, User } from '@/models';
 import createUserSchema from '@/schemas/createUser.schema';
 
@@ -20,22 +20,26 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       stripUnknown: true,
     });
 
-    await connectMongoDB();
+    const isCaptchaValid = await validateTurnstile(validatedData.recaptchaToken);
 
-    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
-
-    if (!captchaResult.success) {
+    if (!isCaptchaValid) {
       return {
         status: 'ERROR',
-        message: captchaResult.message,
+        message: captchaMessages.INVALID,
       };
     }
 
-    const { recaptchaToken: recaptchaToken, password, ...userData } = validatedData;
+    await connectMongoDB();
+
+    const { recaptchaToken: _recaptchaToken, password, ...userData } = validatedData;
 
     const email = userData.email.trim().toLowerCase();
 
-    const existingUser = await User.findOne({ email }).select('_id').lean();
+    const existingUser = await User.findOne({
+      email,
+    })
+      .select('_id')
+      .lean();
 
     if (existingUser) {
       return {
@@ -132,6 +136,7 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     if (error instanceof Error) {
       captureActionError('signUp', error);
     }
+
     return {
       status: 'ERROR',
       message: generalMessages.UNEXPECTED_ERROR,

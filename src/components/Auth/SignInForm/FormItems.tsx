@@ -2,7 +2,7 @@ import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
-import { HCaptcha, PasswordTextField } from '@/components';
+import { PasswordTextField, TurnstileCaptcha } from '@/components';
 import { captchaMessages, userMessages } from '@/constants';
 
 type FormItemsProps = {
@@ -85,7 +85,7 @@ const FormItems = ({ errors, control, captchaKey }: FormItemsProps) => {
         }}
         render={({ field }) => (
           <Box sx={{ mt: 2 }}>
-            <HCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
+            <TurnstileCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
 
             {errors.recaptchaToken && (
               <Typography

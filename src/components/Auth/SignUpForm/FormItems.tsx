@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
-import { AddressFields, ContactFields, HCaptcha, PasswordField, PersonalFields, TaxFields } from '@/components';
+import { AddressFields, ContactFields, PasswordField, PersonalFields, TaxFields, TurnstileCaptcha } from '@/components';
 import { captchaMessages } from '@/constants';
 
 type FormItemsProps = {
@@ -34,7 +34,7 @@ const FormItems = ({ errors, control, captchaKey }: FormItemsProps) => {
           }}
           render={({ field }) => (
             <Box>
-              <HCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
+              <TurnstileCaptcha key={captchaKey} onVerify={field.onChange} onExpire={() => field.onChange('')} />
 
               {errors.recaptchaToken && (
                 <Typography

@@ -1,5 +1,4 @@
 import { Inter } from 'next/font/google';
-import Script from 'next/script';
 
 import { SnackbarProvider } from '@/providers/SnackbarProvider';
 
@@ -19,8 +18,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <SnackbarProvider>
           <Providers>{children}</Providers>
         </SnackbarProvider>
-
-        <Script src="https://js.hcaptcha.com/1/api.js" strategy="afterInteractive" />
       </body>
     </html>
   );

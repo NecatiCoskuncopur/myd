@@ -3,13 +3,14 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { ValidationError } from 'yup';
 
-import { AUTH_TOKEN_TTL_SECONDS, authMessages, DUMMY_PASSWORD_HASH, userMessages } from '@/constants';
+import { AUTH_TOKEN_TTL_SECONDS, authMessages, captchaMessages, DUMMY_PASSWORD_HASH, userMessages } from '@/constants';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import LoginError from '@/lib/loginError';
-import validateRecaptcha from '@/lib/validateRecaptcha';
 import { User } from '@/models';
 import loginSchema from '@/schemas/login.schema';
+
+import { validateTurnstile } from './lib/validateTurnstile';
 
 export const {
   handlers,
@@ -54,10 +55,10 @@ export const {
           throw error;
         }
 
-        const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+        const isCaptchaValid = await validateTurnstile(validatedData.recaptchaToken);
 
-        if (!captchaResult.success) {
-          throw new LoginError(captchaResult.message);
+        if (!isCaptchaValid) {
+          throw new LoginError(captchaMessages.INVALID);
         }
 
         await connectMongoDB();

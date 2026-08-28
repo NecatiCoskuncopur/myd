@@ -3,12 +3,12 @@
 import jwt from 'jsonwebtoken';
 import { ValidationError } from 'yup';
 
-import { forgotPasswordMail, generalMessages } from '@/constants';
+import { captchaMessages, forgotPasswordMail, generalMessages } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
 import MydMail from '@/lib/mailer';
-import validateRecaptcha from '@/lib/validateRecaptcha';
+import { validateTurnstile } from '@/lib/validateTurnstile';
 import { User } from '@/models';
 import forgotPasswordSchema from '@/schemas/forgotPassword.schema';
 
@@ -19,12 +19,12 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
       stripUnknown: true,
     });
 
-    const captchaResult = await validateRecaptcha(validatedData.recaptchaToken);
+    const isCaptchaValid = await validateTurnstile(validatedData.recaptchaToken);
 
-    if (!captchaResult.success) {
+    if (!isCaptchaValid) {
       return {
         status: 'ERROR',
-        message: captchaResult.message,
+        message: captchaMessages.INVALID,
       };
     }
 
