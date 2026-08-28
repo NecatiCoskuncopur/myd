@@ -98,7 +98,7 @@ const createFedexPaper = async ({
       shipDatestamp: new Date(Date.now() + 86_400_000).toISOString().split('T')[0],
       pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
       serviceType: 'FEDEX_INTERNATIONAL_PRIORITY',
-      packagingType: 'FEDEX_PAK',
+      packagingType: pkg.weight <= 5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
       totalWeight: pkg.weight * pkg.numberOfPackage,
       preferredCurrency: content.currency,
       shipper: {
