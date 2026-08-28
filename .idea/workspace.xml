@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/actions/admin/getBalanceData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/CurrentBalance.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/columns.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/UserActionsMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUserActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +178,7 @@
       <workItem from="1787709852194" duration="3401000" />
       <workItem from="1787779642253" duration="2393000" />
       <workItem from="1787804275626" duration="18850000" />
-      <workItem from="1787884022509" duration="3890000" />
+      <workItem from="1787884022509" duration="5995000" />
     </task>
     <servers />
   </component>

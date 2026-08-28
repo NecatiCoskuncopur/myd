@@ -5,7 +5,7 @@ import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SearchIcon from '@mui/icons-material/Search';
-import { Grid, TextField } from '@mui/material';
+import { Grid, MenuItem, TextField } from '@mui/material';
 
 import { StyledButton } from '@/components';
 
@@ -19,6 +19,7 @@ const getFiltersFromSearchParams = (searchParams: ReadonlyURLSearchParams) => ({
   company: searchParams.get('company') ?? '',
   phone: searchParams.get('phone') ?? '',
   email: searchParams.get('email') ?? '',
+  balanceSorting: searchParams.get('balanceSorting') ?? '',
 });
 
 const initialFilters = {
@@ -27,6 +28,7 @@ const initialFilters = {
   company: '',
   phone: '',
   email: '',
+  balanceSorting: '',
 };
 
 const FilterSection = ({ searchParams }: FilterSectionProps) => {
@@ -50,7 +52,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     });
 
     params.set('sayfa', '1');
-
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
@@ -62,7 +63,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     const params = new URLSearchParams();
 
     params.set('sayfa', '1');
-
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
@@ -76,7 +76,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.8,
+          lg: 1.5,
         }}
       >
         <TextField
@@ -103,7 +103,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.8,
+          lg: 1.5,
         }}
       >
         <TextField
@@ -130,7 +130,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.8,
+          lg: 1.5,
         }}
       >
         <TextField
@@ -157,7 +157,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.8,
+          lg: 1.5,
         }}
       >
         <TextField
@@ -184,7 +184,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.8,
+          lg: 1.5,
         }}
       >
         <TextField
@@ -209,8 +209,35 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
 
       <Grid
         size={{
+          xs: 12,
+          md: 6,
+          lg: 1.5,
+        }}
+      >
+        <TextField
+          select
+          label="Bakiye"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.balanceSorting}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              balanceSorting: event.target.value,
+            }))
+          }
+        >
+          <MenuItem value="">Sıralama Yok</MenuItem>
+          <MenuItem value="1">Artan</MenuItem>
+          <MenuItem value="-1">Azalan</MenuItem>
+        </TextField>
+      </Grid>
+
+      <Grid
+        size={{
           xs: 6,
-          md: 3,
+          md: 6,
           lg: 1.5,
         }}
       >
@@ -222,7 +249,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       <Grid
         size={{
           xs: 6,
-          md: 3,
+          md: 6,
           lg: 1.5,
         }}
       >

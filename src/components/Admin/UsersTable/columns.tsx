@@ -43,7 +43,7 @@ const columns: GridColDef[] = [
     field: 'address',
     headerName: 'Adres',
     flex: 1,
-    minWidth: 250,
+    minWidth: 100,
     renderCell: params => {
       const address = params.row.address;
 
@@ -58,7 +58,7 @@ const columns: GridColDef[] = [
     field: 'role',
     headerName: 'Rol',
     flex: 1,
-    minWidth: 130,
+    minWidth: 100,
     renderCell: params => {
       switch (params.value) {
         case 'ADMIN':
@@ -79,7 +79,7 @@ const columns: GridColDef[] = [
     field: 'balance',
     headerName: 'Bakiye',
     flex: 1,
-    minWidth: 130,
+    minWidth: 100,
     sortable: true,
     renderCell: params => `${params.row.balance ?? 0}${currency}`,
   },
@@ -95,7 +95,7 @@ const columns: GridColDef[] = [
     field: 'createdAt',
     headerName: 'Oluşturulma Tarihi',
     flex: 1,
-    minWidth: 180,
+    minWidth: 150,
     renderCell: params => moment(params.value as string).format('DD.MM.YYYY HH:mm'),
   },
 ];
