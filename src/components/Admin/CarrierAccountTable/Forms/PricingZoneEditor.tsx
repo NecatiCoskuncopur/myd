@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Button, Stack, useTheme } from '@mui/material';
+import type { ClipboardEvent } from 'react';
+import { Box, Button, Stack, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import { buildPricingMatrix, GridRow } from '@/lib/buildPricingMatrix';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import parsePricingRowsFromClipboard from '@/lib/parsePricingRowsFromClipboard';
 
 type PricingZoneEditorProps = {
   value?: CarrierAccountTypes.IZone[];
@@ -61,6 +63,24 @@ const PricingZoneEditor = ({ value = [], onChange }: PricingZoneEditorProps) => 
     onChange(matrix.rowsToZones(newRows));
   };
 
+  const handlePastePrices = (event: ClipboardEvent<HTMLDivElement>) => {
+    const text = event.clipboardData.getData('text/plain');
+
+    if (!text.includes('\t') && !text.includes('\n')) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const parsedRows = parsePricingRowsFromClipboard(text, matrix);
+
+    if (!parsedRows) {
+      return;
+    }
+
+    updateRows(parsedRows);
+  };
+
   const addRow = () => {
     const thanRow = rows.find(row => row.id === 'than');
     const others = rows.filter(row => row.id !== 'than');
@@ -90,31 +110,32 @@ const PricingZoneEditor = ({ value = [], onChange }: PricingZoneEditorProps) => 
           Son Satırı Sil
         </Button>
       </Stack>
+      <Box onPaste={handlePastePrices}>
+        <DataGrid
+          rows={rows}
+          columns={matrix.columns}
+          editMode="cell"
+          rowHeight={22}
+          hideFooter
+          disableColumnMenu
+          sx={{
+            '& .MuiDataGrid-cell': {
+              fontSize: 12,
+              border: `1px solid ${theme.palette.dashboard.border}`,
+            },
+            '& .MuiDataGrid-columnHeader': {
+              fontSize: 12,
+            },
+          }}
+          processRowUpdate={newRow => {
+            const updated = rows.map(row => (row.id === newRow.id ? newRow : row));
 
-      <DataGrid
-        rows={rows}
-        columns={matrix.columns}
-        editMode="cell"
-        rowHeight={22}
-        hideFooter
-        disableColumnMenu
-        sx={{
-          '& .MuiDataGrid-cell': {
-            fontSize: 12,
-            border: `1px solid ${theme.palette.dashboard.border}`,
-          },
-          '& .MuiDataGrid-columnHeader': {
-            fontSize: 12,
-          },
-        }}
-        processRowUpdate={newRow => {
-          const updated = rows.map(row => (row.id === newRow.id ? newRow : row));
+            updateRows(updated);
 
-          updateRows(updated);
-
-          return newRow;
-        }}
-      />
+            return newRow;
+          }}
+        />
+      </Box>
     </Stack>
   );
 };

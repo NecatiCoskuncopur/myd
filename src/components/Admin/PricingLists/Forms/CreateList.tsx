@@ -8,6 +8,7 @@ import createPricingList from '@/app/actions/admin/createPricingList';
 import { StyledButton } from '@/components';
 import { CarrierAccountTypeEnum, generalMessages, pricingListMessages } from '@/constants';
 import { buildPricingMatrix, GridRow } from '@/lib/buildPricingMatrix';
+import parsePricingRowsFromClipboard from '@/lib/parsePricingRowsFromClipboard';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { PricingListTypes } from '@/types/pricingList';
 
@@ -76,81 +77,14 @@ const CreateList = ({ open, onClose, onSuccess }: CreateListProps) => {
     return newRow;
   };
 
-  const parseNumber = (value: string): number | '' => {
-    if (!value) {
-      return '';
-    }
-
-    const normalized = value.replace(/kg/gi, '').replace(/\s/g, '').replace(',', '.');
-
-    const number = Number(normalized);
-
-    return Number.isNaN(number) ? '' : number;
-  };
-
   const handlePastePrices = (text: string) => {
-    const pastedRows = text
-      .replace(/\r/g, '')
-      .split('\n')
-      .filter(line => line.trim().length > 0)
-      .map(line => line.split('\t').map(cell => cell.trim()));
+    const parsedRows = parsePricingRowsFromClipboard(text, matrix);
 
-    if (pastedRows.length === 0) {
+    if (!parsedRows) {
       return;
     }
 
-    const fields = matrix.columns.map(column => column.field).filter(field => field !== 'id');
-
-    const normalRows: GridRow[] = [];
-    let thanRow: GridRow | null = null;
-
-    pastedRows.forEach(cells => {
-      const firstCell = cells[0] ?? '';
-      if (firstCell) {
-        const weight = parseNumber(firstCell);
-        if (weight === '') {
-          return;
-        }
-
-        const row = {
-          ...matrix.createEmptyRow(),
-        } as GridRow & Record<string, unknown>;
-
-        fields.forEach((field, index) => {
-          if (index === 0) {
-            row[field] = weight;
-
-            return;
-          }
-
-          row[field] = parseNumber(cells[index] ?? '');
-        });
-
-        normalRows.push(row);
-
-        return;
-      }
-
-      const row = {
-        ...matrix.createThanRow(),
-      } as GridRow & Record<string, unknown>;
-
-      fields.forEach((field, index) => {
-        if (index === 0) {
-          return;
-        }
-
-        row[field] = parseNumber(cells[index] ?? '');
-      });
-
-      thanRow = row;
-    });
-
-    if (normalRows.length === 0) {
-      return;
-    }
-
-    setRows([...normalRows, thanRow ?? matrix.createThanRow()]);
+    setRows(parsedRows);
   };
 
   const resetForm = () => {
