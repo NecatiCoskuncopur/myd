@@ -180,6 +180,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       hasCustomInfo,
       customInfo,
       credentials: carrierCredentials[firm as keyof typeof carrierCredentials],
+      accountType: carrierAccount.accountType,
       shippingId: shipping._id.toString(),
     });
 

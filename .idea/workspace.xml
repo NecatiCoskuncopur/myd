@@ -7,10 +7,10 @@
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="336" />
+    <option name="cachedIndexableFilesCount" value="337" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -69,11 +69,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\lib\carriers\fedex" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\constants" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Shipping" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Account" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\PriceList" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -182,7 +182,9 @@
       <workItem from="1787779642253" duration="2393000" />
       <workItem from="1787804275626" duration="18850000" />
       <workItem from="1787884022509" duration="13911000" />
-      <workItem from="1787902650098" duration="5675000" />
+      <workItem from="1787902650098" duration="7755000" />
+      <workItem from="1787989483591" duration="4878000" />
+      <workItem from="1787994877783" duration="4861000" />
     </task>
     <servers />
   </component>

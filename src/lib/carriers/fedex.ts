@@ -1,13 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 import latinize from 'latinize';
 
+import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
-
-import saveShippingDocument from '../../app/actions/shippingDocument/saveShippingDocument';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
@@ -19,6 +18,7 @@ const createFedexPaper = async ({
   accountNumber,
   credentials,
   shippingId,
+  accountType,
 }: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
@@ -40,11 +40,12 @@ const createFedexPaper = async ({
     throw new Error(AUTH_FAILED);
   }
 
-  const { sender, consignee, detail, content, carrier, package: pkg } = shippingInstance;
+  const { sender, consignee, detail, content, package: pkg } = shippingInstance;
   const authData = await authRes.json();
   const accessToken = authData.access_token;
   const totalValue = content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0);
   const productDesc = content.description || latinize(content.products.map((product: ShippingTypes.IProduct) => product.name).toString());
+  const dutiesPaymentType = detail.payor?.customs === 'CONSIGNEE' ? 'RECIPIENT' : detail.payor?.customs;
 
   const senderContact = {
     personName: latinize(
@@ -89,7 +90,7 @@ const createFedexPaper = async ({
     residential: false,
   };
 
-  const serviceType = carrier.accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
+  const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
 
   const payload = {
     labelResponseOptions: 'LABEL',
@@ -145,7 +146,7 @@ const createFedexPaper = async ({
       },
 
       shipmentSpecialServices: {
-        specialServiceTypes: ['ELECTRONIC_TRADE_DOCUMENTS', ...(content.insurance ? ['INSURED_VALUE'] : [])],
+        specialServiceTypes: ['ELECTRONIC_TRADE_DOCUMENTS'],
         etdDetail: {
           attributes: ['POST_SHIPMENT_UPLOAD_REQUESTED'],
         },
@@ -153,7 +154,7 @@ const createFedexPaper = async ({
 
       customsClearanceDetail: {
         dutiesPayment: {
-          paymentType: detail.payor.customs,
+          paymentType: dutiesPaymentType,
 
           payor: {
             responsibleParty: {
@@ -244,6 +245,12 @@ const createFedexPaper = async ({
             height: pkg.height / 2,
             units: 'CM',
           },
+          ...(content.insurance && {
+            insuredValue: {
+              currency: content.currency,
+              amount: content.insuranceAmount,
+            },
+          }),
           customerReferences: [{ customerReferenceType: 'CUSTOMER_REFERENCE', value: 'REF06REF06' }],
         },
       ],

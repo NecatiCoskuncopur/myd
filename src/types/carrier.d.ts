@@ -1,3 +1,4 @@
+import { CarrierAccountTypeEnum } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace CarrierTypes {
@@ -8,6 +9,7 @@ declare namespace CarrierTypes {
     shippingId: string;
     credentials: Record<string, string>;
     accountNumber: string;
+    accountType: CarrierAccountTypeEnum;
   }
 
   interface ICarrierDriverParams {
@@ -17,6 +19,7 @@ declare namespace CarrierTypes {
     customInfo?: CarrierAccountTypes.ICustomInfo;
     credentials: Record<string, string>;
     shippingId: string;
+    accountType: CarrierAccountTypeEnum;
   }
 
   interface FedexPackageDocument {

@@ -17,12 +17,13 @@ const createQuickShipperPaper = async ({
   accountNumber,
   credentials,
   shippingId,
+  accountType,
 }: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
   invoice: string;
 }> => {
-  const { consignee, content, detail, sender, carrier, package: pkg } = shippingInstance;
+  const { consignee, content, detail, sender, package: pkg } = shippingInstance;
 
   const senderName =
     hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name;
@@ -61,7 +62,7 @@ const createQuickShipperPaper = async ({
     saveAddress: false,
   };
 
-  const serviceType = carrier.accountType === CarrierAccountTypeEnum.ECONOMY ? '48' : '2';
+  const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? '48' : '2';
 
   const body = {
     currency: 'USD',
