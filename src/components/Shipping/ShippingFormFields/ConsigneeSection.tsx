@@ -42,7 +42,19 @@ const ConsigneeSection = () => {
   const searchRequestIdRef = useRef(0);
 
   useEffect(() => {
-    if (consigneeName && !initializedRef.current) {
+    if (!consigneeName) {
+      setSelectedConsignee(null);
+      setInputValue('');
+      setOptions([]);
+      setOpen(false);
+      setSearching(false);
+
+      initializedRef.current = false;
+
+      return;
+    }
+
+    if (!initializedRef.current) {
       setInputValue(consigneeName);
       initializedRef.current = true;
     }
