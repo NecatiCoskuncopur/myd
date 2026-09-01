@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/getFedexTaxAmount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/getFedexTaxAmount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/getCarrierTaxAmount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/getCarrierTaxAmount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/getUpsTaxAmount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/getUpsTaxAmount.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +186,7 @@
       <workItem from="1788167253575" duration="3276000" />
       <workItem from="1788183565429" duration="4253000" />
       <workItem from="1788257508993" duration="571000" />
-      <workItem from="1788260755415" duration="12779000" />
+      <workItem from="1788260755415" duration="14782000" />
     </task>
     <servers />
   </component>
