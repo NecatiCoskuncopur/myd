@@ -1,33 +1,18 @@
 'use server';
 
-import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingStatus, userMessages } from '@/constants';
+import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingPayor, ShippingStatus, userMessages } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import captureActionError from '@/lib/captureActionError';
-import createFedexPaper from '@/lib/carriers/fedex';
-import createQuickShipperPaper from '@/lib/carriers/quickShipper';
-import createUpsPaper from '@/lib/carriers/ups';
+import createCarrierPaper from '@/lib/carriers/createCarrierPaper';
+import getCarrierTaxAmount from '@/lib/carriers/getCarrierTaxAmount';
 import connectMongoDB from '@/lib/db';
 import getCarrierCost from '@/lib/getCarrierCost';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { CarrierAccount, Shipping, User } from '@/models';
-import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
-
-const carrierDrivers: Record<
-  string,
-  (params: CarrierTypes.ICarrierDriverParams) => Promise<{
-    trackingNumber: string;
-    label: string;
-    invoice: string;
-  }>
-> = {
-  FEDEX: createFedexPaper,
-  UPS: createUpsPaper,
-  QUICKSHIPPER: createQuickShipperPaper,
-};
 
 const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string }>> => {
   try {
@@ -42,16 +27,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     }
 
     const { id: userId, role } = currentUser;
+
     const { shippingId, firm, displayName, accountNumber, carrierAccountId, customInfo, hasCustomInfo } = data;
-
-    const driver = carrierDrivers[firm];
-
-    if (!driver) {
-      return {
-        status: 'ERROR',
-        message: carrierMessages.UNSUPPORTED,
-      };
-    }
 
     const user = await User.findById(userId).lean();
 
@@ -125,7 +102,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     if (!weight || !country) {
       return {
         status: 'ERROR',
-        message: 'HATA',
+        message: shippingMessages.COST_NOT_CALCULATED,
       };
     }
 
@@ -138,7 +115,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const carrierCostRes = await getCarrierCost(carrierAccount!.pricing!, weight, country);
+    const carrierCostRes = await getCarrierCost(carrierAccount.pricing!, weight, country);
+
     if (carrierCostRes.status !== 'OK') {
       return {
         status: 'ERROR',
@@ -146,52 +124,34 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const carrierCost = carrierCostRes.data;
     const shippingCost = shippingCostRes.data;
+    const carrierCost = carrierCostRes.data;
     const insuranceAmount = shipping.content?.insurance ? (shipping.content.insuranceAmount ?? 0) : 0;
-    const taxAmount = 0;
+    const taxAmount =
+      shipping?.detail?.payor?.customs === ShippingPayor.SENDER
+        ? await getCarrierTaxAmount({
+            firm,
+            accountNumber,
+          })
+        : 0;
+
     const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount).toFixed(2));
-
-    const credentials = carrierAccount.credentials.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
-      acc[item.key] = item.value;
-      return acc;
-    }, {});
-
-    const carrierCredentials = {
-      FEDEX: {
-        apiKey: credentials.apiKey,
-        secretKey: credentials.secretKey,
-      },
-      UPS: {
-        clientId: credentials.clientId,
-        clientSecret: credentials.clientSecret,
-      },
-      QUICKSHIPPER: {
-        apiKey: credentials.apiKey,
-        apiSecret: credentials.apiSecret,
-      },
-    };
 
     const shippingInstance = JSON.parse(JSON.stringify(shipping));
 
-    const carrierResult = await driver({
+    const carrierResult = await createCarrierPaper({
+      firm,
       shippingInstance,
       accountNumber,
       hasCustomInfo,
       customInfo,
-      credentials: carrierCredentials[firm as keyof typeof carrierCredentials],
+      credentials: carrierAccount.credentials,
       accountType: carrierAccount.accountType,
       shippingId: shipping._id.toString(),
     });
 
-    if (!carrierResult) {
-      return {
-        status: 'ERROR',
-        message: carrierMessages.UNSUPPORTED,
-      };
-    }
-
     const { trackingNumber } = carrierResult;
+
     await applyBalanceTransaction('SPEND', shipping.userId.toString(), totalShippingCost, shipping._id.toString());
 
     shipping.carrier = {
