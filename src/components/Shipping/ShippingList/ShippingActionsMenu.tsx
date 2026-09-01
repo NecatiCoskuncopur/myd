@@ -9,7 +9,7 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
-import { getCustomerPrice } from '@/lib/getCustomerPrice';
+import { getShippingPrices } from '@/lib/getShippingPrices';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
@@ -125,10 +125,11 @@ const ShippingActionsMenu = ({
             </MenuItem>
           ) : (
             accounts.map(account => {
-              const customerPrice = getCustomerPrice({
+              const { customerPrice } = getShippingPrices({
                 countryCode: selectedRow?.consignee?.address.country ?? '',
                 weight: selectedRow?.package.weight ?? 0,
-                pricingList: account.accountType ? pricingLists[account.accountType] : null,
+                carrierPricing: account.pricing,
+                customerPricing: account.accountType ? pricingLists[account.accountType] : null,
               });
 
               const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;

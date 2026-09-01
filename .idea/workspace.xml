@@ -5,8 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/lib/getShippingPrices.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/PricingZoneEditor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/PricingZoneEditor.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierPrice.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/getCustomerPrice.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shippingDocument.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shippingDocument.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +194,10 @@
       <workItem from="1787994877783" duration="6813000" />
       <workItem from="1788025469755" duration="1981000" />
       <workItem from="1788103886958" duration="855000" />
-      <workItem from="1788167253575" duration="2990000" />
+      <workItem from="1788167253575" duration="3276000" />
+      <workItem from="1788183565429" duration="4253000" />
+      <workItem from="1788257508993" duration="571000" />
+      <workItem from="1788260755415" duration="1233000" />
     </task>
     <servers />
   </component>

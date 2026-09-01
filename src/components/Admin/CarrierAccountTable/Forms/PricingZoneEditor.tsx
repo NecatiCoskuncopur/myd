@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import type { ClipboardEvent } from 'react';
 import { Box, Button, Stack, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import type { ClipboardEvent } from 'react';
 
 import { buildPricingMatrix, GridRow } from '@/lib/buildPricingMatrix';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
 import parsePricingRowsFromClipboard from '@/lib/parsePricingRowsFromClipboard';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 type PricingZoneEditorProps = {
   value?: CarrierAccountTypes.IZone[];

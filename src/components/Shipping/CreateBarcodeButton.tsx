@@ -7,7 +7,7 @@ import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
 import getUserPricingLists from '@/app/actions/user/getUserPricingList';
 import { Carrier } from '@/constants';
-import { getCustomerPrice } from '@/lib/getCustomerPrice';
+import { getShippingPrices } from '@/lib/getShippingPrices';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
@@ -169,11 +169,13 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
               }}
             >
               {accounts.map(account => {
-                const customerPrice = getCustomerPrice({
+                const { customerPrice } = getShippingPrices({
                   countryCode: shipping?.consignee?.address.country ?? '',
                   weight: shipping?.package.weight ?? 0,
-                  pricingList: account.accountType ? pricingLists[account.accountType] : null,
+                  carrierPricing: account.pricing,
+                  customerPricing: account.accountType ? pricingLists[account.accountType] : null,
                 });
+
                 const insuranceAmount = shipping?.content.insuranceAmount ?? 0;
 
                 const totalPrice = customerPrice != null ? customerPrice + insuranceAmount : null;

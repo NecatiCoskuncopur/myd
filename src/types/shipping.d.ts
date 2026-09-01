@@ -83,6 +83,9 @@ declare namespace ShippingTypes {
     accountType?: CarrierAccountTypeEnum;
     trackingNumber?: string;
     amount?: number;
+    costs?: number;
+    insuranceCost?: number;
+    dutiesAndTaxesCost?: number;
   }
 
   interface IActivity {

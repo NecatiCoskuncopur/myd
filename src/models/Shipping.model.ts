@@ -111,6 +111,8 @@ const ShippingSchema = new mongoose.Schema(
       trackingNumber: String,
       amount: Number,
       cost: Number,
+      insuranceCost: Number,
+      dutiesAndTaxesCost: Number,
     },
     labelLink: String,
     labeledAt: Date,
