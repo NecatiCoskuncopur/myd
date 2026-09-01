@@ -127,17 +127,21 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const shippingCost = shippingCostRes.data;
     const carrierCost = carrierCostRes.data;
     const insuranceAmount = shipping.content?.insurance ? (shipping.content.insuranceAmount ?? 0) : 0;
+
+    const shippingInstance = JSON.parse(JSON.stringify(shipping));
+
     const taxAmount =
       shipping?.detail?.payor?.customs === ShippingPayor.SENDER
         ? await getCarrierTaxAmount({
             firm,
-            accountNumber,
+            credentials: carrierAccount.credentials,
+            shippingInstance,
+            accountType: carrierAccount.accountType,
+            cost: carrierCost,
           })
         : 0;
 
     const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount).toFixed(2));
-
-    const shippingInstance = JSON.parse(JSON.stringify(shipping));
 
     const carrierResult = await createCarrierPaper({
       firm,

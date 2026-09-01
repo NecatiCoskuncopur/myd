@@ -13,8 +13,12 @@ declare namespace CarrierTypes {
   }
 
   interface ICarrierTaxParams {
-    accountNumber: string;
+    credentials: Record<string, string>;
+    shippingInstance: ShippingTypes.IShipping;
+    accountType: CarrierAccountTypeEnum;
+    cost: number;
   }
+
   interface ICarrierDriverParams {
     shippingInstance: ShippingTypes.IShipping;
     accountNumber: string;

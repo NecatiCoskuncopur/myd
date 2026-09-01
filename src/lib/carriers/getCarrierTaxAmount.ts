@@ -12,18 +12,31 @@ const carrierTaxHandlers: Record<string, CarrierTaxHandler> = {
   QUICKSHIPPER: getQuickShipperTaxAmount,
 };
 
-interface GetCarrierTaxAmountParams extends CarrierTypes.ICarrierTaxParams {
+interface GetCarrierTaxAmountParams extends Omit<CarrierTypes.ICarrierTaxParams, 'credentials'> {
   firm: string;
+
+  credentials: {
+    key: string;
+    value: string;
+  }[];
 }
 
-const getCarrierTaxAmount = async ({ firm, ...params }: GetCarrierTaxAmountParams): Promise<number> => {
+const getCarrierTaxAmount = async ({ firm, credentials: credentialItems, ...params }: GetCarrierTaxAmountParams): Promise<number> => {
   const handler = carrierTaxHandlers[firm];
 
   if (!handler) {
     throw new Error(`Unsupported carrier: ${firm}`);
   }
 
-  return handler(params);
+  const credentials = credentialItems.reduce<Record<string, string>>((acc, item) => {
+    acc[item.key] = item.value;
+    return acc;
+  }, {});
+
+  return handler({
+    ...params,
+    credentials,
+  });
 };
 
 export default getCarrierTaxAmount;

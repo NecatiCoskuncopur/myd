@@ -82,7 +82,7 @@ export default yup.object({
           name: yup.string().typeError(PRODUCT.NAME.TYPE).min(2, PRODUCT.NAME.MIN).max(25, PRODUCT.NAME.MAX).required(PRODUCT.NAME.REQUIRED),
           piece: yup.number().typeError(PRODUCT.PIECE.TYPE).min(1, PRODUCT.PIECE.MIN).required(PRODUCT.PIECE.REQUIRED),
           unitPrice: yup.number().typeError(PRODUCT.UNITPRICE.TYPE).required(PRODUCT.UNITPRICE.REQUIRED),
-          harmonizedCode: yup.string().typeError(HARMONIZED_CODE_TYPE),
+          gtip: yup.string().typeError(HARMONIZED_CODE_TYPE),
         }),
       )
       .min(1)
