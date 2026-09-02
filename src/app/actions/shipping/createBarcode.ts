@@ -1,6 +1,15 @@
 'use server';
 
-import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingPayor, ShippingStatus, userMessages } from '@/constants';
+import {
+  carrierMessages,
+  generalMessages,
+  pricingListMessages,
+  shippingMessages,
+  ShippingPayor,
+  ShippingStatus,
+  TrackingStatusEnum,
+  userMessages,
+} from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import captureActionError from '@/lib/captureActionError';
 import createCarrierPaper from '@/lib/carriers/createCarrierPaper';
@@ -171,6 +180,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     };
 
     shipping.status = ShippingStatus.LABELED;
+    shipping.trackStatus = TrackingStatusEnum.CREATED;
     shipping.labeledAt = new Date();
     await shipping.save();
 

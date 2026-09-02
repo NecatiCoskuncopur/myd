@@ -1,8 +1,8 @@
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
-import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
+import { TrackingStatusEnum, TrackingStatusLabels } from '@/constants';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -76,68 +76,11 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
     },
   },
   {
-    field: 'trackingNumber',
-    headerName: 'Takip No',
+    field: 'trackStatus',
+    headerName: 'Durum',
     flex: 1,
-    minWidth: 170,
-    renderCell: ({ row }) => {
-      const carrierName = row.carrier?.name;
-      const trackingNumber = row.carrier?.trackingNumber;
-
-      if (!trackingNumber) {
-        return '-';
-      }
-
-      if (!carrierName) {
-        return (
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {trackingNumber}
-          </Typography>
-        );
-      }
-
-      const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNumber);
-
-      if (hasLink && url) {
-        return (
-          <Link
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              color: 'primary.main',
-              fontWeight: 500,
-              textDecoration: 'none',
-              overflow: 'hidden',
-              '&:hover': {
-                textDecoration: 'underline',
-                color: 'primary.dark',
-              },
-            }}
-          >
-            <Typography
-              component="span"
-              variant="body2"
-              noWrap
-              sx={{
-                fontWeight: 500,
-                fontSize: '0.875rem',
-              }}
-            >
-              {trackingNumber}
-            </Typography>
-          </Link>
-        );
-      }
-
-      return (
-        <Typography variant="body2" color="text.secondary" noWrap>
-          {trackingNumber}
-        </Typography>
-      );
-    },
+    minWidth: 120,
+    valueFormatter: value => (value ? (TrackingStatusLabels[value as TrackingStatusEnum] ?? '-') : '-'),
   },
   {
     field: 'packageInfo',

@@ -58,7 +58,7 @@ const listShipping = async (
 
     if (download) {
       const shipping = await Shipping.find(match)
-        .select('sender consignee content package carrier status createdAt')
+        .select('sender consignee content package carrier status trackStatus createdAt')
         .limit(10000)
         .lean<ShippingTypes.IShipping[]>();
 
@@ -114,6 +114,7 @@ const listShipping = async (
         package: 1,
         carrier: 1,
         status: 1,
+        trackStatus: 1,
         labeledAt: 1,
         createdAt: 1,
       },

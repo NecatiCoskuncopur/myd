@@ -7,6 +7,7 @@ import Link from '@mui/material/Link';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
+import { TrackingStatusEnum, TrackingStatusLabels } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
@@ -17,21 +18,21 @@ const columns: GridColDef[] = [
     field: 'consigneeName',
     headerName: 'Alıcı',
     flex: 1,
-    minWidth: 150,
+    minWidth: 100,
     valueGetter: (value, row) => row.consignee?.name || '-',
   },
   {
     field: 'senderName',
     headerName: 'Gönderen',
     flex: 1,
-    minWidth: 150,
+    minWidth: 100,
     valueGetter: (value, row) => row.sender?.name || '-',
   },
   {
     field: 'destination',
     headerName: 'Varış Bölgesi',
     flex: 1,
-    minWidth: 200,
+    minWidth: 150,
     renderCell: params => {
       const address = params.row.consignee?.address;
       if (!address) return '-';
@@ -123,6 +124,13 @@ const columns: GridColDef[] = [
         </Box>
       );
     },
+  },
+  {
+    field: 'trackStatus',
+    headerName: 'Durum',
+    flex: 1,
+    minWidth: 120,
+    valueFormatter: value => (value ? (TrackingStatusLabels[value as TrackingStatusEnum] ?? '-') : '-'),
   },
   {
     field: 'packageInfo',

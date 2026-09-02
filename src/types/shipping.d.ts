@@ -1,4 +1,13 @@
-import { Carrier, CarrierAccountTypeEnum, CurrencyEnum, ShippingActivities, ShippingPayor, ShippingPurpose, ShippingStatus } from '@/constants';
+import {
+  Carrier,
+  CarrierAccountTypeEnum,
+  CurrencyEnum,
+  ShippingActivities,
+  ShippingPayor,
+  ShippingPurpose,
+  ShippingStatus,
+  TrackingStatusEnum,
+} from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace ShippingTypes {
@@ -105,6 +114,7 @@ declare namespace ShippingTypes {
     package: IPackage;
     packageDimensionsUpdated: boolean;
     status: ShippingStatus;
+    trackStatus: TrackingStatusEnum;
     carrier?: ICarrier;
     labelLink?: string;
     activities?: IActivity[];

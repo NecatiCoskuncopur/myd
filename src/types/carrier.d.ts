@@ -12,6 +12,12 @@ declare namespace CarrierTypes {
     accountType: CarrierAccountTypeEnum;
   }
 
+  interface ITrackingParams {
+    accountNumber: string;
+    trackingNumber: string;
+    credentials: Record<string, string>;
+  }
+
   interface ICarrierTaxParams {
     credentials: Record<string, string>;
     shippingInstance: ShippingTypes.IShipping;

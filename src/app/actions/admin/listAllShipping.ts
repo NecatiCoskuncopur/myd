@@ -67,7 +67,7 @@ const listShippingAdmin = async (
     if (download) {
       const shipping = await Shipping.find(match)
         .populate('userId', 'name email')
-        .select('userId sender consignee content package carrier status createdAt')
+        .select('userId sender consignee content package carrier status trackStatus createdAt')
         .limit(10000)
         .lean();
 
@@ -128,6 +128,7 @@ const listShippingAdmin = async (
         packageDimensionsUpdated: 1,
         carrier: 1,
         status: 1,
+        trackStatus: 1,
         labeledAt: 1,
         createdAt: 1,
       },
