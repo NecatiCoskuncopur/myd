@@ -77,4 +77,11 @@ declare namespace AdminTypes {
   interface IGetBalanceParams extends ParamsTypes.IPaginationParams {
     userId: string;
   }
+
+  interface ICancelShippingParams {
+    accountNumber: string;
+    trackingNumber: string;
+    shippingId: string;
+    carrierAccountId: string;
+  }
 }

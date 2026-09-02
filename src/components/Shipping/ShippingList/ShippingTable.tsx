@@ -3,10 +3,11 @@
 import { useMemo } from 'react';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
+import { ShippingStatus } from '@/constants';
 import { ShippingTypes } from '@/types/shipping';
 
 import columns from './columns';
@@ -35,16 +36,41 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         align: 'center',
         headerAlign: 'center',
 
-        renderCell: params => (
-          <IconButton
-            type="button"
-            size="small"
-            aria-label="Gönderi işlemlerini aç"
-            onClick={event => onOpenActions(params.row as ShippingTypes.IShipping, event.currentTarget)}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        ),
+        renderCell: params => {
+          const row = params.row as ShippingTypes.IShipping;
+
+          const isCancelled = row.status === ShippingStatus.CANCELLED;
+
+          if (isCancelled) {
+            return (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  width: '100%',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'error.main',
+                    fontWeight: 500,
+                  }}
+                >
+                  Gönderi İptal Edildi
+                </Typography>
+              </Box>
+            );
+          }
+
+          return (
+            <IconButton type="button" size="small" aria-label="Gönderi işlemlerini aç" onClick={event => onOpenActions(row, event.currentTarget)}>
+              <MoreVertIcon />
+            </IconButton>
+          );
+        },
       },
     ],
     [onOpenActions],

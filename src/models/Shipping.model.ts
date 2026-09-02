@@ -116,6 +116,7 @@ const ShippingSchema = new mongoose.Schema(
     },
     labelLink: String,
     labeledAt: Date,
+    canceledAt: Date,
     activities: [
       {
         userId: mongoose.Types.ObjectId,

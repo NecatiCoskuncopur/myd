@@ -109,6 +109,7 @@ declare namespace ShippingTypes {
     labelLink?: string;
     activities?: IActivity[];
     labeledAt?: Date;
+    cancelledAt?: Date;
     createdAt: string;
     updatedAt: string;
   }

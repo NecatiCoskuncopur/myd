@@ -1,7 +1,7 @@
 enum ShippingStatus {
   CREATED = 'CREATED',
   LABELED = 'LABELED',
-  CANCELED = 'CANCELED',
+  CANCELLED = 'CANCELLED',
 }
 
 export default ShippingStatus;

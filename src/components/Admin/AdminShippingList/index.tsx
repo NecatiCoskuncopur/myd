@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
+import cancelShipping from '@/app/actions/admin/cancelShipping';
 import printLabel from '@/app/actions/admin/printLabel';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
@@ -13,6 +14,7 @@ import openBase64Pdf from '@/lib/openBase64Pdf';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
+import CancelShippingPopover from './CancelShippingPopover';
 import FilterSection from './FilterSection';
 import useShippingActions from './hooks/useShippingActions';
 import useShippingList from './hooks/useShippingList';
@@ -34,22 +36,37 @@ const AdminShippingList = () => {
   const {
     selectedRow,
     actionIconButton,
+
     menuOpen,
     deleteOpen,
     packageDialogOpen,
+
     barcodeDialogOpen,
     barcodeLoading,
     barcodeError,
+
+    cancelOpen,
+    cancelAnchorEl,
+    cancelLoading,
+
     openActionsMenu,
     closeActionsMenu,
+
     openDeleteDialog,
     closeDeleteDialog,
+
     openPackageDialog,
     closePackageDialog,
+
     closeBarcodeDialog,
     startBarcodeLoading,
     finishBarcodeLoading,
     setBarcodeFailure,
+
+    openCancelPopover,
+    closeCancelPopover,
+    startCancelLoading,
+    finishCancelLoading,
   } = useShippingActions();
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
@@ -75,6 +92,7 @@ const AdminShippingList = () => {
 
       if (response.status !== 'OK') {
         setBarcodeFailure(response.message ?? 'Barkod oluşturulamadı.');
+
         return;
       }
 
@@ -119,12 +137,61 @@ const AdminShippingList = () => {
 
       if (response.status !== 'OK') {
         showSnackbar(response.message ?? 'Barkod yazdırılamadı.', 'error');
+
         return;
       }
 
       showSnackbar('Barkod yazdırma işlemi gönderildi.', 'success');
     } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
+  };
+
+  const handleCancelShipping = async () => {
+    const shippingId = selectedRow?._id;
+    const trackingNumber = selectedRow?.carrier?.trackingNumber;
+    const accountNumber = selectedRow?.carrier?.account;
+    const firm = selectedRow?.carrier?.name;
+
+    if (!shippingId || !trackingNumber || !accountNumber || !firm) {
+      showSnackbar('Gönderi bilgileri eksik.', 'error');
+
+      return;
+    }
+
+    const carrierAccount = accounts.find(account => account.carrier === firm && account.accountNumber === accountNumber);
+
+    if (!carrierAccount?._id) {
+      showSnackbar('Gönderiye ait kargo hesabı bulunamadı.', 'error');
+
+      return;
+    }
+
+    startCancelLoading();
+
+    try {
+      const response = await cancelShipping({
+        shippingId,
+        trackingNumber,
+        accountNumber,
+        carrierAccountId: carrierAccount._id.toString(),
+      });
+
+      if (response.status !== 'OK') {
+        showSnackbar(response.message ?? 'Gönderi iptal edilemedi.', 'error');
+
+        return;
+      }
+
+      showSnackbar('Gönderi başarıyla iptal edildi.', 'success');
+
+      closeCancelPopover();
+
+      await refetch();
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    } finally {
+      finishCancelLoading();
     }
   };
 
@@ -156,8 +223,18 @@ const AdminShippingList = () => {
           onClose={closeActionsMenu}
           onOpenDelete={openDeleteDialog}
           onOpenPackage={openPackageDialog}
+          onOpenCancel={openCancelPopover}
           onCreateBarcode={handleCreateBarcode}
           onDownloadPaper={handleDownloadPaper}
+        />
+
+        <CancelShippingPopover
+          open={cancelOpen}
+          anchorEl={cancelAnchorEl}
+          shipping={selectedRow}
+          loading={cancelLoading}
+          onClose={closeCancelPopover}
+          onConfirm={handleCancelShipping}
         />
 
         <ShippingDialogs

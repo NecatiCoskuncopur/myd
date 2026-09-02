@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { DeleteOutlined } from '@mui/icons-material';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -9,6 +10,7 @@ import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
+import { ShippingStatus } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import { getShippingPrices } from '@/lib/getShippingPrices';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -18,22 +20,16 @@ import { ShippingTypes } from '@/types/shipping';
 interface ShippingActionsMenuProps {
   anchorEl: HTMLButtonElement | null;
   open: boolean;
-
   selectedRow: ShippingTypes.IShipping | null;
-
   accounts: CarrierAccountTypes.IUserPermittedAccount[];
-
   pricingLists: Record<string, PricingListTypes.IPricingList>;
-
   canCreateBarcode: boolean;
-
   onClose: () => void;
   onOpenDelete: () => void;
   onOpenPackage: () => void;
-
   onCreateBarcode: (account: CarrierAccountTypes.IUserPermittedAccount) => void;
-
   onDownloadPaper: (type: 'labels' | 'invoices') => void;
+  onOpenCancel: () => void;
 }
 
 const ShippingActionsMenu = ({
@@ -48,11 +44,12 @@ const ShippingActionsMenu = ({
   onOpenPackage,
   onCreateBarcode,
   onDownloadPaper,
+  onOpenCancel,
 }: ShippingActionsMenuProps) => {
   const router = useRouter();
 
   const hasTrackingNumber = Boolean(selectedRow?.carrier?.trackingNumber);
-
+  const isCancelled = selectedRow?.status === ShippingStatus.CANCELLED;
   const hasLabel = (() => {
     if (!selectedRow?.labeledAt) {
       return false;
@@ -180,6 +177,24 @@ const ShippingActionsMenu = ({
           </ListItemIcon>
 
           <ListItemText>Proforma Fatura İndir</ListItemText>
+        </MenuItem>
+      )}
+
+      {hasTrackingNumber && !isCancelled && <Divider />}
+
+      {hasTrackingNumber && !isCancelled && (
+        <MenuItem onClick={onOpenCancel}>
+          <ListItemIcon>
+            <CancelOutlinedIcon fontSize="small" color="error" />
+          </ListItemIcon>
+
+          <ListItemText
+            sx={{
+              color: 'error.main',
+            }}
+          >
+            Gönderiyi İptal Et
+          </ListItemText>
         </MenuItem>
       )}
     </Menu>

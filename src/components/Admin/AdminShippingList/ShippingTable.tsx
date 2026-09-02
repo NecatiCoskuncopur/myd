@@ -4,10 +4,11 @@ import { useMemo } from 'react';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
-import { IconButton, Stack, Tooltip } from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
+import { ShippingStatus } from '@/constants';
 import { ShippingTypes } from '@/types/shipping';
 
 import columns from './columns';
@@ -36,6 +37,29 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         filterable: false,
         renderCell: params => {
           const row = params.row;
+          const isCancelled = row.status === ShippingStatus.CANCELLED;
+
+          if (isCancelled) {
+            return (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '100%',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'error.main',
+                    fontWeight: 500,
+                  }}
+                >
+                  Gönderi İptal Edildi
+                </Typography>
+              </Box>
+            );
+          }
           const hasLabel = Boolean(row.carrier?.trackingNumber);
 
           return (

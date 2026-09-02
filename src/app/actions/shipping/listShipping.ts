@@ -57,7 +57,10 @@ const listShipping = async (
     if (consigneePhone) match['consignee.phone'] = createRegex(consigneePhone);
 
     if (download) {
-      const shipping = await Shipping.find(match).select('sender consignee content package carrier createdAt').limit(10000).lean<ShippingTypes.IShipping[]>();
+      const shipping = await Shipping.find(match)
+        .select('sender consignee content package carrier status createdAt')
+        .limit(10000)
+        .lean<ShippingTypes.IShipping[]>();
 
       const excelData = shipping.map(item => {
         const totalProductValue = item.content?.products?.reduce((prev, { piece = 0, unitPrice = 0 }) => prev + piece * unitPrice, 0) ?? 0;
@@ -110,6 +113,7 @@ const listShipping = async (
         content: { currency: 1, products: 1, insuranceAmount: 1 },
         package: 1,
         carrier: 1,
+        status: 1,
         labeledAt: 1,
         createdAt: 1,
       },

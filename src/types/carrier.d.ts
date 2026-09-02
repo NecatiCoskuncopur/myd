@@ -19,6 +19,12 @@ declare namespace CarrierTypes {
     cost: number;
   }
 
+  interface ICancelShippingParams {
+    accountNumber: string;
+    trackingNumber: string;
+    credentials: Record<string, string>;
+  }
+
   interface ICarrierDriverParams {
     shippingInstance: ShippingTypes.IShipping;
     accountNumber: string;

@@ -6,20 +6,16 @@ import { ShippingTypes } from '@/types/shipping';
 
 const useShippingActions = () => {
   const [selectedRow, setSelectedRow] = useState<ShippingTypes.IShipping | null>(null);
-
   const [actionIconButton, setActionIconButton] = useState<HTMLButtonElement | null>(null);
-
   const [menuOpen, setMenuOpen] = useState(false);
-
   const [deleteOpen, setDeleteOpen] = useState(false);
-
   const [packageDialogOpen, setPackageDialogOpen] = useState(false);
-
   const [barcodeDialogOpen, setBarcodeDialogOpen] = useState(false);
-
   const [barcodeLoading, setBarcodeLoading] = useState(false);
-
   const [barcodeError, setBarcodeError] = useState<string | null>(null);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelAnchorEl, setCancelAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const clearSelection = () => {
     setSelectedRow(null);
@@ -89,6 +85,30 @@ const useShippingActions = () => {
     setBarcodeError(message);
   };
 
+  const openCancelPopover = () => {
+    if (!selectedRow || !actionIconButton) {
+      return;
+    }
+
+    setMenuOpen(false);
+    setCancelAnchorEl(actionIconButton);
+    setCancelOpen(true);
+  };
+
+  const closeCancelPopover = () => {
+    setCancelOpen(false);
+    setCancelAnchorEl(null);
+    clearSelection();
+  };
+
+  const startCancelLoading = () => {
+    setCancelLoading(true);
+  };
+
+  const finishCancelLoading = () => {
+    setCancelLoading(false);
+  };
+
   return {
     selectedRow,
     actionIconButton,
@@ -98,6 +118,9 @@ const useShippingActions = () => {
     barcodeDialogOpen,
     barcodeLoading,
     barcodeError,
+    cancelOpen,
+    cancelAnchorEl,
+    cancelLoading,
     openActionsMenu,
     closeActionsMenu,
     openDeleteDialog,
@@ -108,6 +131,10 @@ const useShippingActions = () => {
     startBarcodeLoading,
     finishBarcodeLoading,
     setBarcodeFailure,
+    openCancelPopover,
+    closeCancelPopover,
+    startCancelLoading,
+    finishCancelLoading,
   };
 };
 
