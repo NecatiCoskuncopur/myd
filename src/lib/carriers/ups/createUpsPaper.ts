@@ -4,12 +4,20 @@ import moment from 'moment';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
+import uploadUpsDocument from '@/lib/carriers/ups/uploadUpsDocument';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
+import { ShippingDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
+type UpsPackageResult = {
+  TrackingNumber?: string;
+  ShippingLabel?: {
+    GraphicImage?: string;
+  };
+};
 const BASE_URL = 'https://www.sandbox.ups.com';
 
 const createUpsPaper = async ({
@@ -69,7 +77,11 @@ const createUpsPaper = async ({
     countryCode: consignee.address.country,
   };
   const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? '08' : '65';
+  const shippingDocument = await ShippingDocument.findOne({
+    shippingId,
+  }).select('additionalDocument');
 
+  const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
   const payload = {
     ShipmentRequest: {
       Shipment: {
@@ -302,6 +314,19 @@ const createUpsPaper = async ({
 
   if (saveDocumentResult.status === 'ERROR') {
     throw new Error(saveDocumentResult.message);
+  }
+  const trackingNumbers = packageResults
+    .map((packageResult: UpsPackageResult) => packageResult?.TrackingNumber)
+    .filter((value: string | undefined): value is string => Boolean(value));
+
+  if (additionalDocument) {
+    await uploadUpsDocument({
+      accessToken,
+      accountNumber,
+      shipmentIdentifier: trackingNumber,
+      trackingNumbers: trackingNumbers.length ? trackingNumbers : [trackingNumber],
+      document: additionalDocument,
+    });
   }
 
   return {

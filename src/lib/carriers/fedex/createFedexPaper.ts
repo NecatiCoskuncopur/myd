@@ -4,9 +4,12 @@ import latinize from 'latinize';
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
+import { ShippingDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
+
+import uploadFedexDocument from './uploadFedexDocument';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const BASE_URL = 'https://apis-sandbox.fedex.com';
@@ -92,13 +95,20 @@ const createFedexPaper = async ({
 
   const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
 
+  const shippingDocument = await ShippingDocument.findOne({
+    shippingId,
+  }).select('additionalDocument');
+
+  const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
+  const shipmentDate = new Date(Date.now() + 86_400_000).toISOString().split('T')[0];
+
   const payload = {
     labelResponseOptions: 'LABEL',
     accountNumber: {
       value: accountNumber,
     },
     requestedShipment: {
-      shipDatestamp: new Date(Date.now() + 86_400_000).toISOString().split('T')[0],
+      shipDatestamp: shipmentDate,
       pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
       serviceType,
       packagingType: pkg.weight <= 5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
@@ -347,6 +357,27 @@ const createFedexPaper = async ({
 
   if (saveLabelResult.status === 'ERROR') {
     throw new Error(saveLabelResult.message);
+  }
+
+  if (additionalDocument) {
+    try {
+      await uploadFedexDocument({
+        accessToken,
+        trackingNumber: output?.masterTrackingNumber || trackingNumber,
+        shipmentDate,
+        document: additionalDocument,
+        originCountryCode: 'TR',
+        destinationCountryCode: consignee.address.country,
+      });
+    } catch (error) {
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          trackingNumber,
+          documentUploadFailed: true,
+        },
+      });
+    }
   }
 
   const invoice = '';
