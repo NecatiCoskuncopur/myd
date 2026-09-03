@@ -12,6 +12,7 @@ import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';
 import { UserTypes } from '@//types/user';
 import createShipping from '@/app/actions/shipping/createShipping';
+import saveAdditionalDocument from '@/app/actions/shippingDocument/saveAdditionalDocument';
 import { TableHeader } from '@/components/index';
 
 import ShippingFormFields from './ShippingFormFields';
@@ -28,6 +29,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
   const { showSnackbar } = useSnackbar();
 
   const [isBatchMode, setIsBatchMode] = useState(false);
+  const [additionalDocument, setAdditionalDocument] = useState<File | null>(null);
 
   const methods = useForm<ShippingTypes.ICreateShippingFormPayload>({
     defaultValues: {
@@ -94,19 +96,34 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
 
       if (response.status !== 'OK' || !response.data?._id) {
         showSnackbar(response.message ?? CREATESHIPPING.ERROR, 'error');
-
         return;
+      }
+
+      const shippingId = response.data._id;
+
+      if (additionalDocument) {
+        const formData = new FormData();
+
+        formData.append('shippingId', shippingId);
+        formData.append('additionalDocument', additionalDocument);
+
+        const documentResponse = await saveAdditionalDocument(formData);
+
+        if (documentResponse.status !== 'OK') {
+          showSnackbar(documentResponse.message ?? UNEXPECTED_ERROR, 'error');
+          return;
+        }
       }
 
       if (isBatchMode) {
         reset();
+        setAdditionalDocument(null);
 
         showSnackbar(response.message ?? CREATESHIPPING.SUCCESS, 'success');
-
         return;
       }
 
-      router.replace(`/panel/gonderilerim/${response.data._id}`);
+      router.replace(`/panel/gonderilerim/${shippingId}`);
     } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
     }
@@ -137,7 +154,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields user={user} />
+          <ShippingFormFields user={user} additionalDocument={additionalDocument} setAdditionalDocument={setAdditionalDocument} />
 
           <Box
             sx={{

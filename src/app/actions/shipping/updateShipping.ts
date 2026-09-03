@@ -114,7 +114,9 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       {
         _id: shippingId,
         userId,
-        status: { $ne: ShippingStatus.LABELED },
+        status: {
+          $ne: ShippingStatus.LABELED,
+        },
       },
       {
         $set: {
@@ -128,16 +130,16 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
       },
     );
 
-    if (result.modifiedCount === 0) {
+    if (result.matchedCount === 0) {
       return {
         status: 'ERROR',
-        message: UPDATESHIPPING.NOCHANGE,
+        message: ALREADY_LABELED,
       };
     }
 
     return {
       status: 'OK',
-      message: UPDATESHIPPING.SUCCESS,
+      message: result.modifiedCount > 0 ? UPDATESHIPPING.SUCCESS : UPDATESHIPPING.NOCHANGE,
     };
   } catch (error) {
     if (error instanceof ValidationError) {

@@ -1,6 +1,8 @@
+import { Dispatch, SetStateAction } from 'react';
 import { usePathname } from 'next/navigation';
 import { Box } from '@mui/material';
 
+import UploadFileSection from '@/components/Shipping/ShippingFormFields/UploadFileSection';
 import { UserTypes } from '@/types/user';
 
 import ConsigneeSection from './ConsigneeSection';
@@ -11,9 +13,11 @@ import ShippingDetailSection from './ShippingDetailSection';
 
 type ShippingFormFieldsProps = {
   user?: UserTypes.UserDto | null;
+  additionalDocument: File | null;
+  setAdditionalDocument: Dispatch<SetStateAction<File | null>>;
 };
 
-const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
+const ShippingFormFields = ({ user, additionalDocument, setAdditionalDocument }: ShippingFormFieldsProps) => {
   const pathname = usePathname();
   const isEditMode = pathname.includes('duzenle');
 
@@ -37,6 +41,7 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
       >
         <ConsigneeSection />
         <ShippingDetailSection />
+        <UploadFileSection additionalDocument={additionalDocument} setAdditionalDocument={setAdditionalDocument} />
       </Box>
 
       <Box
@@ -49,7 +54,9 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
         }}
       >
         <PackageContentSection />
+
         <PackageDetailSection />
+
         {user?.role !== 'CUSTOMER' && !isEditMode && <SenderSection />}
       </Box>
     </Box>
