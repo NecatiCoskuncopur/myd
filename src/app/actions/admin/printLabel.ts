@@ -59,8 +59,6 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
       };
     }
 
-    const base64Label = shippingDocument.label.toString('base64');
-
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), PRINTER_TIMEOUT_MS);
 
@@ -70,12 +68,10 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
       response = await fetch(printerUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          password: printerPassword,
+          'Content-Type': 'application/pdf',
+          'x-secret': printerPassword,
         },
-        body: JSON.stringify({
-          label: base64Label,
-        }),
+        body: new Uint8Array(shippingDocument.label),
         signal: controller.signal,
       });
     } finally {
