@@ -14,7 +14,11 @@ const ShippingDocumentSchema = new Schema(
     },
     label: {
       type: Buffer,
-      required: true,
+      required: false,
+    },
+    additionalDocument: {
+      type: Buffer,
+      required: false,
     },
     contentType: {
       type: String,

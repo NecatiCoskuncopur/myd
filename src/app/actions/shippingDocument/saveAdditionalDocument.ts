@@ -7,15 +7,14 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { ShippingDocument } from '@/models';
-import saveShippingDocumentSchema from '@/schemas/saveShippingDocument.schema';
+import saveAdditionalDocumentSchema from '@/schemas/saveAdditionalDocument.schema';
 
 const { UNEXPECTED_ERROR, UNAUTHORIZED } = generalMessages;
+const { ADDITIONALDOCUMENT } = shippingMessages;
 
-const { LABEL } = shippingMessages;
-
-const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDocumentPayload): Promise<ResponseTypes.IActionResponse> => {
+const saveAdditionalDocument = async (data: ShippingDocumentTypes.ISaveAdditionalDocumentPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const validatedData = await saveShippingDocumentSchema.validate(data, {
+    const validatedData = await saveAdditionalDocumentSchema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -37,8 +36,7 @@ const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDoc
       },
       {
         $set: {
-          label: validatedData.label,
-          ...(validatedData.invoice ? { invoice: validatedData.invoice } : {}),
+          additionalDocument: validatedData.additionalDocument,
         },
       },
       {
@@ -48,7 +46,7 @@ const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDoc
 
     return {
       status: 'OK',
-      message: LABEL.SUCCESS,
+      message: ADDITIONALDOCUMENT.SUCCESS,
     };
   } catch (error) {
     if (error instanceof ValidationError) {
@@ -59,7 +57,7 @@ const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDoc
     }
 
     if (error instanceof Error) {
-      captureActionError('saveShippingDocument', error);
+      captureActionError('saveAdditionalDocument', error);
     }
 
     return {
@@ -69,4 +67,4 @@ const saveShippingDocument = async (data: ShippingDocumentTypes.ISaveShippingDoc
   }
 };
 
-export default saveShippingDocument;
+export default saveAdditionalDocument;

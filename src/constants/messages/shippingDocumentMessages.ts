@@ -8,7 +8,9 @@ const shippingDocumentMessages = {
   },
   LABEL: {
     TYPE: 'Etiket dosyası geçerli değil.',
-    REQUIRED: 'Etiket dosyası zorunludur.',
+  },
+  ADDITIONALDOCUMENT: {
+    TYPE: 'Ek belge dosyası geçerli değil',
   },
 } as const;
 

@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveAdditionalDocument.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/schemas/saveAdditionalDocument.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveShippingDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveShippingDocument.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingDocumentMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingDocumentMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/saveShippingDocument.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/saveShippingDocument.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shippingDocument.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shippingDocument.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +196,8 @@
       <workItem from="1788260755415" duration="19055000" />
       <workItem from="1788345128165" duration="9929000" />
       <workItem from="1788359996463" duration="9519000" />
-      <workItem from="1788440325161" duration="3789000" />
+      <workItem from="1788440325161" duration="4461000" />
+      <workItem from="1788450872483" duration="3674000" />
     </task>
     <servers />
   </component>

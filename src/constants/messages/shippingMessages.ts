@@ -131,6 +131,9 @@ const shippingMessages = {
     EXISTS: 'Bu gönderi için zaten bir etiket mevcut.',
     SUCCESS: 'Gönderi etiketi başarıyla kaydedildi.',
   },
+  ADDITIONALDOCUMENT: {
+    SUCCESS: 'Ek belge başarıyla eklendi.',
+  },
 } as const;
 
 export default shippingMessages;
