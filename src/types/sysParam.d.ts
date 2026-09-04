@@ -7,4 +7,10 @@ declare namespace SysParamTypes {
   interface IUpdateSysParamPayload extends ICreateSysParamPayload {
     paramId: string;
   }
+
+  interface ISysParam {
+    _id: string;
+    key: string;
+    value: string;
+  }
 }
