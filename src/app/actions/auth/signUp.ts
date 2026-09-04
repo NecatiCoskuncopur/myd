@@ -7,7 +7,7 @@ import { authMessages, BCRYPT_SALT_ROUNDS, captchaMessages, generalMessages, use
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
-import MydMail from '@/lib/mailer';
+import getMailTransport from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
 import { validateTurnstile } from '@/lib/validateTurnstile';
 import { Balance, User } from '@/models';
@@ -81,6 +81,7 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
       `MYD Export'a hoşgeldiniz! Gönderi oluşturmaya başlayabilirsiniz, ` +
       `detaylar için sizi arayacağız, iyi çalışmalar ve bol kazançlar dileriz.`;
 
+    const MydMail = await getMailTransport();
     const notificationTasks: Promise<unknown>[] = [
       MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',

@@ -7,7 +7,7 @@ import { captchaMessages, forgotPasswordMail, generalMessages } from '@/constant
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
-import MydMail from '@/lib/mailer';
+import getMailTransport from '@/lib/mailer';
 import { validateTurnstile } from '@/lib/validateTurnstile';
 import { User } from '@/models';
 import forgotPasswordSchema from '@/schemas/forgotPassword.schema';
@@ -55,6 +55,7 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
     );
 
     try {
+      const MydMail = await getMailTransport();
       await MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',
         to: user.email,

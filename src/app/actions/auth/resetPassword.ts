@@ -9,7 +9,7 @@ import { authMessages, BCRYPT_SALT_ROUNDS, generalMessages } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import env from '@/lib/env';
-import MydMail from '@/lib/mailer';
+import getMailTransport from '@/lib/mailer';
 import { User } from '@/models';
 import resetPasswordSchema from '@/schemas/resetPassword.schema';
 
@@ -82,6 +82,8 @@ const resetPassword = async (data: AuthTypes.IResetPasswordPayload): Promise<Res
     await user.save();
 
     try {
+      const MydMail = await getMailTransport();
+
       await MydMail.sendMail({
         to: user.email,
         subject: 'Parolanız Sıfırlandı',

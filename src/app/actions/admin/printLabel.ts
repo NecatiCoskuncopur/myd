@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import { generalMessages, printerMessages, shippingMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
+import getSystemParam from '@/lib/getSystemParam';
 import requireRoles from '@/lib/requireRoles';
 import { ShippingDocument } from '@/models';
 
@@ -42,8 +43,7 @@ const printLabel = async (shippingId: string): Promise<ResponseTypes.IActionResp
       };
     }
 
-    const printerUrl = process.env.OFFICE_PRINTER_API_URL;
-    const printerPassword = process.env.OFFICE_PRINTER_PASSWORD;
+    const [printerUrl, printerPassword] = await Promise.all([getSystemParam('OFFICE_PRINTER_API_URL'), getSystemParam('OFFICE_PRINTER_PASSWORD')]);
 
     if (!printerUrl || !printerPassword) {
       captureActionError('printLabel.config', new Error(ENV_NOT_FOUND), {

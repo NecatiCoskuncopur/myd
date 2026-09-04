@@ -7,7 +7,7 @@ import { authMessages, BCRYPT_SALT_ROUNDS, generalMessages, userMessages, UserRo
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
-import MydMail from '@/lib/mailer';
+import getMailTransport from '@/lib/mailer';
 import requireRoles from '@/lib/requireRoles';
 import sendSms from '@/lib/sendSms';
 import { Balance, User } from '@/models';
@@ -73,6 +73,7 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
     }
 
     try {
+      const MydMail = await getMailTransport();
       await MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',
         to: newUser.email,

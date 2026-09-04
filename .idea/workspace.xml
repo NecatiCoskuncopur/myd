@@ -5,24 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/DeleteSysParam.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/FilterSection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/CreateSysParamForm.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/FormItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/UpdateSysParamForm.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/MaskedValueCell.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/SysParamActionsMenu.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/columns.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParamActions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/getSystemParam.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceListActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceListActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/updateSysParam.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/updateSysParam.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/printLabel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/forgotPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/resetPassword.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/SysParams/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/SysParams/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/trackFedexShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/trackFedexShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/env.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/mailer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/mailer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/sendSms.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/sendSms.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,7 +203,7 @@
       <workItem from="1788440325161" duration="4461000" />
       <workItem from="1788450872483" duration="15496000" />
       <workItem from="1788480738489" duration="203000" />
-      <workItem from="1788528610965" duration="15330000" />
+      <workItem from="1788528610965" duration="17797000" />
     </task>
     <servers />
   </component>

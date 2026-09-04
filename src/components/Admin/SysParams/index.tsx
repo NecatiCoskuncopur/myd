@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
+import { Alert } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
@@ -14,7 +15,6 @@ import UpdateSysParamForm from './Forms/UpdateSysParamForm';
 import useSysParamActions from './hooks/useSysParamActions';
 import useSysParams from './hooks/useSysParams';
 import SysParamActionsMenu from './SysParamActionsMenu';
-import { Alert } from '@mui/material';
 
 const SysParamTable = () => {
   const searchParams = useSearchParams();
