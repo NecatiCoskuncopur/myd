@@ -13,4 +13,12 @@ declare namespace SysParamTypes {
     key: string;
     value: string;
   }
+
+  interface ISysParamData extends ResponseTypes.IPaginationResponse {
+    sysParams: ISysParam[];
+  }
+
+  interface ISysParamParams extends ParamsTypes.IPaginationParams {
+    key?: string;
+  }
 }
