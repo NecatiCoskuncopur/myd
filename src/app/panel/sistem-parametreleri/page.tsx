@@ -1,5 +1,7 @@
+import { SysParams } from '@/components';
+
 const ParamsPage = () => {
-  return <div>Sistem Parametreleri</div>;
+  return <SysParams />;
 };
 
 export default ParamsPage;

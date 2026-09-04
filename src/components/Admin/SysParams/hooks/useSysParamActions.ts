@@ -2,12 +2,10 @@
 
 import { useState } from 'react';
 
-import { PricingListTypes } from '@/types/pricingList';
-
 type ModalType = 'create' | 'edit' | 'delete' | '';
 
-const usePriceListActions = () => {
-  const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
+const useSysParamActions = () => {
+  const [selectedRow, setSelectedRow] = useState<SysParamTypes.ISysParam | null>(null);
 
   const [actionIconButton, setActionIconButton] = useState<HTMLButtonElement | null>(null);
 
@@ -21,7 +19,7 @@ const usePriceListActions = () => {
     open: false,
   });
 
-  const openMenu = (row: PricingListTypes.IPricingList, anchorEl: HTMLButtonElement) => {
+  const openMenu = (row: SysParamTypes.ISysParam, anchorEl: HTMLButtonElement) => {
     setSelectedRow(row);
     setActionIconButton(anchorEl);
     setMenuOpen(true);
@@ -81,23 +79,18 @@ const usePriceListActions = () => {
   };
 
   const isCreateModalOpen = modalState.type === 'create' && modalState.open;
-
   const isEditModalOpen = modalState.type === 'edit' && modalState.open;
-
   const isDeleteModalOpen = modalState.type === 'delete' && modalState.open;
 
   return {
     selectedRow,
     actionIconButton,
     menuOpen,
-
     isCreateModalOpen,
     isEditModalOpen,
     isDeleteModalOpen,
-
     openMenu,
     closeMenu,
-
     openCreateModal,
     openEditModal,
     openDeleteModal,
@@ -105,4 +98,4 @@ const usePriceListActions = () => {
   };
 };
 
-export default usePriceListActions;
+export default useSysParamActions;

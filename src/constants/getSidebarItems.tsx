@@ -99,7 +99,7 @@ const getSidebarItems = (role: UserTypes.ICurrentUser['role'] | ''): UserTypes.I
           key: 'sistem-parametreleri',
           label: 'Sistem Parametreleri',
           icon: <Settings />,
-          path: 'panel/sistem-parametreleri',
+          path: '/panel/sistem-parametreleri',
         },
       ]
     : []),

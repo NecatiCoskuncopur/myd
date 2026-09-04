@@ -5,17 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/DeleteSysParam.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/FilterSection.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/CreateSysParamForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/FormItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/Forms/UpdateSysParamForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/MaskedValueCell.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/SysParamActionsMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/columns.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParamActions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceListActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceListActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/SystemParamSchema.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/SystemParam.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/updateSysParam.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/updateSysParam.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,11 +81,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\SysParams" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\lib\carriers\fedex" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\constants" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Shipping" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Auth" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Account" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -201,7 +208,7 @@
       <workItem from="1788440325161" duration="4461000" />
       <workItem from="1788450872483" duration="15496000" />
       <workItem from="1788480738489" duration="203000" />
-      <workItem from="1788528610965" duration="6844000" />
+      <workItem from="1788528610965" duration="15330000" />
     </task>
     <servers />
   </component>

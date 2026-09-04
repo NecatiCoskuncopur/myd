@@ -13,7 +13,7 @@ export const proxy = auth(request => {
   const isUserRoute = pathname.startsWith('/kullanici');
   const isPanelRoute = pathname.startsWith('/panel');
   const isManagementRoute = pathname.startsWith('/panel/yonetim');
-  const isSystemParamRoute = pathname.startsWith('panel/sistem-parametreleri');
+  const isSystemParamRoute = pathname.startsWith('/panel/sistem-parametreleri');
 
   if (isAuthenticated && isUserRoute) {
     return NextResponse.redirect(new URL('/panel', request.url));
@@ -35,5 +35,5 @@ export const proxy = auth(request => {
 });
 
 export const config = {
-  matcher: ['/panel/:path*', '/kullanici/:path*', 'panel/sistem-parametreleri/:path*'],
+  matcher: ['/panel/:path*', '/kullanici/:path*', '/panel/sistem-parametreleri/:path*'],
 };

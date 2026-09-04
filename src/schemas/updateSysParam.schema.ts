@@ -1,11 +1,11 @@
 import * as yup from 'yup';
 
 import { sysParamMessages } from '@/constants';
-import createShippingSchema from '@/schemas/createShipping.schema';
+import createSysParamSchema from '@/schemas/createSysParam.schema';
 
 const { ID } = sysParamMessages;
 
-const updateSysParam = createShippingSchema.shape({
+const updateSysParam = createSysParamSchema.shape({
   paramId: yup.string().typeError(ID.TYPE).required(ID.REQUIRED),
 });
 
