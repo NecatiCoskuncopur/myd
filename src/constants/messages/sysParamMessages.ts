@@ -21,9 +21,12 @@ const sysParamMessages = {
     REQUIRED: 'Parametre ID zorunludur.',
   },
   UPDATE: {
-    NOT_FOUND: 'Sistem parametresi bulunamadı.',
     SUCCESS: 'Sistem parametresi başarıyla güncellendi.',
   },
+  DELETE: {
+    SUCCESS: 'Sistem parametresi başarıyla silindi.',
+  },
+  NOT_FOUND: 'Sistem parametresi bulunamadı.',
 } as const;
 
 export default sysParamMessages;

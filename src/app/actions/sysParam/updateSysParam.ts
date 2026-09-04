@@ -11,7 +11,7 @@ import SystemParam from '@/models/SystemParamSchema.model';
 import updateSysParamSchema from '@/schemas/updateSysParam.schema';
 
 const { UNEXPECTED_ERROR } = generalMessages;
-const { UPDATE, KEY } = sysParamMessages;
+const { KEY, NOT_FOUND, UPDATE } = sysParamMessages;
 
 const updateSysParam = async (data: SysParamTypes.IUpdateSysParamPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
@@ -41,7 +41,7 @@ const updateSysParam = async (data: SysParamTypes.IUpdateSysParamPayload): Promi
     if (!updatedSysParam) {
       return {
         status: 'ERROR',
-        message: UPDATE.NOT_FOUND,
+        message: NOT_FOUND,
       };
     }
 
