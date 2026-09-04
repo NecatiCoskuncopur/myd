@@ -1,4 +1,16 @@
-import { AddBox, AttachMoney, Build, Dashboard, FormatListNumbered, GroupRemove, ListAlt, LocalShipping, Person, RocketLaunch } from '@mui/icons-material';
+import {
+  AddBox,
+  AttachMoney,
+  Build,
+  Dashboard,
+  FormatListNumbered,
+  GroupRemove,
+  ListAlt,
+  LocalShipping,
+  Person,
+  RocketLaunch,
+  Settings,
+} from '@mui/icons-material';
 
 import { UserTypes } from '@/types/user';
 
@@ -78,6 +90,16 @@ const getSidebarItems = (role: UserTypes.ICurrentUser['role'] | ''): UserTypes.I
               path: '/panel/yonetim/kargo-hesaplari',
             },
           ],
+        },
+      ]
+    : []),
+  ...(role === 'ADMIN'
+    ? [
+        {
+          key: 'sistem-parametreleri',
+          label: 'Sistem Parametreleri',
+          icon: <Settings />,
+          path: 'panel/sistem-parametreleri',
         },
       ]
     : []),

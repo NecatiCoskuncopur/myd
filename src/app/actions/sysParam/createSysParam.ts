@@ -7,7 +7,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
-import SystemParam from '@/models/SystemParamSchema.model';
+import { SystemParam } from '@/models';
 import createSysParamSchema from '@/schemas/createSysParam.schema';
 
 const { UNEXPECTED_ERROR } = generalMessages;

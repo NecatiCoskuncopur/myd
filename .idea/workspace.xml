@@ -5,9 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/panel/sistem-parametreleri/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/sysParam.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/sysParam.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/getSidebarItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/SystemParamSchema.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/SystemParam.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proxy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +201,7 @@
       <workItem from="1788440325161" duration="4461000" />
       <workItem from="1788450872483" duration="15496000" />
       <workItem from="1788480738489" duration="203000" />
-      <workItem from="1788528610965" duration="5672000" />
+      <workItem from="1788528610965" duration="6844000" />
     </task>
     <servers />
   </component>

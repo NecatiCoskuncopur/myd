@@ -5,7 +5,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import serialize from '@/lib/serialize';
-import SystemParam from '@/models/SystemParamSchema.model';
+import { SystemParam } from '@/models';
 
 const { UNEXPECTED_ERROR } = generalMessages;
 
