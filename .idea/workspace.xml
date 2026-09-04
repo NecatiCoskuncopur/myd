@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/uploadFedexDocument.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/carriers/ups/uploadUpsDocument.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/messages/sysParamMessages.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/SystemParamSchema.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="357" />
+    <option name="cachedIndexableFilesCount" value="363" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -193,7 +193,9 @@
       <workItem from="1788345128165" duration="9929000" />
       <workItem from="1788359996463" duration="9519000" />
       <workItem from="1788440325161" duration="4461000" />
-      <workItem from="1788450872483" duration="14709000" />
+      <workItem from="1788450872483" duration="15496000" />
+      <workItem from="1788480738489" duration="203000" />
+      <workItem from="1788528610965" duration="1242000" />
     </task>
     <servers />
   </component>
