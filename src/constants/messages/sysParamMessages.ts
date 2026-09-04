@@ -16,6 +16,14 @@ const sysParamMessages = {
   CREATE: {
     SUCCESS: 'Sistem parametresi başarıyla oluşturuldu.',
   },
+  ID: {
+    TYPE: 'Parametre ID metin tipinde olmalıdır.',
+    REQUIRED: 'Parametre ID zorunludur.',
+  },
+  UPDATE: {
+    NOT_FOUND: 'Sistem parametresi bulunamadı.',
+    SUCCESS: 'Sistem parametresi başarıyla güncellendi.',
+  },
 } as const;
 
 export default sysParamMessages;
