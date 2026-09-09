@@ -2,7 +2,8 @@
 
 import { ValidationError } from 'yup';
 
-import { generalMessages, INSURANCE_RATE, shippingMessages, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingPayor, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import calculateCustomsTax from '@/lib/calculateCustomsTax';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -72,6 +73,9 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       });
     }
 
+    const country = consigneeDoc?.address?.country;
+    const customsTaxAmount = validatedData.detail.payor?.customs === ShippingPayor.SENDER ? await calculateCustomsTax(totalProductValue, country!) : 0;
+
     const shipping = await Shipping.create({
       userId,
       sender: {
@@ -97,6 +101,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
       content: {
         ...validatedData.content,
         insuranceAmount,
+        customsTaxAmount,
       },
 
       package: {

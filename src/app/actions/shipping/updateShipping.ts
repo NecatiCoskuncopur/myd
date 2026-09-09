@@ -3,7 +3,8 @@
 import { Types } from 'mongoose';
 import { ValidationError } from 'yup';
 
-import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingPayor, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import calculateCustomsTax from '@/lib/calculateCustomsTax';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -79,12 +80,13 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
     const totalProductValue = Number(rest.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
     const insuranceAmount = rest.content.insurance ? Number((totalProductValue * INSURANCE_RATE).toFixed(2)) : 0;
+    const customsTaxAmount = rest.detail.payor?.customs === ShippingPayor.SENDER ? await calculateCustomsTax(totalProductValue, consignee.address.country) : 0;
 
     const content = {
       ...rest.content,
       insuranceAmount,
+      customsTaxAmount,
     };
-
     if (consignee?._id) {
       const { _id: consigneeId, ...consigneeData } = consignee;
 

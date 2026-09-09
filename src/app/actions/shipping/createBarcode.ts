@@ -1,19 +1,9 @@
 'use server';
 
-import {
-  carrierMessages,
-  generalMessages,
-  pricingListMessages,
-  shippingMessages,
-  ShippingPayor,
-  ShippingStatus,
-  TrackingStatusEnum,
-  userMessages,
-} from '@/constants';
+import { carrierMessages, generalMessages, pricingListMessages, shippingMessages, ShippingStatus, TrackingStatusEnum, userMessages } from '@/constants';
 import applyBalanceTransaction from '@/lib/applyBalanceTransaction';
 import captureActionError from '@/lib/captureActionError';
 import createCarrierPaper from '@/lib/carriers/createCarrierPaper';
-import getCarrierTaxAmount from '@/lib/carriers/getCarrierTaxAmount';
 import connectMongoDB from '@/lib/db';
 import getCarrierCost from '@/lib/getCarrierCost';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -158,17 +148,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     const insuranceAmount = shipping.content?.insurance ? (shipping.content.insuranceAmount ?? 0) : 0;
 
     const shippingInstance = JSON.parse(JSON.stringify(shipping));
-
-    const taxAmount =
-      shipping?.detail?.payor?.customs === ShippingPayor.SENDER
-        ? await getCarrierTaxAmount({
-            firm,
-            credentials: carrierAccount.credentials,
-            shippingInstance,
-            accountType: carrierAccount.accountType,
-            cost: carrierCost,
-          })
-        : 0;
+    const taxAmount = shipping?.content?.customsTaxAmount ?? 0;
 
     const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount).toFixed(2));
 

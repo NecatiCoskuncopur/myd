@@ -135,10 +135,11 @@ const ShippingActionsMenu = ({
             });
 
             const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
+            const taxAmount = selectedRow?.content.customsTaxAmount ?? 0;
 
-            const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount).toFixed(2)) : null;
+            const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount).toFixed(2)) : null;
 
-            const totalCost = cost != null ? Number((cost + insuranceAmount).toFixed(2)) : null;
+            const totalCost = cost != null ? Number((cost + insuranceAmount + taxAmount).toFixed(2)) : null;
 
             return (
               <MenuItem key={account._id} onClick={() => onCreateBarcode(account)}>

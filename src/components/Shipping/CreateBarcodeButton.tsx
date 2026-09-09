@@ -175,7 +175,8 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                 });
 
                 const insuranceAmount = shipping?.content.insuranceAmount ?? 0;
-                const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount).toFixed(2)) : null;
+                const taxAmount = shipping?.content.customsTaxAmount ?? 0;
+                const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount).toFixed(2)) : null;
                 return (
                   <Box
                     key={account._id}

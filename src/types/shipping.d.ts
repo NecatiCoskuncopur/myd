@@ -73,6 +73,7 @@ declare namespace ShippingTypes {
     freight?: number;
     insurance?: boolean;
     insuranceAmount?: number;
+    customsTaxAmount: number;
     products: IProduct[];
   }
 
