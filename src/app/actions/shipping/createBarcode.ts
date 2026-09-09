@@ -19,6 +19,7 @@ import getCarrierCost from '@/lib/getCarrierCost';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { CarrierAccount, Shipping, User } from '@/models';
+import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
@@ -26,6 +27,7 @@ const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string }>> => {
   try {
     await connectMongoDB();
+
     const currentUser = await getCurrentUser();
 
     if (!currentUser?.id) {
@@ -37,7 +39,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
 
     const { id: userId, role } = currentUser;
 
-    const { shippingId, firm, displayName, accountNumber, carrierAccountId, customInfo, hasCustomInfo } = data;
+    const { shippingId, firm, displayName, accountNumber, carrierAccountId } = data;
 
     const user = await User.findById(userId).lean();
 
@@ -78,6 +80,24 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
+    const hasCustomInfo = carrierAccount.hasCustomInfo;
+    const customInfo: CarrierAccountTypes.ICustomInfo | undefined =
+      hasCustomInfo && carrierAccount.customInfo
+        ? {
+            firstName: carrierAccount.customInfo.firstName ?? '',
+            lastName: carrierAccount.customInfo.lastName ?? '',
+            company: carrierAccount.customInfo.company ?? '',
+            phone: carrierAccount.customInfo.phone ?? '',
+            email: carrierAccount.customInfo.email ?? '',
+            address: {
+              line1: carrierAccount.customInfo.address?.line1 ?? '',
+              line2: carrierAccount.customInfo.address?.line2 ?? '',
+              district: carrierAccount.customInfo.address?.district ?? '',
+              postalCode: carrierAccount.customInfo.address?.postalCode ?? '',
+              city: carrierAccount.customInfo.address?.city ?? '',
+            },
+          }
+        : undefined;
     const hasPermission = user.barcodePermits?.some((permitId: string) => permitId.toString() === carrierAccount._id.toString());
 
     if (!hasPermission) {
@@ -182,6 +202,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
     shipping.status = ShippingStatus.LABELED;
     shipping.trackStatus = TrackingStatusEnum.CREATED;
     shipping.labeledAt = new Date();
+
     await shipping.save();
 
     return {

@@ -18,7 +18,30 @@ type UpsPackageResult = {
     GraphicImage?: string;
   };
 };
-const BASE_URL = 'https://www.sandbox.ups.com';
+
+type UpsShipmentResponse = {
+  ShipmentResponse?: {
+    ShipmentResults?: {
+      ShipmentIdentificationNumber?: string;
+      PackageResults?: UpsPackageResult | UpsPackageResult[];
+      Form?: {
+        Image?: {
+          GraphicImage?: string;
+        };
+      };
+    };
+  };
+};
+
+const BASE_URL = 'https://wwwcie.ups.com';
+
+const parseResponse = (responseText: string): unknown => {
+  try {
+    return JSON.parse(responseText);
+  } catch {
+    return responseText;
+  }
+};
 
 const createUpsPaper = async ({
   shippingInstance,
@@ -33,35 +56,79 @@ const createUpsPaper = async ({
   label: string;
   invoice: string;
 }> => {
-  const authRes = await fetch(`${BASE_URL}/api/oauth/v1/token`, {
+  const authRes = await fetch(`${BASE_URL}/security/v1/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Base64 ${Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString('base64')}`,
     },
     body: new URLSearchParams({
       grant_type: 'client_credentials',
     }),
   });
 
-  if (!authRes.ok) throw new Error(AUTH_FAILED);
+  const authResponseText = await authRes.text();
+  const authResponseData = parseResponse(authResponseText);
 
-  const authData = await authRes.json();
-  const accessToken = authData.access_token;
+  if (!authRes.ok) {
+    const error = new Error(
+      `${AUTH_FAILED}: HTTP ${authRes.status} ${authRes.statusText} - ${
+        typeof authResponseData === 'string' ? authResponseData : JSON.stringify(authResponseData)
+      }`,
+    );
+
+    Sentry.captureException(error, {
+      tags: {
+        carrier: 'UPS',
+        stage: 'AUTH',
+        accountNumber,
+      },
+      extra: {
+        shippingId,
+        accountNumber,
+        responseStatus: authRes.status,
+        responseBody: authResponseData,
+      },
+    });
+
+    throw error;
+  }
+
+  if (!authResponseData || typeof authResponseData !== 'object' || !('access_token' in authResponseData)) {
+    throw new Error(`${AUTH_FAILED}: UPS response içerisinde access_token bulunamadı.`);
+  }
+
+  const accessToken = String((authResponseData as Record<string, unknown>).access_token);
   const { content, consignee, detail, sender, package: pkg } = shippingInstance;
   const totalValue = Number(content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0).toFixed(2));
-  const shipperData = {
-    name: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name),
-    attentionName: latinize(hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : sender.nickname || sender.name),
-    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
-    email: hasCustomInfo && customInfo ? customInfo.email : sender.email,
-    addressLine: [
-      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : sender.address.line1),
-      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 : sender.address.line2),
-    ].filter(Boolean),
-    city: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
-    postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
+  const useCustomInfo = hasCustomInfo && Boolean(customInfo);
+
+  const rawShipperData = {
+    name: useCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name,
+    attentionName: useCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : sender.nickname || sender.name,
+    phoneNumber: useCustomInfo && customInfo ? customInfo.phone : sender.phone,
+    email: useCustomInfo && customInfo ? customInfo.email : sender.email,
+    addressLine1: useCustomInfo && customInfo ? customInfo.address?.line1 : sender.address.line1,
+    addressLine2: useCustomInfo && customInfo ? customInfo.address?.line2 : sender.address.line2,
+    district: useCustomInfo && customInfo ? customInfo.address?.district : sender.address.district,
+    city: useCustomInfo && customInfo ? customInfo.address?.city : sender.address.city,
+    postalCode: useCustomInfo && customInfo ? customInfo.address?.postalCode : sender.address.postalCode,
     countryCode: 'TR',
+  };
+
+  const shipperData = {
+    name: latinize(rawShipperData.name),
+    attentionName: latinize(rawShipperData.attentionName),
+    phoneNumber: rawShipperData.phoneNumber,
+    email: rawShipperData.email,
+    addressLine: [
+      rawShipperData.addressLine1 ? latinize(rawShipperData.addressLine1) : undefined,
+      rawShipperData.addressLine2 ? latinize(rawShipperData.addressLine2) : undefined,
+      rawShipperData.district ? latinize(rawShipperData.district) : undefined,
+    ].filter((value): value is string => Boolean(value)),
+    city: rawShipperData.city ? latinize(rawShipperData.city) : '',
+    postalCode: rawShipperData.postalCode,
+    countryCode: rawShipperData.countryCode,
   };
 
   const recipientData = {
@@ -70,8 +137,11 @@ const createUpsPaper = async ({
     phoneNumber: consignee.phone ? String(consignee.phone).replace('-', '') : '11111111111',
     email: consignee.email,
     taxId: consignee.taxId,
-    addressLine: [latinize(consignee.address.line1), latinize(consignee.address.line2)].filter(Boolean),
-    city: latinize(consignee.address.city),
+    addressLine: [
+      consignee.address.line1 ? latinize(consignee.address.line1) : undefined,
+      consignee.address.line2 ? latinize(consignee.address.line2) : undefined,
+    ].filter((value): value is string => Boolean(value)),
+    city: consignee.address.city ? latinize(consignee.address.city) : '',
     postalCode: consignee.address.postalCode.split('-')[0],
     state: consignee.address.state,
     countryCode: consignee.address.country,
@@ -156,7 +226,8 @@ const createUpsPaper = async ({
             },
             Contacts: {
               SoldTo: {
-                Name: latinize(consignee.company) || latinize(consignee.name),
+                Name: consignee.company ? latinize(consignee.company) : latinize(consignee.name),
+
                 AttentionName: latinize(consignee.name),
                 Phone: {
                   Number: consignee.phone ? consignee.phone : '11111111111',
@@ -164,8 +235,12 @@ const createUpsPaper = async ({
                 EMailAddress: consignee.email,
                 TaxIdentificationNumber: consignee.taxId,
                 Address: {
-                  AddressLine: [latinize(consignee.address.line1), latinize(consignee.address.line2)],
-                  City: latinize(consignee.address.city),
+                  AddressLine: [
+                    consignee.address.line1 ? latinize(consignee.address.line1) : undefined,
+                    consignee.address.line2 ? latinize(consignee.address.line2) : undefined,
+                  ].filter((value): value is string => Boolean(value)),
+
+                  City: consignee.address.city ? latinize(consignee.address.city) : '',
                   StateProvinceCode: consignee.address.state,
                   PostalCode: consignee.address.postalCode.split('-')[0],
                   CountryCode: consignee.address.country,
@@ -231,24 +306,34 @@ const createUpsPaper = async ({
     },
     body: JSON.stringify(payload),
   });
+  const shipmentResponseText = await shipmentRes.text();
+  const shipmentResponseData = parseResponse(shipmentResponseText);
 
   if (!shipmentRes.ok) {
-    const responseText = await shipmentRes.text();
-    let errorData: CarrierAccountTypes.ICarrierErrorResponse | string;
-    try {
-      errorData = JSON.parse(responseText) as CarrierAccountTypes.ICarrierErrorResponse;
-    } catch {
-      errorData = responseText;
-    }
+    const errorData = shipmentResponseData as CarrierAccountTypes.ICarrierErrorResponse | string;
     const error = new Error(
       `${SHIPMENT_FAILED}: HTTP ${shipmentRes.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData.errors || errorData)}`,
     );
 
     Sentry.captureException(error, {
+      tags: {
+        carrier: 'UPS',
+        stage: 'CREATE_SHIPMENT',
+        accountNumber,
+      },
+
       extra: {
-        senderName: shipperData.name,
-        senderEmail: shipperData.email,
-        upsError: typeof errorData === 'string' ? errorData : errorData.errors || errorData,
+        shippingId,
+        accountNumber,
+        accountType,
+        serviceType,
+
+        hasCustomInfo,
+        customInfoExists: Boolean(customInfo),
+
+        shipperData,
+        recipientData,
+
         responseStatus: shipmentRes.status,
         responseBody: errorData,
       },
@@ -257,9 +342,8 @@ const createUpsPaper = async ({
     throw error;
   }
 
-  const shipmentData = await shipmentRes.json();
+  const shipmentData = shipmentResponseData as UpsShipmentResponse;
   const shipmentResults = shipmentData?.ShipmentResponse?.ShipmentResults;
-
   const trackingNumber = shipmentResults?.ShipmentIdentificationNumber;
   if (!trackingNumber) {
     throw new Error(TRACKING_NUMBER_NOT_FOUND);
@@ -270,7 +354,6 @@ const createUpsPaper = async ({
     : shipmentResults?.PackageResults
       ? [shipmentResults.PackageResults]
       : [];
-
   const packageLabels: string[] = [];
 
   for (const [index, packageResult] of packageResults.entries()) {
@@ -283,6 +366,7 @@ const createUpsPaper = async ({
         extra: {
           packageIndex: index + 1,
           trackingNumber,
+          accountNumber,
         },
       });
 
@@ -309,7 +393,12 @@ const createUpsPaper = async ({
   const saveDocumentResult = await saveShippingDocument({
     shippingId,
     label,
-    ...(invoice ? { invoice } : {}),
+
+    ...(invoice
+      ? {
+          invoice,
+        }
+      : {}),
   });
 
   if (saveDocumentResult.status === 'ERROR') {

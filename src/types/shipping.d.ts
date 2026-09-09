@@ -164,8 +164,6 @@ declare namespace ShippingTypes {
     shippingId: string;
     firm: Carrier;
     displayName: string;
-    hasCustomInfo: boolean;
-    customInfo?: CarrierAccountTypes.ICustomInfo;
     accountNumber: string;
     carrierAccountId: string;
   }

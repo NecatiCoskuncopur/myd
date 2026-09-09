@@ -81,8 +81,6 @@ const AdminShippingList = () => {
 
     try {
       const response = await createBarcode({
-        customInfo: account.customInfo,
-        hasCustomInfo: Boolean(account.hasCustomInfo),
         displayName: account.displayName,
         shippingId,
         firm: account.carrier,

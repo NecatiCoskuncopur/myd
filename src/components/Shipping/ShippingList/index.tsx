@@ -74,8 +74,6 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
         firm: account.carrier as Carrier,
         accountNumber: account.accountNumber,
         displayName: account.displayName,
-        hasCustomInfo: Boolean(account.hasCustomInfo),
-        customInfo: account.customInfo,
       });
 
       if (response.status === 'ERROR') {

@@ -84,8 +84,6 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
 
       try {
         const res = await createBarcode({
-          customInfo: selectedAccount.customInfo,
-          hasCustomInfo: !!selectedAccount.hasCustomInfo,
           displayName: selectedAccount.displayName!,
           shippingId: shipping._id,
           firm: selectedAccount.carrier as Carrier,

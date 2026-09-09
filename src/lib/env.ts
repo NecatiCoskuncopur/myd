@@ -16,5 +16,4 @@ if (!env.AUTH_SECRET) {
   throw new Error('AUTH_SECRET environment variable is not defined');
 }
 
-
 export default env;
