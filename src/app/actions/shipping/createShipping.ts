@@ -2,11 +2,12 @@
 
 import { ValidationError } from 'yup';
 
-import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingPayor, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, shippingMessages, ShippingPayor, userMessages, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import calculateCustomsTax from '@/lib/calculateCustomsTax';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import getInsuranceRate from '@/lib/getInsuranceRate';
 import { Consignee, Shipping, User } from '@/models';
 import createShippingSchema from '@/schemas/createShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
@@ -50,7 +51,8 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
 
     const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
-    const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * INSURANCE_RATE).toFixed(2)) : 0;
+    const insuranceRate = await getInsuranceRate();
+    const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * (insuranceRate / 100)).toFixed(2)) : 0;
 
     let consigneeDoc;
 

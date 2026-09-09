@@ -3,11 +3,12 @@
 import { Types } from 'mongoose';
 import { ValidationError } from 'yup';
 
-import { generalMessages, INSURANCE_RATE, shippingMessages, ShippingPayor, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
+import { generalMessages, shippingMessages, ShippingPayor, ShippingStatus, UserRole, VOLUMETRIC_WEIGHT_DIVISOR } from '@/constants';
 import calculateCustomsTax from '@/lib/calculateCustomsTax';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import getInsuranceRate from '@/lib/getInsuranceRate';
 import { Consignee, Shipping } from '@/models';
 import updateShippingSchema from '@/schemas/updateShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
@@ -79,7 +80,8 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
 
     const totalProductValue = Number(rest.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
-    const insuranceAmount = rest.content.insurance ? Number((totalProductValue * INSURANCE_RATE).toFixed(2)) : 0;
+    const insuranceRate = await getInsuranceRate();
+    const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * (insuranceRate / 100)).toFixed(2)) : 0;
     const customsTaxAmount = rest.detail.payor?.customs === ShippingPayor.SENDER ? await calculateCustomsTax(totalProductValue, consignee.address.country) : 0;
 
     const content = {
