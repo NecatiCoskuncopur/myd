@@ -3,7 +3,7 @@ import latinize from 'latinize';
 import moment from 'moment';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
-import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import uploadUpsDocument from '@/lib/carriers/ups/uploadUpsDocument';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { ShippingDocument } from '@/models';
@@ -33,8 +33,6 @@ type UpsShipmentResponse = {
   };
 };
 
-const BASE_URL = 'https://wwwcie.ups.com';
-
 const parseResponse = (responseText: string): unknown => {
   try {
     return JSON.parse(responseText);
@@ -56,7 +54,7 @@ const createUpsPaper = async ({
   label: string;
   invoice: string;
 }> => {
-  const authRes = await fetch(`${BASE_URL}/security/v1/oauth/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.UPS}/security/v1/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -298,7 +296,7 @@ const createUpsPaper = async ({
     });
   }
 
-  const shipmentRes = await fetch(`${BASE_URL}/api/shipments/v1/ship`, {
+  const shipmentRes = await fetch(`${carrierBaseUrl.UPS}/api/shipments/v1/ship`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

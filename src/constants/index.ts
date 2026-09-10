@@ -37,3 +37,4 @@ export { default as welcomeMail } from './mailTemplates/welcome.mail';
 export { default as TrackingStatusEnum } from './enums/trackingStatusEnum';
 export { default as TrackingStatusLabels } from './trackingStatusLabels';
 export { default as sysParamMessages } from './messages/sysParamMessages';
+export { default as carrierBaseUrl } from './carrierBaseUrl';

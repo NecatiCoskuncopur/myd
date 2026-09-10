@@ -1,13 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { carrierBaseUrl } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
-
-const BASE_URL = 'https://wwwcie.ups.com';
 
 const trackUpsShipping = async (params: CarrierTypes.ITrackingParams) => {
   const { credentials, trackingNumber } = params;
 
-  const authRes = await fetch(`${BASE_URL}/api/oauth/v1/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.UPS}/api/oauth/v1/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -29,7 +28,7 @@ const trackUpsShipping = async (params: CarrierTypes.ITrackingParams) => {
         operation: 'TRACK_SHIPMENT_AUTH',
         responseStatus: authRes.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/api/oauth/v1/token`,
+        endpoint: `${carrierBaseUrl.UPS}/api/oauth/v1/token`,
         trackingNumber,
       },
     });
@@ -46,7 +45,7 @@ const trackUpsShipping = async (params: CarrierTypes.ITrackingParams) => {
     returnPOD: 'false',
   }).toString();
 
-  const endpoint = `${BASE_URL}/api/track/v1/details/${encodeURIComponent(trackingNumber)}?${query}`;
+  const endpoint = `${carrierBaseUrl.UPS}/api/track/v1/details/${encodeURIComponent(trackingNumber)}?${query}`;
 
   const trackingRes = await fetch(endpoint, {
     method: 'GET',

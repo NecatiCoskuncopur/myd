@@ -2,13 +2,11 @@ import * as Sentry from '@sentry/node';
 import latinize from 'latinize';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
-import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 
 const { SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
-
-const BASE_URL = 'https://api.quickshipper.com/api/affiliate/shipments/addshipmentbroker';
 
 const createQuickShipperPaper = async ({
   shippingInstance,
@@ -95,7 +93,7 @@ const createQuickShipperPaper = async ({
     })),
   };
 
-  const response = await fetch(BASE_URL, {
+  const response = await fetch(`${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/addshipmentbroker`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

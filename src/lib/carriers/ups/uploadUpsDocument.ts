@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import moment from 'moment';
 
-const DOCUMENT_BASE_URL = 'https://wwwcie.ups.com/api';
+import { carrierBaseUrl } from '@/constants';
 
 type UploadUpsDocumentParams = {
   accessToken: string;
@@ -86,7 +86,7 @@ const uploadUpsDocument = async ({ accessToken, accountNumber, shipmentIdentifie
   let uploadResponse: Response;
 
   try {
-    uploadResponse = await fetch(`${DOCUMENT_BASE_URL}/paperlessdocuments/v2/upload`, {
+    uploadResponse = await fetch(`${carrierBaseUrl.UPS}/api/paperlessdocuments/v2/upload`, {
       method: 'POST',
       headers,
       body: JSON.stringify(uploadPayload),
@@ -183,9 +183,6 @@ const uploadUpsDocument = async ({ accessToken, accountNumber, shipmentIdentifie
     throw error;
   }
 
-  /*
-   * 2. Yüklenen belgeyi shipment'a bağla.
-   */
   const shipmentDateAndTime = moment().format('YYYY-MM-DD-HH.mm.ss');
 
   const imagePayload = {
@@ -209,7 +206,7 @@ const uploadUpsDocument = async ({ accessToken, accountNumber, shipmentIdentifie
   let imageResponse: Response;
 
   try {
-    imageResponse = await fetch(`${DOCUMENT_BASE_URL}/paperlessdocuments/v2/image`, {
+    imageResponse = await fetch(`${carrierBaseUrl.UPS}/api/paperlessdocuments/v2/image`, {
       method: 'POST',
       headers: {
         ...headers,

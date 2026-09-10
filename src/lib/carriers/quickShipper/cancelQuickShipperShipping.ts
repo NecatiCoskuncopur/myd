@@ -1,13 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { carrierBaseUrl } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
-
-const BASE_URL = 'https://api.quickshipper.com';
 
 const cancelQuickShipperShipping = async (params: CarrierTypes.ICancelShippingParams) => {
   const { accountNumber, credentials, trackingNumber } = params;
 
-  const endpoint = `${BASE_URL}/api/affiliate/shipments/deleteShipment?AWBNumber=${encodeURIComponent(trackingNumber)}`;
+  const endpoint = `${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/deleteShipment?AWBNumber=${encodeURIComponent(trackingNumber)}`;
 
   const response = await fetch(endpoint, {
     method: 'POST',

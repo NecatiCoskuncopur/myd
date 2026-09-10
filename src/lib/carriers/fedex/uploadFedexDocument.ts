@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-const DOCUMENT_BASE_URL = 'https://documentapitest.prod.fedex.com/sandbox';
+import { carrierBaseUrl } from '@/constants';
 
 type UploadFedexDocumentParams = {
   accessToken: string;
@@ -41,7 +41,7 @@ const uploadFedexDocument = async ({
 
   const fileName = `additional-document-${trackingNumber}.pdf`;
   const shipmentTimestamp = `${shipmentDate}T00:00:00`;
-  const endpoint = `${DOCUMENT_BASE_URL}/documents/v1/etds/upload`;
+  const endpoint = `${carrierBaseUrl.FEDEXDOCUMENT}/documents/v1/etds/upload`;
 
   const documentMetadata = {
     workflowName: 'ETDPostshipment',

@@ -1,16 +1,14 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { carrierMessages } from '@/constants';
+import { carrierBaseUrl, carrierMessages } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
 
 const { AUTH_FAILED } = carrierMessages;
 
-const BASE_URL = 'https://apis-sandbox.fedex.com';
-
 const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) => {
   const { accountNumber, credentials, trackingNumber } = params;
 
-  const authRes = await fetch(`${BASE_URL}/oauth/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.FEDEX}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -31,7 +29,7 @@ const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) =
       extra: {
         responseStatus: authRes.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/oauth/token`,
+        endpoint: `${carrierBaseUrl.FEDEX}/oauth/token`,
       },
     });
 
@@ -49,7 +47,7 @@ const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) =
     trackingNumber,
   };
 
-  const cancelRes = await fetch(`${BASE_URL}/ship/v1/shipments/cancel`, {
+  const cancelRes = await fetch(`${carrierBaseUrl.FEDEX}/ship/v1/shipments/cancel`, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${authData.access_token}`,
@@ -67,7 +65,7 @@ const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) =
       extra: {
         responseStatus: cancelRes.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/ship/v1/shipments/cancel`,
+        endpoint: `${carrierBaseUrl.FEDEX}/ship/v1/shipments/cancel`,
         trackingNumber,
       },
     });

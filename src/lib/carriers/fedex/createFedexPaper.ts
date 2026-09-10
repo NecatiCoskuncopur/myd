@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 import latinize from 'latinize';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
-import { CarrierAccountTypeEnum, carrierMessages } from '@/constants';
+import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { ShippingDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
@@ -11,8 +11,6 @@ import { ShippingTypes } from '@/types/shipping';
 
 import uploadFedexDocument from './uploadFedexDocument';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
-
-const BASE_URL = 'https://apis-sandbox.fedex.com';
 
 const createFedexPaper = async ({
   shippingInstance,
@@ -27,7 +25,7 @@ const createFedexPaper = async ({
   label: string;
   invoice: string;
 }> => {
-  const authRes = await fetch(`${BASE_URL}/oauth/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.FEDEX}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -267,7 +265,7 @@ const createFedexPaper = async ({
     },
   };
 
-  const shipmentRes = await fetch(`${BASE_URL}/ship/v1/shipments`, {
+  const shipmentRes = await fetch(`${carrierBaseUrl.FEDEX}/ship/v1/shipments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

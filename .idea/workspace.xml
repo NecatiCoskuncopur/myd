@@ -5,11 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/getInsuranceRate.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/constants/carrierBaseUrl.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveAdditionalDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shippingDocument/saveAdditionalDocument.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/insuranceRate.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/cancelFedexShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/cancelFedexShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/trackFedexShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/trackFedexShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/uploadFedexDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/uploadFedexDocument.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/getQuickShipperTaxAmount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/getQuickShipperTaxAmount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/trackQuickShipperShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/trackQuickShipperShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/cancelUpsShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/cancelUpsShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/trackUpsShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/trackUpsShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/uploadUpsDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/uploadUpsDocument.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ShippingDocument.model.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +29,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="387" />
+    <option name="cachedIndexableFilesCount" value="386" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -202,6 +214,8 @@
       <workItem from="1788894803507" duration="1000" />
       <workItem from="1788895976450" duration="1538000" />
       <workItem from="1788970650406" duration="5616000" />
+      <workItem from="1789018279599" duration="149000" />
+      <workItem from="1789066618911" duration="1892000" />
     </task>
     <servers />
   </component>

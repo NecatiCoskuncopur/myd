@@ -1,11 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { carrierMessages } from '@/constants';
+import { carrierBaseUrl, carrierMessages } from '@/constants';
 import getSystemParam from '@/lib/getSystemParam';
 
 const { AUTH_FAILED } = carrierMessages;
-
-const BASE_URL = 'https://apis-sandbox.fedex.com';
 
 const trackFedexShipping = async (trackingNumber: string) => {
   const [apiKey, secretKey] = await Promise.all([getSystemParam('FEDEX_TRACKING_API_KEY'), getSystemParam('FEDEX_TRACKING_SECRET_KEY')]);
@@ -14,7 +12,7 @@ const trackFedexShipping = async (trackingNumber: string) => {
     throw new Error('FedEx tracking sistem parametreleri eksik.');
   }
 
-  const authRes = await fetch(`${BASE_URL}/oauth/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.FEDEX}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -37,7 +35,7 @@ const trackFedexShipping = async (trackingNumber: string) => {
         operation: 'TRACK_SHIPMENT_AUTH',
         responseStatus: authRes.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/oauth/token`,
+        endpoint: `${carrierBaseUrl.FEDEX}/oauth/token`,
         trackingNumber,
       },
     });
@@ -58,7 +56,7 @@ const trackFedexShipping = async (trackingNumber: string) => {
     ],
   };
 
-  const trackingRes = await fetch(`${BASE_URL}/track/v1/trackingnumbers`, {
+  const trackingRes = await fetch(`${carrierBaseUrl.FEDEX}/track/v1/trackingnumbers`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${authData.access_token}`,
@@ -78,7 +76,7 @@ const trackFedexShipping = async (trackingNumber: string) => {
         operation: 'TRACK_SHIPMENT',
         responseStatus: trackingRes.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/track/v1/trackingnumbers`,
+        endpoint: `${carrierBaseUrl.FEDEX}/track/v1/trackingnumbers`,
         trackingNumber,
       },
     });

@@ -1,13 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { carrierBaseUrl } from '@/constants';
 import { CarrierTypes } from '@/types/carrier';
-
-const BASE_URL = 'https://wwwcie.ups.com';
 
 const cancelUpsShipping = async (params: CarrierTypes.ICancelShippingParams) => {
   const { credentials, trackingNumber } = params;
 
-  const authRes = await fetch(`${BASE_URL}/api/oauth/v1/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.UPS}/security/v1/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -26,7 +25,7 @@ const cancelUpsShipping = async (params: CarrierTypes.ICancelShippingParams) => 
 
   const authData = await authRes.json();
 
-  const response = await fetch(`${BASE_URL}/api/shipments/v2409/void/cancel/${trackingNumber}`, {
+  const response = await fetch(`${carrierBaseUrl.UPS}/api/shipments/v2409/void/cancel/${trackingNumber}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${authData.access_token}`,
@@ -44,7 +43,7 @@ const cancelUpsShipping = async (params: CarrierTypes.ICancelShippingParams) => 
         carrier: 'UPS',
         responseStatus: response.status,
         responseBody: responseText,
-        endpoint: `${BASE_URL}/api/shipments/v2409/void/cancel/${trackingNumber}`,
+        endpoint: `${carrierBaseUrl.UPS}/api/shipments/v2409/void/cancel/${trackingNumber}`,
         trackingNumber,
       },
     });
