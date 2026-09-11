@@ -8,7 +8,7 @@
  * @param base64 - Açılacak PDF dosyasının Base64 formatındaki içeriği
  */
 
-const openBase64Pdf = (base64: string) => {
+const openBase64Pdf = (base64: string, targetWindow?: Window | null) => {
   const binary = atob(base64);
 
   const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
@@ -19,11 +19,15 @@ const openBase64Pdf = (base64: string) => {
 
   const url = URL.createObjectURL(blob);
 
-  window.open(url, '_blank', 'noopener,noreferrer');
+  if (targetWindow) {
+    targetWindow.location.href = url;
+  } else {
+    window.open(url, '_blank');
+  }
 
   setTimeout(() => {
     URL.revokeObjectURL(url);
-  }, 1000);
+  }, 60_000);
 };
 
 export default openBase64Pdf;

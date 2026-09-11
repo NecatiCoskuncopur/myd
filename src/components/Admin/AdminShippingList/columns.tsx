@@ -78,49 +78,94 @@ const columns: GridColDef[] = [
       const { url, hasLink } = getCarrierTrackingUrl(carrierName, trackingNo);
       const icon = getCarrierIcon(carrierName);
 
-      if (hasLink && url) {
-        return (
-          <Link
-            component={NextLink}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 1,
-              color: 'primary.main',
-              fontWeight: 500,
-              textDecoration: 'none',
-              overflow: 'hidden',
-              '&:hover': {
-                textDecoration: 'underline',
-                color: 'primary.dark',
-              },
-            }}
-          >
-            {icon}
-            <Typography
-              component="span"
-              variant="body2"
-              noWrap
+      const content = (
+        <>
+          {icon && (
+            <Box
               sx={{
-                fontWeight: 500,
-                fontSize: '0.875rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+
+                '& svg': {
+                  width: 20,
+                  height: 20,
+                  display: 'block',
+                },
+
+                '& img': {
+                  width: 20,
+                  height: 20,
+                  display: 'block',
+                  objectFit: 'contain',
+                },
               }}
             >
-              {trackingNo}
-            </Typography>
-          </Link>
-        );
-      }
+              {icon}
+            </Box>
+          )}
 
-      return (
-        <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-          {icon && <Box sx={{ display: 'inline-flex', '& svg, & img': { width: 18, height: 18 } }}>{icon}</Box>}
-          <Typography variant="body2" color="text.secondary" noWrap>
+          <Typography
+            component="span"
+            variant="body2"
+            noWrap
+            sx={{
+              fontWeight: 500,
+              fontSize: '0.875rem',
+              lineHeight: 1,
+            }}
+          >
             {trackingNo}
           </Typography>
+        </>
+      );
+
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            minWidth: 0,
+          }}
+        >
+          {hasLink && url ? (
+            <Link
+              component={NextLink}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                minWidth: 0,
+                color: 'primary.main',
+                fontWeight: 500,
+                textDecoration: 'none',
+
+                '&:hover': {
+                  textDecoration: 'underline',
+                  color: 'primary.dark',
+                },
+              }}
+            >
+              {content}
+            </Link>
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                minWidth: 0,
+                color: 'text.secondary',
+              }}
+            >
+              {content}
+            </Box>
+          )}
         </Box>
       );
     },

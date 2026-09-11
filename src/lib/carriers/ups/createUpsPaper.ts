@@ -283,6 +283,10 @@ const createUpsPaper = async ({
         LabelImageFormat: {
           Code: 'PDF',
         },
+        LabelStockSize: {
+          Height: '6',
+          Width: '4',
+        },
       },
     },
   };

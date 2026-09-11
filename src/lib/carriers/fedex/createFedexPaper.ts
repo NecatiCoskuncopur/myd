@@ -82,12 +82,9 @@ const createFedexPaper = async ({
     ].filter(Boolean),
 
     city: latinize(consignee.address.city),
-
     stateOrProvinceCode: consignee.address.state,
     postalCode: String(consignee.address.postalCode).trim(),
-
     countryCode: consignee.address.country,
-
     residential: false,
   };
 
