@@ -6,3 +6,4 @@ export { default as Consignee } from './Consignee.model';
 export { default as Shipping } from './Shipping.model';
 export { default as ShippingDocument } from './ShippingDocument.model';
 export { default as SystemParam } from './SystemParam.model';
+export { default as AdditionalDocument } from './AdditionalDocument.model';
