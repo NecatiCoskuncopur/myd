@@ -61,7 +61,6 @@ const uploadUpsDocument = async ({ accessToken, accountNumber, shipmentIdentifie
     transactionSrc: 'testing',
   };
 
-
   const uploadPayload = {
     UploadRequest: {
       Request: {

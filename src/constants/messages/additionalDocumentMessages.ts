@@ -7,6 +7,13 @@ const additionalDocumentMessages = {
     INVALID: 'Geçersiz belge tipi.',
     REQUIRED: 'Belge tipi zorunludur.',
   },
+  ID: {
+    INVALID: 'Geçersiz belge ID.',
+    NOT_FOUND: 'Belge bulunamadı.',
+  },
+  DELETE: {
+    SUCCESS: 'Belge başarıyla silindi.',
+  },
 } as const;
 
 export default additionalDocumentMessages;

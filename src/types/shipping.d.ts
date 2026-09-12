@@ -8,7 +8,6 @@ import {
   ShippingStatus,
   TrackingStatusEnum,
 } from '@/constants';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace ShippingTypes {
   interface ICalculateShippingPayload {
@@ -117,6 +116,7 @@ declare namespace ShippingTypes {
     status: ShippingStatus;
     trackStatus: TrackingStatusEnum;
     carrier?: ICarrier;
+    additionalDocumentIds: string[];
     labelLink?: string;
     activities?: IActivity[];
     labeledAt?: Date;
@@ -151,6 +151,7 @@ declare namespace ShippingTypes {
     detail: IShippingDetail;
     content: IShippingContent;
     package: IPackage;
+    additionalDocumentIds?: string[];
   }
 
   interface ICreateShippingFormPayload extends ICreateShippingPayload {

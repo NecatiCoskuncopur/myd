@@ -1,3 +1,5 @@
+'use server';
+
 import { ValidationError } from 'yup';
 
 import { AdditionalDocumentContentTypeEnum, generalMessages } from '@/constants';

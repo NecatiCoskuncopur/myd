@@ -132,6 +132,15 @@ const ShippingSchema = new mongoose.Schema(
       insuranceCost: Number,
       dutiesAndTaxesCost: Number,
     },
+    additionalDocumentIds: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'AdditionalDocument',
+        },
+      ],
+      default: [],
+    },
     labelLink: String,
     labeledAt: Date,
     canceledAt: Date,

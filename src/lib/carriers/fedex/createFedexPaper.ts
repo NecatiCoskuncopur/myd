@@ -354,7 +354,7 @@ const createFedexPaper = async ({
     throw new Error(saveLabelResult.message);
   }
 
-/*  if (additionalDocument) {
+  /*  if (additionalDocument) {
     try {
       await uploadFedexDocument({
         accessToken,
