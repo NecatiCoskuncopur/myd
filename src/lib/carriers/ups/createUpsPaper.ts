@@ -149,7 +149,7 @@ const createUpsPaper = async ({
     shippingId,
   }).select('additionalDocument');
 
-  const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
+  // const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
   const payload = {
     ShipmentRequest: {
       Shipment: {
@@ -410,7 +410,7 @@ const createUpsPaper = async ({
     .map((packageResult: UpsPackageResult) => packageResult?.TrackingNumber)
     .filter((value: string | undefined): value is string => Boolean(value));
 
-  if (additionalDocument) {
+  /*  if (additionalDocument) {
     await uploadUpsDocument({
       accessToken,
       accountNumber,
@@ -418,7 +418,7 @@ const createUpsPaper = async ({
       trackingNumbers: trackingNumbers.length ? trackingNumbers : [trackingNumber],
       document: additionalDocument,
     });
-  }
+  }*/
 
   return {
     trackingNumber,

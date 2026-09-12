@@ -94,7 +94,7 @@ const createFedexPaper = async ({
     shippingId,
   }).select('additionalDocument');
 
-  const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
+  // const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
   const shipmentDate = new Date(Date.now() + 86_400_000).toISOString().split('T')[0];
 
   const payload = {
@@ -354,7 +354,7 @@ const createFedexPaper = async ({
     throw new Error(saveLabelResult.message);
   }
 
-  if (additionalDocument) {
+/*  if (additionalDocument) {
     try {
       await uploadFedexDocument({
         accessToken,
@@ -373,7 +373,7 @@ const createFedexPaper = async ({
         },
       });
     }
-  }
+  }*/
 
   const invoice = '';
 

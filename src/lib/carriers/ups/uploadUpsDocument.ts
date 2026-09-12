@@ -61,9 +61,7 @@ const uploadUpsDocument = async ({ accessToken, accountNumber, shipmentIdentifie
     transactionSrc: 'testing',
   };
 
-  /*
-   * 1. Belgeyi UPS Forms History'ye yükle.
-   */
+
   const uploadPayload = {
     UploadRequest: {
       Request: {

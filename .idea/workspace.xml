@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/constants/messages/additionalDocumentMessages.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/schemas/saveAdditionalDocument.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/additionalDocument.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/actions/additionalDocument/saveAdditionalDocument.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/enums/additionalDocumentContentTypeEnum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/enums/additionalDocumentContentTypeEnum.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +204,7 @@
       <workItem from="1789089661972" duration="3182000" />
       <workItem from="1789154580336" duration="290000" />
       <workItem from="1789154900341" duration="5922000" />
-      <workItem from="1789187486977" duration="10831000" />
+      <workItem from="1789187486977" duration="11836000" />
     </task>
     <servers />
   </component>
