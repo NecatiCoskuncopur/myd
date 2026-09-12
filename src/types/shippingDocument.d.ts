@@ -4,9 +4,4 @@ declare namespace ShippingDocumentTypes {
     label?: Buffer;
     invoice?: Buffer;
   }
-
-  interface ISaveAdditionalDocumentPayload {
-    shippingId: string;
-    additionalDocument?: Buffer;
-  }
 }

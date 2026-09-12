@@ -16,10 +16,6 @@ const ShippingDocumentSchema = new Schema(
       type: Buffer,
       required: false,
     },
-    additionalDocument: {
-      type: Buffer,
-      required: false,
-    },
     contentType: {
       type: String,
       required: true,

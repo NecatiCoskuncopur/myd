@@ -12,7 +12,6 @@ import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';
 import { UserTypes } from '@//types/user';
 import createShipping from '@/app/actions/shipping/createShipping';
-import saveAdditionalDocument from '@/app/actions/shippingDocument/saveAdditionalDocument';
 import { TableHeader } from '@/components/index';
 
 import ShippingFormFields from './ShippingFormFields';
@@ -27,9 +26,7 @@ type CreateShippingFormProps = {
 const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
-
   const [isBatchMode, setIsBatchMode] = useState(false);
-  const [additionalDocument, setAdditionalDocument] = useState<File | null>(null);
 
   const methods = useForm<ShippingTypes.ICreateShippingFormPayload>({
     defaultValues: {
@@ -101,24 +98,8 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
 
       const shippingId = response.data._id;
 
-      if (additionalDocument) {
-        const formData = new FormData();
-
-        formData.append('shippingId', shippingId);
-        formData.append('additionalDocument', additionalDocument);
-
-        const documentResponse = await saveAdditionalDocument(formData);
-
-        if (documentResponse.status !== 'OK') {
-          showSnackbar(documentResponse.message ?? UNEXPECTED_ERROR, 'error');
-          return;
-        }
-      }
-
       if (isBatchMode) {
         reset();
-        setAdditionalDocument(null);
-
         showSnackbar(response.message ?? CREATESHIPPING.SUCCESS, 'success');
         return;
       }
@@ -154,7 +135,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields user={user} additionalDocument={additionalDocument} setAdditionalDocument={setAdditionalDocument} />
+          <ShippingFormFields user={user} />
 
           <Box
             sx={{

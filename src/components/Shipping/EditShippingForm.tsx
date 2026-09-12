@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -8,7 +7,6 @@ import updateShipping from '@//app/actions/shipping/updateShipping';
 import { generalMessages, shippingMessages } from '@//constants';
 import { useSnackbar } from '@//providers/SnackbarProvider';
 import { ShippingTypes } from '@//types/shipping';
-import saveAdditionalDocument from '@/app/actions/shippingDocument/saveAdditionalDocument';
 import StyledButton from '@/components/StyledButton';
 
 import ShippingFormFields from './ShippingFormFields';
@@ -22,8 +20,6 @@ type EditShippingFormProps = {
 
 const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
   const { showSnackbar } = useSnackbar();
-
-  const [additionalDocument, setAdditionalDocument] = useState<File | null>(null);
 
   const methods = useForm<ShippingTypes.IUpdateShippingPayload>({
     defaultValues: initialValues,
@@ -42,23 +38,6 @@ const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
         showSnackbar(response.message ?? UNEXPECTED_ERROR, 'error');
 
         return;
-      }
-
-      if (additionalDocument) {
-        const formData = new FormData();
-
-        formData.append('shippingId', values.shippingId);
-        formData.append('additionalDocument', additionalDocument);
-
-        const documentResponse = await saveAdditionalDocument(formData);
-
-        if (documentResponse.status !== 'OK') {
-          showSnackbar(documentResponse.message ?? UNEXPECTED_ERROR, 'error');
-
-          return;
-        }
-
-        setAdditionalDocument(null);
       }
 
       showSnackbar(response.message ?? UPDATESHIPPING.SUCCESS, 'success');
@@ -91,7 +70,7 @@ const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields additionalDocument={additionalDocument} setAdditionalDocument={setAdditionalDocument} />
+          <ShippingFormFields />
 
           <Box
             sx={{
