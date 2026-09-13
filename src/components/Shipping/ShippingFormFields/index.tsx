@@ -1,6 +1,8 @@
-import { usePathname } from 'next/navigation';
+import { Dispatch, SetStateAction } from 'react';
 import { Box } from '@mui/material';
 
+import AdditionalDocumentsSection from '@/components/Shipping/ShippingFormFields/AdditionalDocumentsSection';
+import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { UserTypes } from '@/types/user';
 
 import ConsigneeSection from './ConsigneeSection';
@@ -9,13 +11,21 @@ import PackageDetailSection from './PackageDetailSection';
 import SenderSection from './SenderSection';
 import ShippingDetailSection from './ShippingDetailSection';
 
-type ShippingFormFieldsProps = {
-  user?: UserTypes.UserDto | null;
-};
+type ShippingFormFieldsProps =
+  | {
+      mode: 'create';
+      user?: UserTypes.UserDto | null;
+      setAdditionalDocumentIds: Dispatch<SetStateAction<string[]>>;
+    }
+  | {
+      mode: 'edit';
+      user?: UserTypes.UserDto | null;
+      shippingId: string;
+      initialAdditionalDocuments: AdditionalDocumentTypes.IAdditionalDocument[];
+    };
 
-const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
-  const pathname = usePathname();
-  const isEditMode = pathname.includes('duzenle');
+const ShippingFormFields = (props: ShippingFormFieldsProps) => {
+  const { mode, user } = props;
 
   return (
     <Box
@@ -36,7 +46,22 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
         }}
       >
         <ConsigneeSection />
+
         <ShippingDetailSection />
+
+        {mode === 'create' ? (
+          <AdditionalDocumentsSection
+            mode="create"
+            onDocumentSaved={id => {
+              props.setAdditionalDocumentIds(prev => [...prev, id]);
+            }}
+            onDocumentDeleted={id => {
+              props.setAdditionalDocumentIds(prev => prev.filter(documentId => documentId !== id));
+            }}
+          />
+        ) : (
+          <AdditionalDocumentsSection mode="edit" shippingId={props.shippingId} initialDocuments={props.initialAdditionalDocuments} />
+        )}
       </Box>
 
       <Box
@@ -52,7 +77,7 @@ const ShippingFormFields = ({ user }: ShippingFormFieldsProps) => {
 
         <PackageDetailSection />
 
-        {user?.role !== 'CUSTOMER' && !isEditMode && <SenderSection />}
+        {mode === 'create' && user?.role !== 'CUSTOMER' && <SenderSection />}
       </Box>
     </Box>
   );

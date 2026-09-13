@@ -2,7 +2,7 @@
 
 import { Types } from 'mongoose';
 
-import { additionalDocumentMessages, generalMessages } from '@/constants';
+import { additionalDocumentMessages, generalMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -31,9 +31,15 @@ const deleteAdditionalDocument = async (additionalDocumentId: string): Promise<R
       };
     }
 
+    const canDeleteAnyDocument = [UserRole.OPERATOR, UserRole.ADMIN].includes(currentUser.role);
+
     const document = await AdditionalDocument.findOneAndDelete({
       _id: additionalDocumentId,
-      userId: currentUser.id,
+      ...(canDeleteAnyDocument
+        ? {}
+        : {
+            userId: currentUser.id,
+          }),
     });
 
     if (!document) {

@@ -3,11 +3,12 @@
 import { Box, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import updateShipping from '@//app/actions/shipping/updateShipping';
-import { generalMessages, shippingMessages } from '@//constants';
-import { useSnackbar } from '@//providers/SnackbarProvider';
-import { ShippingTypes } from '@//types/shipping';
+import updateShipping from '@/app/actions/shipping/updateShipping';
 import StyledButton from '@/components/StyledButton';
+import { generalMessages, shippingMessages } from '@/constants';
+import { useSnackbar } from '@/providers/SnackbarProvider';
+import { AdditionalDocumentTypes } from '@/types/additionalDocument';
+import { ShippingTypes } from '@/types/shipping';
 
 import ShippingFormFields from './ShippingFormFields';
 
@@ -16,9 +17,10 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 type EditShippingFormProps = {
   initialValues: ShippingTypes.IUpdateShippingPayload;
+  initialAdditionalDocuments: AdditionalDocumentTypes.IAdditionalDocument[];
 };
 
-const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
+const EditShippingForm = ({ initialValues, initialAdditionalDocuments }: EditShippingFormProps) => {
   const { showSnackbar } = useSnackbar();
 
   const methods = useForm<ShippingTypes.IUpdateShippingPayload>({
@@ -70,7 +72,7 @@ const EditShippingForm = ({ initialValues }: EditShippingFormProps) => {
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields />
+          <ShippingFormFields mode="edit" shippingId={initialValues.shippingId} initialAdditionalDocuments={initialAdditionalDocuments} />
 
           <Box
             sx={{

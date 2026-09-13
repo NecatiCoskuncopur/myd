@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
+import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
 import getShipping from '@/app/actions/shipping/getShipping';
 import { EditShippingForm } from '@/components';
 
@@ -24,6 +25,10 @@ const EditShippingPage = async ({ params }: EditShippingPageProps) => {
     redirect(`/panel/gonderilerim/${id}`);
   }
 
+  const additionalDocumentsResponse = await getAdditionalDocuments(id);
+
+  const initialAdditionalDocuments = additionalDocumentsResponse.status === 'OK' ? (additionalDocumentsResponse.data ?? []) : [];
+
   return (
     <EditShippingForm
       initialValues={{
@@ -34,6 +39,7 @@ const EditShippingPage = async ({ params }: EditShippingPageProps) => {
         sender: shipping.sender,
         package: shipping.package,
       }}
+      initialAdditionalDocuments={initialAdditionalDocuments}
     />
   );
 };

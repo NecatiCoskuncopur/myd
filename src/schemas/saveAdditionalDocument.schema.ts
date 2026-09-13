@@ -5,6 +5,7 @@ import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum, additionalDo
 const { DOCUMENT_TYPE, FILE } = additionalDocumentMessages;
 
 export default yup.object({
+  shippingId: yup.string().optional(),
   file: yup
     .mixed<File>()
     .required(FILE.REQUIRED)

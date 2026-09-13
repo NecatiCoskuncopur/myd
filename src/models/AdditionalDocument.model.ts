@@ -4,6 +4,11 @@ import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum } from '@/con
 
 const AdditionalDocumentSchema = new Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     data: {
       type: Buffer,
       required: true,

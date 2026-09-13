@@ -23,6 +23,7 @@ const {
 } = shippingMessages;
 
 export default yup.object({
+  additionalDocumentIds: yup.array().of(yup.string().required()).optional(),
   senderId: yup.string(),
   consignee: yup.object({
     _id: yup.string(),

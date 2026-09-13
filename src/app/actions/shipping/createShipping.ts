@@ -114,6 +114,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
         length,
         numberOfPackage,
       },
+      additionalDocumentIds: validatedData.additionalDocumentIds ?? [],
     });
 
     return {

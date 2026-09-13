@@ -2,6 +2,7 @@ const additionalDocumentMessages = {
   FILE: {
     REQUIRED: 'Belge zorunludur.',
     TYPE_INVALID: 'Desteklenmeyen dosya tipi.',
+    SIZE: 'Dosya boyutu en fazla 1 MB olabilir.',
   },
   DOCUMENT_TYPE: {
     INVALID: 'Geçersiz belge tipi.',

@@ -27,6 +27,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
   const [isBatchMode, setIsBatchMode] = useState(false);
+  const [additionalDocumentIds, setAdditionalDocumentIds] = useState<string[]>([]);
 
   const methods = useForm<ShippingTypes.ICreateShippingFormPayload>({
     defaultValues: {
@@ -89,7 +90,12 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
     const cleaned = cleanDeep(values) as ShippingTypes.ICreateShippingPayload;
 
     try {
-      const response = await createShipping(cleaned);
+      const payload = {
+        ...cleaned,
+        additionalDocumentIds,
+      };
+
+      const response = await createShipping(payload);
 
       if (response.status !== 'OK' || !response.data?._id) {
         showSnackbar(response.message ?? CREATESHIPPING.ERROR, 'error');
@@ -100,6 +106,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
 
       if (isBatchMode) {
         reset();
+        setAdditionalDocumentIds([]);
         showSnackbar(response.message ?? CREATESHIPPING.SUCCESS, 'success');
         return;
       }
@@ -135,7 +142,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields user={user} />
+          <ShippingFormFields mode="create" user={user} setAdditionalDocumentIds={setAdditionalDocumentIds} />
 
           <Box
             sx={{
