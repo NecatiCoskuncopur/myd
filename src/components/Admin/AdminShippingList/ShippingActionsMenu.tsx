@@ -10,9 +10,10 @@ import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
-import { ShippingStatus } from '@/constants';
+import { additionalDocumentOptions, ShippingStatus } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import { getShippingPrices } from '@/lib/getShippingPrices';
+import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
@@ -24,11 +25,13 @@ interface ShippingActionsMenuProps {
   accounts: CarrierAccountTypes.IUserPermittedAccount[];
   pricingLists: Record<string, PricingListTypes.IPricingList>;
   canCreateBarcode: boolean;
+  additionalDocuments: AdditionalDocumentTypes.IAdditionalDocument[];
   onClose: () => void;
   onOpenDelete: () => void;
   onOpenPackage: () => void;
   onCreateBarcode: (account: CarrierAccountTypes.IUserPermittedAccount) => void;
   onDownloadPaper: (type: 'labels' | 'invoices') => void;
+  onDownloadAdditionalDocument: (additionalDocumentId: string) => void;
   onOpenCancel: () => void;
 }
 
@@ -39,17 +42,21 @@ const ShippingActionsMenu = ({
   accounts,
   pricingLists,
   canCreateBarcode,
+  additionalDocuments,
   onClose,
   onOpenDelete,
   onOpenPackage,
   onCreateBarcode,
   onDownloadPaper,
+  onDownloadAdditionalDocument,
   onOpenCancel,
 }: ShippingActionsMenuProps) => {
   const router = useRouter();
 
   const hasTrackingNumber = Boolean(selectedRow?.carrier?.trackingNumber);
+
   const isCancelled = selectedRow?.status === ShippingStatus.CANCELLED;
+
   const hasLabel = (() => {
     if (!selectedRow?.labeledAt) {
       return false;
@@ -63,6 +70,9 @@ const ShippingActionsMenu = ({
   })();
 
   const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
+
+  const getAdditionalDocumentLabel = (type: AdditionalDocumentTypes.IAdditionalDocument['type']) =>
+    additionalDocumentOptions.find(option => option.value === type)?.label ?? type;
 
   const handleEdit = () => {
     const id = selectedRow?._id;
@@ -135,6 +145,7 @@ const ShippingActionsMenu = ({
             });
 
             const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
+
             const taxAmount = selectedRow?.content.customsTaxAmount ?? 0;
 
             const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount).toFixed(2)) : null;
@@ -180,6 +191,25 @@ const ShippingActionsMenu = ({
           <ListItemText>Proforma Fatura İndir</ListItemText>
         </MenuItem>
       )}
+
+      {additionalDocuments.length > 0 && <Divider />}
+
+      {additionalDocuments.map(document => (
+        <MenuItem
+          key={document.id}
+          onClick={() => {
+            onClose();
+
+            onDownloadAdditionalDocument(document.id);
+          }}
+        >
+          <ListItemIcon>
+            <DescriptionOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+
+          <ListItemText>{getAdditionalDocumentLabel(document.type)}</ListItemText>
+        </MenuItem>
+      ))}
 
       {hasTrackingNumber && !isCancelled && <Divider />}
 

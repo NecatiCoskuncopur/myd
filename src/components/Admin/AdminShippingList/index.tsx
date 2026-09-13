@@ -1,18 +1,23 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
+import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
+import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
 import cancelShipping from '@/app/actions/admin/cancelShipping';
 import printLabel from '@/app/actions/admin/printLabel';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import { TableHeader, Wrapper } from '@/components';
 import { generalMessages } from '@/constants';
-import openBase64Pdf from '@/lib/openBase64Pdf';
+import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { ShippingTypes } from '@/types/shipping';
 
 import CancelShippingPopover from './CancelShippingPopover';
 import FilterSection from './FilterSection';
@@ -28,6 +33,10 @@ const { UNEXPECTED_ERROR } = generalMessages;
 const AdminShippingList = () => {
   const searchParams = useSearchParams();
   const { showSnackbar } = useSnackbar();
+
+  const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
+
+  const actionMenuRequestIdRef = useRef(0);
 
   const { data, rows, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
@@ -68,6 +77,40 @@ const AdminShippingList = () => {
     startCancelLoading,
     finishCancelLoading,
   } = useShippingActions();
+
+  const handleOpenActionsMenu = (row: ShippingTypes.IShipping, anchorEl: HTMLButtonElement) => {
+    const requestId = ++actionMenuRequestIdRef.current;
+
+    setAdditionalDocuments([]);
+
+    void (async () => {
+      try {
+        const response = await getAdditionalDocuments(row._id);
+
+        if (requestId !== actionMenuRequestIdRef.current) {
+          return;
+        }
+
+        if (response.status === 'OK') {
+          setAdditionalDocuments(response.data ?? []);
+        } else {
+          setAdditionalDocuments([]);
+        }
+      } catch {
+        if (requestId !== actionMenuRequestIdRef.current) {
+          return;
+        }
+
+        setAdditionalDocuments([]);
+      }
+
+      if (requestId !== actionMenuRequestIdRef.current) {
+        return;
+      }
+
+      openActionsMenu(row, anchorEl);
+    })();
+  };
 
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
@@ -123,7 +166,23 @@ const AdminShippingList = () => {
         return;
       }
 
-      openBase64Pdf(response.data.file);
+      openBase64File(response.data.file, 'application/pdf');
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
+  };
+
+  const handleDownloadAdditionalDocument = async (additionalDocumentId: string) => {
+    try {
+      const response = await getAdditionalDocument(additionalDocumentId);
+
+      if (response.status !== 'OK' || !response.data?.file || !response.data?.contentType) {
+        showSnackbar(response.message ?? 'Belge alınırken bir hata oluştu.', 'error');
+
+        return;
+      }
+
+      openBase64File(response.data.file, response.data.contentType);
     } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
     }
@@ -207,7 +266,7 @@ const AdminShippingList = () => {
           page={page}
           limit={limit}
           searchParams={searchParams}
-          onOpenActions={openActionsMenu}
+          onOpenActions={handleOpenActionsMenu}
           onPrintLabel={handlePrintLabel}
         />
 
@@ -218,12 +277,14 @@ const AdminShippingList = () => {
           accounts={accounts}
           pricingLists={pricingLists}
           canCreateBarcode={canCreateBarcode}
+          additionalDocuments={additionalDocuments}
           onClose={closeActionsMenu}
           onOpenDelete={openDeleteDialog}
           onOpenPackage={openPackageDialog}
           onOpenCancel={openCancelPopover}
           onCreateBarcode={handleCreateBarcode}
           onDownloadPaper={handleDownloadPaper}
+          onDownloadAdditionalDocument={handleDownloadAdditionalDocument}
         />
 
         <CancelShippingPopover

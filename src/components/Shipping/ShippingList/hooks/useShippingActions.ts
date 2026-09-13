@@ -29,7 +29,6 @@ const useShippingActions = () => {
 
   const closeActionsMenu = () => {
     setMenuOpen(false);
-    clearSelection();
   };
 
   const openDeleteDialog = () => {

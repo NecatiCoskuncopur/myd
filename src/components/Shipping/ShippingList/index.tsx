@@ -1,17 +1,22 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
+import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
+import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
 import { DeleteShipping, TableHeader, Wrapper } from '@/components';
 import { Carrier, generalMessages } from '@/constants';
-import openBase64Pdf from '@/lib/openBase64Pdf';
+import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
+import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
+import { ShippingTypes } from '@/types/shipping';
 
 import BarcodeResultDialog from './BarcodeResultDialog';
 import FilterSection from './FilterSection';
@@ -31,6 +36,10 @@ type ShippingListProps = {
 const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingListProps) => {
   const searchParams = useSearchParams();
   const { showSnackbar } = useSnackbar();
+
+  const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
+
+  const actionMenuRequestIdRef = useRef(0);
 
   const { rows, totalCount, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
@@ -57,6 +66,40 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
     setBarcodeFailure,
   } = useShippingActions();
 
+  const handleOpenActionsMenu = (row: ShippingTypes.IShipping, anchorEl: HTMLElement) => {
+    const requestId = ++actionMenuRequestIdRef.current;
+
+    setAdditionalDocuments([]);
+
+    void (async () => {
+      try {
+        const response = await getAdditionalDocuments(row._id);
+
+        if (requestId !== actionMenuRequestIdRef.current) {
+          return;
+        }
+
+        if (response.status === 'OK') {
+          setAdditionalDocuments(response.data ?? []);
+        } else {
+          setAdditionalDocuments([]);
+        }
+      } catch {
+        if (requestId !== actionMenuRequestIdRef.current) {
+          return;
+        }
+
+        setAdditionalDocuments([]);
+      }
+
+      if (requestId !== actionMenuRequestIdRef.current) {
+        return;
+      }
+
+      openActionsMenu(row, anchorEl);
+    })();
+  };
+
   const handleCreateBarcode = async (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     const shippingId = selectedRow?._id;
 
@@ -78,6 +121,7 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
 
       if (response.status === 'ERROR') {
         setBarcodeFailure(response.message || 'Barkod oluşturulamadı.');
+
         return;
       }
 
@@ -106,10 +150,27 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
 
       if (response.status !== 'OK' || !response.data?.file) {
         showSnackbar(response.message ?? 'Evrak indirilirken bir hata oluştu.', 'error');
+
         return;
       }
 
-      openBase64Pdf(response.data.file);
+      openBase64File(response.data.file, 'application/pdf');
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
+  };
+
+  const handleDownloadAdditionalDocument = async (additionalDocumentId: string) => {
+    try {
+      const response = await getAdditionalDocument(additionalDocumentId);
+
+      if (response.status !== 'OK' || !response.data?.file || !response.data?.contentType) {
+        showSnackbar(response.message ?? 'Belge alınırken bir hata oluştu.', 'error');
+
+        return;
+      }
+
+      openBase64File(response.data.file, response.data.contentType);
     } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
     }
@@ -134,7 +195,7 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
           page={page}
           limit={limit}
           searchParams={searchParams}
-          onOpenActions={openActionsMenu}
+          onOpenActions={handleOpenActionsMenu}
         />
 
         <ShippingActionsMenu
@@ -144,10 +205,12 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
           accounts={accounts}
           pricingLists={pricingLists}
           canCreateBarcode={canCreateBarcode}
+          additionalDocuments={additionalDocuments}
           onClose={closeActionsMenu}
           onDelete={openDeleteDialog}
           onCreateBarcode={handleCreateBarcode}
           onDownloadPaper={handleDownloadPaper}
+          onDownloadAdditionalDocument={handleDownloadAdditionalDocument}
         />
 
         <BarcodeResultDialog open={barcodeDialogOpen} loading={barcodeLoading} error={barcodeError} onClose={closeBarcodeDialog} />
