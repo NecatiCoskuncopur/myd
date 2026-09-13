@@ -6,7 +6,7 @@ import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDoc
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import uploadUpsDocument from '@/lib/carriers/ups/uploadUpsDocument';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
-import { ShippingDocument } from '@/models';
+import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
@@ -145,11 +145,14 @@ const createUpsPaper = async ({
     countryCode: consignee.address.country,
   };
   const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? '08' : '65';
-  const shippingDocument = await ShippingDocument.findOne({
-    shippingId,
-  }).select('additionalDocument');
+  const additionalDocuments = shippingInstance.additionalDocumentIds?.length
+    ? await AdditionalDocument.find({
+        _id: {
+          $in: shippingInstance.additionalDocumentIds,
+        },
+      }).select('_id data type contentType')
+    : [];
 
-  // const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
   const payload = {
     ShipmentRequest: {
       Shipment: {
@@ -410,15 +413,33 @@ const createUpsPaper = async ({
     .map((packageResult: UpsPackageResult) => packageResult?.TrackingNumber)
     .filter((value: string | undefined): value is string => Boolean(value));
 
-  /*  if (additionalDocument) {
-    await uploadUpsDocument({
-      accessToken,
-      accountNumber,
-      shipmentIdentifier: trackingNumber,
-      trackingNumbers: trackingNumbers.length ? trackingNumbers : [trackingNumber],
-      document: additionalDocument,
-    });
-  }*/
+  for (const additionalDocument of additionalDocuments) {
+    try {
+      await uploadUpsDocument({
+        accessToken,
+        accountNumber,
+        shipmentIdentifier: trackingNumber,
+        trackingNumbers: trackingNumbers.length ? trackingNumbers : [trackingNumber],
+        document: Buffer.from(additionalDocument.data),
+        type: additionalDocument.type,
+        contentType: additionalDocument.contentType,
+      });
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: {
+          carrier: 'UPS',
+          operation: 'DOCUMENT_UPLOAD',
+        },
+        extra: {
+          shippingId,
+          trackingNumber,
+          additionalDocumentId: additionalDocument._id.toString(),
+          additionalDocumentType: additionalDocument.type,
+          documentUploadFailed: true,
+        },
+      });
+    }
+  }
 
   return {
     trackingNumber,
