@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/actions/additionalDocument/getAdditionalDocument.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/openBase64File.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingActionsMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/uploadFedexDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/uploadFedexDocument.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +206,7 @@
       <workItem from="1789154580336" duration="290000" />
       <workItem from="1789154900341" duration="5922000" />
       <workItem from="1789187486977" duration="12486000" />
-      <workItem from="1789246274684" duration="14529000" />
+      <workItem from="1789246274684" duration="17830000" />
     </task>
     <servers />
   </component>

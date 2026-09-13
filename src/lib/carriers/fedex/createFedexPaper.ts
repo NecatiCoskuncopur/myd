@@ -4,7 +4,7 @@ import latinize from 'latinize';
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
-import { ShippingDocument } from '@/models';
+import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
@@ -90,11 +90,14 @@ const createFedexPaper = async ({
 
   const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
 
-  const shippingDocument = await ShippingDocument.findOne({
-    shippingId,
-  }).select('additionalDocument');
+  const additionalDocuments = shippingInstance.additionalDocumentIds?.length
+    ? await AdditionalDocument.find({
+        _id: {
+          $in: shippingInstance.additionalDocumentIds,
+        },
+      }).select('_id data type contentType')
+    : [];
 
-  // const additionalDocument = shippingDocument?.additionalDocument ? Buffer.from(shippingDocument.additionalDocument) : undefined;
   const shipmentDate = new Date(Date.now() + 86_400_000).toISOString().split('T')[0];
 
   const payload = {
@@ -354,13 +357,15 @@ const createFedexPaper = async ({
     throw new Error(saveLabelResult.message);
   }
 
-  /*  if (additionalDocument) {
+  for (const additionalDocument of additionalDocuments) {
     try {
       await uploadFedexDocument({
         accessToken,
         trackingNumber: output?.masterTrackingNumber || trackingNumber,
         shipmentDate,
-        document: additionalDocument,
+        document: Buffer.from(additionalDocument.data),
+        type: additionalDocument.type,
+        contentType: additionalDocument.contentType,
         originCountryCode: 'TR',
         destinationCountryCode: consignee.address.country,
       });
@@ -369,11 +374,13 @@ const createFedexPaper = async ({
         extra: {
           shippingId,
           trackingNumber,
+          additionalDocumentId: additionalDocument._id.toString(),
+          additionalDocumentType: additionalDocument.type,
           documentUploadFailed: true,
         },
       });
     }
-  }*/
+  }
 
   const invoice = '';
 

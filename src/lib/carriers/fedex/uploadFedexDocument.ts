@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { carrierBaseUrl } from '@/constants';
+import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum, carrierBaseUrl } from '@/constants';
 
 type UploadFedexDocumentParams = {
   accessToken: string;
@@ -9,6 +9,46 @@ type UploadFedexDocumentParams = {
   originCountryCode: string;
   destinationCountryCode: string;
   document: Buffer;
+  type: AdditionalDocumentEnum;
+  contentType: AdditionalDocumentContentTypeEnum;
+};
+
+const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
+  switch (contentType) {
+    case AdditionalDocumentContentTypeEnum.PDF:
+      return 'pdf';
+
+    case AdditionalDocumentContentTypeEnum.JPEG:
+      return 'jpg';
+
+    case AdditionalDocumentContentTypeEnum.PNG:
+      return 'png';
+
+    default: {
+      const exhaustiveCheck: never = contentType;
+
+      return exhaustiveCheck;
+    }
+  }
+};
+
+const getFedexDocumentType = (type: AdditionalDocumentEnum) => {
+  switch (type) {
+    case AdditionalDocumentEnum.CERTIFICATE_OF_ORIGIN:
+      return 'CERTIFICATE_OF_ORIGIN';
+
+    case AdditionalDocumentEnum.COMMERCIAL_INVOICE:
+      return 'COMMERCIAL_INVOICE';
+
+    case AdditionalDocumentEnum.OTHER:
+      return 'OTHER';
+
+    default: {
+      const exhaustiveCheck: never = type;
+
+      return exhaustiveCheck;
+    }
+  }
 };
 
 const uploadFedexDocument = async ({
@@ -18,6 +58,8 @@ const uploadFedexDocument = async ({
   originCountryCode,
   destinationCountryCode,
   document,
+  type,
+  contentType,
 }: UploadFedexDocumentParams): Promise<void> => {
   if (!Buffer.isBuffer(document) || !document.length) {
     const error = new Error(!Buffer.isBuffer(document) ? 'FedEx ek belgesi Buffer formatında değil.' : 'FedEx ek belgesi boş.');
@@ -33,23 +75,31 @@ const uploadFedexDocument = async ({
         shipmentDate,
         originCountryCode,
         destinationCountryCode,
+        type,
+        contentType,
       },
     });
 
     throw error;
   }
 
-  const fileName = `additional-document-${trackingNumber}.pdf`;
+  const extension = getFileExtension(contentType);
+
+  const fedexDocumentType = getFedexDocumentType(type);
+
+  const fileName = `additional-document-${trackingNumber}-${type.toLowerCase()}.${extension}`;
+
   const shipmentTimestamp = `${shipmentDate}T00:00:00`;
+
   const endpoint = `${carrierBaseUrl.FEDEXDOCUMENT}/documents/v1/etds/upload`;
 
   const documentMetadata = {
     workflowName: 'ETDPostshipment',
     carrierCode: 'FDXE',
     name: fileName,
-    contentType: 'application/pdf',
+    contentType,
     meta: {
-      shipDocumentType: 'OTHER',
+      shipDocumentType: fedexDocumentType,
       trackingNumber,
       shipmentDate: shipmentTimestamp,
       originCountryCode,
@@ -64,13 +114,12 @@ const uploadFedexDocument = async ({
   formData.append(
     'attachment',
     new Blob([new Uint8Array(document)], {
-      type: 'application/pdf',
+      type: contentType,
     }),
     fileName,
   );
 
   let response: Response;
-
   try {
     response = await fetch(endpoint, {
       method: 'POST',
@@ -92,6 +141,9 @@ const uploadFedexDocument = async ({
         shipmentDate: shipmentTimestamp,
         originCountryCode,
         destinationCountryCode,
+        type,
+        fedexDocumentType,
+        contentType,
         fileName,
         documentSizeBytes: document.length,
       },
@@ -117,6 +169,9 @@ const uploadFedexDocument = async ({
         shipmentDate: shipmentTimestamp,
         originCountryCode,
         destinationCountryCode,
+        type,
+        fedexDocumentType,
+        contentType,
         fileName,
         documentSizeBytes: document.length,
         responseStatus: response.status,
