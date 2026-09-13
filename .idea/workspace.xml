@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/actions/additionalDocument/getAdditionalDocuments.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/AdditionalDocumentsSection.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/constants/maxDocumentSize.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/compressImage.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/additionalDocument/deleteAdditionalDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/additionalDocument/deleteAdditionalDocument.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/additionalDocument/saveAdditionalDocument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/additionalDocument/saveAdditionalDocument.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/panel/gonderilerim/[id]/duzenle/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/EditShippingForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/messages/additionalDocumentMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/additionalDocumentMessages.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/AdditionalDocument.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/AdditionalDocument.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/saveAdditionalDocument.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/saveAdditionalDocument.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/additionalDocument.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/additionalDocument.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +205,7 @@
       <workItem from="1789154580336" duration="290000" />
       <workItem from="1789154900341" duration="5922000" />
       <workItem from="1789187486977" duration="12486000" />
-      <workItem from="1789246274684" duration="11210000" />
+      <workItem from="1789246274684" duration="11488000" />
     </task>
     <servers />
   </component>
@@ -230,17 +214,5 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/app/actions/shipping/deleteShipping.ts</url>
-          <line>72</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

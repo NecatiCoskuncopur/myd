@@ -6,7 +6,7 @@ import { generalMessages, shippingMessages, ShippingStatus, UserRole } from '@/c
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
-import { Shipping } from '@/models';
+import { AdditionalDocument, Shipping } from '@/models';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 const { ALREADY_LABELED, DELETE, ID, NOT_FOUND } = shippingMessages;
@@ -32,6 +32,7 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
     }
 
     const objectId = new Types.ObjectId(shippingId);
+
     const query = {
       _id: objectId,
       ...(currentUser.role === UserRole.CUSTOMER && {
@@ -39,7 +40,7 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
       }),
     };
 
-    const shipping = await Shipping.findOne(query).select('carrier.trackingNumber status').lean();
+    const shipping = await Shipping.findOne(query).select('carrier.trackingNumber status additionalDocumentIds').lean();
 
     if (!shipping) {
       return {
@@ -57,7 +58,9 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
 
     const deleteResult = await Shipping.deleteOne({
       ...query,
-      status: { $ne: ShippingStatus.LABELED },
+      status: {
+        $ne: ShippingStatus.LABELED,
+      },
     });
 
     if (deleteResult.deletedCount === 0) {
@@ -66,6 +69,15 @@ const deleteShipping = async (shippingId: string): Promise<ResponseTypes.IAction
         message: ALREADY_LABELED,
       };
     }
+
+    if (shipping.additionalDocumentIds?.length) {
+      await AdditionalDocument.deleteMany({
+        _id: {
+          $in: shipping.additionalDocumentIds,
+        },
+      });
+    }
+
     return {
       status: 'OK',
       message: DELETE.SUCCESS,
