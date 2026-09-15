@@ -3,10 +3,12 @@
 import { ChangeEvent, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import { Box, Button, CircularProgress, Grid, IconButton, MenuItem, Stack, TextField, Typography } from '@mui/material';
 
 import deleteAdditionalDocument from '@/app/actions/additionalDocument/deleteAdditionalDocument';
+import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
 import saveAdditionalDocument from '@/app/actions/additionalDocument/saveAdditionalDocument';
 import {
   AdditionalDocumentContentTypeEnum,
@@ -18,6 +20,7 @@ import {
 } from '@/constants';
 import compressImage from '@/lib/compressImage';
 import compressPdf from '@/lib/compressPdf';
+import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 
@@ -208,6 +211,22 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
     }
   };
 
+  const handleOpenDocument = async (additionalDocumentId: string) => {
+    try {
+      const response = await getAdditionalDocument(additionalDocumentId);
+
+      if (response.status !== 'OK' || !response.data?.file || !response.data?.contentType) {
+        showSnackbar(response.message ?? 'Belge alınırken bir hata oluştu.', 'error');
+
+        return;
+      }
+
+      openBase64File(response.data.file, response.data.contentType);
+    } catch {
+      showSnackbar(UNEXPECTED_ERROR, 'error');
+    }
+  };
+
   const maxDocumentCount = Object.values(AdditionalDocumentEnum).length;
 
   return (
@@ -286,10 +305,22 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
                     >
                       {document.file.name}
                     </Typography>
-                  ) : isSaved ? (
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      Mevcut belge
-                    </Typography>
+                  ) : isSaved && document.id ? (
+                    <Button
+                      type="button"
+                      size="small"
+                      startIcon={<OpenInNewOutlinedIcon fontSize="small" />}
+                      onClick={() => {
+                        void handleOpenDocument(document.id!);
+                      }}
+                      sx={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                      }}
+                    >
+                      Belgeyi Görüntüle
+                    </Button>
                   ) : (
                     <Button
                       component="label"

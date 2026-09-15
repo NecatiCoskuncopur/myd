@@ -72,7 +72,11 @@ const EditShippingForm = ({ initialValues, initialAdditionalDocuments }: EditShi
             opacity: isSubmitting ? 0.6 : 1,
           }}
         >
-          <ShippingFormFields mode="edit" shippingId={initialValues.shippingId} initialAdditionalDocuments={initialAdditionalDocuments} />
+          <ShippingFormFields
+            mode="edit"
+            shippingId={initialValues.shippingId}
+            initialAdditionalDocuments={initialAdditionalDocuments}
+          />
 
           <Box
             sx={{
