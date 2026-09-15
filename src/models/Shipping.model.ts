@@ -132,7 +132,10 @@ const ShippingSchema = new mongoose.Schema(
       account: String,
       trackingNumber: String,
       amount: Number,
-      cost: Number,
+      cost: {
+        type: Number,
+        select: false,
+      },
       insuranceCost: Number,
       dutiesAndTaxesCost: Number,
     },

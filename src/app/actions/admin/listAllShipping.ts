@@ -67,7 +67,7 @@ const listShippingAdmin = async (
     if (download) {
       const shipping = await Shipping.find(match)
         .populate('userId', 'name email')
-        .select('userId sender consignee content package carrier status trackStatus createdAt')
+        .select('userId sender consignee content package carrier status trackStatus createdAt +carrier.cost')
         .limit(10000)
         .lean();
 
