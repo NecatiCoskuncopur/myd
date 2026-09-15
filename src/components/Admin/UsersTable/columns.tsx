@@ -81,7 +81,7 @@ const columns: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     sortable: true,
-    renderCell: params => `${params.row.balance ?? 0}${currency}`,
+    renderCell: params => `${(params.row.balance ?? 0).toFixed(2)}${currency}`,
   },
   {
     field: 'isActive',

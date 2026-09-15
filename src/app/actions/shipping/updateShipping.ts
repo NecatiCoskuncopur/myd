@@ -9,7 +9,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getInsuranceRate from '@/lib/getInsuranceRate';
-import { Consignee, Shipping } from '@/models';
+import { Consignee, Shipping, SystemParam } from '@/models';
 import updateShippingSchema from '@/schemas/updateShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -83,11 +83,14 @@ const updateShipping = async (data: ShippingTypes.IUpdateShippingPayload): Promi
     const insuranceRate = await getInsuranceRate();
     const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * (insuranceRate / 100)).toFixed(2)) : 0;
     const customsTaxAmount = rest.detail.payor?.customs === ShippingPayor.SENDER ? await calculateCustomsTax(totalProductValue, consignee.address.country) : 0;
+    const serviceFee =
+      validatedData.detail.payor?.customs === ShippingPayor.SENDER ? Number((await SystemParam.findOne({ key: 'SERVICE_FEE' }).lean())?.value ?? 0) : 0;
 
     const content = {
       ...rest.content,
       insuranceAmount,
       customsTaxAmount,
+      serviceFee,
     };
     if (consignee?._id) {
       const { _id: consigneeId, ...consigneeData } = consignee;

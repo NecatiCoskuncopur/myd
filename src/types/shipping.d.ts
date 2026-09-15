@@ -74,6 +74,7 @@ declare namespace ShippingTypes {
     insuranceAmount?: number;
     customsTaxAmount: number;
     products: IProduct[];
+    serviceFee?: number;
   }
 
   interface IPackage {

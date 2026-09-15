@@ -151,7 +151,9 @@ const ShippingActionsMenu = ({
 
               const taxAmount = selectedRow?.content.customsTaxAmount ?? 0;
 
-              const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount).toFixed(2)) : null;
+              const serviceFee = selectedRow?.content.serviceFee ?? 0;
+
+              const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount + serviceFee).toFixed(2)) : null;
 
               return (
                 <MenuItem

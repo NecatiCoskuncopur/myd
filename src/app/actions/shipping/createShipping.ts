@@ -8,7 +8,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getInsuranceRate from '@/lib/getInsuranceRate';
-import { Consignee, Shipping, User } from '@/models';
+import { Consignee, Shipping, SystemParam, User } from '@/models';
 import createShippingSchema from '@/schemas/createShipping.schema';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -77,6 +77,8 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
 
     const country = consigneeDoc?.address?.country;
     const customsTaxAmount = validatedData.detail.payor?.customs === ShippingPayor.SENDER ? await calculateCustomsTax(totalProductValue, country!) : 0;
+    const serviceFee =
+      validatedData.detail.payor?.customs === ShippingPayor.SENDER ? Number((await SystemParam.findOne({ key: 'SERVICE_FEE' }).lean())?.value ?? 0) : 0;
 
     const shipping = await Shipping.create({
       userId,
@@ -104,6 +106,7 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
         ...validatedData.content,
         insuranceAmount,
         customsTaxAmount,
+        serviceFee,
       },
 
       package: {
