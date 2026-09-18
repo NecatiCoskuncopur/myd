@@ -67,6 +67,8 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
   const handleSelect = (account: Partial<CarrierAccountTypes.ICarrierAccount>) => {
     handleClose();
     setSelectedAccount(account);
+    setError(null);
+    setLoading(true);
     setModalOpen(true);
   };
 
@@ -100,9 +102,8 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
           setError(res.message || 'Barkod oluşturulamadı');
         }
       } catch (error) {
-        setError(error instanceof Error ? error.message : UNEXPECTED_ERROR);
         if (!cancelled) {
-          setError('Sistem hatası oluştu');
+          setError(error instanceof Error ? error.message : UNEXPECTED_ERROR);
         }
       } finally {
         if (!cancelled) {
@@ -240,7 +241,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
           )}
 
           {!loading && error && (
-            <Alert severity="error" onClose={() => setError(null)}>
+            <Alert severity="error" onClose={() => setModalOpen(false)}>
               {error}
             </Alert>
           )}

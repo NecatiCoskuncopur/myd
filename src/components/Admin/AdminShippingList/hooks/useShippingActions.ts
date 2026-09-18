@@ -67,7 +67,6 @@ const useShippingActions = () => {
     }
 
     setBarcodeDialogOpen(false);
-    setBarcodeError(null);
   };
 
   const startBarcodeLoading = () => {
