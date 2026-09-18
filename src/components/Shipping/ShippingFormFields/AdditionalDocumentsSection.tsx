@@ -227,6 +227,16 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
     }
   };
 
+  const handleOpenLocalDocument = (file: File) => {
+    const fileUrl = URL.createObjectURL(file);
+
+    window.open(fileUrl, '_blank', 'noopener,noreferrer');
+
+    setTimeout(() => {
+      URL.revokeObjectURL(fileUrl);
+    }, 60_000);
+  };
+
   const maxDocumentCount = Object.values(AdditionalDocumentEnum).length;
 
   return (
@@ -295,16 +305,35 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
                   })}
                 >
                   {document.file ? (
-                    <Typography
-                      variant="body2"
-                      noWrap
+                    <Button
+                      type="button"
+                      size="small"
+                      startIcon={<OpenInNewOutlinedIcon fontSize="small" />}
+                      onClick={() => {
+                        if (document.file) {
+                          handleOpenLocalDocument(document.file);
+                        }
+                      }}
                       sx={{
-                        flex: 1,
+                        width: '100%',
                         minWidth: 0,
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
                       }}
                     >
-                      {document.file.name}
-                    </Typography>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        noWrap
+                        sx={{
+                          minWidth: 0,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {document.file.name}
+                      </Typography>
+                    </Button>
                   ) : isSaved && document.id ? (
                     <Button
                       type="button"
