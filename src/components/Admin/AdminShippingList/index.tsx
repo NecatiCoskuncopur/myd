@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -11,7 +11,7 @@ import cancelShipping from '@/app/actions/admin/cancelShipping';
 import printLabel from '@/app/actions/admin/printLabel';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
-import { TableHeader, Wrapper } from '@/components';
+import { BulkBarcode, TableHeader, Wrapper } from '@/components';
 import { generalMessages } from '@/constants';
 import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
@@ -35,12 +35,15 @@ const AdminShippingList = () => {
   const { showSnackbar } = useSnackbar();
 
   const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
+  const [selectedShippingIds, setSelectedShippingIds] = useState<string[]>([]);
 
   const actionMenuRequestIdRef = useRef(0);
 
   const { data, rows, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
   const { pricingLists, accounts, canCreateBarcode } = useShippingUser();
+
+  const selectedShippings = useMemo(() => rows.filter(shipping => selectedShippingIds.includes(shipping._id)), [rows, selectedShippingIds]);
 
   const {
     selectedRow,
@@ -259,6 +262,8 @@ const AdminShippingList = () => {
           <FilterSection searchParams={searchParams} />
         </TableHeader>
 
+        {canCreateBarcode && <BulkBarcode shippings={selectedShippings} accounts={accounts} onSelectionChange={setSelectedShippingIds} onComplete={refetch} />}
+
         <ShippingTable
           rows={rows}
           totalCount={data?.totalCount ?? 0}
@@ -268,6 +273,8 @@ const AdminShippingList = () => {
           searchParams={searchParams}
           onOpenActions={handleOpenActionsMenu}
           onPrintLabel={handlePrintLabel}
+          selectedShippingIds={selectedShippingIds}
+          setSelectedShippingIds={setSelectedShippingIds}
         />
 
         <ShippingActionsMenu

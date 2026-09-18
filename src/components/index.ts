@@ -33,3 +33,4 @@ export { default as MydLoading } from './MydLoading';
 export { default as PasswordTextField } from './PasswordTextField';
 export { default as SysParams } from './Admin/SysParams';
 export { default as DeleteConfirmPopover } from './DeleteConfirmPopover';
+export { default as BulkBarcode } from './Shipping/BulkBarcode';

@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { Dispatch, SetStateAction, useMemo } from 'react';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import type { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
 import { ShippingStatus } from '@/constants';
@@ -20,11 +20,24 @@ interface ShippingTableProps {
   page: number;
   limit: number;
   searchParams: ReadonlyURLSearchParams;
+  selectedShippingIds: string[];
+  setSelectedShippingIds: Dispatch<SetStateAction<string[]>>;
   onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLButtonElement) => void;
   onPrintLabel: (shippingId: string) => Promise<void>;
 }
 
-const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions, onPrintLabel }: ShippingTableProps) => {
+const ShippingTable = ({
+  rows,
+  totalCount,
+  loading,
+  page,
+  limit,
+  searchParams,
+  selectedShippingIds,
+  setSelectedShippingIds,
+  onOpenActions,
+  onPrintLabel,
+}: ShippingTableProps) => {
   const shippingColumns = useMemo<GridColDef<ShippingTypes.IShipping>[]>(
     () => [
       ...columns,
@@ -93,8 +106,17 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
         },
       },
     ],
-    [onOpenActions],
+    [onOpenActions, onPrintLabel],
   );
+
+  const rowSelectionModel: GridRowSelectionModel = {
+    type: 'include',
+    ids: new Set(selectedShippingIds),
+  };
+
+  const handleRowSelectionChange = (model: GridRowSelectionModel) => {
+    setSelectedShippingIds(Array.from(model.ids).map(String));
+  };
 
   return (
     <GenericDataGrid
@@ -106,6 +128,11 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
       limit={limit}
       searchParams={searchParams}
       noRowsMessage="Henüz kayıtlı bir gönderi bulunmuyor."
+      checkboxSelection
+      disableRowSelectionOnClick
+      isRowSelectable={params => !params.row.carrier?.trackingNumber}
+      rowSelectionModel={rowSelectionModel}
+      onRowSelectionModelChange={handleRowSelectionChange}
     />
   );
 };

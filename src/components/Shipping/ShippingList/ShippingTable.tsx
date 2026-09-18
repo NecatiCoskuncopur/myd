@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { Dispatch, SetStateAction, useMemo } from 'react';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, IconButton, Typography } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import { GenericDataGrid } from '@/components';
 import { ShippingStatus } from '@/constants';
@@ -19,10 +19,22 @@ type ShippingTableProps = {
   page: number;
   limit: number;
   searchParams: ReadonlyURLSearchParams;
+  selectedShippingIds: string[];
+  setSelectedShippingIds: Dispatch<SetStateAction<string[]>>;
   onOpenActions: (row: ShippingTypes.IShipping, anchorEl: HTMLElement) => void;
 };
 
-const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, onOpenActions }: ShippingTableProps) => {
+const ShippingTable = ({
+  rows,
+  totalCount,
+  loading,
+  page,
+  limit,
+  searchParams,
+  selectedShippingIds,
+  setSelectedShippingIds,
+  onOpenActions,
+}: ShippingTableProps) => {
   const shippingColumns = useMemo<GridColDef[]>(
     () => [
       ...columns,
@@ -76,6 +88,15 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
     [onOpenActions],
   );
 
+  const rowSelectionModel: GridRowSelectionModel = {
+    type: 'include',
+    ids: new Set(selectedShippingIds),
+  };
+
+  const handleRowSelectionChange = (model: GridRowSelectionModel) => {
+    setSelectedShippingIds(Array.from(model.ids).map(String));
+  };
+
   return (
     <GenericDataGrid
       rows={rows}
@@ -86,6 +107,11 @@ const ShippingTable = ({ rows, totalCount, loading, page, limit, searchParams, o
       limit={limit}
       searchParams={searchParams}
       noRowsMessage="Henüz kayıtlı bir gönderiniz bulunmuyor."
+      checkboxSelection
+      disableRowSelectionOnClick
+      isRowSelectable={params => !params.row.carrier?.trackingNumber}
+      rowSelectionModel={rowSelectionModel}
+      onRowSelectionModelChange={handleRowSelectionChange}
     />
   );
 };

@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/Shipping/BulkBarcode/BulkBarcodeDialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Shipping/BulkBarcode/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/getCountryTurkishName.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingActions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,11 +72,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Shipping\BulkBarcode" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\app\api" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\app" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\lib" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\SysParams" />
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -218,7 +223,7 @@
       <workItem from="1789615809592" duration="8109000" />
       <workItem from="1789643709685" duration="2000" />
       <workItem from="1789715805053" duration="125000" />
-      <workItem from="1789715973897" duration="9733000" />
+      <workItem from="1789715973897" duration="20149000" />
     </task>
     <servers />
   </component>

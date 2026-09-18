@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -9,7 +9,7 @@ import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditiona
 import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
-import { DeleteShipping, TableHeader, Wrapper } from '@/components';
+import { BulkBarcode, DeleteShipping, TableHeader, Wrapper } from '@/components';
 import { Carrier, generalMessages } from '@/constants';
 import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
@@ -38,10 +38,12 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
   const { showSnackbar } = useSnackbar();
 
   const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
-
+  const [selectedShippingIds, setSelectedShippingIds] = useState<string[]>([]);
   const actionMenuRequestIdRef = useRef(0);
 
   const { rows, totalCount, isLoading, page, limit, refetch } = useShippingList(searchParams);
+
+  const selectedShippings = useMemo(() => rows.filter(shipping => selectedShippingIds.includes(shipping._id)), [rows, selectedShippingIds]);
 
   const {
     selectedRow,
@@ -187,7 +189,7 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
         <TableHeader title="Gönderilerim" subTitle="Gönderilerinize ait tüm detaylar ve güncel durum bilgileri." stacked>
           <FilterSection searchParams={searchParams} />
         </TableHeader>
-
+        {canCreateBarcode && <BulkBarcode shippings={selectedShippings} accounts={accounts} onSelectionChange={setSelectedShippingIds} onComplete={refetch} />}
         <ShippingTable
           rows={rows}
           totalCount={totalCount}
@@ -196,6 +198,8 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
           limit={limit}
           searchParams={searchParams}
           onOpenActions={handleOpenActionsMenu}
+          selectedShippingIds={selectedShippingIds}
+          setSelectedShippingIds={setSelectedShippingIds}
         />
 
         <ShippingActionsMenu
