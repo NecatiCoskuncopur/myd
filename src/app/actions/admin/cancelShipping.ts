@@ -58,12 +58,28 @@ const cancelShipping = async (params: AdminTypes.ICancelShippingParams): Promise
       };
     }
 
-    await cancelCarrierShipping({
-      firm,
-      accountNumber,
-      trackingNumber,
-      credentials: carrierAccount.credentials,
-    });
+    try {
+      await cancelCarrierShipping({
+        firm,
+        accountNumber,
+        trackingNumber,
+        credentials: carrierAccount.credentials,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        captureActionError(`cancelShipping:${firm}`, error);
+
+        return {
+          status: 'ERROR',
+          message: error.message || UNEXPECTED_ERROR,
+        };
+      }
+
+      return {
+        status: 'ERROR',
+        message: UNEXPECTED_ERROR,
+      };
+    }
 
     const refundAmount = Number(((amount ?? 0) + (insuranceCost ?? 0) + (dutiesAndTaxesCost ?? 0)).toFixed(2));
 

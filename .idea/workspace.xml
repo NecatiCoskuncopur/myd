@@ -6,13 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/cancelFedexShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/cancelFedexShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/cancelUpsShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/cancelUpsShipping.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -222,7 +220,7 @@
       <workItem from="1789615809592" duration="8109000" />
       <workItem from="1789643709685" duration="2000" />
       <workItem from="1789715805053" duration="125000" />
-      <workItem from="1789715973897" duration="5263000" />
+      <workItem from="1789715973897" duration="6677000" />
     </task>
     <servers />
   </component>

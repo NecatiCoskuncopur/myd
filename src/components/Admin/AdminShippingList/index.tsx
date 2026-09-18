@@ -245,8 +245,8 @@ const AdminShippingList = () => {
       closeCancelPopover();
 
       await refetch();
-    } catch {
-      showSnackbar(UNEXPECTED_ERROR, 'error');
+    } catch (error) {
+      showSnackbar(error instanceof Error ? error.message : UNEXPECTED_ERROR, 'error');
     } finally {
       finishCancelLoading();
     }

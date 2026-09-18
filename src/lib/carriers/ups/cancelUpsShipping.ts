@@ -20,7 +20,50 @@ const cancelUpsShipping = async (params: CarrierTypes.ICancelShippingParams) => 
   if (!authRes.ok) {
     const responseText = await authRes.text();
 
-    throw new Error(`UPS authentication failed: HTTP ${authRes.status} - ${responseText}`);
+    let errorData: unknown;
+
+    try {
+      errorData = responseText ? JSON.parse(responseText) : null;
+    } catch {
+      errorData = responseText;
+    }
+
+    let errorMessage: string = authRes.statusText || 'UPS authentication failed';
+
+    if (typeof errorData === 'string' && errorData.trim()) {
+      errorMessage = errorData;
+    } else if (errorData && typeof errorData === 'object') {
+      const data = errorData as {
+        response?: {
+          errors?: Array<{
+            code?: string;
+            message?: string;
+          }>;
+        };
+        errors?: Array<{
+          code?: string;
+          message?: string;
+        }>;
+        message?: string;
+        error?: string;
+      };
+
+      const errors = data.response?.errors || data.errors;
+
+      if (errors?.length) {
+        errorMessage =
+          errors
+            .map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || errorMessage;
+      } else if (data.message) {
+        errorMessage = data.message;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    }
+
+    throw new Error(errorMessage);
   }
 
   const authData = await authRes.json();
@@ -36,13 +79,56 @@ const cancelUpsShipping = async (params: CarrierTypes.ICancelShippingParams) => 
   if (!response.ok) {
     const responseText = await response.text();
 
-    const error = new Error(`UPS shipment cancellation failed: HTTP ${response.status} - ${responseText}`);
+    let errorData: unknown;
+
+    try {
+      errorData = responseText ? JSON.parse(responseText) : null;
+    } catch {
+      errorData = responseText;
+    }
+
+    let errorMessage: string = response.statusText || 'UPS shipment cancellation failed';
+
+    if (typeof errorData === 'string' && errorData.trim()) {
+      errorMessage = errorData;
+    } else if (errorData && typeof errorData === 'object') {
+      const data = errorData as {
+        response?: {
+          errors?: Array<{
+            code?: string;
+            message?: string;
+          }>;
+        };
+        errors?: Array<{
+          code?: string;
+          message?: string;
+        }>;
+        message?: string;
+        error?: string;
+      };
+
+      const errors = data.response?.errors || data.errors;
+
+      if (errors?.length) {
+        errorMessage =
+          errors
+            .map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || errorMessage;
+      } else if (data.message) {
+        errorMessage = data.message;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       extra: {
         carrier: 'UPS',
         responseStatus: response.status,
-        responseBody: responseText,
+        responseBody: errorData,
         endpoint: `${carrierBaseUrl.UPS}/api/shipments/v2409/void/cancel/${trackingNumber}`,
         trackingNumber,
       },

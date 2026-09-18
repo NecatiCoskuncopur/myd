@@ -23,12 +23,47 @@ const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) =
   if (!authRes.ok) {
     const responseText = await authRes.text();
 
-    const error = new Error(`${AUTH_FAILED}: HTTP ${authRes.status} - ${responseText}`);
+    let errorData: unknown;
+
+    try {
+      errorData = responseText ? JSON.parse(responseText) : null;
+    } catch {
+      errorData = responseText;
+    }
+
+    let errorMessage: string = authRes.statusText || AUTH_FAILED;
+
+    if (typeof errorData === 'string' && errorData.trim()) {
+      errorMessage = errorData;
+    } else if (errorData && typeof errorData === 'object') {
+      const data = errorData as {
+        errors?: Array<{
+          code?: string;
+          message?: string;
+        }>;
+        message?: string;
+        error?: string;
+      };
+
+      if (data.errors?.length) {
+        errorMessage =
+          data.errors
+            .map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || errorMessage;
+      } else if (data.message) {
+        errorMessage = data.message;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       extra: {
         responseStatus: authRes.status,
-        responseBody: responseText,
+        responseBody: errorData,
         endpoint: `${carrierBaseUrl.FEDEX}/oauth/token`,
       },
     });
@@ -59,12 +94,47 @@ const cancelFedexShipping = async (params: CarrierTypes.ICancelShippingParams) =
   if (!cancelRes.ok) {
     const responseText = await cancelRes.text();
 
-    const error = new Error(`FedEx shipment cancellation failed: HTTP ${cancelRes.status} - ${responseText}`);
+    let errorData: unknown;
+
+    try {
+      errorData = responseText ? JSON.parse(responseText) : null;
+    } catch {
+      errorData = responseText;
+    }
+
+    let errorMessage: string = cancelRes.statusText || 'FedEx shipment cancellation failed';
+
+    if (typeof errorData === 'string' && errorData.trim()) {
+      errorMessage = errorData;
+    } else if (errorData && typeof errorData === 'object') {
+      const data = errorData as {
+        errors?: Array<{
+          code?: string;
+          message?: string;
+        }>;
+        message?: string;
+        error?: string;
+      };
+
+      if (data.errors?.length) {
+        errorMessage =
+          data.errors
+            .map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || errorMessage;
+      } else if (data.message) {
+        errorMessage = data.message;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       extra: {
         responseStatus: cancelRes.status,
-        responseBody: responseText,
+        responseBody: errorData,
         endpoint: `${carrierBaseUrl.FEDEX}/ship/v1/shipments/cancel`,
         trackingNumber,
       },
