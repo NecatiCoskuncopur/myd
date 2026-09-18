@@ -8,7 +8,6 @@ import uploadUpsDocument from '@/lib/carriers/ups/uploadUpsDocument';
 import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
-import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
@@ -315,10 +314,26 @@ const createUpsPaper = async ({
   const shipmentResponseData = parseResponse(shipmentResponseText);
 
   if (!shipmentRes.ok) {
-    const errorData = shipmentResponseData as CarrierAccountTypes.ICarrierErrorResponse | string;
-    const error = new Error(
-      `${SHIPMENT_FAILED}: HTTP ${shipmentRes.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData.errors || errorData)}`,
-    );
+    const errorData = shipmentResponseData as
+      | {
+          response?: {
+            errors?: Array<{
+              code?: string;
+              message?: string;
+            }>;
+          };
+        }
+      | string;
+
+    const errorMessage =
+      typeof errorData === 'string'
+        ? errorData
+        : errorData.response?.errors
+            ?.map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || SHIPMENT_FAILED;
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       tags: {

@@ -110,12 +110,39 @@ const createQuickShipperPaper = async ({
     let errorData: unknown;
 
     try {
-      errorData = JSON.parse(responseText);
+      errorData = responseText ? JSON.parse(responseText) : null;
     } catch {
       errorData = responseText;
     }
 
-    const error = new Error(`${SHIPMENT_FAILED}: HTTP ${response.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData)}`);
+    let errorMessage: string = response.statusText || SHIPMENT_FAILED;
+
+    if (typeof errorData === 'string' && errorData.trim()) {
+      errorMessage = errorData;
+    } else if (errorData && typeof errorData === 'object') {
+      const data = errorData as {
+        message?: string;
+        error?: string;
+        errors?: Array<{
+          message?: string;
+          code?: string;
+        }>;
+      };
+
+      if (data.errors?.length) {
+        errorMessage =
+          data.errors
+            .map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || errorMessage;
+      } else if (data.message) {
+        errorMessage = data.message;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       extra: {

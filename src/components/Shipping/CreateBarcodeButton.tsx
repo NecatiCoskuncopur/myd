@@ -6,7 +6,7 @@ import { Alert, Box, Button, CircularProgress, ClickAwayListener, Dialog, Dialog
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getUserPermittedAccounts from '@/app/actions/user/getUserPermittedAccounts';
 import getUserPricingLists from '@/app/actions/user/getUserPricingList';
-import { Carrier } from '@/constants';
+import { Carrier, generalMessages } from '@/constants';
 import { getShippingPrices } from '@/lib/getShippingPrices';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
@@ -16,6 +16,7 @@ interface Props {
   shipping: ShippingTypes.IShipping;
   onSuccess: () => void;
 }
+const { UNEXPECTED_ERROR } = generalMessages;
 
 const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -98,7 +99,8 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
         } else {
           setError(res.message || 'Barkod oluşturulamadı');
         }
-      } catch {
+      } catch (error) {
+        setError(error instanceof Error ? error.message : UNEXPECTED_ERROR);
         if (!cancelled) {
           setError('Sistem hatası oluştu');
         }

@@ -152,16 +152,34 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
 
     const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount).toFixed(2));
 
-    const carrierResult = await createCarrierPaper({
-      firm,
-      shippingInstance,
-      accountNumber,
-      hasCustomInfo,
-      customInfo,
-      credentials: carrierAccount.credentials,
-      accountType: carrierAccount.accountType,
-      shippingId: shipping._id.toString(),
-    });
+    let carrierResult: Awaited<ReturnType<typeof createCarrierPaper>>;
+
+    try {
+      carrierResult = await createCarrierPaper({
+        firm,
+        shippingInstance,
+        accountNumber,
+        hasCustomInfo,
+        customInfo,
+        credentials: carrierAccount.credentials,
+        accountType: carrierAccount.accountType,
+        shippingId: shipping._id.toString(),
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        captureActionError(`createBarcode:${firm}`, error);
+
+        return {
+          status: 'ERROR',
+          message: error.message || UNEXPECTED_ERROR,
+        };
+      }
+
+      return {
+        status: 'ERROR',
+        message: UNEXPECTED_ERROR,
+      };
+    }
 
     const { trackingNumber } = carrierResult;
 

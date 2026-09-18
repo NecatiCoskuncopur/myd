@@ -277,14 +277,22 @@ const createFedexPaper = async ({
   if (!shipmentRes.ok) {
     const responseText = await shipmentRes.text();
     let errorData: CarrierAccountTypes.ICarrierErrorResponse | string;
+
     try {
       errorData = JSON.parse(responseText) as CarrierAccountTypes.ICarrierErrorResponse;
     } catch {
       errorData = responseText;
     }
-    const error = new Error(
-      `${SHIPMENT_FAILED}: HTTP ${shipmentRes.status} - ${typeof errorData === 'string' ? errorData : JSON.stringify(errorData.errors || errorData)}`,
-    );
+
+    const errorMessage =
+      typeof errorData === 'string'
+        ? errorData
+        : errorData.errors
+            ?.map(error => error.message || error.code)
+            .filter(Boolean)
+            .join(' ') || SHIPMENT_FAILED;
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       extra: {

@@ -126,8 +126,8 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
       }
 
       await refetch();
-    } catch {
-      setBarcodeFailure(UNEXPECTED_ERROR);
+    } catch (error) {
+      setBarcodeFailure(error instanceof Error ? error.message : UNEXPECTED_ERROR);
     } finally {
       finishBarcodeLoading();
     }
