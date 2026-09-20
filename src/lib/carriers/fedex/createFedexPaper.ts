@@ -372,7 +372,6 @@ const createFedexPaper = async ({
         trackingNumber: output?.masterTrackingNumber || trackingNumber,
         shipmentDate,
         document: Buffer.from(additionalDocument.data),
-        type: additionalDocument.type,
         contentType: additionalDocument.contentType,
         originCountryCode: 'TR',
         destinationCountryCode: consignee.address.country,
@@ -383,7 +382,6 @@ const createFedexPaper = async ({
           shippingId,
           trackingNumber,
           additionalDocumentId: additionalDocument._id.toString(),
-          additionalDocumentType: additionalDocument.type,
           documentUploadFailed: true,
         },
       });

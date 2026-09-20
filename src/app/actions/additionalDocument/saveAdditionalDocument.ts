@@ -55,7 +55,6 @@ const saveAdditionalDocument = async (
     const document = await AdditionalDocument.create({
       userId: currentUser.id,
       data,
-      type: validatedData.type,
       contentType,
     });
 

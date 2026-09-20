@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum, carrierBaseUrl } from '@/constants';
+import { AdditionalDocumentContentTypeEnum, carrierBaseUrl } from '@/constants';
 
 type UploadFedexDocumentParams = {
   accessToken: string;
@@ -9,7 +9,6 @@ type UploadFedexDocumentParams = {
   originCountryCode: string;
   destinationCountryCode: string;
   document: Buffer;
-  type: AdditionalDocumentEnum;
   contentType: AdditionalDocumentContentTypeEnum;
 };
 
@@ -32,25 +31,6 @@ const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
   }
 };
 
-const getFedexDocumentType = (type: AdditionalDocumentEnum) => {
-  switch (type) {
-    case AdditionalDocumentEnum.CERTIFICATE_OF_ORIGIN:
-      return 'CERTIFICATE_OF_ORIGIN';
-
-    case AdditionalDocumentEnum.COMMERCIAL_INVOICE:
-      return 'COMMERCIAL_INVOICE';
-
-    case AdditionalDocumentEnum.OTHER:
-      return 'OTHER';
-
-    default: {
-      const exhaustiveCheck: never = type;
-
-      return exhaustiveCheck;
-    }
-  }
-};
-
 const uploadFedexDocument = async ({
   accessToken,
   trackingNumber,
@@ -58,7 +38,6 @@ const uploadFedexDocument = async ({
   originCountryCode,
   destinationCountryCode,
   document,
-  type,
   contentType,
 }: UploadFedexDocumentParams): Promise<void> => {
   if (!Buffer.isBuffer(document) || !document.length) {
@@ -75,7 +54,6 @@ const uploadFedexDocument = async ({
         shipmentDate,
         originCountryCode,
         destinationCountryCode,
-        type,
         contentType,
       },
     });
@@ -85,9 +63,7 @@ const uploadFedexDocument = async ({
 
   const extension = getFileExtension(contentType);
 
-  const fedexDocumentType = getFedexDocumentType(type);
-
-  const fileName = `additional-document-${trackingNumber}-${type.toLowerCase()}.${extension}`;
+  const fileName = `additional-document-${trackingNumber}.${extension}`;
 
   const shipmentTimestamp = `${shipmentDate}T00:00:00`;
 
@@ -99,7 +75,7 @@ const uploadFedexDocument = async ({
     name: fileName,
     contentType,
     meta: {
-      shipDocumentType: fedexDocumentType,
+      shipDocumentType: 'OTHER',
       trackingNumber,
       shipmentDate: shipmentTimestamp,
       originCountryCode,
@@ -120,6 +96,7 @@ const uploadFedexDocument = async ({
   );
 
   let response: Response;
+
   try {
     response = await fetch(endpoint, {
       method: 'POST',
@@ -141,8 +118,7 @@ const uploadFedexDocument = async ({
         shipmentDate: shipmentTimestamp,
         originCountryCode,
         destinationCountryCode,
-        type,
-        fedexDocumentType,
+        documentType: 'OTHER',
         contentType,
         fileName,
         documentSizeBytes: document.length,
@@ -169,8 +145,7 @@ const uploadFedexDocument = async ({
         shipmentDate: shipmentTimestamp,
         originCountryCode,
         destinationCountryCode,
-        type,
-        fedexDocumentType,
+        documentType: 'OTHER',
         contentType,
         fileName,
         documentSizeBytes: document.length,

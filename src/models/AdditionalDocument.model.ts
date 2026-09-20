@@ -1,6 +1,6 @@
 import { InferSchemaType, model, models, PaginateModel, Schema } from 'mongoose';
 
-import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum } from '@/constants';
+import { AdditionalDocumentContentTypeEnum } from '@/constants';
 
 const AdditionalDocumentSchema = new Schema(
   {
@@ -13,14 +13,6 @@ const AdditionalDocumentSchema = new Schema(
       type: Buffer,
       required: true,
     },
-
-    type: {
-      type: String,
-      enum: Object.values(AdditionalDocumentEnum),
-      required: true,
-      default: AdditionalDocumentEnum.OTHER,
-    },
-
     contentType: {
       type: String,
       enum: Object.values(AdditionalDocumentContentTypeEnum),

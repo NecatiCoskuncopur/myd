@@ -38,8 +38,6 @@ export { default as TrackingStatusEnum } from './enums/trackingStatusEnum';
 export { default as TrackingStatusLabels } from './trackingStatusLabels';
 export { default as sysParamMessages } from './messages/sysParamMessages';
 export { default as carrierBaseUrl } from './carrierBaseUrl';
-export { default as AdditionalDocumentEnum } from './enums/additionalDocumentEnum';
-export { default as additionalDocumentOptions } from './additionalDocumentOptions';
 export { default as AdditionalDocumentContentTypeEnum } from './enums/additionalDocumentContentTypeEnum';
 export { default as additionalDocumentMessages } from './messages/additionalDocumentMessages';
 export { default as MAX_DOCUMENT_SIZE } from './maxDocumentSize';

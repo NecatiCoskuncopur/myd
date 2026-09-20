@@ -436,7 +436,6 @@ const createUpsPaper = async ({
         shipmentIdentifier: trackingNumber,
         trackingNumbers: trackingNumbers.length ? trackingNumbers : [trackingNumber],
         document: Buffer.from(additionalDocument.data),
-        type: additionalDocument.type,
         contentType: additionalDocument.contentType,
       });
     } catch (error) {
@@ -449,7 +448,6 @@ const createUpsPaper = async ({
           shippingId,
           trackingNumber,
           additionalDocumentId: additionalDocument._id.toString(),
-          additionalDocumentType: additionalDocument.type,
           documentUploadFailed: true,
         },
       });

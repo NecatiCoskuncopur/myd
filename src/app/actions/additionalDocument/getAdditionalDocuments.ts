@@ -2,7 +2,7 @@
 
 import { Types } from 'mongoose';
 
-import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum, generalMessages, UserRole } from '@/constants';
+import { AdditionalDocumentContentTypeEnum, generalMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
@@ -70,7 +70,6 @@ const getAdditionalDocuments = async (shippingId: string): Promise<ResponseTypes
       status: 'OK',
       data: documents.map(document => ({
         id: document._id.toString(),
-        type: document.type as AdditionalDocumentEnum,
         contentType: document.contentType as AdditionalDocumentContentTypeEnum,
       })),
     };

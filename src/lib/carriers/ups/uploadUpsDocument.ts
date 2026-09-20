@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import moment from 'moment';
 
-import { AdditionalDocumentContentTypeEnum, AdditionalDocumentEnum, carrierBaseUrl } from '@/constants';
+import { AdditionalDocumentContentTypeEnum, carrierBaseUrl } from '@/constants';
 
 type UploadUpsDocumentParams = {
   accessToken: string;
@@ -9,7 +9,6 @@ type UploadUpsDocumentParams = {
   shipmentIdentifier: string;
   trackingNumbers: string[];
   document: Buffer;
-  type: AdditionalDocumentEnum;
   contentType: AdditionalDocumentContentTypeEnum;
 };
 
@@ -32,32 +31,12 @@ const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
   }
 };
 
-const getUpsDocumentType = (type: AdditionalDocumentEnum) => {
-  switch (type) {
-    case AdditionalDocumentEnum.COMMERCIAL_INVOICE:
-      return '002';
-
-    case AdditionalDocumentEnum.CERTIFICATE_OF_ORIGIN:
-      return '003';
-
-    case AdditionalDocumentEnum.OTHER:
-      return '008';
-
-    default: {
-      const exhaustiveCheck: never = type;
-
-      return exhaustiveCheck;
-    }
-  }
-};
-
 const uploadUpsDocument = async ({
   accessToken,
   accountNumber,
   shipmentIdentifier,
   trackingNumbers,
   document,
-  type,
   contentType,
 }: UploadUpsDocumentParams): Promise<void> => {
   if (!Buffer.isBuffer(document) || !document.length) {
@@ -73,7 +52,6 @@ const uploadUpsDocument = async ({
         accountNumber,
         shipmentIdentifier,
         trackingNumbers,
-        type,
         contentType,
       },
     });
@@ -93,7 +71,6 @@ const uploadUpsDocument = async ({
       extra: {
         accountNumber,
         shipmentIdentifier,
-        type,
         contentType,
       },
     });
@@ -103,9 +80,7 @@ const uploadUpsDocument = async ({
 
   const fileExtension = getFileExtension(contentType);
 
-  const upsDocumentType = getUpsDocumentType(type);
-
-  const fileName = `additional-document-${shipmentIdentifier}-${type.toLowerCase()}.${fileExtension}`;
+  const fileName = `additional-document-${shipmentIdentifier}-${crypto.randomUUID()}.${fileExtension}`;
 
   const transId = crypto.randomUUID().replaceAll('-', '').slice(0, 32);
 
@@ -129,7 +104,7 @@ const uploadUpsDocument = async ({
         {
           UserCreatedFormFileName: fileName,
           UserCreatedFormFileFormat: fileExtension,
-          UserCreatedFormDocumentType: upsDocumentType,
+          UserCreatedFormDocumentType: '008',
           UserCreatedFormFile: document.toString('base64'),
         },
       ],
@@ -137,15 +112,15 @@ const uploadUpsDocument = async ({
   };
 
   let uploadResponse: Response;
+
   console.log('[UPS PAPERLESS] Upload başlıyor', {
     shipmentIdentifier,
     trackingNumbers,
-    type,
-    upsDocumentType,
     contentType,
     fileName,
     documentSizeBytes: document.length,
   });
+
   try {
     uploadResponse = await fetch(`${carrierBaseUrl.UPS}/api/paperlessdocuments/v2/upload`, {
       method: 'POST',
@@ -163,8 +138,6 @@ const uploadUpsDocument = async ({
         accountNumber,
         shipmentIdentifier,
         trackingNumbers,
-        type,
-        upsDocumentType,
         contentType,
         fileName,
         documentSizeBytes: document.length,
@@ -178,8 +151,6 @@ const uploadUpsDocument = async ({
 
   console.log('[UPS PAPERLESS] Upload response', {
     shipmentIdentifier,
-    type,
-    upsDocumentType,
     status: uploadResponse.status,
     statusText: uploadResponse.statusText,
     ok: uploadResponse.ok,
@@ -199,8 +170,6 @@ const uploadUpsDocument = async ({
         accountNumber,
         shipmentIdentifier,
         trackingNumbers,
-        type,
-        upsDocumentType,
         contentType,
         fileName,
         documentSizeBytes: document.length,
@@ -230,8 +199,6 @@ const uploadUpsDocument = async ({
         accountNumber,
         shipmentIdentifier,
         trackingNumbers,
-        type,
-        upsDocumentType,
         contentType,
         responseBody: uploadResponseText,
       },
@@ -246,8 +213,6 @@ const uploadUpsDocument = async ({
 
   console.log('[UPS PAPERLESS] DocumentID alındı', {
     shipmentIdentifier,
-    type,
-    upsDocumentType,
     documentIds,
   });
 
@@ -264,8 +229,6 @@ const uploadUpsDocument = async ({
         accountNumber,
         shipmentIdentifier,
         trackingNumbers,
-        type,
-        upsDocumentType,
         contentType,
         responseBody: uploadData,
       },
@@ -317,8 +280,6 @@ const uploadUpsDocument = async ({
         shipmentIdentifier,
         trackingNumbers,
         documentIds,
-        type,
-        upsDocumentType,
         contentType,
         shipmentDateAndTime,
       },
@@ -328,10 +289,9 @@ const uploadUpsDocument = async ({
   }
 
   const imageResponseText = await imageResponse.text();
+
   console.log('[UPS PAPERLESS] Image response', {
     shipmentIdentifier,
-    type,
-    upsDocumentType,
     status: imageResponse.status,
     statusText: imageResponse.statusText,
     ok: imageResponse.ok,
@@ -352,8 +312,6 @@ const uploadUpsDocument = async ({
         shipmentIdentifier,
         trackingNumbers,
         documentIds,
-        type,
-        upsDocumentType,
         contentType,
         shipmentDateAndTime,
         responseStatus: imageResponse.status,
@@ -383,8 +341,6 @@ const uploadUpsDocument = async ({
         shipmentIdentifier,
         trackingNumbers,
         documentIds,
-        type,
-        upsDocumentType,
         contentType,
         responseBody: imageResponseText,
       },
@@ -409,8 +365,6 @@ const uploadUpsDocument = async ({
         shipmentIdentifier,
         trackingNumbers,
         documentIds,
-        type,
-        upsDocumentType,
         contentType,
         shipmentDateAndTime,
         responseBody: imageData,

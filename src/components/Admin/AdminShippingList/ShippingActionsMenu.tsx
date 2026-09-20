@@ -10,7 +10,7 @@ import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
-import { additionalDocumentOptions, ShippingStatus } from '@/constants';
+import { ShippingStatus } from '@/constants';
 import getCarrierIcon from '@/lib/getCarrierIcon';
 import { getShippingPrices } from '@/lib/getShippingPrices';
 import { AdditionalDocumentTypes } from '@/types/additionalDocument';
@@ -70,9 +70,6 @@ const ShippingActionsMenu = ({
   })();
 
   const showBarcodeItem = !hasTrackingNumber && canCreateBarcode;
-
-  const getAdditionalDocumentLabel = (type: AdditionalDocumentTypes.IAdditionalDocument['type']) =>
-    additionalDocumentOptions.find(option => option.value === type)?.label ?? type;
 
   const handleEdit = () => {
     const id = selectedRow?._id;
@@ -195,7 +192,7 @@ const ShippingActionsMenu = ({
 
       {additionalDocuments.length > 0 && <Divider />}
 
-      {additionalDocuments.map(document => (
+      {additionalDocuments.map((document, index) => (
         <MenuItem
           key={document.id}
           onClick={() => {
@@ -208,7 +205,7 @@ const ShippingActionsMenu = ({
             <DescriptionOutlinedIcon fontSize="small" />
           </ListItemIcon>
 
-          <ListItemText>{getAdditionalDocumentLabel(document.type)}</ListItemText>
+          <ListItemText>Ek Belge {index + 1}</ListItemText>
         </MenuItem>
       ))}
 

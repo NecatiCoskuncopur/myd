@@ -5,19 +5,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import { Box, Button, CircularProgress, Grid, IconButton, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, IconButton, Stack, Typography } from '@mui/material';
 
 import deleteAdditionalDocument from '@/app/actions/additionalDocument/deleteAdditionalDocument';
 import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
 import saveAdditionalDocument from '@/app/actions/additionalDocument/saveAdditionalDocument';
-import {
-  AdditionalDocumentContentTypeEnum,
-  AdditionalDocumentEnum,
-  additionalDocumentMessages,
-  additionalDocumentOptions,
-  generalMessages,
-  MAX_DOCUMENT_SIZE,
-} from '@/constants';
+import { AdditionalDocumentContentTypeEnum, additionalDocumentMessages, generalMessages, MAX_DOCUMENT_SIZE } from '@/constants';
 import compressImage from '@/lib/compressImage';
 import compressPdf from '@/lib/compressPdf';
 import openBase64File from '@/lib/openBase64File';
@@ -45,7 +38,6 @@ type DocumentRow = {
   localId: string;
   id?: string;
   file: File | null;
-  type: AdditionalDocumentEnum;
   contentType?: AdditionalDocumentContentTypeEnum;
   isSaving: boolean;
   isDeleting: boolean;
@@ -54,7 +46,6 @@ type DocumentRow = {
 const createEmptyRow = (): DocumentRow => ({
   localId: crypto.randomUUID(),
   file: null,
-  type: AdditionalDocumentEnum.OTHER,
   isSaving: false,
   isDeleting: false,
 });
@@ -71,7 +62,6 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
           localId: document.id,
           id: document.id,
           file: null,
-          type: document.type,
           contentType: document.contentType,
           isSaving: false,
           isDeleting: false,
@@ -147,7 +137,6 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
     try {
       const response = await saveAdditionalDocument({
         file: document.file,
-        type: document.type,
         shippingId: props.mode === 'edit' ? props.shippingId : undefined,
       });
 
@@ -237,7 +226,7 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
     }, 60_000);
   };
 
-  const maxDocumentCount = Object.values(AdditionalDocumentEnum).length;
+  const maxDocumentCount = 5;
 
   return (
     <Wrapper title="Ek Belgeler">
@@ -260,32 +249,6 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
                 alignItems: 'center',
               }}
             >
-              <Grid
-                size={{
-                  xs: 12,
-                  md: 4,
-                }}
-              >
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  value={document.type}
-                  disabled={isSaved}
-                  onChange={event =>
-                    updateRow(document.localId, {
-                      type: event.target.value as AdditionalDocumentEnum,
-                    })
-                  }
-                >
-                  {additionalDocumentOptions.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
               <Grid
                 size={{
                   xs: 12,
