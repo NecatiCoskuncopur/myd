@@ -8,7 +8,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import getShippingCost from '@/lib/getShippingCost';
 import requireRoles from '@/lib/requireRoles';
-import { Shipping, User } from '@/models';
+import { CarrierAccount, Shipping, User } from '@/models';
 import updatePackageDimensionsSchema from '@/schemas/updatePackageDimensions.schema';
 import { AdminTypes } from '@/types/admin';
 
@@ -19,7 +19,10 @@ const { PRICING, NOT_FOUND: PL_NOT_FOUND } = pricingListMessages;
 const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensionsPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
     const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
-    if (authError) return authError;
+
+    if (authError) {
+      return authError;
+    }
 
     const validatedData = await updatePackageDimensionsSchema.validate(data, {
       abortEarly: false,
@@ -72,8 +75,9 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     }
 
     const accountType = shipping.carrier?.accountType;
+    const accountNumber = shipping.carrier?.account;
 
-    if (!accountType) {
+    if (!accountType || !accountNumber) {
       return {
         status: 'ERROR',
         message: PL_NOT_FOUND,
@@ -103,9 +107,33 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
     const shippingCostDifference = newShippingCost - currentShippingCost;
 
     if (shippingCostDifference > 0) {
-      await applyBalanceTransaction('SPEND', shipping.userId.toString(), shippingCostDifference, shipping._id.toString());
+      await applyBalanceTransaction('SPEND', shipping.userId.toString(), Number(shippingCostDifference.toFixed(2)), shipping._id.toString());
     } else if (shippingCostDifference < 0) {
       // Gerektiğinde PAY olarak girilebilir
+    }
+
+    const currentLongSideSurchargeCost = shipping.carrier?.longSideSurchargeCost ?? 0;
+
+    if (currentLongSideSurchargeCost <= 0) {
+      const carrierAccount = await CarrierAccount.findOne({
+        accountNumber,
+        accountType,
+        isActive: true,
+      }).lean();
+
+      const longSideSurcharge = carrierAccount?.longSideSurcharge;
+
+      const hasLongSideSurcharge = !!longSideSurcharge?.isActive && [width, height, length].some(side => side >= longSideSurcharge.limit);
+
+      if (hasLongSideSurcharge) {
+        const longSideSurchargePrice = longSideSurcharge.price;
+
+        await applyBalanceTransaction('SPEND', shipping.userId.toString(), longSideSurchargePrice, shipping._id.toString());
+
+        if (shipping.carrier) {
+          shipping.carrier.longSideSurchargeCost = longSideSurchargePrice;
+        }
+      }
     }
 
     shipping.package = {
@@ -136,9 +164,11 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
         message: error.errors.join(', '),
       };
     }
+
     if (error instanceof Error) {
       captureActionError('updatePackageDimensions', error);
     }
+
     return {
       status: 'ERROR',
       message: UNEXPECTED_ERROR,
