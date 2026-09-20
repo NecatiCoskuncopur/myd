@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import {
   Alert,
   Autocomplete,
@@ -16,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   TextField,
   Typography,
 } from '@mui/material';
@@ -38,13 +39,11 @@ type CalculateCarrierAccountCostModalProps = {
 
 const CalculateCarrierAccountCostModal = ({ open, onClose }: CalculateCarrierAccountCostModalProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryOption | null>(null);
-
   const [weight, setWeight] = useState<number | ''>('');
-
   const [results, setResults] = useState<AdminTypes.ICalculateCarrierAccountCostResponse[]>([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const isWeightInvalid = weight !== '' && weight < 0.1;
 
@@ -92,6 +91,12 @@ const CalculateCarrierAccountCostModal = ({ open, onClose }: CalculateCarrierAcc
 
     onClose();
   };
+
+  const sortedResults = useMemo(() => {
+    return [...results].sort((a, b) => {
+      return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+    });
+  }, [results, sortOrder]);
 
   return (
     <Dialog
@@ -177,12 +182,22 @@ const CalculateCarrierAccountCostModal = ({ open, onClose }: CalculateCarrierAcc
                     <TableCell>Taşıyıcı</TableCell>
                     <TableCell>Hesap</TableCell>
                     <TableCell>Zone</TableCell>
-                    <TableCell align="right">Maliyet</TableCell>
+                    <TableCell align="right">
+                      <TableSortLabel
+                        active
+                        direction={sortOrder}
+                        onClick={() => {
+                          setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+                        }}
+                      >
+                        Maliyet
+                      </TableSortLabel>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {results.map(result => (
+                  {sortedResults.map(result => (
                     <TableRow key={result._id}>
                       <TableCell>{result.carrier}</TableCell>
 
