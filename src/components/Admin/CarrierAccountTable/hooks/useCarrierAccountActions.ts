@@ -19,6 +19,8 @@ const useCarrierAccountActions = () => {
     open: false,
   });
 
+  const [isCalculateModalOpen, setIsCalculateModalOpen] = useState(false);
+
   const openMenu = (row: CarrierAccountTypes.ICarrierAccount, anchorEl: HTMLButtonElement) => {
     setSelectedRow(row);
     setMenuAnchorEl(anchorEl);
@@ -37,6 +39,14 @@ const useCarrierAccountActions = () => {
       type: 'create',
       open: true,
     });
+  };
+
+  const openCalculateModal = () => {
+    setIsCalculateModalOpen(true);
+  };
+
+  const closeCalculateModal = () => {
+    setIsCalculateModalOpen(false);
   };
 
   const openEditModal = () => {
@@ -71,10 +81,13 @@ const useCarrierAccountActions = () => {
     menuAnchorEl,
     isCreateModalOpen,
     isEditModalOpen,
+    isCalculateModalOpen,
     openMenu,
     closeMenu,
     openCreateModal,
     openEditModal,
+    openCalculateModal,
+    closeCalculateModal,
     closeModal,
   };
 };

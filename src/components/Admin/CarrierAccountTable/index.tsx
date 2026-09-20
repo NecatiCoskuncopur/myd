@@ -2,10 +2,13 @@
 
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import { Box } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
 
+import CalculateCarrierAccountCostModal from './CalcuateCarrierAccountCostModal';
 import CarrierAccountActionsMenu from './CarrierAccountActionsMenu';
 import columns from './columns';
 import FilterSection from './FilterSection';
@@ -19,8 +22,20 @@ const CarrierAccountTable = () => {
 
   const { data, rows, isLoading, page, limit, refetch } = useCarrierAccountsList(searchParams);
 
-  const { selectedRow, menuAnchorEl, isCreateModalOpen, isEditModalOpen, openMenu, closeMenu, openCreateModal, openEditModal, closeModal } =
-    useCarrierAccountActions();
+  const {
+    selectedRow,
+    menuAnchorEl,
+    isCreateModalOpen,
+    isEditModalOpen,
+    isCalculateModalOpen,
+    openMenu,
+    closeMenu,
+    openCreateModal,
+    openEditModal,
+    openCalculateModal,
+    closeCalculateModal,
+    closeModal,
+  } = useCarrierAccountActions();
 
   const accountColumns: GridColDef[] = [
     ...columns,
@@ -51,22 +66,38 @@ const CarrierAccountTable = () => {
   return (
     <Wrapper>
       <TableHeader title="Kargo Hesapları" subTitle="Entegre taşıyıcı firma hesaplarınızın listesi ve bağlantı detayları.">
-        <StyledButton
-          type="button"
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={openCreateModal}
+        <Box
           sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
             flexShrink: 0,
-            whiteSpace: 'nowrap',
-            alignSelf: {
-              xs: 'stretch',
-              sm: 'center',
-            },
           }}
         >
-          Yeni Hesap Oluştur
-        </StyledButton>
+          <StyledButton
+            type="button"
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={openCreateModal}
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Yeni Hesap Oluştur
+          </StyledButton>
+
+          <StyledButton
+            type="button"
+            variant="contained"
+            startIcon={<CalculateIcon />}
+            onClick={openCalculateModal}
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Hesapla
+          </StyledButton>
+        </Box>
       </TableHeader>
 
       <FilterSection searchParams={searchParams} />
@@ -85,6 +116,8 @@ const CarrierAccountTable = () => {
       <CreateCarrierAccountForm open={isCreateModalOpen} onClose={closeModal} onSuccess={handleFormSuccess} />
 
       <UpdateCarrierAccountForm open={isEditModalOpen} account={selectedRow} onClose={closeModal} onSuccess={handleFormSuccess} />
+
+      <CalculateCarrierAccountCostModal open={isCalculateModalOpen} onClose={closeCalculateModal} />
     </Wrapper>
   );
 };

@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/app/actions/admin/calculateCarrierAccountCosts.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CalcuateCarrierAccountCostModal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/schemas/calculateCarrierAccountCost.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/PricingZoneEditor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/PricingZoneEditor.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/Forms/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/Forms/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/parsePricingRowsFromClipboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/parsePricingRowsFromClipboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountActions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountActions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +223,7 @@
       <workItem from="1789715805053" duration="125000" />
       <workItem from="1789715973897" duration="21001000" />
       <workItem from="1789803666379" duration="8000" />
-      <workItem from="1789907012125" duration="2557000" />
+      <workItem from="1789907012125" duration="7537000" />
     </task>
     <servers />
   </component>

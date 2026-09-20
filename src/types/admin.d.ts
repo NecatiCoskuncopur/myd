@@ -84,4 +84,17 @@ declare namespace AdminTypes {
     shippingId: string;
     carrierAccountId: string;
   }
+
+  interface ICalculateCarrierAccountCostsPayload {
+    country: string;
+    weight: number;
+  }
+
+  interface ICalculateCarrierAccountCostResponse {
+    _id: string;
+    name: string;
+    carrier: Carrier;
+    zone: number;
+    price: number;
+  }
 }
