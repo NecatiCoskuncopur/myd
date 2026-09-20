@@ -177,10 +177,20 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
                   customerPricing: account.accountType ? pricingLists[account.accountType] : null,
                 });
 
+                const longSideSurcharge = account?.longSideSurcharge;
+
+                const hasLongSideSurcharge =
+                  !!longSideSurcharge?.isActive &&
+                  [shipping?.package.width, shipping?.package.height, shipping?.package.length].some(
+                    side => side != null && Number(side) >= longSideSurcharge.limit,
+                  );
+
+                const longSideFee = hasLongSideSurcharge && longSideSurcharge ? longSideSurcharge.price : 0;
+
                 const insuranceAmount = shipping?.content.insuranceAmount ?? 0;
                 const taxAmount = shipping?.content.customsTaxAmount ?? 0;
                 const serviceFee = shipping?.content.serviceFee ?? 0;
-                const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount + serviceFee).toFixed(2)) : null;
+                const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount + serviceFee + longSideFee).toFixed(2)) : null;
                 return (
                   <Box
                     key={account._id}

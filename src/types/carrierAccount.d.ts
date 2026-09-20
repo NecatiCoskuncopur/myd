@@ -38,6 +38,12 @@ declare namespace CarrierAccountTypes {
     zones: IZone[];
   }
 
+  interface ILongSideSurcharge {
+    isActive: boolean;
+    price: number;
+    limit: number;
+  }
+
   interface ICarrierAccount {
     _id: string;
     name: string;
@@ -50,12 +56,16 @@ declare namespace CarrierAccountTypes {
     pricing: IPricing;
     hasCustomInfo: boolean;
     customInfo?: ICustomInfo;
+    longSideSurcharge: ILongSideSurcharge;
     meta?: Record<string, string>;
     createdAt: string;
     updatedAt: string;
   }
 
-  type IUserPermittedAccount = Pick<ICarrierAccount, '_id' | 'name' | 'displayName' | 'carrier' | 'pricing' | 'accountNumber' | 'accountType'>;
+  type IUserPermittedAccount = Pick<
+    ICarrierAccount,
+    '_id' | 'name' | 'displayName' | 'carrier' | 'pricing' | 'accountNumber' | 'accountType' | 'longSideSurcharge'
+  >;
 
   interface ICreateCarrierAccountPayload {
     name: string;
@@ -67,6 +77,7 @@ declare namespace CarrierAccountTypes {
     credentials: ICarrierCredential[];
     hasCustomInfo: boolean;
     customInfo?: ICustomInfo;
+    longSideSurcharge: ILongSideSurcharge;
     meta?: Record<string, string>;
   }
 

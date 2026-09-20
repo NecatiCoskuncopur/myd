@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import { addressMessages, Carrier, CarrierAccountTypeEnum, carrierMessages, pricingListMessages, userMessages } from '@/constants';
 
-const { ACCOUNTNUMBER, ACCOUNTTYPE, CARRIER, CREDENTIALS, NAME } = carrierMessages;
+const { ACCOUNTNUMBER, ACCOUNTTYPE, CARRIER, CREDENTIALS, NAME, LONGSIDE } = carrierMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { ZONE } = pricingListMessages;
@@ -49,6 +49,19 @@ export default yup.object({
       )
       .min(1)
       .required(ZONE.REQUIRED),
+  }),
+  longSideSurcharge: yup.object({
+    isActive: yup.boolean().required().default(false),
+    price: yup.number().when('isActive', {
+      is: true,
+      then: schema => schema.typeError(LONGSIDE.PRICE.TYPE).min(0, LONGSIDE.PRICE.MIN).required(LONGSIDE.PRICE.REQUIRED),
+      otherwise: schema => schema.optional().nullable(),
+    }),
+    limit: yup.number().when('isActive', {
+      is: true,
+      then: schema => schema.typeError(LONGSIDE.LIMIT.TYPE).min(0.1, LONGSIDE.LIMIT.MIN).required(LONGSIDE.LIMIT.REQUIRED),
+      otherwise: schema => schema.optional().nullable(),
+    }),
   }),
   customInfo: yup.object().when('hasCustomInfo', {
     is: true,

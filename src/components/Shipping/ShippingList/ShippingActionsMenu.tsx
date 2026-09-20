@@ -143,13 +143,20 @@ const ShippingActionsMenu = ({
                 customerPricing: account.accountType ? pricingLists[account.accountType] : null,
               });
 
+              const hasLongSideSurcharge =
+                account?.longSideSurcharge?.isActive &&
+                [selectedRow?.package.width, selectedRow?.package.height, selectedRow?.package.length].some(
+                  side => Number(side) >= account.longSideSurcharge.limit,
+                );
+              const longSideFee = hasLongSideSurcharge ? account?.longSideSurcharge?.price : 0;
+
               const insuranceAmount = selectedRow?.content.insuranceAmount ?? 0;
 
               const taxAmount = selectedRow?.content.customsTaxAmount ?? 0;
 
               const serviceFee = selectedRow?.content.serviceFee ?? 0;
 
-              const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount + serviceFee).toFixed(2)) : null;
+              const totalPrice = customerPrice != null ? Number((customerPrice + insuranceAmount + taxAmount + serviceFee + longSideFee).toFixed(2)) : null;
 
               return (
                 <MenuItem

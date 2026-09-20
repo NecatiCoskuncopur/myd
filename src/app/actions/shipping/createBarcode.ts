@@ -149,8 +149,16 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
 
     const shippingInstance = JSON.parse(JSON.stringify(shipping));
     const taxAmount = shipping?.content?.customsTaxAmount ?? 0;
+    const serviceFee = shipping.content?.serviceFee ?? 0;
+    const longSideSurcharge = carrierAccount.longSideSurcharge;
 
-    const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount).toFixed(2));
+    const hasLongSideSurcharge =
+      !!longSideSurcharge?.isActive &&
+      [shipping.package?.width, shipping.package?.height, shipping.package?.length].some(side => side != null && Number(side) >= longSideSurcharge.limit);
+
+    const longSideSurchargeCost = hasLongSideSurcharge ? longSideSurcharge.price : 0;
+
+    const totalShippingCost = Number((shippingCost + insuranceAmount + taxAmount + serviceFee + longSideSurchargeCost).toFixed(2));
 
     let carrierResult: Awaited<ReturnType<typeof createCarrierPaper>>;
 
@@ -195,6 +203,8 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       cost: carrierCost,
       insuranceCost: insuranceAmount,
       dutiesAndTaxesCost: taxAmount,
+      longSideSurchargeCost,
+      serviceFee,
     };
 
     shipping.status = ShippingStatus.LABELED;

@@ -16,13 +16,23 @@ type FormItemsProps<T extends CarrierAccountFormPayload> = {
   setValue: UseFormSetValue<T>;
   credentials: CarrierAccountTypes.ICarrierCredential[] | undefined;
   hasCustomInfo: boolean | undefined;
+  hasLongSideSurcharge: boolean | undefined;
   mode: 'create' | 'update';
   account?: CarrierAccountTypes.ICarrierAccount | null;
 };
 
 const { ACCOUNTNUMBER, NAME } = carrierMessages;
 
-const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setValue, credentials, hasCustomInfo, mode, account }: FormItemsProps<T>) => {
+const FormItems = <T extends CarrierAccountFormPayload>({
+  control,
+  errors,
+  setValue,
+  credentials,
+  hasCustomInfo,
+  hasLongSideSurcharge,
+  mode,
+  account,
+}: FormItemsProps<T>) => {
   const fieldName = <K extends FieldPath<T>>(name: K) => name;
 
   const handleCustomInfoChange = (checked: boolean) => {
@@ -58,14 +68,17 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
       }>
     | undefined;
 
+  const longSideSurchargeErrors = errors.longSideSurcharge as
+    | {
+        isActive?: FieldError;
+        price?: FieldError;
+        limit?: FieldError;
+      }
+    | undefined;
+
   return (
     <Grid container spacing={2} sx={{ mt: 0.5 }}>
-      <Grid
-        size={{
-          xs: 12,
-          md: 6,
-        }}
-      >
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name={fieldName('name' as FieldPath<T>)}
           control={control}
@@ -85,12 +98,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid
-        size={{
-          xs: 12,
-          md: 6,
-        }}
-      >
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name={fieldName('displayName' as FieldPath<T>)}
           control={control}
@@ -118,12 +126,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid
-        size={{
-          xs: 12,
-          md: 6,
-        }}
-      >
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name={fieldName('accountNumber' as FieldPath<T>)}
           control={control}
@@ -144,12 +147,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
       </Grid>
 
       {mode === 'update' && (
-        <Grid
-          size={{
-            xs: 12,
-            md: 6,
-          }}
-        >
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name={fieldName('isActive' as FieldPath<T>)}
             control={control}
@@ -163,7 +161,6 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
                 onChange={event => field.onChange(event.target.value === 'true')}
               >
                 <MenuItem value="true">Aktif</MenuItem>
-
                 <MenuItem value="false">Pasif</MenuItem>
               </TextField>
             )}
@@ -171,12 +168,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         </Grid>
       )}
 
-      <Grid
-        size={{
-          xs: 12,
-          md: 6,
-        }}
-      >
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name={fieldName('carrier' as FieldPath<T>)}
           control={control}
@@ -192,12 +184,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         />
       </Grid>
 
-      <Grid
-        size={{
-          xs: 12,
-          md: 6,
-        }}
-      >
+      <Grid size={{ xs: 12, md: 6 }}>
         <Controller
           name={fieldName('accountType' as FieldPath<T>)}
           control={control}
@@ -212,6 +199,91 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
           )}
         />
       </Grid>
+
+      <Grid size={{ xs: 12 }}>
+        <Controller
+          name={fieldName('longSideSurcharge.isActive' as FieldPath<T>)}
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={<Checkbox checked={!!field.value} onChange={event => field.onChange(event.target.checked)} />}
+              label="Uzun kenar ek ücreti uygula"
+            />
+          )}
+        />
+      </Grid>
+
+      {hasLongSideSurcharge && (
+        <Grid size={{ xs: 12 }}>
+          <Box
+            sx={theme => ({
+              p: 2,
+              border: theme.palette.mode === 'light' ? '1px dashed rgba(0,0,0,0.12)' : '1px dashed rgba(255,255,255,0.2)',
+              borderRadius: 1,
+            })}
+          >
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name={fieldName('longSideSurcharge.price' as FieldPath<T>)}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={event => {
+                        const value = event.target.value;
+
+                        field.onChange(value === '' ? '' : Number(value));
+                      }}
+                      fullWidth
+                      type="number"
+                      label="Ek Ücret"
+                      error={!!longSideSurchargeErrors?.price}
+                      helperText={longSideSurchargeErrors?.price?.message}
+                      slotProps={{
+                        htmlInput: {
+                          min: 0,
+                          step: 0.01,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name={fieldName('longSideSurcharge.limit' as FieldPath<T>)}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={event => {
+                        const value = event.target.value;
+
+                        field.onChange(value === '' ? '' : Number(value));
+                      }}
+                      fullWidth
+                      type="number"
+                      label="Kenar Limiti (cm)"
+                      error={!!longSideSurchargeErrors?.limit}
+                      helperText={longSideSurchargeErrors?.limit?.message}
+                      slotProps={{
+                        htmlInput: {
+                          min: 0.1,
+                          step: 0.1,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+      )}
 
       <Grid size={{ xs: 12 }}>
         <Controller
@@ -256,13 +328,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
               const credentialError = credentialErrors?.[index]?.value;
 
               return (
-                <Grid
-                  size={{
-                    xs: 12,
-                    md: 6,
-                  }}
-                  key={credential.key}
-                >
+                <Grid size={{ xs: 12, md: 6 }} key={credential.key}>
                   <Controller
                     name={`credentials.${index}.value` as FieldPath<T>}
                     control={control}

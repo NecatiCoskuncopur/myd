@@ -96,6 +96,8 @@ declare namespace ShippingTypes {
     costs?: number;
     insuranceCost?: number;
     dutiesAndTaxesCost?: number;
+    longSideSurchargeCost?: number;
+    serviceFee?: number;
   }
 
   interface IActivity {

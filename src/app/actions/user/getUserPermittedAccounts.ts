@@ -44,7 +44,7 @@ const getUserPermittedAccounts = async (): Promise<ResponseTypes.IActionResponse
       _id: { $in: permittedIds },
       isActive: true,
     })
-      .select('name displayName carrier pricing accountNumber accountType _id')
+      .select('name displayName carrier pricing accountNumber accountType longSideSurcharge _id')
       .lean();
 
     return {

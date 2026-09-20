@@ -138,6 +138,8 @@ const ShippingSchema = new mongoose.Schema(
       },
       insuranceCost: Number,
       dutiesAndTaxesCost: Number,
+      longSideSurchargeCost: Number,
+      serviceFee: Number,
     },
     additionalDocumentIds: {
       type: [

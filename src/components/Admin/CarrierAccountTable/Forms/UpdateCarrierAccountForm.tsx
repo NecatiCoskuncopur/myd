@@ -52,6 +52,11 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
       carrier: account.carrier,
       credentials: account.credentials,
       pricing: account.pricing,
+      longSideSurcharge: account.longSideSurcharge ?? {
+        isActive: false,
+        price: 0,
+        limit: 120,
+      },
       isActive: account.isActive,
       hasCustomInfo: account.hasCustomInfo,
       customInfo: account.customInfo,
@@ -71,6 +76,11 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   const hasCustomInfo = useWatch({
     control,
     name: 'hasCustomInfo',
+  });
+
+  const hasLongSideSurcharge = useWatch({
+    control,
+    name: 'longSideSurcharge.isActive',
   });
 
   useEffect(() => {
@@ -147,6 +157,7 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
           hasCustomInfo={hasCustomInfo}
           errors={errors}
           account={account}
+          hasLongSideSurcharge={hasLongSideSurcharge}
         />
       </DialogContent>
 

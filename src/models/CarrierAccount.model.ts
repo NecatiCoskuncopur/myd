@@ -60,6 +60,20 @@ const CarrierAccountSchema = new Schema(
         default: [],
       },
     },
+    longSideSurcharge: {
+      isActive: {
+        type: Boolean,
+        default: false,
+      },
+      price: {
+        type: Number,
+        default: 0,
+      },
+      limit: {
+        type: Number,
+        default: 120,
+      },
+    },
     hasCustomInfo: {
       type: Boolean,
       default: false,

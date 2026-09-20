@@ -44,6 +44,11 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       pricing: {
         zones: [],
       },
+      longSideSurcharge: {
+        isActive: false,
+        price: 0,
+        limit: 120,
+      },
       hasCustomInfo: false,
       customInfo: {
         firstName: '',
@@ -75,6 +80,11 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const credentials = useWatch({
     control,
     name: 'credentials',
+  });
+
+  const hasLongSideSurcharge = useWatch({
+    control,
+    name: 'longSideSurcharge.isActive',
   });
 
   useEffect(() => {
@@ -146,7 +156,15 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       <DialogTitle>Kargo Hesabı Oluştur</DialogTitle>
 
       <DialogContent>
-        <FormItems mode="create" control={control} setValue={setValue} credentials={credentials} hasCustomInfo={hasCustomInfo} errors={errors} />
+        <FormItems
+          mode="create"
+          control={control}
+          setValue={setValue}
+          credentials={credentials}
+          hasCustomInfo={hasCustomInfo}
+          errors={errors}
+          hasLongSideSurcharge={hasLongSideSurcharge}
+        />
       </DialogContent>
 
       <DialogActions

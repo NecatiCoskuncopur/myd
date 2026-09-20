@@ -41,6 +41,18 @@ const carrierMessages = {
     MIN: 'Kargo entegrasyonu için en az 2 adet kimlik bilgisi (Key/Secret) gereklidir',
     REQUIRED: 'Kimlik bilgileri zorunludur',
   },
+  LONGSIDE: {
+    PRICE: {
+      TYPE: 'Ek kenar ücreti sayı tipinde olmalıdır.',
+      MIN: 'Ek kenar ücreti 0 veya daha büyük olmalıdır.',
+      REQUIRED: 'Ek kenar ücreti zorunludur.',
+    },
+    LIMIT: {
+      TYPE: 'Kenar limiti sayı tipinde olmalıdır.',
+      MIN: 'Kenar limiti 0’dan büyük olmalıdır.',
+      REQUIRED: 'Kenar limiti zorunludur.',
+    },
+  },
 } as const;
 
 export default carrierMessages;
