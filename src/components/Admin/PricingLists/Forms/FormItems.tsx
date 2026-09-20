@@ -112,6 +112,7 @@ const FormItems = ({ control, errors, rows, columns, onAddRow, onRemoveLastRow, 
           columns={columns}
           editMode="cell"
           rowHeight={22}
+          tabNavigation="content"
           hideFooter
           disableColumnMenu
           processRowUpdate={onProcessRowUpdate}

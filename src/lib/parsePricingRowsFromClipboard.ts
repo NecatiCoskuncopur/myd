@@ -26,10 +26,13 @@ const parsePricingRowsFromClipboard = (text: string, matrix: ReturnType<typeof b
   const normalRows: GridRow[] = [];
   let thanRow: GridRow | null = null;
 
-  pastedRows.forEach(cells => {
-    const firstCell = cells[0] ?? '';
+  pastedRows.forEach((cells, rowIndex) => {
+    const isLastRow = rowIndex === pastedRows.length - 1;
 
-    if (!firstCell) {
+    // Son satır her zaman paket aşımı satırıdır.
+    // İlk hücresinde boşluk, >, +++, 30>, Paket Aşımı vs.
+    // ne yazdığının önemi yok.
+    if (isLastRow) {
       const row = matrix.createThanRow();
 
       for (let zoneIndex = 0; zoneIndex < zoneCount; zoneIndex++) {
@@ -41,6 +44,7 @@ const parsePricingRowsFromClipboard = (text: string, matrix: ReturnType<typeof b
       return;
     }
 
+    const firstCell = cells[0] ?? '';
     const weight = parseNumber(firstCell);
 
     if (weight === null) {
@@ -65,7 +69,6 @@ const parsePricingRowsFromClipboard = (text: string, matrix: ReturnType<typeof b
   const lastWeight = normalRows[normalRows.length - 1]?.weight ?? '';
 
   const finalThanRow = thanRow ?? matrix.createThanRow();
-
   finalThanRow.weight = `>${lastWeight}`;
 
   return [...normalRows, finalThanRow];

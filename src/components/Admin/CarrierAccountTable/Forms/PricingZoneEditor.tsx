@@ -115,6 +115,7 @@ const PricingZoneEditor = ({ value = [], onChange }: PricingZoneEditorProps) => 
           rows={rows}
           columns={matrix.columns}
           editMode="cell"
+          tabNavigation="content"
           rowHeight={22}
           hideFooter
           disableColumnMenu
