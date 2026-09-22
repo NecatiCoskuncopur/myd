@@ -1,3 +1,4 @@
+import trackNavlungoShipping from '@/lib/carriers/navlungo/trackNavlungoShipping';
 import { CarrierTypes } from '@/types/carrier';
 
 import trackFedexShipping from './fedex/trackFedexShipping';
@@ -10,6 +11,7 @@ const trackingDrivers: Record<string, TrackingDriver> = {
   FEDEX: params => trackFedexShipping(params.trackingNumber),
   UPS: trackUpsShipping,
   QUICKSHIPPER: trackQuickShipperShipping,
+  NAVLUNGO: trackNavlungoShipping,
 };
 
 interface TrackCarrierShippingParams extends Omit<CarrierTypes.ITrackingParams, 'credentials'> {

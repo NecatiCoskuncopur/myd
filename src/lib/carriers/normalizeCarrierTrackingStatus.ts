@@ -88,6 +88,53 @@ const normalizeCarrierTrackingStatus = (firm: string, status: string): TrackingS
       }
     }
 
+    case 'NAVLUNGO': {
+      switch (normalizedStatus) {
+        case 'INFO RECEIVED':
+        case 'CREATED':
+        case 'SHIPMENT CREATED':
+        case 'OLUŞTURULDU':
+          return TrackingStatusEnum.CREATED;
+
+        case 'PICKED UP':
+        case 'ALINDI':
+          return TrackingStatusEnum.PICKED_UP;
+
+        case 'IN TRANSIT':
+        case 'ON THE WAY':
+        case 'YOLDA':
+        case 'TRANSFERDE':
+          return TrackingStatusEnum.IN_TRANSIT;
+
+        case 'OUT FOR DELIVERY':
+        case 'DAĞITIMA ÇIKTI':
+          return TrackingStatusEnum.OUT_FOR_DELIVERY;
+
+        case 'DELIVERED':
+        case 'TESLİM EDİLDİ':
+          return TrackingStatusEnum.DELIVERED;
+
+        case 'CANCELLED':
+        case 'CANCELED':
+        case 'İPTAL EDİLDİ':
+          return TrackingStatusEnum.CANCELLED;
+
+        case 'RETURNED':
+        case 'RETURNING TO SENDER':
+        case 'İADE':
+        case 'İADE EDİLDİ':
+          return TrackingStatusEnum.RETURNED;
+
+        case 'EXCEPTION':
+        case 'HATA':
+        case 'ISTISNA':
+          return TrackingStatusEnum.EXCEPTION;
+
+        default:
+          return TrackingStatusEnum.UNKNOWN;
+      }
+    }
+
     default:
       return TrackingStatusEnum.UNKNOWN;
   }
