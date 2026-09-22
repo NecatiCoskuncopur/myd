@@ -1,4 +1,5 @@
 import createFedexPaper from '@/lib/carriers/fedex/createFedexPaper';
+import createNavlungoPaper from '@/lib/carriers/navlungo/createNavlungoPaper';
 import createQuickShipperPaper from '@/lib/carriers/quickShipper/createQuickShipperPaper';
 import createUpsPaper from '@/lib/carriers/ups/createUpsPaper';
 import { CarrierTypes } from '@/types/carrier';
@@ -17,12 +18,14 @@ interface CarrierResult {
   trackingNumber: string;
   label: string;
   invoice: string;
+  carrierShipmentId?: string;
 }
 
 const carrierDrivers: Record<string, (params: CarrierTypes.ICarrierDriverParams) => Promise<CarrierResult>> = {
   FEDEX: createFedexPaper,
   UPS: createUpsPaper,
   QUICKSHIPPER: createQuickShipperPaper,
+  NAVLUNGO: createNavlungoPaper,
 };
 
 const createCarrierPaper = async ({ firm, credentials: credentialItems, ...params }: CreateCarrierPaperParams): Promise<CarrierResult> => {
@@ -49,6 +52,10 @@ const createCarrierPaper = async ({ firm, credentials: credentialItems, ...param
     QUICKSHIPPER: {
       apiKey: credentials.apiKey,
       apiSecret: credentials.apiSecret,
+    },
+    NAVLUNGO: {
+      clientId: credentials.clientId,
+      clientSecret: credentials.clientSecret,
     },
   };
 

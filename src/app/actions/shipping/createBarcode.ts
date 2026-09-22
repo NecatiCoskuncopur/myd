@@ -189,12 +189,13 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const { trackingNumber } = carrierResult;
+    const { trackingNumber, carrierShipmentId } = carrierResult;
 
     await applyBalanceTransaction('SPEND', shipping.userId.toString(), totalShippingCost, shipping._id.toString());
 
     shipping.carrier = {
       trackingNumber,
+      carrierShipmentId,
       name: firm,
       displayName,
       account: accountNumber,

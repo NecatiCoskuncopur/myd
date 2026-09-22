@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/cancelNavlungoShipping.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CalcuateCarrierAccountCostModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CalcuateCarrierAccountCostModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/cancelCarrierShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/cancelCarrierShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/createCarrierPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/createCarrierPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +21,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="401" />
+    <option name="cachedIndexableFilesCount" value="403" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -218,7 +225,9 @@
       <workItem from="1789715805053" duration="125000" />
       <workItem from="1789715973897" duration="21001000" />
       <workItem from="1789803666379" duration="8000" />
-      <workItem from="1789907012125" duration="17619000" />
+      <workItem from="1789907012125" duration="18073000" />
+      <workItem from="1790068906548" duration="2612000" />
+      <workItem from="1790077230170" duration="5858000" />
     </task>
     <servers />
   </component>

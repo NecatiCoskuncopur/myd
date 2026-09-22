@@ -29,6 +29,7 @@ declare namespace CarrierTypes {
     accountNumber: string;
     trackingNumber: string;
     credentials: Record<string, string>;
+    carrierShipmentId?: string;
   }
 
   interface ICarrierDriverParams {

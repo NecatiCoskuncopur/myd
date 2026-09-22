@@ -49,7 +49,7 @@ const cancelShipping = async (params: AdminTypes.ICancelShippingParams): Promise
       };
     }
 
-    const { trackingNumber, account: accountNumber, name: firm, amount, insuranceCost, dutiesAndTaxesCost } = shipping.carrier;
+    const { trackingNumber, account: accountNumber, name: firm, amount, insuranceCost, dutiesAndTaxesCost, carrierShipmentId } = shipping.carrier;
 
     if (!firm || !accountNumber || !trackingNumber) {
       return {
@@ -64,6 +64,7 @@ const cancelShipping = async (params: AdminTypes.ICancelShippingParams): Promise
         accountNumber,
         trackingNumber,
         credentials: carrierAccount.credentials,
+        carrierShipmentId: carrierShipmentId ?? undefined,
       });
     } catch (error) {
       if (error instanceof Error) {

@@ -130,6 +130,7 @@ const ShippingSchema = new mongoose.Schema(
         enum: Object.values(CarrierAccountTypeEnum),
       },
       account: String,
+      carrierShipmentId: String,
       trackingNumber: String,
       amount: Number,
       cost: {

@@ -1,4 +1,5 @@
 import cancelFedexShipping from '@/lib/carriers/fedex/cancelFedexShipping';
+import cancelNavlungoShipping from '@/lib/carriers/navlungo/cancelNavlungoShipping';
 import cancelQuickShipperShipping from '@/lib/carriers/quickShipper/cancelQuickShipperShipping';
 import cancelUpsShipping from '@/lib/carriers/ups/cancelUpsShipping';
 import { CarrierTypes } from '@/types/carrier';
@@ -9,6 +10,7 @@ const cancelShippingDrivers: Record<string, CancelShippingDriver> = {
   FEDEX: cancelFedexShipping,
   UPS: cancelUpsShipping,
   QUICKSHIPPER: cancelQuickShipperShipping,
+  NAVLUNGO: cancelNavlungoShipping,
 };
 
 interface CancelCarrierShippingParams extends Omit<CarrierTypes.ICancelShippingParams, 'credentials'> {
