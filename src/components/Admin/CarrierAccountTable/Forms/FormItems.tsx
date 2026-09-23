@@ -190,11 +190,15 @@ const FormItems = <T extends CarrierAccountFormPayload>({
           control={control}
           render={({ field }) => (
             <TextField {...field} value={field.value ?? ''} select fullWidth label="Hesap Tipi" error={!!errors.accountType}>
-              {Object.values(CarrierAccountTypeEnum).map(accountType => (
-                <MenuItem key={accountType} value={accountType}>
-                  {accountType}
-                </MenuItem>
-              ))}
+              {Object.values(CarrierAccountTypeEnum).map(accountType => {
+                const formattedLabel = accountType.charAt(0).toUpperCase() + accountType.slice(1).toLowerCase();
+
+                return (
+                  <MenuItem key={accountType} value={accountType}>
+                    {formattedLabel}
+                  </MenuItem>
+                );
+              })}
             </TextField>
           )}
         />

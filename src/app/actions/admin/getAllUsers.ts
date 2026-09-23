@@ -15,7 +15,7 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, firstName, lastName, company, phone, email, balanceSorting } = params;
+    const { page = 1, limit = 5, firstName, lastName, company, phone, email, balanceSorting, isActive } = params;
 
     const safePage = Math.max(Number(page), 1);
     const safeLimit = Math.max(Number(limit), 1);
@@ -32,6 +32,13 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
     if (company) match.company = createSearchRegex(company);
     if (phone) match.phone = createSearchRegex(phone);
     if (email) match.email = createSearchRegex(email);
+
+    const isActiveString = String(isActive ?? '');
+    if (isActiveString === 'true') {
+      match.isActive = true;
+    } else if (isActiveString === 'false') {
+      match.isActive = false;
+    }
 
     const sort: Record<string, 1 | -1> =
       balanceSorting === '1' || balanceSorting === '-1' ? { 'balance.total': Number(balanceSorting) as 1 | -1 } : { createdAt: -1 };
@@ -51,6 +58,11 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
       {
         $addFields: {
           balance: { $arrayElemAt: ['$balance', 0] },
+        },
+      },
+      {
+        $addFields: {
+          'balance.total': { $ifNull: ['$balance.total', 0] },
         },
       },
 
@@ -92,7 +104,7 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
 
           balance: {
             _id: { $toString: '$balance._id' },
-            total: { $ifNull: ['$balance.total', 0] },
+            total: 1,
           },
         },
       },

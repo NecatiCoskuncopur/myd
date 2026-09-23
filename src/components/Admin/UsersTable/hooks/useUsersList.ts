@@ -29,6 +29,7 @@ const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
       phone: searchParams.get('phone') ?? '',
       email: searchParams.get('email') ?? '',
       balanceSorting: searchParams.get('balanceSorting') ?? '',
+      isActive: searchParams.get('isActive') === 'true' ? true : searchParams.get('isActive') === 'false' ? false : undefined,
     }),
     [searchParams],
   );

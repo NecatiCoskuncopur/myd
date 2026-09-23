@@ -19,6 +19,7 @@ declare namespace AdminTypes {
     company?: string;
     phone?: string;
     email?: string;
+    isActive?: boolean;
   }
 
   interface IPriceListAssignment {
