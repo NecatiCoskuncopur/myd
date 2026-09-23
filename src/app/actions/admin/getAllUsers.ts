@@ -4,8 +4,9 @@ import { escapeRegex, generalMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
-import { Balance, User } from '@/models';
+import { User } from '@/models';
 import { AdminTypes } from '@/types/admin';
+
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<ResponseTypes.IActionResponse<AdminTypes.IUsersData>> => {
@@ -40,31 +41,11 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
       match.isActive = false;
     }
 
-    const sort: Record<string, 1 | -1> =
-      balanceSorting === '1' || balanceSorting === '-1' ? { 'balance.total': Number(balanceSorting) as 1 | -1 } : { createdAt: -1 };
+    // Doğrudan User.balance alanı üzerinden sıralama
+    const sort: Record<string, 1 | -1> = balanceSorting === '1' || balanceSorting === '-1' ? { balance: Number(balanceSorting) as 1 | -1 } : { createdAt: -1 };
 
     const aggregation = await User.aggregate([
       { $match: match },
-
-      {
-        $lookup: {
-          from: Balance.collection.name,
-          localField: '_id',
-          foreignField: 'userId',
-          as: 'balance',
-        },
-      },
-
-      {
-        $addFields: {
-          balance: { $arrayElemAt: ['$balance', 0] },
-        },
-      },
-      {
-        $addFields: {
-          'balance.total': { $ifNull: ['$balance.total', 0] },
-        },
-      },
 
       {
         $project: {
@@ -101,10 +82,8 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
               date: '$createdAt',
             },
           },
-
           balance: {
-            _id: { $toString: '$balance._id' },
-            total: 1,
+            total: { $ifNull: ['$balance', 0] },
           },
         },
       },

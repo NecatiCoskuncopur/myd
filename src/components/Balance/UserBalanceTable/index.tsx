@@ -12,6 +12,10 @@ import { BalanceTypes } from '@/types/balance';
 import columns from './columns';
 import CurrentBalance from './CurrentBalance';
 
+type BalanceRow = BalanceTypes.ISerializedTransaction & {
+  id: string;
+};
+
 const UserBalanceTable = () => {
   const searchParams = useSearchParams();
   const { showSnackbar } = useSnackbar();
@@ -20,7 +24,6 @@ const UserBalanceTable = () => {
   const limit = Number(searchParams.get('limit')) || 5;
 
   const [data, setData] = useState<BalanceTypes.IUserBalanceData | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,26 +38,19 @@ const UserBalanceTable = () => {
           limit,
         });
 
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
 
         if (response.status !== 'OK' || !response.data) {
           setData(null);
-
           showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
-
           return;
         }
 
         setData(response.data);
       } catch {
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
 
         setData(null);
-
         showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
       } finally {
         if (isActive) {
@@ -70,14 +66,10 @@ const UserBalanceTable = () => {
     };
   }, [page, limit, showSnackbar]);
 
-  type BalanceRow = BalanceTypes.IUserBalanceData['transactions'][number] & {
-    id: string;
-  };
-
   const rows: BalanceRow[] =
-    data?.transactions.map((transaction, index) => ({
+    data?.transactions.map(transaction => ({
       ...transaction,
-      id: `${transaction.createdAt}-${index}`,
+      id: transaction._id,
     })) ?? [];
 
   return (

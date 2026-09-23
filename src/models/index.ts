@@ -1,5 +1,4 @@
 export { default as User } from './User.model';
-export { default as Balance } from './Balance.model';
 export { default as PricingList } from './PricingList.model';
 export { default as CarrierAccount } from './CarrierAccount.model';
 export { default as Consignee } from './Consignee.model';
@@ -7,3 +6,4 @@ export { default as Shipping } from './Shipping.model';
 export { default as ShippingDocument } from './ShippingDocument.model';
 export { default as SystemParam } from './SystemParam.model';
 export { default as AdditionalDocument } from './AdditionalDocument.model';
+export { default as Transaction } from './Transaction.model';

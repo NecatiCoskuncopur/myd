@@ -5,7 +5,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import serialize from '@/lib/serialize';
-import { Balance } from '@/models';
+import { Shipping, Transaction, User } from '@/models';
 import { BalanceTypes } from '@/types/balance';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
@@ -27,46 +27,35 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
     }
 
     const page = Math.max(1, Number(params.page) || 1);
-
     const limit = Math.min(Math.max(1, Number(params.limit) || DEFAULT_LIMIT), MAX_LIMIT);
-
     const skip = (page - 1) * limit;
 
-    const balanceDoc = await Balance.findOne({
-      userId: currentUser.id,
-    }).lean();
+    const [userDoc, transactionDocs, totalCount] = await Promise.all([
+      User.findById(currentUser.id).select('balance').lean(),
+      Transaction.find({ userId: currentUser.id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'shippingId',
+          model: Shipping,
+          select: '_id carrier.amount carrier.dutiesAndTaxesCost carrier.insuranceCost carrier.longSideSurchargeCost carrier.serviceFee',
+        })
+        .lean(),
+      Transaction.countDocuments({ userId: currentUser.id }),
+    ]);
 
-    if (!balanceDoc) {
-      return {
-        status: 'OK',
-        data: {
-          balanceId: '',
-          userId: currentUser.id,
-          total: 0,
-          transactions: [],
-          totalCount: 0,
-          page,
-          limit,
-          totalPages: 1,
-          hasPrevPage: false,
-          hasNextPage: false,
-        },
-      };
-    }
-
-    const balance = serialize<BalanceTypes.ISerializedBalance>(balanceDoc);
-    const sortedTransactions = [...balance.transactions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    const totalCount = sortedTransactions.length;
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
-    const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
+    const totalBalance = userDoc?.balance ?? 0;
+
+    const serializedTransactions = serialize<BalanceTypes.ISerializedTransaction[]>(transactionDocs);
 
     return {
       status: 'OK',
       data: {
-        balanceId: balance._id,
-        userId: balance.userId,
-        total: balance.total ?? 0,
-        transactions: paginatedTransactions,
+        userId: currentUser.id,
+        total: totalBalance,
+        transactions: serializedTransactions,
         totalCount,
         page,
         limit,

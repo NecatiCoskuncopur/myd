@@ -21,6 +21,10 @@ interface BalanceTransactionsProps {
 
 const DEFAULT_LIMIT = 5;
 
+type BalanceRow = BalanceTypes.ISerializedTransaction & {
+  id: string;
+};
+
 const BalanceTransactions = ({ userId, open, userName, onClose }: BalanceTransactionsProps) => {
   const { showSnackbar } = useSnackbar();
   const [data, setData] = useState<BalanceTypes.IUserBalanceData | null>(null);
@@ -50,9 +54,7 @@ const BalanceTransactions = ({ userId, open, userName, onClose }: BalanceTransac
 
         if (response.status !== 'OK' || !response.data) {
           setData(null);
-
           showSnackbar(response.message ?? generalMessages.UNEXPECTED_ERROR, 'error');
-
           return;
         }
 
@@ -61,7 +63,6 @@ const BalanceTransactions = ({ userId, open, userName, onClose }: BalanceTransac
         if (!isActive) return;
 
         setData(null);
-
         showSnackbar(generalMessages.UNEXPECTED_ERROR, 'error');
       } finally {
         if (isActive) {
@@ -88,14 +89,10 @@ const BalanceTransactions = ({ userId, open, userName, onClose }: BalanceTransac
     });
   }, [open, userId]);
 
-  type BalanceRow = BalanceTypes.IUserBalanceData['transactions'][number] & {
-    id: string;
-  };
-
   const rows: BalanceRow[] =
-    data?.transactions.map((transaction, index) => ({
+    data?.transactions.map(transaction => ({
       ...transaction,
-      id: `${transaction.createdAt}-${index}`,
+      id: transaction._id,
     })) ?? [];
 
   const handlePaginationModelChange = (model: GridPaginationModel) => {

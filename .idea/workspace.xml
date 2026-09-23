@@ -5,12 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/lib/updateShippingTransaction.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/Transaction.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/adminCreateUser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/cancelShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/FilterSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/admin.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/admin.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getBalanceData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getBalanceData.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePackageDimensions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/auth/signUp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/summary/getBalanceStats.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/summary/getBalanceStats.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/cron/negative-balance/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/cron/negative-balance/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/BalanceTransactions/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/applyBalanceTransaction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/applyBalanceTransaction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Balance.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/User.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/User.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/balance.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/balance.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +240,7 @@
       <workItem from="1789907012125" duration="18073000" />
       <workItem from="1790068906548" duration="2612000" />
       <workItem from="1790077230170" duration="13124000" />
-      <workItem from="1790160714376" duration="2232000" />
+      <workItem from="1790160714376" duration="10084000" />
     </task>
     <servers />
   </component>

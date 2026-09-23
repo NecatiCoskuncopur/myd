@@ -10,7 +10,7 @@ import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import getMailTransport from '@/lib/mailer';
 import sendSms from '@/lib/sendSms';
 import { validateTurnstile } from '@/lib/validateTurnstile';
-import { Balance, User } from '@/models';
+import { User } from '@/models';
 import createUserSchema from '@/schemas/createUser.schema';
 
 const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IActionResponse> => {
@@ -49,32 +49,11 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
     }
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
-
     const newUser = await User.create({
       ...userData,
       email,
       password: hashedPassword,
     });
-
-    try {
-      await Balance.create({
-        userId: newUser._id,
-        total: 0,
-      });
-    } catch (balanceError) {
-      captureActionError('signUp.createBalance', balanceError, {
-        extras: {
-          userId: newUser._id.toString(),
-        },
-      });
-
-      await User.findByIdAndDelete(newUser._id);
-
-      return {
-        status: 'ERROR',
-        message: authMessages.SIGNUP.ERROR,
-      };
-    }
 
     const smsText =
       `Sayın ${newUser.firstName} ${newUser.lastName}, ` +

@@ -8,6 +8,7 @@ import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import getShippingCost from '@/lib/getShippingCost';
 import requireRoles from '@/lib/requireRoles';
+import updateShippingTransaction from '@/lib/updateShippingTransaction';
 import { CarrierAccount, Shipping, User } from '@/models';
 import updatePackageDimensionsSchema from '@/schemas/updatePackageDimensions.schema';
 import { AdminTypes } from '@/types/admin';
@@ -63,8 +64,6 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       };
     }
 
-    const currentShippingCost = shipping.carrier?.amount ?? 0;
-
     const userForPricing = await User.findById(shipping.userId).lean();
 
     if (!userForPricing) {
@@ -104,17 +103,9 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
 
     const newShippingCost = shippingCostRes.data;
 
-    const shippingCostDifference = newShippingCost - currentShippingCost;
+    let longSideCost = shipping.carrier?.longSideSurchargeCost ?? 0;
 
-    if (shippingCostDifference > 0) {
-      await applyBalanceTransaction('SPEND', shipping.userId.toString(), Number(shippingCostDifference.toFixed(2)), shipping._id.toString());
-    } else if (shippingCostDifference < 0) {
-      // Gerektiğinde PAY olarak girilebilir
-    }
-
-    const currentLongSideSurchargeCost = shipping.carrier?.longSideSurchargeCost ?? 0;
-
-    if (currentLongSideSurchargeCost <= 0) {
+    if (longSideCost <= 0) {
       const carrierAccount = await CarrierAccount.findOne({
         accountNumber,
         accountType,
@@ -126,14 +117,24 @@ const updatePackageDimensions = async (data: AdminTypes.IUpdatePackageDimensions
       const hasLongSideSurcharge = !!longSideSurcharge?.isActive && [width, height, length].some(side => side >= longSideSurcharge.limit);
 
       if (hasLongSideSurcharge) {
-        const longSideSurchargePrice = longSideSurcharge.price;
-
-        await applyBalanceTransaction('SPEND', shipping.userId.toString(), longSideSurchargePrice, shipping._id.toString());
+        longSideCost = longSideSurcharge.price;
 
         if (shipping.carrier) {
-          shipping.carrier.longSideSurchargeCost = longSideSurchargePrice;
+          shipping.carrier.longSideSurchargeCost = longSideCost;
         }
       }
+    }
+
+    const insuranceCost = shipping.carrier?.insuranceCost ?? 0;
+    const dutiesAndTaxesCost = shipping.carrier?.dutiesAndTaxesCost ?? 0;
+    const serviceFee = shipping.carrier?.serviceFee ?? 0;
+
+    const newTotalAmount = Number((newShippingCost + longSideCost + insuranceCost + dutiesAndTaxesCost + serviceFee).toFixed(2));
+
+    const updateResult = await updateShippingTransaction(shipping._id.toString(), newTotalAmount);
+
+    if (!updateResult.success) {
+      await applyBalanceTransaction('SPEND', shipping.userId.toString(), newTotalAmount, shipping._id.toString());
     }
 
     shipping.package = {

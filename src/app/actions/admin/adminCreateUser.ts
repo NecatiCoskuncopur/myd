@@ -10,7 +10,7 @@ import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import getMailTransport from '@/lib/mailer';
 import requireRoles from '@/lib/requireRoles';
 import sendSms from '@/lib/sendSms';
-import { Balance, User } from '@/models';
+import { User } from '@/models';
 import adminCreateUserSchema from '@/schemas/adminCreateUser.schema';
 import { AdminTypes } from '@/types/admin';
 
@@ -52,55 +52,35 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
       password: hashedPassword,
     });
 
-    try {
-      await Balance.create({
-        userId: newUser._id,
-        total: 0,
-      });
-    } catch (balanceError) {
-      captureActionError('adminCreateUser.createBalance', balanceError, {
-        extras: {
-          userId: newUser._id.toString(),
-        },
-      });
-
-      await User.findByIdAndDelete(newUser._id);
-
-      return {
-        status: 'ERROR',
-        message: authMessages.SIGNUP.ERROR,
-      };
-    }
-
-    try {
-      const MydMail = await getMailTransport();
-      await MydMail.sendMail({
+    const MydMail = await getMailTransport();
+    const notificationTasks: Promise<unknown>[] = [
+      MydMail.sendMail({
         from: '"MYD Export" <noreply@mydexport.com>',
         to: newUser.email,
         subject: '🎉 Hesabınız Oluşturuldu!',
         html: welcomeMail,
-      });
-    } catch (mailError) {
-      captureActionError('adminCreateUser.sendMail', mailError, {
-        extras: {
-          userId: newUser._id.toString(),
-        },
-      });
-    }
+      }),
+    ];
 
     if (newUser.phone) {
       const smsText =
         `Sayın ${newUser.firstName} ${newUser.lastName}, ` + `MYD Export kaydınız admin tarafından tamamlanmıştır. ` + `Sisteme giriş yapabilirsiniz.`;
 
-      try {
-        await sendSms(newUser.phone, smsText);
-      } catch (smsError) {
-        captureActionError('adminCreateUser.sendSms', smsError, {
-          extras: {
-            userId: newUser._id.toString(),
-          },
-        });
-      }
+      notificationTasks.push(sendSms(newUser.phone, smsText));
+    }
+
+    const [mailResult, smsResult] = await Promise.allSettled(notificationTasks);
+
+    if (mailResult.status === 'rejected') {
+      captureActionError('adminCreateUser.sendMail', mailResult.reason, {
+        extras: { userId: newUser._id.toString() },
+      });
+    }
+
+    if (smsResult?.status === 'rejected') {
+      captureActionError('adminCreateUser.sendSms', smsResult.reason, {
+        extras: { userId: newUser._id.toString() },
+      });
     }
 
     return {

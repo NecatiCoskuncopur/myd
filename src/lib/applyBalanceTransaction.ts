@@ -1,5 +1,8 @@
+import mongoose from 'mongoose';
+
 import { generalMessages, transactionMessages } from '@/constants';
-import { Balance } from '@/models';
+import connectMongoDB from '@/lib/db';
+import { Transaction, User } from '@/models';
 
 type BalanceType = 'SPEND' | 'PAY';
 
@@ -13,13 +16,13 @@ const { UNEXPECTED_ERROR } = generalMessages;
  *
  * İşleyiş:
  * - Tutarı 2 ondalık basamağa yuvarlar
- * - SPEND için negatif, PAY için pozitif değer uygular
- * - Kullanıcının toplam bakiyesini $inc ile günceller
- * - İşlem kaydını transactions listesine ekler
+ * - SPEND için negatif, PAY için pozitif bakiye artışı hesaplar
+ * - MongoDB session kullanarak User.balance değerini $inc ile günceller
+ * - Eşzamanlı olarak Transaction koleksiyonuna işlem kaydı ekler
  *
  * @param type - İşlem tipi ('SPEND' | 'PAY')
  * @param userId - İşlem yapılacak kullanıcı ID
- * @param amount - İşlem tutarı (ondalıklı olabilir)
+ * @param amount - İşlem tutarı (pozitif sayı)
  * @param shippingId - (Opsiyonel) İlgili gönderi ID
  * @param note - (Opsiyonel) İşlem açıklaması
  *
@@ -27,56 +30,72 @@ const { UNEXPECTED_ERROR } = generalMessages;
  * - { success: true } → İşlem başarılı
  * - { success: false, message } → Hata durumu
  */
-
 const applyBalanceTransaction = async (type: BalanceType, userId: string, amount: number, shippingId?: string, note?: string): Promise<IBalanceResult> => {
+  await connectMongoDB();
+
+  if (!userId || amount === undefined || amount === null || isNaN(amount)) {
+    return {
+      success: false,
+      message: BALANCE.ERROR,
+    };
+  }
+
+  const trimmedAmount = Math.round((Math.abs(amount) + Number.EPSILON) * 100) / 100;
+
+  if (trimmedAmount <= 0) {
+    return {
+      success: false,
+      message: BALANCE.INVALID,
+    };
+  }
+
+  const balanceDelta = type === 'SPEND' ? -trimmedAmount : trimmedAmount;
+
+  const session = await mongoose.startSession();
+
   try {
-    if (!userId || amount === undefined || amount === null) {
-      return {
-        success: false,
-        message: BALANCE.ERROR,
-      };
-    }
+    let result: IBalanceResult = { success: true };
 
-    const trimmedAmount = Math.round((amount + Number.EPSILON) * 100) / 100;
+    await session.withTransaction(async () => {
+      const updatedUser = await User.findByIdAndUpdate(userId, { $inc: { balance: balanceDelta } }, { session, new: true });
 
-    const value = type === 'SPEND' ? -Math.abs(trimmedAmount) : type === 'PAY' ? Math.abs(trimmedAmount) : null;
+      if (!updatedUser) {
+        result = {
+          success: false,
+          message: BALANCE.NOT_FOUND,
+        };
+        throw new Error('USER_NOT_FOUND');
+      }
 
-    if (value === null) {
-      return {
-        success: false,
-        message: BALANCE.INVALID,
-      };
-    }
-
-    const result = await Balance.updateOne(
-      { userId },
-      {
-        $inc: { total: value },
-        $push: {
-          transactions: {
+      await Transaction.create(
+        [
+          {
+            userId,
             transactionType: type,
-            amount: value,
-            shippingId,
-            note,
+            amount: trimmedAmount,
+            shippingId: shippingId || null,
+            note: note || null,
           },
-        },
-      },
-      { runValidators: true },
-    );
+        ],
+        { session },
+      );
+    });
 
-    if (result.matchedCount === 0) {
+    return result;
+  } catch (error) {
+    if (error instanceof Error && error.message === 'USER_NOT_FOUND') {
       return {
         success: false,
         message: BALANCE.NOT_FOUND,
       };
     }
 
-    return { success: true };
-  } catch (error) {
     return {
       success: false,
       message: error instanceof Error ? error.message : UNEXPECTED_ERROR,
     };
+  } finally {
+    await session.endSession();
   }
 };
 

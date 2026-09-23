@@ -1,17 +1,22 @@
-import { ITransaction } from '@/models/Balance.model';
+import { ShippingTypes } from '@/types/shipping';
 
 declare namespace BalanceTypes {
-  interface IUserBalanceData extends ResponseTypes.IPaginationResponse {
-    balanceId: string;
+  interface ISerializedTransaction {
+    _id: string;
     userId: string;
-    total?: number;
-    transactions: ISerializedTransaction[];
+    transactionType: TransactionType;
+    amount: number;
+    shippingId?: ShippingTypes.IShipping | null;
+    note?: string | null;
+    createdAt: string;
+    updatedAt: string;
   }
 
-  type ISerializedTransaction = Omit<ITransaction, 'shippingId' | 'createdAt'> & {
-    shippingId?: string;
-    createdAt: string;
-  };
+  interface IUserBalanceData extends ResponseTypes.IPaginationResponse {
+    userId: string;
+    total: number;
+    transactions: ISerializedTransaction[];
+  }
 
   type ISerializedBalance = Omit<IBalance, 'userId' | 'transactions'> & {
     _id: string;

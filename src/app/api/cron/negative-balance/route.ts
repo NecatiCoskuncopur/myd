@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import connectMongoDB from '@/lib/db';
 import sendSms from '@/lib/sendSms';
-import { Balance, User } from '@/models';
+import { User } from '@/models';
 
 export async function GET(req: Request) {
   const secret = req.headers.get('x-cron-secret');
@@ -22,90 +22,68 @@ export async function GET(req: Request) {
   try {
     await connectMongoDB();
 
-    const balances = await Balance.find({
-      total: {
+    const indebtedUsers = await User.find({
+      balance: {
         $lt: 0,
       },
+      isActive: true,
     })
-      .select('_id userId total')
+      .select('_id firstName lastName phone balance')
       .lean();
-
-    const userIds = balances.map(balance => balance.userId);
-
-    const users = await User.find({
-      _id: {
-        $in: userIds,
-      },
-    })
-      .select('_id firstName lastName phone')
-      .lean();
-
-    const userMap = new Map(users.map(user => [user._id.toString(), user]));
 
     let sentCount = 0;
     let failedCount = 0;
-    let missingUserCount = 0;
+    let missingPhoneCount = 0;
 
-    for (const balance of balances) {
-      const userId = balance.userId.toString();
-      const user = userMap.get(userId);
+    for (const user of indebtedUsers) {
+      if (!user.phone) {
+        missingPhoneCount += 1;
+        continue;
+      }
 
-      if (!user) {
-        missingUserCount += 1;
+      const debt = Math.abs(user.balance);
 
-        Sentry.captureMessage('Balance için kullanıcı bulunamadı', {
-          level: 'warning',
-          extra: {
-            balanceId: balance._id.toString(),
-            userId,
-            balanceTotal: balance.total,
-          },
-        });
-      } else {
-        const debt = Math.abs(balance.total);
+      const message =
+        `Sayın ${user.firstName}, ` +
+        `MYD Export hesabınızda ${debt} USD tutarında ` +
+        `ödenmemiş borç bulunmaktadır. ` +
+        `Hizmetlerimizin kesintisiz devam edebilmesi için ` +
+        `ödemenizi gerçekleştirmenizi rica ederiz. MYD Export`;
 
-        const message =
-          `Sayın ${user.firstName}, ` +
-          `MYD Export hesabınızda ${debt} USD tutarında ` +
-          `ödenmemiş borç bulunmaktadır. ` +
-          `Hizmetlerimizin kesintisiz devam edebilmesi için ` +
-          `ödemenizi gerçekleştirmenizi rica ederiz. MYD Export`;
+      try {
+        await sendSms(user.phone, message);
+        sentCount += 1;
+      } catch (error) {
+        failedCount += 1;
 
-        try {
-          await sendSms(user.phone, message);
-          sentCount += 1;
-        } catch (error) {
-          failedCount += 1;
+        Sentry.withScope(scope => {
+          scope.setLevel('error');
+          scope.setTag('error_type', 'balance_debt_sms');
+          scope.setTag('user_id', user._id.toString());
 
-          Sentry.withScope(scope => {
-            scope.setLevel('error');
-            scope.setTag('error_type', 'balance_debt_sms');
-            scope.setTag('user_id', user._id.toString());
-
-            scope.setContext('user', {
-              id: user._id.toString(),
-              firstName: user.firstName,
-              lastName: user.lastName,
-            });
-
-            scope.setContext('balance', {
-              balanceId: balance._id.toString(),
-              total: balance.total,
-              debt,
-            });
-
-            Sentry.captureException(error);
+          scope.setContext('user', {
+            id: user._id.toString(),
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
           });
-        }
+
+          scope.setContext('balance', {
+            balance: user.balance,
+            debt,
+          });
+
+          Sentry.captureException(error);
+        });
       }
     }
 
     return NextResponse.json({
       success: true,
-      totalCount: balances.length,
+      totalCount: indebtedUsers.length,
       sentCount,
       failedCount,
-      missingUserCount,
+      missingPhoneCount,
     });
   } catch (error) {
     Sentry.withScope(scope => {

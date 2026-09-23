@@ -6,7 +6,7 @@ import captureActionError from '@/lib/captureActionError';
 import cancelCarrierShipping from '@/lib/carriers/cancelCarrierShipping';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
-import { CarrierAccount, Shipping } from '@/models';
+import { CarrierAccount, Shipping, Transaction } from '@/models';
 import { AdminTypes } from '@/types/admin';
 
 const { UNEXPECTED_ERROR } = generalMessages;
@@ -49,7 +49,7 @@ const cancelShipping = async (params: AdminTypes.ICancelShippingParams): Promise
       };
     }
 
-    const { trackingNumber, account: accountNumber, name: firm, amount, insuranceCost, dutiesAndTaxesCost, carrierShipmentId } = shipping.carrier;
+    const { trackingNumber, account: accountNumber, name: firm, carrierShipmentId } = shipping.carrier;
 
     if (!firm || !accountNumber || !trackingNumber) {
       return {
@@ -82,9 +82,32 @@ const cancelShipping = async (params: AdminTypes.ICancelShippingParams): Promise
       };
     }
 
-    const refundAmount = Number(((amount ?? 0) + (insuranceCost ?? 0) + (dutiesAndTaxesCost ?? 0)).toFixed(2));
+    const originalTransaction = await Transaction.findOne({
+      shippingId: shipping._id,
+      transactionType: 'SPEND',
+    }).lean();
 
-    await applyBalanceTransaction('PAY', shipping.userId.toString(), refundAmount, shipping._id.toString());
+    let refundAmount = 0;
+
+    if (originalTransaction) {
+      refundAmount = originalTransaction.amount;
+    } else {
+      const carrier = shipping.carrier;
+
+      const amount = carrier?.amount ?? 0;
+      const insuranceCost = carrier?.insuranceCost ?? 0;
+      const dutiesAndTaxesCost = carrier?.dutiesAndTaxesCost ?? 0;
+      const longSideSurchargeCost = carrier?.longSideSurchargeCost ?? 0;
+      const serviceFee = carrier?.serviceFee ?? 0;
+
+      const totalCarrierCost = amount + insuranceCost + dutiesAndTaxesCost + longSideSurchargeCost + serviceFee;
+
+      refundAmount = Number(totalCarrierCost.toFixed(2));
+    }
+
+    if (refundAmount > 0) {
+      await applyBalanceTransaction('PAY', shipping.userId.toString(), refundAmount, shipping._id.toString(), `Kargo İptal İadesi (#${trackingNumber})`);
+    }
 
     shipping.canceledAt = new Date();
     shipping.status = ShippingStatus.CANCELLED;
