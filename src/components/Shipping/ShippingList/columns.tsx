@@ -11,21 +11,21 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
     field: 'consigneeName',
     headerName: 'Alıcı',
     flex: 1,
-    minWidth: 150,
+    minWidth: 90,
     valueGetter: (_value, row) => row.consignee?.name || '-',
   },
   {
     field: 'senderName',
     headerName: 'Gönderen',
     flex: 1,
-    minWidth: 150,
+    minWidth: 90,
     valueGetter: (_value, row) => row.sender?.name || '-',
   },
   {
     field: 'destination',
-    headerName: 'Varış Bölgesi',
+    headerName: 'Varış',
     flex: 1,
-    minWidth: 200,
+    minWidth: 120,
     renderCell: ({ row }) => {
       const address = row.consignee?.address;
 
@@ -50,6 +50,7 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
             height: '100%',
             width: '100%',
             gap: 1,
+            overflow: 'hidden',
           }}
         >
           {flagUrl && (
@@ -79,14 +80,14 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
     field: 'trackStatus',
     headerName: 'Durum',
     flex: 1,
-    minWidth: 120,
+    minWidth: 90,
     valueFormatter: value => (value ? (TrackingStatusLabels[value as TrackingStatusEnum] ?? '-') : '-'),
   },
   {
     field: 'packageInfo',
     headerName: 'Paket',
     flex: 1,
-    minWidth: 160,
+    minWidth: 100,
     renderCell: ({ row }) => {
       const packageCount = row.package?.numberOfPackage ?? '-';
       const weight = row.package?.weight ?? '-';
@@ -100,33 +101,29 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
             height: '100%',
           }}
         >
-          <Typography variant="body2">
+          <Typography variant="caption" sx={{ lineHeight: 1.2 }}>
             <Box
               component="span"
               sx={{
                 color: 'text.secondary',
-                lineHeight: 1.3,
-                mr: 1,
+                mr: 0.5,
               }}
             >
-              Paket Sayısı
+              Adet:
             </Box>
-
             {packageCount}
           </Typography>
 
-          <Typography variant="body2">
+          <Typography variant="caption" sx={{ lineHeight: 1.2 }}>
             <Box
               component="span"
               sx={{
                 color: 'text.secondary',
-                lineHeight: 1.3,
-                mr: 1,
+                mr: 0.5,
               }}
             >
-              Desi / KG
+              Desi/KG:
             </Box>
-
             {weight}
           </Typography>
         </Box>
@@ -135,9 +132,9 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
   },
   {
     field: 'products',
-    headerName: 'İçerik (Ürünler)',
-    flex: 1,
-    minWidth: 180,
+    headerName: 'İçerik',
+    flex: 1.5,
+    minWidth: 100,
     valueGetter: (_value, row) => {
       const products = row.content?.products;
 
@@ -153,9 +150,9 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
   },
   {
     field: 'createdAt',
-    headerName: 'Oluşturulma Tarihi',
+    headerName: 'Tarih',
     flex: 1,
-    minWidth: 160,
+    minWidth: 100,
     renderCell: ({ value }) => (value ? moment(value).format('DD.MM.YYYY HH:mm') : '-'),
   },
 ];

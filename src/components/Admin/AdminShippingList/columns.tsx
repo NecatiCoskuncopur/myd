@@ -18,21 +18,21 @@ const columns: GridColDef[] = [
     field: 'consigneeName',
     headerName: 'Alıcı',
     flex: 1,
-    minWidth: 100,
+    minWidth: 90,
     valueGetter: (value, row) => row.consignee?.name || '-',
   },
   {
     field: 'senderName',
     headerName: 'Gönderen',
     flex: 1,
-    minWidth: 100,
+    minWidth: 90,
     valueGetter: (value, row) => row.sender?.name || '-',
   },
   {
     field: 'destination',
     headerName: 'Varış Bölgesi',
     flex: 1,
-    minWidth: 150,
+    minWidth: 120,
     renderCell: params => {
       const address = params.row.consignee?.address;
       if (!address) return '-';
@@ -45,7 +45,15 @@ const columns: GridColDef[] = [
       const flagUrl = getCountryFlagUrl(countryCode);
 
       return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%', // Dikey ortalama için eklendi
+            gap: 1,
+            overflow: 'hidden',
+          }}
+        >
           {flagUrl && (
             <img
               src={flagUrl}
@@ -56,19 +64,22 @@ const columns: GridColDef[] = [
                 objectFit: 'cover',
                 borderRadius: '2px',
                 display: 'block',
+                flexShrink: 0,
               }}
             />
           )}
-          <span>{[countryCode, city].filter(Boolean).join(' / ')}</span>
-        </div>
+          <Typography variant="body2" noWrap>
+            {[countryCode, city].filter(Boolean).join(' / ')}
+          </Typography>
+        </Box>
       );
     },
   },
   {
     field: 'trackingNumber',
     headerName: 'Takip No',
-    flex: 1,
-    minWidth: 170,
+    flex: 1.2,
+    minWidth: 120,
     renderCell: params => {
       const carrierName = params.row.carrier?.name;
       const trackingNo = params.row.carrier?.trackingNumber;
@@ -87,16 +98,9 @@ const columns: GridColDef[] = [
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
-
-                '& svg': {
-                  width: 20,
-                  height: 20,
-                  display: 'block',
-                },
-
-                '& img': {
-                  width: 20,
-                  height: 20,
+                '& svg, & img': {
+                  width: 18,
+                  height: 18,
                   display: 'block',
                   objectFit: 'contain',
                 },
@@ -106,30 +110,14 @@ const columns: GridColDef[] = [
             </Box>
           )}
 
-          <Typography
-            component="span"
-            variant="body2"
-            noWrap
-            sx={{
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              lineHeight: 1,
-            }}
-          >
+          <Typography component="span" variant="body2" noWrap sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
             {trackingNo}
           </Typography>
         </>
       );
 
       return (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '100%',
-            minWidth: 0,
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', minWidth: 0, overflow: 'hidden' }}>
           {hasLink && url ? (
             <Link
               component={NextLink}
@@ -142,29 +130,15 @@ const columns: GridColDef[] = [
                 gap: 1,
                 minWidth: 0,
                 color: 'primary.main',
-                fontWeight: 500,
                 textDecoration: 'none',
-
-                '&:hover': {
-                  textDecoration: 'underline',
-                  color: 'primary.dark',
-                },
+                overflow: 'hidden',
+                '&:hover': { textDecoration: 'underline' },
               }}
             >
               {content}
             </Link>
           ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                minWidth: 0,
-                color: 'text.secondary',
-              }}
-            >
-              {content}
-            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, overflow: 'hidden', color: 'text.secondary' }}>{content}</Box>
           )}
         </Box>
       );
@@ -174,59 +148,32 @@ const columns: GridColDef[] = [
     field: 'trackStatus',
     headerName: 'Durum',
     flex: 1,
-    minWidth: 120,
+    minWidth: 80,
     valueFormatter: value => (value ? (TrackingStatusLabels[value as TrackingStatusEnum] ?? '-') : '-'),
   },
   {
     field: 'packageInfo',
     headerName: 'Paket',
     flex: 1,
-    minWidth: 180,
+    minWidth: 100,
     renderCell: params => {
       const count = params.row.package?.numberOfPackage ?? '-';
       const weight = params.row.package?.weight ?? '-';
       const isUpdated = params.row.packageDimensionsUpdated;
 
       return (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            height: '100%',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="body2" sx={{ color: 'text.primary' }}>
-              <Box
-                component="span"
-                sx={{
-                  color: 'text.secondary',
-                  lineHeight: 1.3,
-                  marginRight: 1,
-                }}
-              >
-                Paket Sayısı
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="caption" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
+              <Box component="span" sx={{ color: 'text.secondary', mr: 0.5 }}>
+                Adet:
               </Box>
               {count}
             </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.primary' }}>
-              <Box
-                component="span"
-                sx={{
-                  color: 'text.secondary',
-                  lineHeight: 1.3,
-                  marginRight: 1,
-                }}
-              >
-                Desi / KG
+            <Typography variant="caption" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
+              <Box component="span" sx={{ color: 'text.secondary', mr: 0.5 }}>
+                Desi/KG:
               </Box>
               {weight}
             </Typography>
@@ -239,15 +186,15 @@ const columns: GridColDef[] = [
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: 24,
-                  height: 24,
+                  width: 20,
+                  height: 20,
                   borderRadius: '50%',
                   bgcolor: 'error.main',
                   color: 'warning.contrastText',
                   flexShrink: 0,
                 }}
               >
-                <PublishedWithChangesOutlinedIcon sx={{ fontSize: 16 }} />
+                <PublishedWithChangesOutlinedIcon sx={{ fontSize: 14 }} />
               </Box>
             </Tooltip>
           )}
@@ -257,9 +204,9 @@ const columns: GridColDef[] = [
   },
   {
     field: 'products',
-    headerName: 'İçerik (Ürünler)',
-    flex: 1,
-    minWidth: 180,
+    headerName: 'İçerik',
+    flex: 1.5,
+    minWidth: 100,
     valueGetter: (value, row) => {
       const products = row.content?.products;
       if (!products || products.length === 0) return '-';
@@ -272,9 +219,9 @@ const columns: GridColDef[] = [
   },
   {
     field: 'createdAt',
-    headerName: 'Oluşturulma Tarihi',
+    headerName: 'Tarih',
     flex: 1,
-    minWidth: 160,
+    minWidth: 100,
     renderCell: params => (params.value ? moment(params.value).format('DD.MM.YYYY HH:mm') : '-'),
   },
 ];

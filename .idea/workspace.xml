@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/carrierBaseUrl.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/carrierBaseUrl.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/columns.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +229,7 @@
       <workItem from="1790238704237" duration="3745000" />
       <workItem from="1790248115857" duration="17000" />
       <workItem from="1790389197851" duration="15000" />
-      <workItem from="1790463320289" duration="7223000" />
+      <workItem from="1790463320289" duration="9515000" />
     </task>
     <servers />
   </component>

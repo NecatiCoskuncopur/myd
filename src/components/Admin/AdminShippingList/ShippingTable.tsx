@@ -68,7 +68,7 @@ const ShippingTable = ({
                     fontWeight: 500,
                   }}
                 >
-                  Gönderi İptal Edildi
+                  İptal Edildi
                 </Typography>
               </Box>
             );
