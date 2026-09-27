@@ -12,7 +12,18 @@ type UploadFedexDocumentParams = {
   contentType: AdditionalDocumentContentTypeEnum;
 };
 
-const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
+interface IFedexApiErrorItem {
+  code?: string;
+  message?: string;
+  parameterList?: Array<{ key: string; value: string }>;
+}
+
+interface IFedexApiErrorResponse {
+  errors?: IFedexApiErrorItem[];
+  message?: string;
+}
+
+const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum): string => {
   switch (contentType) {
     case AdditionalDocumentContentTypeEnum.PDF:
       return 'pdf';
@@ -25,7 +36,6 @@ const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
 
     default: {
       const exhaustiveCheck: never = contentType;
-
       return exhaustiveCheck;
     }
   }
@@ -75,7 +85,7 @@ const uploadFedexDocument = async ({
     name: fileName,
     contentType,
     meta: {
-      shipDocumentType: 'OTHER',
+      shipDocumentType: 'asdada',
       trackingNumber,
       shipmentDate: shipmentTimestamp,
       originCountryCode,
@@ -105,7 +115,7 @@ const uploadFedexDocument = async ({
       },
       body: formData,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     Sentry.captureException(error, {
       tags: {
         carrier: 'FEDEX',
@@ -130,8 +140,26 @@ const uploadFedexDocument = async ({
 
   if (!response.ok) {
     const responseText = await response.text();
+    let errorMessage = `FedEx ek belge yüklenemedi (HTTP ${response.status})`;
+    let parsedBody: IFedexApiErrorResponse | null = null;
+    try {
+      parsedBody = JSON.parse(responseText) as IFedexApiErrorResponse;
 
-    const error = new Error(`FedEx ek belge yüklenemedi: HTTP ${response.status} ${response.statusText} - ${responseText}`);
+      if (parsedBody.errors && Array.isArray(parsedBody.errors) && parsedBody.errors.length > 0) {
+        errorMessage = parsedBody.errors
+          .map(err => err.message || err.code)
+          .filter(Boolean)
+          .join(' | ');
+      } else if (parsedBody.message) {
+        errorMessage = parsedBody.message;
+      }
+    } catch {
+      if (responseText.trim()) {
+        errorMessage = responseText;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       tags: {
@@ -151,7 +179,7 @@ const uploadFedexDocument = async ({
         documentSizeBytes: document.length,
         responseStatus: response.status,
         responseStatusText: response.statusText,
-        responseBody: responseText,
+        responseBody: parsedBody ?? responseText,
       },
     });
 

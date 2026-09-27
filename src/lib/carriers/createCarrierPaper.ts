@@ -19,6 +19,7 @@ interface CarrierResult {
   label: string;
   invoice: string;
   carrierShipmentId?: string;
+  documentUploadErrors?: CarrierTypes.IDocumentUploadError[];
 }
 
 const carrierDrivers: Record<string, (params: CarrierTypes.ICarrierDriverParams) => Promise<CarrierResult>> = {

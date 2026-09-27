@@ -136,8 +136,12 @@ const AdminShippingList = () => {
 
       if (response.status !== 'OK') {
         setBarcodeFailure(response.message ?? 'Barkod oluşturulamadı.');
-
         return;
+      }
+
+      if (response.data?.documentUploadErrors?.length) {
+        const errorMessages = response.data.documentUploadErrors.map(err => err.message).join(' | ');
+        setBarcodeFailure(`Barkod oluşturuldu ancak belge kargo firmasına iletilemedi: ${errorMessages}`);
       }
 
       await refetch();

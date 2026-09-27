@@ -24,6 +24,7 @@ const createFedexPaper = async ({
   trackingNumber: string;
   label: string;
   invoice: string;
+  documentUploadErrors?: { documentId: string; message: string }[];
 }> => {
   const authRes = await fetch(`${carrierBaseUrl.FEDEX}/oauth/token`, {
     method: 'POST',
@@ -364,6 +365,7 @@ const createFedexPaper = async ({
   if (saveLabelResult.status === 'ERROR') {
     throw new Error(saveLabelResult.message);
   }
+  const documentUploadErrors: { documentId: string; message: string }[] = [];
 
   for (const additionalDocument of additionalDocuments) {
     try {
@@ -376,7 +378,14 @@ const createFedexPaper = async ({
         originCountryCode: 'TR',
         destinationCountryCode: consignee.address.country,
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen belge yükleme hatası';
+
+      documentUploadErrors.push({
+        documentId: additionalDocument._id.toString(),
+        message: errorMessage,
+      });
+
       Sentry.captureException(error, {
         extra: {
           shippingId,
@@ -394,6 +403,7 @@ const createFedexPaper = async ({
     trackingNumber,
     label: label.toString('base64'),
     invoice,
+    ...(documentUploadErrors.length > 0 && { documentUploadErrors }),
   };
 };
 

@@ -97,7 +97,13 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
         if (cancelled) return;
 
         if (res.status === 'OK') {
-          onSuccess();
+          if (res.data?.documentUploadErrors && res.data.documentUploadErrors.length > 0) {
+            const errorMessages = res.data.documentUploadErrors.map(err => err.message).join(' | ');
+            setError(`Barkod oluşturuldu ancak kargo firmasına belge iletilemedi: ${errorMessages}`);
+            onSuccess();
+          } else {
+            onSuccess();
+          }
         } else {
           setError(res.message || 'Barkod oluşturulamadı');
         }
@@ -251,7 +257,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
           )}
 
           {!loading && error && (
-            <Alert severity="error" onClose={() => setModalOpen(false)}>
+            <Alert severity={error.startsWith('Barkod oluşturuldu') ? 'warning' : 'error'} onClose={() => setModalOpen(false)}>
               {error}
             </Alert>
           )}

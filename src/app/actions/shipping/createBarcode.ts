@@ -9,12 +9,15 @@ import getCarrierCost from '@/lib/getCarrierCost';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import getShippingCost from '@/lib/getShippingCost';
 import { CarrierAccount, Shipping, User } from '@/models';
+import { CarrierTypes } from '@/types/carrier';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { ShippingTypes } from '@/types/shipping';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string }>> => {
+const createBarcode = async (
+  data: ShippingTypes.ICreateBarcodeParams,
+): Promise<ResponseTypes.IActionResponse<{ trackingNumber: string; documentUploadErrors?: CarrierTypes.IDocumentUploadError[] }>> => {
   try {
     await connectMongoDB();
 
@@ -189,7 +192,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       };
     }
 
-    const { trackingNumber, carrierShipmentId } = carrierResult;
+    const { trackingNumber, carrierShipmentId, documentUploadErrors } = carrierResult;
 
     await applyBalanceTransaction('SPEND', shipping.userId.toString(), totalShippingCost, shipping._id.toString());
 
@@ -218,6 +221,7 @@ const createBarcode = async (data: ShippingTypes.ICreateBarcodeParams): Promise<
       status: 'OK',
       data: {
         trackingNumber,
+        ...(documentUploadErrors && { documentUploadErrors }),
       },
     };
   } catch (error) {

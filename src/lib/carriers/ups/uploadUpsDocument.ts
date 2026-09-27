@@ -12,7 +12,44 @@ type UploadUpsDocumentParams = {
   contentType: AdditionalDocumentContentTypeEnum;
 };
 
-const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
+interface IUpsApiErrorItem {
+  code?: string;
+  message?: string;
+}
+
+interface IUpsApiErrorResponse {
+  response?: {
+    errors?: IUpsApiErrorItem[];
+  };
+  Fault?: {
+    faultstring?: string;
+  };
+}
+
+interface IUpsUploadResponse {
+  UploadResponse?: {
+    Response?: {
+      ResponseStatus?: {
+        Code?: string;
+      };
+    };
+    FormsHistoryDocumentID?: {
+      DocumentID?: string | string[];
+    };
+  };
+}
+
+interface IUpsImageResponse {
+  PushToImageRepositoryResponse?: {
+    Response?: {
+      ResponseStatus?: {
+        Code?: string;
+      };
+    };
+  };
+}
+
+const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum): string => {
   switch (contentType) {
     case AdditionalDocumentContentTypeEnum.PDF:
       return 'pdf';
@@ -25,7 +62,6 @@ const getFileExtension = (contentType: AdditionalDocumentContentTypeEnum) => {
 
     default: {
       const exhaustiveCheck: never = contentType;
-
       return exhaustiveCheck;
     }
   }
@@ -79,9 +115,7 @@ const uploadUpsDocument = async ({
   }
 
   const fileExtension = getFileExtension(contentType);
-
   const fileName = `additional-document-${shipmentIdentifier}-${crypto.randomUUID()}.${fileExtension}`;
-
   const transId = crypto.randomUUID().replaceAll('-', '').slice(0, 32);
 
   const headers = {
@@ -113,21 +147,13 @@ const uploadUpsDocument = async ({
 
   let uploadResponse: Response;
 
-  console.log('[UPS PAPERLESS] Upload başlıyor', {
-    shipmentIdentifier,
-    trackingNumbers,
-    contentType,
-    fileName,
-    documentSizeBytes: document.length,
-  });
-
   try {
     uploadResponse = await fetch(`${carrierBaseUrl.UPS}/api/paperlessdocuments/v2/upload`, {
       method: 'POST',
       headers,
       body: JSON.stringify(uploadPayload),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     Sentry.captureException(error, {
       tags: {
         carrier: 'UPS',
@@ -149,16 +175,28 @@ const uploadUpsDocument = async ({
 
   const uploadResponseText = await uploadResponse.text();
 
-  console.log('[UPS PAPERLESS] Upload response', {
-    shipmentIdentifier,
-    status: uploadResponse.status,
-    statusText: uploadResponse.statusText,
-    ok: uploadResponse.ok,
-    body: uploadResponseText,
-  });
-
   if (!uploadResponse.ok) {
-    const error = new Error(`UPS ek belge yüklenemedi: HTTP ${uploadResponse.status} ${uploadResponse.statusText} - ${uploadResponseText}`);
+    let errorMessage = `UPS ek belge yüklenemedi (HTTP ${uploadResponse.status})`;
+    let parsedBody: IUpsApiErrorResponse | null = null;
+
+    try {
+      parsedBody = JSON.parse(uploadResponseText) as IUpsApiErrorResponse;
+
+      if (parsedBody.response?.errors && Array.isArray(parsedBody.response.errors) && parsedBody.response.errors.length > 0) {
+        errorMessage = parsedBody.response.errors
+          .map(err => err.message || err.code)
+          .filter(Boolean)
+          .join(' | ');
+      } else if (parsedBody.Fault?.faultstring) {
+        errorMessage = parsedBody.Fault.faultstring;
+      }
+    } catch {
+      if (uploadResponseText.trim()) {
+        errorMessage = uploadResponseText;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       tags: {
@@ -175,17 +213,17 @@ const uploadUpsDocument = async ({
         documentSizeBytes: document.length,
         responseStatus: uploadResponse.status,
         responseStatusText: uploadResponse.statusText,
-        responseBody: uploadResponseText,
+        responseBody: parsedBody ?? uploadResponseText,
       },
     });
 
     throw error;
   }
 
-  let uploadData;
+  let uploadData: IUpsUploadResponse;
 
   try {
-    uploadData = JSON.parse(uploadResponseText);
+    uploadData = JSON.parse(uploadResponseText) as IUpsUploadResponse;
   } catch {
     const error = new Error('UPS Paperless Document upload cevabı JSON formatında değil.');
 
@@ -209,12 +247,8 @@ const uploadUpsDocument = async ({
 
   const uploadStatus = uploadData?.UploadResponse?.Response?.ResponseStatus?.Code;
 
-  const documentIds: string[] = uploadData?.UploadResponse?.FormsHistoryDocumentID?.DocumentID ?? [];
-
-  console.log('[UPS PAPERLESS] DocumentID alındı', {
-    shipmentIdentifier,
-    documentIds,
-  });
+  const rawDocumentId = uploadData?.UploadResponse?.FormsHistoryDocumentID?.DocumentID;
+  const documentIds: string[] = Array.isArray(rawDocumentId) ? rawDocumentId : rawDocumentId ? [rawDocumentId] : [];
 
   if (uploadStatus !== '1' || !documentIds.length) {
     const error = new Error('UPS Paperless Document upload başarılı ancak DocumentID alınamadı.');
@@ -268,7 +302,7 @@ const uploadUpsDocument = async ({
       },
       body: JSON.stringify(imagePayload),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     Sentry.captureException(error, {
       tags: {
         carrier: 'UPS',
@@ -290,16 +324,28 @@ const uploadUpsDocument = async ({
 
   const imageResponseText = await imageResponse.text();
 
-  console.log('[UPS PAPERLESS] Image response', {
-    shipmentIdentifier,
-    status: imageResponse.status,
-    statusText: imageResponse.statusText,
-    ok: imageResponse.ok,
-    body: imageResponseText,
-  });
-
   if (!imageResponse.ok) {
-    const error = new Error(`UPS ek belge shipment'a bağlanamadı: HTTP ${imageResponse.status} ${imageResponse.statusText} - ${imageResponseText}`);
+    let errorMessage = `UPS ek belge shipment'a bağlanamadı (HTTP ${imageResponse.status})`;
+    let parsedBody: IUpsApiErrorResponse | null = null;
+
+    try {
+      parsedBody = JSON.parse(imageResponseText) as IUpsApiErrorResponse;
+
+      if (parsedBody.response?.errors && Array.isArray(parsedBody.response.errors) && parsedBody.response.errors.length > 0) {
+        errorMessage = parsedBody.response.errors
+          .map(err => err.message || err.code)
+          .filter(Boolean)
+          .join(' | ');
+      } else if (parsedBody.Fault?.faultstring) {
+        errorMessage = parsedBody.Fault.faultstring;
+      }
+    } catch {
+      if (imageResponseText.trim()) {
+        errorMessage = imageResponseText;
+      }
+    }
+
+    const error = new Error(errorMessage);
 
     Sentry.captureException(error, {
       tags: {
@@ -316,17 +362,17 @@ const uploadUpsDocument = async ({
         shipmentDateAndTime,
         responseStatus: imageResponse.status,
         responseStatusText: imageResponse.statusText,
-        responseBody: imageResponseText,
+        responseBody: parsedBody ?? imageResponseText,
       },
     });
 
     throw error;
   }
 
-  let imageData;
+  let imageData: IUpsImageResponse;
 
   try {
-    imageData = JSON.parse(imageResponseText);
+    imageData = JSON.parse(imageResponseText) as IUpsImageResponse;
   } catch {
     const error = new Error('UPS Paperless Document image cevabı JSON formatında değil.');
 

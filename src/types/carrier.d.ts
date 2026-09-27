@@ -50,4 +50,9 @@ declare namespace CarrierTypes {
       image: string;
     }[];
   }
+
+  interface IDocumentUploadError {
+    documentId: string;
+    message: string;
+  }
 }

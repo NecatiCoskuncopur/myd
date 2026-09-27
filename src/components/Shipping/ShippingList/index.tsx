@@ -127,6 +127,11 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
         return;
       }
 
+      if (response.data?.documentUploadErrors?.length) {
+        const errorMessages = response.data.documentUploadErrors.map(err => err.message).join(' | ');
+        setBarcodeFailure(`Barkod oluşturuldu ancak belge kargo firmasına iletilemedi: ${errorMessages}`);
+      }
+
       await refetch();
     } catch (error) {
       setBarcodeFailure(error instanceof Error ? error.message : UNEXPECTED_ERROR);

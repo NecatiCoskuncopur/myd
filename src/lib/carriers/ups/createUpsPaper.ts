@@ -52,6 +52,7 @@ const createUpsPaper = async ({
   trackingNumber: string;
   label: string;
   invoice: string;
+  documentUploadErrors?: { documentId: string; message: string }[];
 }> => {
   const authRes = await fetch(`${carrierBaseUrl.UPS}/security/v1/oauth/token`, {
     method: 'POST',
@@ -424,9 +425,12 @@ const createUpsPaper = async ({
   if (saveDocumentResult.status === 'ERROR') {
     throw new Error(saveDocumentResult.message);
   }
+
   const trackingNumbers = packageResults
     .map((packageResult: UpsPackageResult) => packageResult?.TrackingNumber)
     .filter((value: string | undefined): value is string => Boolean(value));
+
+  const documentUploadErrors: { documentId: string; message: string }[] = [];
 
   for (const additionalDocument of additionalDocuments) {
     try {
@@ -438,7 +442,14 @@ const createUpsPaper = async ({
         document: Buffer.from(additionalDocument.data),
         contentType: additionalDocument.contentType,
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen belge yükleme hatası';
+
+      documentUploadErrors.push({
+        documentId: additionalDocument._id.toString(),
+        message: errorMessage,
+      });
+
       Sentry.captureException(error, {
         tags: {
           carrier: 'UPS',
@@ -458,6 +469,7 @@ const createUpsPaper = async ({
     trackingNumber,
     label: label.toString('base64'),
     invoice: invoice ? invoice.toString('base64') : '',
+    ...(documentUploadErrors.length > 0 && { documentUploadErrors }),
   };
 };
 
