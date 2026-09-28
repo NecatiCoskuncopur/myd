@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import type { GridColDef } from '@mui/x-data-grid';
 
-import { GenericDataGrid, TableHeader, Wrapper } from '@/components';
+import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
 
 import AddTransaction from './AddTransaction';
 import BalanceTransactions from './BalanceTransactions';
@@ -18,6 +20,7 @@ const Users = () => {
   const searchParams = useSearchParams();
 
   const { data, rows, isLoading, page, limit, refetch } = useUsersList(searchParams);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const {
     selectedRow,
@@ -64,9 +67,13 @@ const Users = () => {
 
   return (
     <Wrapper>
-      <TableHeader title="Üyeler" subTitle="Kullanıcı hesapları, erişim izinleri ve üyelik hareketleri özeti." stacked>
-        <FilterSection searchParams={searchParams} />
+      <TableHeader title="Üyeler" subTitle="Kullanıcı hesapları, erişim izinleri ve üyelik hareketleri özeti.">
+        <StyledButton type="button" variant="outlined" startIcon={<FilterListIcon />} onClick={() => setIsFilterOpen(true)} sx={{ whiteSpace: 'nowrap' }}>
+          Filtrele
+        </StyledButton>
       </TableHeader>
+
+      <FilterSection searchParams={searchParams} open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
 
       <GenericDataGrid
         rows={rows}

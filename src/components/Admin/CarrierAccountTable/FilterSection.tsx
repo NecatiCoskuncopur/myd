@@ -3,15 +3,16 @@
 import { useEffect, useState } from 'react';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import SearchIcon from '@mui/icons-material/Search';
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
+import type { FormEvent } from 'react';
 
-import { StyledButton } from '@/components';
+import { FilterDrawer } from '@/components';
 import { Carrier, CarrierAccountTypeEnum } from '@/constants';
 
 type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;
+  open: boolean;
+  onClose: () => void;
 };
 
 const initialFilters = {
@@ -32,7 +33,7 @@ const getFiltersFromSearchParams = (searchParams: ReadonlyURLSearchParams) => ({
   isActive: searchParams.get('isActive') ?? '',
 });
 
-const FilterSection = ({ searchParams }: FilterSectionProps) => {
+const FilterSection = ({ searchParams, open, onClose }: FilterSectionProps) => {
   const router = useRouter();
 
   const [filters, setFilters] = useState(() => getFiltersFromSearchParams(searchParams));
@@ -41,7 +42,11 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     setFilters(getFiltersFromSearchParams(searchParams));
   }, [searchParams]);
 
-  const handleSearch = () => {
+  const handleSearch = (event?: FormEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+
     const params = new URLSearchParams();
 
     Object.entries(filters).forEach(([key, value]) => {
@@ -56,6 +61,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
+    onClose();
   };
 
   const handleReset = () => {
@@ -67,13 +73,14 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
+    onClose();
   };
 
   const isDirty = Object.values(filters).some(value => value !== '');
 
   return (
-    <Grid container spacing={2} sx={{ mb: 3 }}>
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+    <FilterDrawer open={open} onClose={onClose} onSubmit={handleSearch} onReset={handleReset} isFiltered={isDirty}>
+      <Stack spacing={2.5}>
         <TextField
           label="Hesap Adı"
           size="small"
@@ -85,15 +92,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
               name: event.target.value,
             }))
           }
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              handleSearch();
-            }
-          }}
         />
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <TextField
           label="Görünen Hesap Adı"
           size="small"
@@ -105,15 +105,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
               displayName: event.target.value,
             }))
           }
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              handleSearch();
-            }
-          }}
         />
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <TextField
           label="Hesap No"
           size="small"
@@ -125,18 +118,10 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
               accountNumber: event.target.value,
             }))
           }
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              handleSearch();
-            }
-          }}
         />
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Kargo Firması</InputLabel>
-
           <Select
             value={filters.carrier}
             label="Kargo Firması"
@@ -148,7 +133,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             }
           >
             <MenuItem value="">Tümü</MenuItem>
-
             {Object.values(Carrier).map(carrier => (
               <MenuItem key={carrier} value={carrier}>
                 {carrier}
@@ -156,12 +140,9 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             ))}
           </Select>
         </FormControl>
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Hesap Tipi</InputLabel>
-
           <Select
             value={filters.accountType}
             label="Hesap Tipi"
@@ -173,7 +154,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             }
           >
             <MenuItem value="">Tümü</MenuItem>
-
             {Object.values(CarrierAccountTypeEnum).map(accountType => (
               <MenuItem key={accountType} value={accountType}>
                 {accountType}
@@ -181,12 +161,9 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             ))}
           </Select>
         </FormControl>
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
         <FormControl fullWidth size="small">
           <InputLabel>Durum</InputLabel>
-
           <Select
             value={filters.isActive}
             label="Durum"
@@ -198,26 +175,12 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
             }
           >
             <MenuItem value="">Tümü</MenuItem>
-
             <MenuItem value="true">Aktif</MenuItem>
-
             <MenuItem value="false">Pasif</MenuItem>
           </Select>
         </FormControl>
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
-        <StyledButton type="button" variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch}>
-          Ara
-        </StyledButton>
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
-        <StyledButton type="button" disabled={!isDirty} variant="outlined" fullWidth startIcon={<RestartAltIcon />} onClick={handleReset}>
-          Sıfırla
-        </StyledButton>
-      </Grid>
-    </Grid>
+      </Stack>
+    </FilterDrawer>
   );
 };
 

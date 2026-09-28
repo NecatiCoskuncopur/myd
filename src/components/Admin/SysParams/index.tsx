@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
-import { Alert } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { Alert, Box } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
@@ -20,7 +22,7 @@ const SysParamTable = () => {
   const searchParams = useSearchParams();
 
   const { data, rows, isLoading, page, limit, refetch } = useSysParams(searchParams);
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const {
     selectedRow,
     actionIconButton,
@@ -67,25 +69,28 @@ const SysParamTable = () => {
   return (
     <Wrapper>
       <TableHeader title="Sistem Parametreleri" subTitle="Sistem genelinde kullanılan yapılandırma ve entegrasyon parametrelerini yönetin.">
-        <StyledButton
-          type="button"
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={openCreateModal}
+        <Box
           sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            width: { xs: '100%', sm: 'auto' },
+            gap: 1,
             flexShrink: 0,
-            whiteSpace: 'nowrap',
-            alignSelf: {
-              xs: 'stretch',
-              sm: 'center',
-            },
           }}
         >
-          Yeni Parametre Oluştur
-        </StyledButton>
+          <StyledButton type="button" variant="outlined" startIcon={<FilterListIcon />} onClick={() => setIsFilterOpen(true)} sx={{ whiteSpace: 'nowrap' }}>
+            Filtrele
+          </StyledButton>
+
+          <StyledButton type="button" variant="contained" startIcon={<AddIcon />} onClick={openCreateModal} sx={{ whiteSpace: 'nowrap' }}>
+            Yeni Parametre Oluştur
+          </StyledButton>
+        </Box>
       </TableHeader>
 
-      <FilterSection searchParams={searchParams} />
+      <FilterSection searchParams={searchParams} open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+
       <Alert
         severity="warning"
         variant="outlined"

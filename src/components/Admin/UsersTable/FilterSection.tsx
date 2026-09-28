@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import SearchIcon from '@mui/icons-material/Search';
-import { Box, Grid, MenuItem, Tab, Tabs, TextField } from '@mui/material';
+import { Box, MenuItem, Stack, Tab, Tabs, TextField } from '@mui/material';
+import type { FormEvent } from 'react';
 
-import { StyledButton } from '@/components';
+import { FilterDrawer } from '@/components';
 
 type FilterSectionProps = {
   searchParams: ReadonlyURLSearchParams;
+  open: boolean;
+  onClose: () => void;
 };
 
 const getFiltersFromSearchParams = (searchParams: ReadonlyURLSearchParams) => ({
@@ -33,7 +34,7 @@ const initialFilters = {
   balanceSorting: '',
 };
 
-const FilterSection = ({ searchParams }: FilterSectionProps) => {
+const FilterSection = ({ searchParams, open, onClose }: FilterSectionProps) => {
   const router = useRouter();
 
   const [filters, setFilters] = useState(() => getFiltersFromSearchParams(searchParams));
@@ -51,18 +52,27 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       params.set('isActive', newValue);
     }
 
-    params.set('sayfa', '1'); // Filtre/Tab değiştiğinde 1. sayfaya dön
+    params.set('sayfa', '1');
     router.push(`?${params.toString()}`);
+    onClose();
   };
 
-  const handleSearch = () => {
-    const params = new URLSearchParams();
+  const handleSearch = (event?: FormEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(filters).forEach(([key, value]) => {
+      if (key === 'isActive') return;
+
       const trimmedValue = value.trim();
 
       if (trimmedValue) {
         params.set(key, trimmedValue);
+      } else {
+        params.delete(key);
       }
     });
 
@@ -70,6 +80,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
+    onClose();
   };
 
   const handleReset = () => {
@@ -81,161 +92,112 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
+    onClose();
   };
 
-  const isDirty = Object.values(filters).some(value => value !== '');
+  const isDirty = Object.entries(filters).some(([key, value]) => key !== 'isActive' && value !== '');
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-        <Tabs value={filters.isActive} onChange={handleTabChange} aria-label="user status tabs">
+    <FilterDrawer open={open} onClose={onClose} onSubmit={handleSearch} onReset={handleReset} isFiltered={isDirty}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs value={filters.isActive} onChange={handleTabChange} aria-label="user status tabs" variant="scrollable" scrollButtons="auto">
           <Tab label="Tümü" value="" />
-          <Tab label="Aktif Kullanıcılar" value="true" />
-          <Tab label="Pasif Kullanıcılar" value="false" />
+          <Tab label="Aktif" value="true" />
+          <Tab label="Pasif" value="false" />
         </Tabs>
       </Box>
 
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            label="Ad"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.firstName}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                firstName: event.target.value,
-              }))
-            }
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-          />
-        </Grid>
+      <Stack spacing={2.5}>
+        <TextField
+          label="Ad"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.firstName}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              firstName: event.target.value,
+            }))
+          }
+        />
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            label="Soyad"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.lastName}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                lastName: event.target.value,
-              }))
-            }
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-          />
-        </Grid>
+        <TextField
+          label="Soyad"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.lastName}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              lastName: event.target.value,
+            }))
+          }
+        />
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            label="Şirket"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.company}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                company: event.target.value,
-              }))
-            }
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-          />
-        </Grid>
+        <TextField
+          label="Şirket"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.company}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              company: event.target.value,
+            }))
+          }
+        />
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            label="Telefon"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.phone}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                phone: event.target.value,
-              }))
-            }
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-          />
-        </Grid>
+        <TextField
+          label="Telefon"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.phone}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              phone: event.target.value,
+            }))
+          }
+        />
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            label="Eposta"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.email}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                email: event.target.value,
-              }))
-            }
-            onKeyDown={event => {
-              if (event.key === 'Enter') handleSearch();
-            }}
-          />
-        </Grid>
+        <TextField
+          label="Eposta"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.email}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              email: event.target.value,
+            }))
+          }
+        />
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
-          <TextField
-            select
-            label="Bakiye"
-            size="small"
-            variant="outlined"
-            fullWidth
-            value={filters.balanceSorting}
-            onChange={event =>
-              setFilters(prev => ({
-                ...prev,
-                balanceSorting: event.target.value,
-              }))
-            }
-          >
-            <MenuItem value="">Sıralama Yok</MenuItem>
-            <MenuItem value="1">Artan</MenuItem>
-            <MenuItem value="-1">Azalan</MenuItem>
-          </TextField>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
-          <Grid container spacing={1}>
-            <Grid size={{ xs: 6 }}>
-              <StyledButton type="button" variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch} sx={{ minWidth: 0, px: 1 }}>
-                Ara
-              </StyledButton>
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <StyledButton
-                type="button"
-                disabled={!isDirty}
-                variant="outlined"
-                fullWidth
-                startIcon={<RestartAltIcon />}
-                onClick={handleReset}
-                sx={{ minWidth: 0, px: 1 }}
-              >
-                Sıfırla
-              </StyledButton>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Box>
+        <TextField
+          select
+          label="Bakiye Sıralaması"
+          size="small"
+          variant="outlined"
+          fullWidth
+          value={filters.balanceSorting}
+          onChange={event =>
+            setFilters(prev => ({
+              ...prev,
+              balanceSorting: event.target.value,
+            }))
+          }
+        >
+          <MenuItem value="">Sıralama Yok</MenuItem>
+          <MenuItem value="1">Artan</MenuItem>
+          <MenuItem value="-1">Azalan</MenuItem>
+        </TextField>
+      </Stack>
+    </FilterDrawer>
   );
 };
 
