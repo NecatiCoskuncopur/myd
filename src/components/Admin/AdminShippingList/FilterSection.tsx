@@ -12,7 +12,7 @@ import moment from 'moment';
 import type { FormEvent } from 'react';
 
 import listAllShipping from '@/app/actions/admin/listAllShipping';
-import { FilterDrawer } from '@/components'; // Kendi dosya yolunuza göre ayarlayın
+import { FilterDrawer } from '@/components';
 import { generalMessages } from '@/constants';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 

@@ -64,10 +64,25 @@ const listShippingAdmin = async (
     if (consigneeCompany) match['consignee.company'] = createRegex(consigneeCompany);
     if (consigneePhone) match['consignee.phone'] = createRegex(consigneePhone);
 
+    const carrierFields = [
+      'carrier.name',
+      'carrier.displayName',
+      'carrier.accountType',
+      'carrier.account',
+      'carrier.carrierShipmentId',
+      'carrier.trackingNumber',
+      'carrier.amount',
+      'carrier.cost',
+      'carrier.insuranceCost',
+      'carrier.dutiesAndTaxesCost',
+      'carrier.longSideSurchargeCost',
+      'carrier.serviceFee',
+    ].join(' ');
+
     if (download) {
       const shipping = await Shipping.find(match)
         .populate('userId', 'name email')
-        .select('userId sender consignee content package carrier status trackStatus createdAt +carrier.cost')
+        .select(`userId sender consignee content package status trackStatus createdAt ${carrierFields}`)
         .limit(10000)
         .lean();
 
