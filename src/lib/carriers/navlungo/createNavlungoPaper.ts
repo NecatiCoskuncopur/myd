@@ -3,6 +3,7 @@ import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
+import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -125,6 +126,7 @@ const createNavlungoPaper = async ({
   label: string;
   invoice: string;
   carrierShipmentId: string;
+  documentUploadErrors?: { documentId: string; message: string }[];
 }> => {
   const { sender, consignee, detail, content, package: pkg } = shippingInstance;
 
@@ -289,11 +291,110 @@ const createNavlungoPaper = async ({
     throw new Error(saveLabelResult.message);
   }
 
+  const additionalDocuments = shippingInstance.additionalDocumentIds?.length
+    ? await AdditionalDocument.find({
+        _id: {
+          $in: shippingInstance.additionalDocumentIds,
+        },
+      }).select('_id data type contentType')
+    : [];
+
+  const documentUploadErrors: { documentId: string; message: string }[] = [];
+
+  for (const additionalDocument of additionalDocuments) {
+    try {
+      const extension = additionalDocument.contentType.includes('pdf') ? 'pdf' : 'jpg';
+      const fileName = `additional-document-${shippingId}.${extension}`;
+      const docEndpoint = `${carrierBaseUrl.NAVLUNGO}/api/shipments/v1/${shipmentData.shipmentId}/documents`;
+
+      const docInitRes = await fetch(docEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          ShipmentDocuments: [
+            {
+              FileName: fileName,
+              Type: 'msds',
+            },
+          ],
+        }),
+      });
+
+      if (!docInitRes.ok) {
+        const errorText = await docInitRes.text();
+        const errMessage = `Belge yükleme başlatılamadı: ${errorText}`;
+        documentUploadErrors.push({
+          documentId: additionalDocument._id.toString(),
+          message: errMessage,
+        });
+
+        Sentry.captureException(new Error(errMessage), {
+          extra: { shippingId, carrierShipmentId: shipmentData.shipmentId, additionalDocumentId: additionalDocument._id.toString() },
+        });
+      } else {
+        const docInitData = await docInitRes.json();
+        const uploadUrl = docInitData?.documents?.[0]?.urlInfo?.uploadUrl;
+
+        if (!uploadUrl) {
+          const errMessage = `Navlungo dosya yükleme için S3 Presigned URL dönmedi. Gelen Yanıt: ${JSON.stringify(docInitData)}`;
+          documentUploadErrors.push({
+            documentId: additionalDocument._id.toString(),
+            message: errMessage,
+          });
+
+          Sentry.captureException(new Error(errMessage), {
+            extra: { shippingId, carrierShipmentId: shipmentData.shipmentId, additionalDocumentId: additionalDocument._id.toString() },
+          });
+        } else {
+          const s3PutRes = await fetch(uploadUrl, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': additionalDocument.contentType,
+            },
+            body: new Uint8Array(additionalDocument.data),
+          });
+
+          if (!s3PutRes.ok) {
+            const errMessage = `AWS S3'e dosya yükleme başarısız oldu (HTTP ${s3PutRes.status})`;
+            documentUploadErrors.push({
+              documentId: additionalDocument._id.toString(),
+              message: errMessage,
+            });
+
+            Sentry.captureException(new Error(errMessage), {
+              extra: { shippingId, carrierShipmentId: shipmentData.shipmentId, additionalDocumentId: additionalDocument._id.toString() },
+            });
+          }
+        }
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen belge yükleme hatası';
+
+      documentUploadErrors.push({
+        documentId: additionalDocument._id.toString(),
+        message: errorMessage,
+      });
+
+      Sentry.captureException(error, {
+        extra: {
+          shippingId,
+          carrierShipmentId: shipmentData.shipmentId,
+          additionalDocumentId: additionalDocument._id.toString(),
+          documentUploadFailed: true,
+        },
+      });
+    }
+  }
+
   return {
     trackingNumber,
     label: labelBuffer.toString('base64'),
     invoice: '',
     carrierShipmentId: shipmentData.shipmentId,
+    ...(documentUploadErrors.length > 0 && { documentUploadErrors }),
   };
 };
 
