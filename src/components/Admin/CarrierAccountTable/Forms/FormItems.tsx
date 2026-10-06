@@ -1,8 +1,8 @@
 import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@mui/material';
-import type { Control, FieldError, FieldErrors, FieldPath, UseFormSetValue } from 'react-hook-form';
+import { Control, FieldError, FieldErrors, FieldPath, UseFormSetValue, useWatch } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
-import { Carrier, CarrierAccountTypeEnum, carrierMessages } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, carrierMessages, NavlungoFirmEnum } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 import CustomInfoSection from '../CustomInfoSection';
@@ -75,6 +75,11 @@ const FormItems = <T extends CarrierAccountFormPayload>({
         limit?: FieldError;
       }
     | undefined;
+
+  const selectedCarrier = useWatch({
+    control,
+    name: fieldName('carrier' as FieldPath<T>),
+  });
 
   return (
     <Grid container spacing={2} sx={{ mt: 0.5 }}>
@@ -183,6 +188,24 @@ const FormItems = <T extends CarrierAccountFormPayload>({
           )}
         />
       </Grid>
+
+      {selectedCarrier === Carrier.NAVLUNGO && (
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Controller
+            name={fieldName('navlungoFirm' as FieldPath<T>)}
+            control={control}
+            render={({ field }) => (
+              <TextField {...field} value={field.value ?? ''} select fullWidth label="Navlungo Alt Firması">
+                {Object.values(NavlungoFirmEnum).map(firm => (
+                  <MenuItem key={firm} value={firm}>
+                    {firm}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
+        </Grid>
+      )}
 
       <Grid size={{ xs: 12, md: 6 }}>
         <Controller

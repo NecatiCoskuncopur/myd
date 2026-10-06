@@ -6,6 +6,9 @@ const carrierMessages = {
   UNAUTHORIZED: 'Bu kargo firması/hesap için yetkiniz yok.',
   UNSUPPORTED: 'Desteklenmeyen taşıyıcı firma.',
   INVALID_ID: 'Geçersiz hesap ID formatı.',
+  NAVLUNGOFIRM: {
+    INVALID: 'Geçersiz Navlungo Firması.',
+  },
   CREATE: {
     SUCCESS: 'Kargo hesabı başarıyla oluşturuldu.',
   },

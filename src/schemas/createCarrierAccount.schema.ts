@@ -1,8 +1,8 @@
 import * as yup from 'yup';
 
-import { addressMessages, Carrier, CarrierAccountTypeEnum, carrierMessages, pricingListMessages, userMessages } from '@/constants';
+import { addressMessages, Carrier, CarrierAccountTypeEnum, carrierMessages, NavlungoFirmEnum, pricingListMessages, userMessages } from '@/constants';
 
-const { ACCOUNTNUMBER, ACCOUNTTYPE, CARRIER, CREDENTIALS, NAME, LONGSIDE } = carrierMessages;
+const { ACCOUNTNUMBER, ACCOUNTTYPE, CARRIER, CREDENTIALS, NAME, NAVLUNGOFIRM, LONGSIDE } = carrierMessages;
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
 const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
 const { ZONE } = pricingListMessages;
@@ -11,6 +11,7 @@ export default yup.object({
   name: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).required(NAME.REQUIRED),
   displayName: yup.string().typeError(NAME.TYPE).min(2, NAME.MIN).max(75, NAME.MAX).required(NAME.REQUIRED),
   carrier: yup.string().oneOf(Object.values(Carrier), CARRIER.TYPE_INVALID).required(CARRIER.REQUIRED),
+  navlungoFirm: yup.string().oneOf(Object.values(NavlungoFirmEnum), NAVLUNGOFIRM.INVALID).optional().nullable(),
   accountType: yup.string().oneOf(Object.values(CarrierAccountTypeEnum), ACCOUNTTYPE.INVALID).required(ACCOUNTTYPE.REQUIRED),
   accountNumber: yup.string().typeError(ACCOUNTNUMBER.TYPE).min(1, ACCOUNTNUMBER.MIN).required(ACCOUNTNUMBER.REQUIRED),
   credentials: yup

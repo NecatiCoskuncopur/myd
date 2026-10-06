@@ -1,4 +1,4 @@
-import { Carrier, CarrierAccountTypeEnum } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, NavlungoFirmEnum } from '@/constants';
 
 declare namespace CarrierAccountTypes {
   export interface ICarrierCredential {
@@ -49,6 +49,7 @@ declare namespace CarrierAccountTypes {
     name: string;
     displayName: string;
     carrier: Carrier;
+    navlungoFirm?: NavlungoFirmEnum;
     accountType: CarrierAccountTypeEnum;
     accountNumber: string;
     isActive: boolean;
@@ -71,6 +72,7 @@ declare namespace CarrierAccountTypes {
     name: string;
     displayName: string;
     carrier: Carrier;
+    navlungoFirm?: NavlungoFirmEnum;
     accountType: CarrierAccountTypeEnum;
     accountNumber: string;
     pricing: IPricing;

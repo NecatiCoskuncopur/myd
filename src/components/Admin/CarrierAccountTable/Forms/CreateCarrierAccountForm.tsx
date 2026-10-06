@@ -36,6 +36,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       displayName: '',
       accountNumber: '',
       carrier: Carrier.FEDEX,
+      navlungoFirm: undefined,
       accountType: CarrierAccountTypeEnum.ECONOMY,
       credentials:
         carrierConfig[Carrier.FEDEX]?.credentials?.map(credential => ({

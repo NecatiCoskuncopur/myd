@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument, InferSchemaType, Schema, Types } from 'mongoose';
 
-import { Carrier, CarrierAccountTypeEnum, emailRegex, phoneRegex, userMessages } from '@/constants';
+import { Carrier, CarrierAccountTypeEnum, emailRegex, NavlungoFirmEnum, phoneRegex, userMessages } from '@/constants';
 
 import PricingZoneSchema from './PricingZoneSchema.model';
 
@@ -34,6 +34,11 @@ const CarrierAccountSchema = new Schema(
       type: String,
       required: true,
       enum: Object.values(Carrier),
+    },
+    navlungoFirm: {
+      type: String,
+      required: false,
+      enum: Object.values(NavlungoFirmEnum),
     },
     accountType: {
       type: String,
