@@ -34,4 +34,3 @@ export { default as PasswordTextField } from './PasswordTextField';
 export { default as SysParams } from './Admin/SysParams';
 export { default as DeleteConfirmPopover } from './DeleteConfirmPopover';
 export { default as BulkBarcode } from './Shipping/BulkBarcode';
-export { default as FilterDrawer } from './FilterDrawer';

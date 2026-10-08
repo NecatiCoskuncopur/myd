@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/ShippingTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/columns.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="410" />
+    <option name="cachedIndexableFilesCount" value="406" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -49,7 +53,7 @@
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
     &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Necati/Desktop/projects/myd/src/app/api&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Necati/Desktop/projects/myd&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -64,12 +68,9 @@
   }
 }</component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\app\api" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Necati\Desktop\projects\myd\src\app\api" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Shipping\BulkBarcode" />
+      <recent name="C:\Users\Necati\Desktop\projects\myd\src\app\api" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\app" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\lib" />
       <recent name="C:\Users\Necati\Desktop\projects\myd\src\components\Admin\SysParams" />
@@ -229,20 +230,6 @@
       <workItem from="1790248115857" duration="17000" />
       <workItem from="1790389197851" duration="15000" />
       <workItem from="1790463320289" duration="9515000" />
-      <workItem from="1790735697718" duration="334000" />
-      <workItem from="1790890166043" duration="544000" />
-      <workItem from="1790892617648" duration="1000" />
-      <workItem from="1790922708189" duration="1504000" />
-      <workItem from="1790945135125" duration="411000" />
-      <workItem from="1791061224957" duration="1000" />
-      <workItem from="1791252208716" duration="1141000" />
-      <workItem from="1791254091107" duration="387000" />
-      <workItem from="1791282124180" duration="3991000" />
-      <workItem from="1791290545398" duration="3908000" />
-      <workItem from="1791331089875" duration="1353000" />
-      <workItem from="1791427180377" duration="2142000" />
-      <workItem from="1791433008401" duration="3189000" />
-      <workItem from="1791446359965" duration="8575000" />
     </task>
     <servers />
   </component>

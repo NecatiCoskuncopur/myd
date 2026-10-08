@@ -1,10 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { Box } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
 import { GenericDataGrid, StyledButton, TableHeader, Wrapper } from '@/components';
@@ -22,7 +19,6 @@ const PriceLists = () => {
   const searchParams = useSearchParams();
 
   const { data, rows, isLoading, page, limit, refetch } = usePriceLists(searchParams);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const {
     selectedRow,
@@ -73,27 +69,25 @@ const PriceLists = () => {
   return (
     <Wrapper>
       <TableHeader title="Fiyat Listeleri" subTitle="Müşteri fiyatlandırmalarında kullanılacak fiyat listelerini yönetin.">
-        <Box
+        <StyledButton
+          type="button"
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={openCreateModal}
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            alignItems: { xs: 'stretch', sm: 'center' },
-            width: { xs: '100%', sm: 'auto' },
-            gap: 1,
             flexShrink: 0,
+            whiteSpace: 'nowrap',
+            alignSelf: {
+              xs: 'stretch',
+              sm: 'center',
+            },
           }}
         >
-          <StyledButton type="button" variant="outlined" startIcon={<FilterListIcon />} onClick={() => setIsFilterOpen(true)} sx={{ whiteSpace: 'nowrap' }}>
-            Filtrele
-          </StyledButton>
-
-          <StyledButton type="button" variant="contained" startIcon={<AddIcon />} onClick={openCreateModal} sx={{ whiteSpace: 'nowrap' }}>
-            Yeni Liste Oluştur
-          </StyledButton>
-        </Box>
+          Yeni Liste Oluştur
+        </StyledButton>
       </TableHeader>
 
-      <FilterSection searchParams={searchParams} open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+      <FilterSection searchParams={searchParams} />
 
       <GenericDataGrid
         rows={rows}

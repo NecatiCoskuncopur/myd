@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddIcon from '@mui/icons-material/Add';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { Box } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 
@@ -23,7 +21,6 @@ const CarrierAccountTable = () => {
   const searchParams = useSearchParams();
 
   const { data, rows, isLoading, page, limit, refetch } = useCarrierAccountsList(searchParams);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const {
     selectedRow,
@@ -72,29 +69,38 @@ const CarrierAccountTable = () => {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            alignItems: { xs: 'stretch', sm: 'center' },
-            width: { xs: '100%', sm: 'auto' },
+            alignItems: 'center',
             gap: 1,
             flexShrink: 0,
-            mt: { xs: 2, sm: 0 },
           }}
         >
-          <StyledButton type="button" variant="outlined" startIcon={<FilterListIcon />} onClick={() => setIsFilterOpen(true)} sx={{ whiteSpace: 'nowrap' }}>
-            Filtrele
-          </StyledButton>
-
-          <StyledButton type="button" variant="contained" startIcon={<AddIcon />} onClick={openCreateModal} sx={{ whiteSpace: 'nowrap' }}>
+          <StyledButton
+            type="button"
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={openCreateModal}
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
             Yeni Hesap Oluştur
           </StyledButton>
 
-          <StyledButton type="button" variant="contained" startIcon={<CalculateIcon />} onClick={openCalculateModal} sx={{ whiteSpace: 'nowrap' }}>
+          <StyledButton
+            type="button"
+            variant="contained"
+            startIcon={<CalculateIcon />}
+            onClick={openCalculateModal}
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+          >
             Hesapla
           </StyledButton>
         </Box>
       </TableHeader>
 
-      <FilterSection searchParams={searchParams} open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+      <FilterSection searchParams={searchParams} />
 
       <GenericDataGrid
         rows={rows}

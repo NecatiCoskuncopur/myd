@@ -2,7 +2,6 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
@@ -10,7 +9,7 @@ import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditiona
 import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
-import { BulkBarcode, DeleteShipping, StyledButton, TableHeader, Wrapper } from '@/components';
+import { BulkBarcode, DeleteShipping, TableHeader, Wrapper } from '@/components';
 import { Carrier, generalMessages } from '@/constants';
 import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
@@ -37,7 +36,6 @@ type ShippingListProps = {
 const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingListProps) => {
   const searchParams = useSearchParams();
   const { showSnackbar } = useSnackbar();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
   const [selectedShippingIds, setSelectedShippingIds] = useState<string[]>([]);
@@ -193,12 +191,9 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Wrapper>
-        <TableHeader title="Gönderilerim" subTitle="Gönderilerinize ait tüm detaylar ve güncel durum bilgileri.">
-          <StyledButton variant="outlined" startIcon={<FilterListIcon />} onClick={() => setIsFilterOpen(true)}>
-            Filtrele
-          </StyledButton>
+        <TableHeader title="Gönderilerim" subTitle="Gönderilerinize ait tüm detaylar ve güncel durum bilgileri." stacked>
+          <FilterSection searchParams={searchParams} />
         </TableHeader>
-        <FilterSection searchParams={searchParams} open={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
         {canCreateBarcode && <BulkBarcode shippings={selectedShippings} accounts={accounts} onSelectionChange={setSelectedShippingIds} onComplete={refetch} />}
         <ShippingTable
           rows={rows}
