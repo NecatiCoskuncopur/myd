@@ -86,7 +86,6 @@ const CarrierAccountSchema = new Schema(
     customInfo: {
       email: {
         type: String,
-        unique: true,
         sparse: true,
         lowercase: true,
         trim: true,

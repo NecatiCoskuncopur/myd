@@ -7,6 +7,7 @@
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,7 +243,7 @@
       <workItem from="1791331089875" duration="1353000" />
       <workItem from="1791427180377" duration="2142000" />
       <workItem from="1791433008401" duration="3189000" />
-      <workItem from="1791446359965" duration="327000" />
+      <workItem from="1791446359965" duration="1259000" />
     </task>
     <servers />
   </component>

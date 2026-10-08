@@ -54,12 +54,15 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
       message: UPDATE.SUCCESS,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof ValidationError) {
       return {
         status: 'ERROR',
         message: error.errors.join(', '),
       };
     }
+
+
 
     if (error instanceof Error) {
       captureActionError('updateCarrierAccount', error);
