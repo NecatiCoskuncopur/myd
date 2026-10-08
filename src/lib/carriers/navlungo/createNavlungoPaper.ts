@@ -1,8 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
+import { randomUUID } from 'crypto';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
+import formatHsCode from '@/lib/formatHsCode';
 import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
@@ -32,6 +34,7 @@ interface NavlungoQuote {
   price: number;
   currency: string;
   serviceType: string;
+  carrier: string;
   additionalServices: NavlungoAdditionalService[];
 }
 
@@ -62,36 +65,73 @@ const getShipmentType = (purpose: unknown): NavlungoShipmentType => {
   return 'micro-export';
 };
 
-const selectNavlungoQuote = (quotes: NavlungoQuote[], accountType: CarrierAccountTypeEnum): NavlungoQuote => {
+const selectNavlungoQuote = (
+  quotes: NavlungoQuote[],
+  accountType: CarrierAccountTypeEnum,
+  shippingInstance: ShippingTypes.IShipping,
+  navlungoFirm?: string,
+): NavlungoQuote => {
   const validQuotes = quotes.filter(quote => quote.quoteReference && Number.isFinite(Number(quote.price)));
 
   if (!validQuotes.length) {
     throw new Error(`${SHIPMENT_FAILED}: Geçerli Navlungo teklifi bulunamadı.`);
   }
 
+  let filteredQuotes = validQuotes;
+  if (navlungoFirm) {
+    filteredQuotes = validQuotes.filter(quote => quote.carrier.toLowerCase() === navlungoFirm.toLowerCase());
+  }
+
   const isEconomy = accountType === CarrierAccountTypeEnum.ECONOMY;
-  const preferredQuotes = validQuotes.filter(quote => {
+  const matchingQuotes = filteredQuotes.filter(quote => {
     const serviceType = quote.serviceType.toLowerCase();
-    return isEconomy ? serviceType.includes('eco') : !serviceType.includes('eco');
+    const targetServiceType = isEconomy ? 'expedited' : 'express';
+
+    return serviceType.includes(targetServiceType);
   });
 
-  const candidates = preferredQuotes.length > 0 ? preferredQuotes : validQuotes;
-  return [...candidates].sort((a, b) => Number(a.price) - Number(b.price))[0];
+  const isSenderPayor = shippingInstance.detail.payor?.customs === 'SENDER';
+  const hasInsuranceRequested = Boolean(shippingInstance.content.insurance);
+
+  const finalQuotes = matchingQuotes.filter(quote => {
+    const additionalServices = quote.additionalServices ?? [];
+
+    for (const service of additionalServices) {
+      if (service.isRequired) {
+        if (service.serviceCode === 'ddp' && !isSenderPayor) {
+          return false;
+        }
+        if (service.serviceCode === 'insurance' && !hasInsuranceRequested) {
+          return false;
+        }
+      }
+    }
+    return true;
+  });
+
+  if (!finalQuotes.length) {
+    throw new Error(`${SHIPMENT_FAILED}: Kullanıcı tercihlerine uygun Navlungo teklifi bulunamadı (Zorunlu hizmet uyuşmazlığı).`);
+  }
+
+  return [...finalQuotes].sort((a, b) => Number(a.price) - Number(b.price))[0];
 };
 
 const getSelectedAdditionalServices = (quote: NavlungoQuote, shippingInstance: ShippingTypes.IShipping): string[] => {
   const selected = new Set<string>();
 
+  const isSenderPayor = shippingInstance.detail.payor?.customs === 'SENDER';
+  const hasInsuranceRequested = Boolean(shippingInstance.content.insurance);
+
   for (const service of quote.additionalServices ?? []) {
-    if (service.isRequired) selected.add(service.serviceCode);
-  }
-
-  if (shippingInstance.detail.payor?.customs === 'SENDER') {
-    if (quote.additionalServices?.some(s => s.serviceCode === 'ddp')) selected.add('ddp');
-  }
-
-  if (shippingInstance.content.insurance) {
-    if (quote.additionalServices?.some(s => s.serviceCode === 'insurance')) selected.add('insurance');
+    if (service.serviceCode === 'ddp' && isSenderPayor) {
+      selected.add('ddp');
+    }
+    if (service.serviceCode === 'insurance' && hasInsuranceRequested) {
+      selected.add('insurance');
+    }
+    if (service.isRequired && service.serviceCode !== 'ddp' && service.serviceCode !== 'insurance') {
+      selected.add(service.serviceCode);
+    }
   }
 
   return [...selected];
@@ -121,6 +161,7 @@ const createNavlungoPaper = async ({
   shippingId,
   accountType,
   accountNumber,
+  navlungoFirm,
 }: CarrierTypes.ICreatePaper): Promise<{
   trackingNumber: string;
   label: string;
@@ -157,13 +198,16 @@ const createNavlungoPaper = async ({
   if (!stores.length) throw new Error(`${SHIPMENT_FAILED}: Navlungo hesabında mağaza bulunamadı.`);
   const store = stores[0];
 
+  const uniqueOrderReference = `${shippingId}-${randomUUID().slice(0, 8)}`;
+  const destinationCountry = consignee.address.country;
+
   const quotePayload = {
     order: {
-      orderReference: shippingId,
+      orderReference: uniqueOrderReference,
       currencyCode: String(content.currency),
       receiverAddress: {
         contactName: consignee.company || consignee.name,
-        countryCode: consignee.address.country.toUpperCase(),
+        countryCode: destinationCountry.toUpperCase(),
         ...(consignee.address.state && { state: consignee.address.state }),
         town: consignee.address.city,
         city: consignee.address.city,
@@ -177,7 +221,7 @@ const createNavlungoPaper = async ({
         price: String(product.unitPrice),
         description: product.name,
         sku: `${shippingId}-${index + 1}`,
-        hsCode: product.gtip,
+        hsCode: formatHsCode(product.gtip!, destinationCountry),
         originCountryCode: 'TR',
       })),
     },
@@ -207,11 +251,10 @@ const createNavlungoPaper = async ({
 
   const quoteData = (await quoteRes.json()) as NavlungoOrderQuoteResponse;
   if (!quoteData.quotes?.length) throw new Error(`${SHIPMENT_FAILED}: Uygun taşıma teklifi bulunamadı.`);
-
-  const quote = selectNavlungoQuote(quoteData.quotes, accountType);
+  const quote = selectNavlungoQuote(quoteData.quotes, accountType, shippingInstance, navlungoFirm);
   const selectedAdditionalServices = getSelectedAdditionalServices(quote, shippingInstance);
 
-  const shipmentRes = await fetch(`${carrierBaseUrl.NAVLUNGO}/stores/v2/${store.storeId}/orders/${shippingId}/ship`, {
+  const shipmentRes = await fetch(`${carrierBaseUrl.NAVLUNGO}/stores/v2/${store.storeId}/orders/${uniqueOrderReference}/ship`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
     body: JSON.stringify({

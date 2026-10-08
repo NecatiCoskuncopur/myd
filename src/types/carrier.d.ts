@@ -1,4 +1,4 @@
-import { CarrierAccountTypeEnum } from '@/constants';
+import { CarrierAccountTypeEnum, NavlungoFirmEnum } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 declare namespace CarrierTypes {
@@ -8,6 +8,7 @@ declare namespace CarrierTypes {
     customInfo?: CarrierAccountTypes.ICustomInfo;
     shippingId: string;
     credentials: Record<string, string>;
+    navlungoFirm?: NavlungoFirmEnum;
     accountNumber: string;
     accountType: CarrierAccountTypeEnum;
   }

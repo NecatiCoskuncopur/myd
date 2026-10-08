@@ -175,6 +175,7 @@ const createBarcode = async (
         credentials: carrierAccount.credentials,
         accountType: carrierAccount.accountType,
         shippingId: shipping._id.toString(),
+        ...(firm === 'NAVLUNGO' && carrierAccount.navlungoFirm && { navlungoFirm: carrierAccount.navlungoFirm }),
       });
     } catch (error) {
       if (error instanceof Error) {
