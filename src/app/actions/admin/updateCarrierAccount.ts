@@ -54,13 +54,6 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
       message: UPDATE.SUCCESS,
     };
   } catch (error) {
-    if (isMongoDuplicateKeyError(error)) {
-      return {
-        status: 'ERROR',
-        message: ACCOUNTNUMBER.ALREADY_EXISTS,
-      };
-    }
-
     if (error instanceof ValidationError) {
       return {
         status: 'ERROR',
