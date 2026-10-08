@@ -96,7 +96,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       </Box>
 
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             label="Ad"
             size="small"
@@ -115,7 +115,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             label="Soyad"
             size="small"
@@ -134,7 +134,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             label="Şirket"
             size="small"
@@ -153,7 +153,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             label="Telefon"
             size="small"
@@ -172,7 +172,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             label="Eposta"
             size="small"
@@ -191,7 +191,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.7 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.7 }}>
           <TextField
             select
             label="Bakiye"
@@ -212,7 +212,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           </TextField>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.8 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.8 }}>
           <Grid container spacing={1}>
             <Grid size={{ xs: 6 }}>
               <StyledButton type="button" variant="contained" fullWidth startIcon={<SearchIcon />} onClick={handleSearch} sx={{ minWidth: 0, px: 1 }}>

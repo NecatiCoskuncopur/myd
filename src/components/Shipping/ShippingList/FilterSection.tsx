@@ -136,7 +136,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Grid component="form" onSubmit={handleSearch} container spacing={2}>
-        <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
           <TextField
             label="Alıcı Adı"
             size="small"
@@ -151,7 +151,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
           <TextField
             label="Alıcı Telefon"
             size="small"
@@ -166,7 +166,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
           <TextField
             label="Takip No"
             size="small"
@@ -181,7 +181,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
           <DatePicker
             label="Başlangıç"
             value={inputs.startDate}
@@ -200,7 +200,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
           <DatePicker
             label="Bitiş"
             value={inputs.endDate}
@@ -219,19 +219,19 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           />
         </Grid>
 
-        <Grid size={{ xs: 6, md: 2, lg: 1.5 }}>
+        <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
           <StyledButton type="submit" fullWidth variant="contained" startIcon={<SearchIcon />}>
             Ara
           </StyledButton>
         </Grid>
 
-        <Grid size={{ xs: 6, md: 2, lg: 1.5 }}>
+        <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
           <StyledButton type="button" fullWidth variant="outlined" startIcon={<RestartAltIcon />} disabled={!isFiltered} onClick={handleReset}>
             Sıfırla
           </StyledButton>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 2, lg: 1.5 }}>
+        <Grid size={{ xs: 12, md: 2, lg: 3, xl: 1.5 }}>
           <StyledButton
             type="button"
             fullWidth

@@ -62,8 +62,6 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
       };
     }
 
-
-
     if (error instanceof Error) {
       captureActionError('updateCarrierAccount', error);
     }

@@ -153,11 +153,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       anchor.style.display = 'none';
 
       document.body.appendChild(anchor);
-
       anchor.click();
-
       document.body.removeChild(anchor);
-
       window.URL.revokeObjectURL(url);
     } catch {
       showSnackbar(UNEXPECTED_ERROR, 'error');
@@ -175,7 +172,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <TextField
@@ -201,7 +199,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <TextField
@@ -227,7 +226,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <TextField
@@ -253,7 +253,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <DatePicker
@@ -278,7 +279,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 6,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <DatePicker
@@ -303,7 +305,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 6,
           md: 2,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <StyledButton type="button" fullWidth variant="contained" startIcon={<SearchIcon />} onClick={handleSearch}>
@@ -315,7 +318,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 6,
           md: 2,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <StyledButton type="button" disabled={!isFiltered} fullWidth variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset}>
@@ -327,7 +331,8 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
         size={{
           xs: 12,
           md: 2,
-          lg: 1.5,
+          lg: 3,
+          xl: 1.5,
         }}
       >
         <Button
