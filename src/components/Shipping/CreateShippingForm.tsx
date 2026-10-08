@@ -53,7 +53,7 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
           customs: ShippingPayor.CONSIGNEE,
         },
         iossNumber: '',
-        purpose: ShippingPurpose.GIFT,
+        purpose: ShippingPurpose.SAMPLE,
       },
       content: {
         currency: CurrencyEnum.USD,
