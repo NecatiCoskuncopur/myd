@@ -105,8 +105,6 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
       const shippingId = response.data._id;
 
       if (isBatchMode) {
-        reset();
-        setAdditionalDocumentIds([]);
         showSnackbar(response.message ?? CREATESHIPPING.SUCCESS, 'success');
         return;
       }
