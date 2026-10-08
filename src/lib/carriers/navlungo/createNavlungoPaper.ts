@@ -334,13 +334,16 @@ const createNavlungoPaper = async ({
     throw new Error(saveLabelResult.message);
   }
 
-  const additionalDocuments = shippingInstance.additionalDocumentIds?.length
-    ? await AdditionalDocument.find({
-        _id: {
-          $in: shippingInstance.additionalDocumentIds,
-        },
-      }).select('_id data type contentType')
-    : [];
+  const UPLOAD_DOCUMENTS_ENABLED = false;
+
+  const additionalDocuments =
+    UPLOAD_DOCUMENTS_ENABLED && shippingInstance.additionalDocumentIds?.length
+      ? await AdditionalDocument.find({
+          _id: {
+            $in: shippingInstance.additionalDocumentIds,
+          },
+        }).select('_id data type contentType')
+      : [];
 
   const documentUploadErrors: { documentId: string; message: string }[] = [];
 
