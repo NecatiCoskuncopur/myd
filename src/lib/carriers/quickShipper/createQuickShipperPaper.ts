@@ -93,41 +93,16 @@ const createQuickShipperPaper = async ({
     })),
   };
 
-  console.log('QS_DEBUG_FETCH_START', {
-    url: `${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/addshipmentbroker`,
-    accountNumber: accountNumber,
-    apiKeyVal: credentials?.apiKey,
-    apiSecretVal: credentials?.apiSecret,
+  const response = await fetch(`${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/addshipmentbroker`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      accountNumber,
+      'qs-key': credentials.apiKey,
+      'qs-secret': credentials.apiSecret,
+    },
+    body: JSON.stringify(body),
   });
-
-  let response: Response;
-
-  try {
-    response = await fetch(`${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/addshipmentbroker`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        accountNumber,
-        'qs-key': credentials?.apiKey || '',
-        'qs-secret': credentials?.apiSecret || '',
-      },
-      body: JSON.stringify(body),
-    });
-  } catch (networkError) {
-    console.error('QS_FETCH_NETWORK_ERROR', networkError);
-
-    Sentry.captureException(networkError, {
-      extra: {
-        shippingId,
-        message: 'Fetch isteği karşı sunucuya ulaşamadan yolda koptu (fetch failed)',
-        accountNumber,
-        url: `${carrierBaseUrl.QUICKSHIPPER}/api/affiliate/shipments/addshipmentbroker`,
-      },
-    });
-
-    await Sentry.flush(2000);
-    throw networkError;
-  }
 
   if (!response.ok) {
     const responseText = await response.text();
@@ -181,7 +156,6 @@ const createQuickShipperPaper = async ({
       },
     });
 
-    await Sentry.flush(2000);
     throw error;
   }
 
@@ -202,7 +176,6 @@ const createQuickShipperPaper = async ({
       },
     });
 
-    await Sentry.flush(2000);
     throw error;
   }
 
@@ -221,7 +194,6 @@ const createQuickShipperPaper = async ({
       },
     });
 
-    await Sentry.flush(2000);
     throw error;
   }
 
@@ -239,7 +211,6 @@ const createQuickShipperPaper = async ({
       },
     });
 
-    await Sentry.flush(2000);
     throw error;
   }
 
@@ -261,7 +232,6 @@ const createQuickShipperPaper = async ({
       },
     });
 
-    await Sentry.flush(2000);
     throw error;
   }
 

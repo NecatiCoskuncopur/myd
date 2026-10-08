@@ -1,8 +1,13 @@
-import { Box, Typography } from '@mui/material';
+'use client';
+
+import NextLink from 'next/link';
+import { Box, Link, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
 import { TrackingStatusEnum, TrackingStatusLabels } from '@/constants';
+import getCarrierIcon from '@/lib/getCarrierIcon';
+import getCarrierTrackingUrl from '@/lib/getCarrierTrackingUrl';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
 import { ShippingTypes } from '@/types/shipping';
 
@@ -72,6 +77,75 @@ const columns: GridColDef<ShippingTypes.IShipping>[] = [
           <Typography variant="body2" noWrap>
             {[countryCode, city].filter(Boolean).join(' / ')}
           </Typography>
+        </Box>
+      );
+    },
+  },
+  {
+    field: 'trackingNumber',
+    headerName: 'Takip No',
+    flex: 1.2,
+    minWidth: 120,
+    renderCell: ({ row }) => {
+      const carrierName = row.carrier?.name;
+      const trackingNo = row.carrier?.trackingNumber;
+
+      if (!trackingNo) return '-';
+
+      const { url, hasLink } = getCarrierTrackingUrl(carrierName!, trackingNo);
+      const icon = getCarrierIcon(carrierName!);
+
+      const content = (
+        <>
+          {icon && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                '& svg, & img': {
+                  width: 18,
+                  height: 18,
+                  display: 'block',
+                  objectFit: 'contain',
+                },
+              }}
+            >
+              {icon}
+            </Box>
+          )}
+
+          <Typography component="span" variant="body2" noWrap sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
+            {trackingNo}
+          </Typography>
+        </>
+      );
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', minWidth: 0, overflow: 'hidden' }}>
+          {hasLink && url ? (
+            <Link
+              component={NextLink}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                minWidth: 0,
+                color: 'primary.main',
+                textDecoration: 'none',
+                overflow: 'hidden',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
+              {content}
+            </Link>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, overflow: 'hidden', color: 'text.secondary' }}>{content}</Box>
+          )}
         </Box>
       );
     },
