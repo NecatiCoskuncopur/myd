@@ -5,14 +5,13 @@ import { ValidationError } from 'yup';
 import { carrierMessages, generalMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
-import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
 import updateCarrierAccountSchema from '@/schemas/updateCarrierAccount.schema';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const { UNEXPECTED_ERROR } = generalMessages;
-const { ACCOUNTNUMBER, NOT_FOUND, UPDATE } = carrierMessages;
+const { NOT_FOUND, UPDATE } = carrierMessages;
 
 const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
@@ -27,14 +26,8 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
     await connectMongoDB();
 
     const { id, ...updateFields } = validatedData;
-
     const updateData = {
       $set: updateFields,
-      ...(!updateFields.hasCustomInfo && {
-        $unset: {
-          customInfo: 1,
-        },
-      }),
     };
 
     const updatedAccount = await CarrierAccount.findByIdAndUpdate(id, updateData, {
@@ -54,7 +47,6 @@ const updateCarrierAccount = async (data: CarrierAccountTypes.IUpdateCarrierAcco
       message: UPDATE.SUCCESS,
     };
   } catch (error) {
-    console.log(error);
     if (error instanceof ValidationError) {
       return {
         status: 'ERROR',

@@ -6,7 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updateCarrierAccount.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createBarcode.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CustomInfoSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/CustomInfoSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/CreateCarrierAccountForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/CreateCarrierAccountForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/UpdateCarrierAccountForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/UpdateCarrierAccountForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/userMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CarrierAccount.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createCarrierAccount.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrier.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrier.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/carrierAccount.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +239,8 @@
       <workItem from="1790248115857" duration="17000" />
       <workItem from="1790389197851" duration="15000" />
       <workItem from="1790463320289" duration="9515000" />
-      <workItem from="1791468105322" duration="309000" />
+      <workItem from="1791468105322" duration="7230000" />
+      <workItem from="1791520221815" duration="930000" />
     </task>
     <servers />
   </component>

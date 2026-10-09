@@ -73,24 +73,26 @@ const createBarcode = async (
       };
     }
 
-    const hasCustomInfo = carrierAccount.hasCustomInfo;
-    const customInfo: CarrierAccountTypes.ICustomInfo | undefined =
-      hasCustomInfo && carrierAccount.customInfo
-        ? {
-            firstName: carrierAccount.customInfo.firstName ?? '',
-            lastName: carrierAccount.customInfo.lastName ?? '',
-            company: carrierAccount.customInfo.company ?? '',
-            phone: carrierAccount.customInfo.phone ?? '',
-            email: carrierAccount.customInfo.email ?? '',
-            address: {
-              line1: carrierAccount.customInfo.address?.line1 ?? '',
-              line2: carrierAccount.customInfo.address?.line2 ?? '',
-              district: carrierAccount.customInfo.address?.district ?? '',
-              postalCode: carrierAccount.customInfo.address?.postalCode ?? '',
-              city: carrierAccount.customInfo.address?.city ?? '',
-            },
-          }
-        : undefined;
+    const rawCustomInfo = carrierAccount.customInfo;
+
+    const customInfo: CarrierAccountTypes.ICustomInfo | undefined = rawCustomInfo
+      ? {
+          email: rawCustomInfo.email ?? undefined,
+          fullName: rawCustomInfo.fullName ?? undefined,
+          company: rawCustomInfo.company ?? undefined,
+          phone: rawCustomInfo.phone ?? undefined,
+          address: rawCustomInfo.address
+            ? {
+                line1: rawCustomInfo.address.line1 ?? undefined,
+                line2: rawCustomInfo.address.line2 ?? undefined,
+                district: rawCustomInfo.address.district ?? undefined,
+                city: rawCustomInfo.address.city ?? undefined,
+                postalCode: rawCustomInfo.address.postalCode ?? undefined,
+              }
+            : undefined,
+        }
+      : undefined;
+
     const hasPermission = user.barcodePermits?.some((permitId: string) => permitId.toString() === carrierAccount._id.toString());
 
     if (!hasPermission) {
@@ -170,7 +172,6 @@ const createBarcode = async (
         firm,
         shippingInstance,
         accountNumber,
-        hasCustomInfo,
         customInfo,
         credentials: carrierAccount.credentials,
         accountType: carrierAccount.accountType,

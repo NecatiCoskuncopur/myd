@@ -27,6 +27,11 @@ const userMessages = {
     MAX: 'Ad en fazla 75 karakter olmalı.',
     REQUIRED: 'Ad zorunludur.',
   },
+  FULLNAME: {
+    TYPE: 'İsim metin tipinde olmalı.',
+    MIN: 'İsim en az 2 karakter olmalı.',
+    MAX: 'İsim en fazla 75 karakter olmalı.',
+  },
   ISACTIVE: {
     TYPE: 'Kullanıcı aktiflik değeri boolean formatında olmalıdır',
     REQUIRED: 'Kullanıcı aktiflik değeri zorunludur.',

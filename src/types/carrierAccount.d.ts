@@ -7,19 +7,18 @@ declare namespace CarrierAccountTypes {
   }
 
   interface ICarrierAddress {
-    line1: string;
+    line1?: string;
     line2?: string;
-    city: string;
-    postalCode: string;
-    district: string;
+    city?: string;
+    postalCode?: string;
+    district?: string;
   }
 
   interface ICustomInfo {
-    email: string;
-    firstName: string;
-    lastName: string;
-    company: string;
-    phone: string;
+    email?: string;
+    fullName?: string;
+    company?: string;
+    phone?: string;
     address?: ICarrierAddress;
   }
 
@@ -55,7 +54,6 @@ declare namespace CarrierAccountTypes {
     isActive: boolean;
     credentials: ICarrierCredential[];
     pricing: IPricing;
-    hasCustomInfo: boolean;
     customInfo?: ICustomInfo;
     longSideSurcharge: ILongSideSurcharge;
     meta?: Record<string, string>;
@@ -77,7 +75,6 @@ declare namespace CarrierAccountTypes {
     accountNumber: string;
     pricing: IPricing;
     credentials: ICarrierCredential[];
-    hasCustomInfo: boolean;
     customInfo?: ICustomInfo;
     longSideSurcharge: ILongSideSurcharge;
     meta?: Record<string, string>;
@@ -86,8 +83,6 @@ declare namespace CarrierAccountTypes {
   interface ICarrierAccountData extends ResponseTypes.IPaginationResponse {
     carrierAccounts: ICarrierAccount[];
   }
-
-  type BarcodeCarrierAccount = Pick<ICarrierAccount, '_id' | 'displayName' | 'carrier' | 'accountNumber' | 'accountType' | 'hasCustomInfo' | 'customInfo'>;
 
   interface ICarrierAccountsParams extends ParamsTypes.IPaginationParams {
     name?: string;

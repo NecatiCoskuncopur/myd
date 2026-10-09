@@ -79,10 +79,6 @@ const CarrierAccountSchema = new Schema(
         default: 120,
       },
     },
-    hasCustomInfo: {
-      type: Boolean,
-      default: false,
-    },
     customInfo: {
       email: {
         type: String,
@@ -94,12 +90,7 @@ const CarrierAccountSchema = new Schema(
           message: EMAIL.INVALID,
         },
       },
-      firstName: {
-        type: String,
-        minLength: 2,
-        maxLength: 75,
-      },
-      lastName: {
+      fullName: {
         type: String,
         minLength: 2,
         maxLength: 75,
@@ -113,7 +104,7 @@ const CarrierAccountSchema = new Schema(
         type: String,
         trim: true,
         validate: {
-          validator: value => phoneRegex.test(value),
+          validator: value => !value || phoneRegex.test(value),
           message: PHONE.INVALID,
         },
       },

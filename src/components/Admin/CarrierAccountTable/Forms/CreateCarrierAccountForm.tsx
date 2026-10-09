@@ -50,10 +50,8 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
         price: 0,
         limit: 120,
       },
-      hasCustomInfo: false,
       customInfo: {
-        firstName: '',
-        lastName: '',
+        fullName: '',
         email: '',
         company: '',
         phone: '',
@@ -71,11 +69,6 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
   const selectedCarrier = useWatch({
     control,
     name: 'carrier',
-  });
-
-  const hasCustomInfo = useWatch({
-    control,
-    name: 'hasCustomInfo',
   });
 
   const credentials = useWatch({
@@ -157,15 +150,7 @@ const CreateCarrierAccountForm = ({ open, onClose, onSuccess }: CreateCarrierAcc
       <DialogTitle>Kargo Hesabı Oluştur</DialogTitle>
 
       <DialogContent>
-        <FormItems
-          mode="create"
-          control={control}
-          setValue={setValue}
-          credentials={credentials}
-          hasCustomInfo={hasCustomInfo}
-          errors={errors}
-          hasLongSideSurcharge={hasLongSideSurcharge}
-        />
+        <FormItems mode="create" control={control} setValue={setValue} credentials={credentials} errors={errors} hasLongSideSurcharge={hasLongSideSurcharge} />
       </DialogContent>
 
       <DialogActions

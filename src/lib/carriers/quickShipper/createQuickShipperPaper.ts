@@ -10,7 +10,6 @@ const { SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessages;
 
 const createQuickShipperPaper = async ({
   shippingInstance,
-  hasCustomInfo,
   customInfo,
   accountNumber,
   credentials,
@@ -23,22 +22,20 @@ const createQuickShipperPaper = async ({
 }> => {
   const { consignee, content, detail, sender, package: pkg } = shippingInstance;
 
-  const senderName =
-    hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name;
-
-  const senderEmail = hasCustomInfo && customInfo ? customInfo.email : sender.email;
+  const senderName = customInfo?.fullName || shippingInstance.sender.nickname || shippingInstance.sender.name;
+  const senderEmail = customInfo?.email || sender.email;
 
   const senderData = {
     firstName: latinize(senderName),
     lastName: '',
-    companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
-    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
+    companyName: latinize(customInfo?.company || sender.company || sender.name),
+    phoneNumber: customInfo?.phone || sender.phone,
     email: senderEmail,
-    zipCode: hasCustomInfo && customInfo ? customInfo.address?.postalCode : sender.address.postalCode,
+    zipCode: customInfo?.address?.postalCode || sender.address.postalCode,
     countryCode: 'TR',
-    cityName: latinize(hasCustomInfo && customInfo ? customInfo.address?.city : sender.address.city),
-    address1: latinize(hasCustomInfo && customInfo ? customInfo.address?.line1 : shippingInstance.sender.address.line1),
-    address2: latinize(hasCustomInfo && customInfo ? customInfo.address?.line2 || '' : shippingInstance.sender.address.line2 || ''),
+    cityName: latinize(customInfo?.address?.city || sender.address.city),
+    address1: latinize(customInfo?.address?.line1 || shippingInstance.sender.address.line1),
+    address2: latinize(customInfo?.address?.line2 || shippingInstance.sender.address.line2 || ''),
     isCorporate: false,
     saveAddress: false,
   };

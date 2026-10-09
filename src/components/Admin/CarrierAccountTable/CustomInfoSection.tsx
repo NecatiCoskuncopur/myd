@@ -5,7 +5,7 @@ import { addressMessages, userMessages } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const { CITY, DISTRICT, LINE, POSTALCODE } = addressMessages;
-const { COMPANY, EMAIL, FIRSTNAME, LASTNAME, PHONE } = userMessages;
+const { COMPANY, EMAIL, FULLNAME, PHONE } = userMessages;
 
 type CustomInfoSectionProps<T extends { customInfo?: Partial<CarrierAccountTypes.ICustomInfo> }> = {
   control: Control<T>;
@@ -25,30 +25,49 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Controller
-              name={'customInfo.firstName' as Path<T>}
+              name={'customInfo.fullName' as Path<T>}
               control={control}
               rules={{
-                required: FIRSTNAME.REQUIRED,
-                minLength: { value: 2, message: FIRSTNAME.MIN },
-                maxLength: { value: 75, message: FIRSTNAME.MAX },
+                validate: value => {
+                  if (!value) return true;
+                  if (typeof value !== 'string') return true;
+                  if (value.length < 2) return FULLNAME.MIN;
+                  if (value.length > 75) return FULLNAME.MAX;
+                  return true;
+                },
               }}
               render={({ field }) => (
-                <TextField {...field} label="Ad" fullWidth error={!!customInfoErrors?.firstName} helperText={customInfoErrors?.firstName?.message as string} />
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  label="Ad-Soyad"
+                  fullWidth
+                  error={!!customInfoErrors?.fullName}
+                  helperText={customInfoErrors?.fullName?.message as string}
+                />
               )}
             />
           </Grid>
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Controller
-              name={'customInfo.lastName' as Path<T>}
+              name={'customInfo.email' as Path<T>}
               control={control}
               rules={{
-                required: LASTNAME.REQUIRED,
-                minLength: { value: 2, message: LASTNAME.MIN },
-                maxLength: { value: 75, message: LASTNAME.MAX },
+                validate: value => {
+                  if (!value) return true;
+                  return /^\S+@\S+$/i.test(value as string) || EMAIL.INVALID;
+                },
               }}
               render={({ field }) => (
-                <TextField {...field} label="Soyad" fullWidth error={!!customInfoErrors?.lastName} helperText={customInfoErrors?.lastName?.message as string} />
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  label="E-Posta"
+                  fullWidth
+                  error={!!customInfoErrors?.email}
+                  helperText={customInfoErrors?.email?.message as string}
+                />
               )}
             />
           </Grid>
@@ -59,12 +78,9 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               rules={{
                 validate: value => {
                   if (!value) return true;
-
                   if (typeof value !== 'string') return true;
-
                   if (value.length < 2) return COMPANY.MIN;
                   if (value.length > 75) return COMPANY.MAX;
-
                   return true;
                 },
               }}
@@ -72,6 +88,7 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               render={({ field }) => (
                 <TextField
                   {...field}
+                  value={field.value ?? ''}
                   label="Firma İsmi"
                   fullWidth
                   error={!!customInfoErrors?.company}
@@ -86,16 +103,16 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               name={'customInfo.phone' as Path<T>}
               control={control}
               rules={{
-                required: PHONE.REQUIRED,
                 validate: value => {
+                  if (!value) return true;
                   if (typeof value !== 'string') return PHONE.LENGTH;
-
                   return value.length === 10 || PHONE.LENGTH;
                 },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
+                  value={field.value ?? ''}
                   label="Telefon No"
                   fullWidth
                   placeholder="5333022159"
@@ -108,41 +125,26 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Controller
-              name={'customInfo.email' as Path<T>}
+              name={'customInfo.address.line1' as Path<T>}
               control={control}
               rules={{
-                required: EMAIL.REQUIRED,
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: EMAIL.INVALID,
+                validate: value => {
+                  if (!value) return true;
+                  if (typeof value !== 'string') return true;
+                  if (value.length < 5) return LINE.MIN;
+                  if (value.length > 255) return LINE.MAX;
+                  return true;
                 },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="E-Posta"
+                  value={field.value ?? ''}
                   fullWidth
-                  error={!!customInfoErrors?.email}
-                  helperText={customInfoErrors?.email?.message as string}
-                  onChange={e => {
-                    field.onChange(e);
-                  }}
+                  label="Adres"
+                  error={!!addressErrors?.line1}
+                  helperText={addressErrors?.line1?.message as string}
                 />
-              )}
-            />
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Controller
-              name={'customInfo.address.line1' as Path<T>}
-              control={control}
-              rules={{
-                required: LINE.REQUIRED,
-                minLength: { value: 5, message: LINE.MIN },
-                maxLength: { value: 255, message: LINE.MAX },
-              }}
-              render={({ field }) => (
-                <TextField {...field} fullWidth label="Adres" error={!!addressErrors?.line1} helperText={addressErrors?.line1?.message as string} />
               )}
             />
           </Grid>
@@ -154,14 +156,20 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               rules={{
                 validate: value => {
                   if (!value) return true;
-
                   if (typeof value !== 'string') return true;
                   if (value.length > 255) return LINE.MAX;
                   return true;
                 },
               }}
               render={({ field }) => (
-                <TextField {...field} fullWidth label="Adres 2" error={!!addressErrors?.line2} helperText={addressErrors?.line2?.message as string} />
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  fullWidth
+                  label="Adres 2"
+                  error={!!addressErrors?.line2}
+                  helperText={addressErrors?.line2?.message as string}
+                />
               )}
             />
           </Grid>
@@ -171,12 +179,23 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               name={'customInfo.address.district' as Path<T>}
               control={control}
               rules={{
-                required: DISTRICT.REQUIRED,
-                minLength: { value: 2, message: DISTRICT.MIN },
-                maxLength: { value: 25, message: DISTRICT.MAX },
+                validate: value => {
+                  if (!value) return true;
+                  if (typeof value !== 'string') return true;
+                  if (value.length < 2) return DISTRICT.MIN;
+                  if (value.length > 25) return DISTRICT.MAX;
+                  return true;
+                },
               }}
               render={({ field }) => (
-                <TextField {...field} fullWidth label="İlçe" error={!!addressErrors?.district} helperText={addressErrors?.district?.message as string} />
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  fullWidth
+                  label="İlçe"
+                  error={!!addressErrors?.district}
+                  helperText={addressErrors?.district?.message as string}
+                />
               )}
             />
           </Grid>
@@ -186,12 +205,23 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               name={'customInfo.address.city' as Path<T>}
               control={control}
               rules={{
-                required: CITY.REQUIRED,
-                minLength: { value: 2, message: CITY.MIN },
-                maxLength: { value: 35, message: CITY.MAX },
+                validate: value => {
+                  if (!value) return true;
+                  if (typeof value !== 'string') return true;
+                  if (value.length < 2) return CITY.MIN;
+                  if (value.length > 35) return CITY.MAX;
+                  return true;
+                },
               }}
               render={({ field }) => (
-                <TextField {...field} fullWidth label="Şehir" error={!!addressErrors?.city} helperText={addressErrors?.city?.message as string} />
+                <TextField
+                  {...field}
+                  value={field.value ?? ''}
+                  fullWidth
+                  label="Şehir"
+                  error={!!addressErrors?.city}
+                  helperText={addressErrors?.city?.message as string}
+                />
               )}
             />
           </Grid>
@@ -201,16 +231,16 @@ const CustomInfoSection = <T extends { customInfo?: Partial<CarrierAccountTypes.
               name={'customInfo.address.postalCode' as Path<T>}
               control={control}
               rules={{
-                required: POSTALCODE.REQUIRED,
                 validate: value => {
+                  if (!value) return true;
                   if (typeof value !== 'string') return POSTALCODE.LENGTH;
-
                   return value.length === 5 || POSTALCODE.LENGTH;
                 },
               }}
               render={({ field }) => (
                 <TextField
                   {...field}
+                  value={field.value ?? ''}
                   fullWidth
                   label="Posta Kodu"
                   error={!!addressErrors?.postalCode}

@@ -14,7 +14,6 @@ const { AUTH_FAILED, SHIPMENT_FAILED, TRACKING_NUMBER_NOT_FOUND } = carrierMessa
 
 const createFedexPaper = async ({
   shippingInstance,
-  hasCustomInfo,
   customInfo,
   accountNumber,
   credentials,
@@ -50,21 +49,16 @@ const createFedexPaper = async ({
   const dutiesPaymentType = detail.payor?.customs === 'CONSIGNEE' ? 'RECIPIENT' : detail.payor?.customs;
 
   const senderContact = {
-    personName: latinize(
-      hasCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : shippingInstance.sender.nickname || shippingInstance.sender.name,
-    ),
-    companyName: latinize(hasCustomInfo && customInfo ? customInfo.company : sender.company || sender.name),
-    phoneNumber: hasCustomInfo && customInfo ? customInfo.phone : sender.phone,
-    emailAddress: hasCustomInfo && customInfo ? customInfo.email : sender.email,
+    personName: latinize(customInfo?.fullName || shippingInstance.sender.nickname || shippingInstance.sender.name),
+    companyName: latinize(customInfo?.company || sender.company || sender.name),
+    phoneNumber: customInfo?.phone || sender.phone,
+    emailAddress: customInfo?.email || sender.email,
   };
 
   const senderAddress = {
-    streetLines: [
-      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line1 : sender.address.line1),
-      latinize(hasCustomInfo && customInfo ? customInfo?.address?.line2 : sender.address.line2),
-    ].filter(Boolean),
-    city: latinize(hasCustomInfo && customInfo ? customInfo?.address?.city : sender.address.city),
-    postalCode: hasCustomInfo && customInfo ? customInfo?.address?.postalCode : sender.address.postalCode,
+    streetLines: [latinize(customInfo?.address?.line1 || sender.address.line1), latinize(customInfo?.address?.line2 || sender.address.line2)].filter(Boolean),
+    city: latinize(customInfo?.address?.city || sender.address.city),
+    postalCode: customInfo?.address?.postalCode || sender.address.postalCode,
     countryCode: 'TR',
     residential: false,
   };

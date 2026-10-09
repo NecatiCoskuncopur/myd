@@ -59,7 +59,6 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
         limit: 120,
       },
       isActive: account.isActive,
-      hasCustomInfo: account.hasCustomInfo,
       customInfo: account.customInfo,
     });
   }, [account, open, reset]);
@@ -72,11 +71,6 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
   const selectedCarrier = useWatch({
     control,
     name: 'carrier',
-  });
-
-  const hasCustomInfo = useWatch({
-    control,
-    name: 'hasCustomInfo',
   });
 
   const hasLongSideSurcharge = useWatch({
@@ -155,7 +149,6 @@ const UpdateCarrierAccountForm = ({ open, onClose, onSuccess, account }: UpdateC
           control={control}
           setValue={setValue}
           credentials={credentials}
-          hasCustomInfo={hasCustomInfo}
           errors={errors}
           account={account}
           hasLongSideSurcharge={hasLongSideSurcharge}

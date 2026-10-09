@@ -42,7 +42,6 @@ const parseResponse = (responseText: string): unknown => {
 
 const createUpsPaper = async ({
   shippingInstance,
-  hasCustomInfo,
   customInfo,
   accountNumber,
   credentials,
@@ -99,18 +98,17 @@ const createUpsPaper = async ({
   const accessToken = String((authResponseData as Record<string, unknown>).access_token);
   const { content, consignee, detail, sender, package: pkg } = shippingInstance;
   const totalValue = Number(content.products.reduce((sum: number, { unitPrice, piece }: ShippingTypes.IProduct) => sum + unitPrice * piece, 0).toFixed(2));
-  const useCustomInfo = hasCustomInfo && Boolean(customInfo);
 
   const rawShipperData = {
-    name: useCustomInfo && customInfo ? customInfo.company : sender.nickname || sender.name,
-    attentionName: useCustomInfo && customInfo ? `${customInfo.firstName} ${customInfo.lastName}` : sender.nickname || sender.name,
-    phoneNumber: useCustomInfo && customInfo ? customInfo.phone : sender.phone,
-    email: useCustomInfo && customInfo ? customInfo.email : sender.email,
-    addressLine1: useCustomInfo && customInfo ? customInfo.address?.line1 : sender.address.line1,
-    addressLine2: useCustomInfo && customInfo ? customInfo.address?.line2 : sender.address.line2,
-    district: useCustomInfo && customInfo ? customInfo.address?.district : sender.address.district,
-    city: useCustomInfo && customInfo ? customInfo.address?.city : sender.address.city,
-    postalCode: useCustomInfo && customInfo ? customInfo.address?.postalCode : sender.address.postalCode,
+    name: customInfo?.company || sender.nickname || sender.name,
+    attentionName: customInfo?.fullName || sender.nickname || sender.name,
+    phoneNumber: customInfo?.phone || sender.phone,
+    email: customInfo?.email || sender.email,
+    addressLine1: customInfo?.address?.line1 || sender.address.line1,
+    addressLine2: customInfo?.address?.line2 || sender.address.line2,
+    district: customInfo?.address?.district || sender.address.district,
+    city: customInfo?.address?.city || sender.address.city,
+    postalCode: customInfo?.address?.postalCode || sender.address.postalCode,
     countryCode: 'TR',
   };
 
@@ -348,10 +346,7 @@ const createUpsPaper = async ({
         accountNumber,
         accountType,
         serviceType,
-
-        hasCustomInfo,
         customInfoExists: Boolean(customInfo),
-
         shipperData,
         recipientData,
 

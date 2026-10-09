@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { Control, FieldError, FieldErrors, FieldPath, UseFormSetValue, useWatch } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldError, FieldErrors, FieldPath, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import { Carrier, CarrierAccountTypeEnum, carrierMessages, NavlungoFirmEnum } from '@/constants';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
@@ -15,7 +15,6 @@ type FormItemsProps<T extends CarrierAccountFormPayload> = {
   errors: FieldErrors<T>;
   setValue: UseFormSetValue<T>;
   credentials: CarrierAccountTypes.ICarrierCredential[] | undefined;
-  hasCustomInfo: boolean | undefined;
   hasLongSideSurcharge: boolean | undefined;
   mode: 'create' | 'update';
   account?: CarrierAccountTypes.ICarrierAccount | null;
@@ -23,26 +22,26 @@ type FormItemsProps<T extends CarrierAccountFormPayload> = {
 
 const { ACCOUNTNUMBER, NAME } = carrierMessages;
 
-const FormItems = <T extends CarrierAccountFormPayload>({
-  control,
-  errors,
-  setValue,
-  credentials,
-  hasCustomInfo,
-  hasLongSideSurcharge,
-  mode,
-  account,
-}: FormItemsProps<T>) => {
+const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setValue, credentials, hasLongSideSurcharge, mode, account }: FormItemsProps<T>) => {
   const fieldName = <K extends FieldPath<T>>(name: K) => name;
 
+  const [showCustomInfo, setShowCustomInfo] = useState<boolean>(!!account?.customInfo);
+
+  useEffect(() => {
+    if (account?.customInfo) {
+      setShowCustomInfo(true);
+    }
+  }, [account]);
+
   const handleCustomInfoChange = (checked: boolean) => {
+    setShowCustomInfo(checked);
+
     if (checked) {
       setValue(
         fieldName('customInfo' as FieldPath<T>),
         (account?.customInfo ?? {
           email: '',
-          firstName: '',
-          lastName: '',
+          fullName: '',
           company: '',
           phone: '',
           address: {
@@ -53,12 +52,13 @@ const FormItems = <T extends CarrierAccountFormPayload>({
             postalCode: '',
           },
         }) as never,
+        { shouldValidate: true, shouldDirty: true },
       );
 
       return;
     }
 
-    setValue(fieldName('customInfo' as FieldPath<T>), undefined as never);
+    setValue(fieldName('customInfo' as FieldPath<T>), undefined as never, { shouldValidate: true, shouldDirty: true });
   };
 
   const credentialErrors = errors.credentials as
@@ -313,30 +313,13 @@ const FormItems = <T extends CarrierAccountFormPayload>({
       )}
 
       <Grid size={{ xs: 12 }}>
-        <Controller
-          name={fieldName('hasCustomInfo' as FieldPath<T>)}
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={!!field.value}
-                  onChange={event => {
-                    const checked = event.target.checked;
-
-                    field.onChange(checked);
-
-                    handleCustomInfoChange(checked);
-                  }}
-                />
-              }
-              label="Özel gönderici bilgileri kullan"
-            />
-          )}
+        <FormControlLabel
+          control={<Checkbox checked={showCustomInfo} onChange={event => handleCustomInfoChange(event.target.checked)} />}
+          label="Özel gönderici bilgileri kullan"
         />
       </Grid>
 
-      {hasCustomInfo && (
+      {showCustomInfo && (
         <Grid size={{ xs: 12 }}>
           <CustomInfoSection control={control as never} errors={errors as never} />
         </Grid>

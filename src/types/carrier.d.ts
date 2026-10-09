@@ -4,7 +4,6 @@ import { CarrierAccountTypes } from '@/types/carrierAccount';
 declare namespace CarrierTypes {
   interface ICreatePaper {
     shippingInstance: ShippingTypes.IShipping;
-    hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
     shippingId: string;
     credentials: Record<string, string>;
@@ -19,13 +18,6 @@ declare namespace CarrierTypes {
     credentials: Record<string, string>;
   }
 
-  interface ICarrierTaxParams {
-    credentials: Record<string, string>;
-    shippingInstance: ShippingTypes.IShipping;
-    accountType: CarrierAccountTypeEnum;
-    cost: number;
-  }
-
   interface ICancelShippingParams {
     accountNumber: string;
     trackingNumber: string;
@@ -36,7 +28,6 @@ declare namespace CarrierTypes {
   interface ICarrierDriverParams {
     shippingInstance: ShippingTypes.IShipping;
     accountNumber: string;
-    hasCustomInfo: boolean;
     customInfo?: CarrierAccountTypes.ICustomInfo;
     credentials: Record<string, string>;
     shippingId: string;
