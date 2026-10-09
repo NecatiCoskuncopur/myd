@@ -15,7 +15,7 @@ const { KEY, NOT_FOUND, UPDATE } = sysParamMessages;
 
 const updateSysParam = async (data: SysParamTypes.IUpdateSysParamPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     const validatedData = await updateSysParamSchema.validate(data, {

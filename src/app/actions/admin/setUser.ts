@@ -16,7 +16,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const setUser = async (data: AdminTypes.ISetUserPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     const validatedData = await setUserSchema.validate(data, {

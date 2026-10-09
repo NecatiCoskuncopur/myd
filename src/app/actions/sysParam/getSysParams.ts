@@ -11,7 +11,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const getSysParams = async (params: SysParamTypes.ISysParamParams): Promise<ResponseTypes.IActionResponse<SysParamTypes.ISysParamData>> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

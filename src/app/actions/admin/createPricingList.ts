@@ -16,7 +16,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const createPricingList = async (data: PricingListTypes.ICreatePricingListPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
 
     if (authError) {
       return authError;

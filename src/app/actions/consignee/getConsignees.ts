@@ -47,7 +47,7 @@ const getConsignees = async (params: ConsigneeTypes.IConsigneeParams): Promise<R
     const safeName = escapeRegex(name.trim());
 
     const filter =
-      currentUser.role === UserRole.ADMIN
+      currentUser.role === UserRole.ADMIN || currentUser.role === UserRole.OPERATOR
         ? {
             name: {
               $regex: `^${safeName}`,

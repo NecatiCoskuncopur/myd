@@ -13,7 +13,7 @@ const { DELETE, NOT_FOUND } = sysParamMessages;
 
 const deleteSysParam = async (paramId: string): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     if (!Types.ObjectId.isValid(paramId)) {

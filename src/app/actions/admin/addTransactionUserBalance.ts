@@ -15,7 +15,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const addTransactionUserBalance = async (data: AdminTypes.IAddTransactionUserBalancePayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) {
       return authError;
     }

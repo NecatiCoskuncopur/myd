@@ -8,12 +8,13 @@ import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
 import serialize from '@/lib/serialize';
 import { SystemParam } from '@/models';
+
 const { UNEXPECTED_ERROR } = generalMessages;
 const { NOT_FOUND } = sysParamMessages;
 
 const getSysParam = async (paramId: string): Promise<ResponseTypes.IActionResponse<SysParamTypes.ISysParam>> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     if (!Types.ObjectId.isValid(paramId)) {

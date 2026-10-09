@@ -15,7 +15,7 @@ const { CREATE, KEY } = sysParamMessages;
 
 const createSysParam = async (data: SysParamTypes.ICreateSysParamPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     const validatedData = await createSysParamSchema.validate(data, {

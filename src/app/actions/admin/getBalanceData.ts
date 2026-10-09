@@ -16,7 +16,7 @@ const MAX_LIMIT = 100;
 
 const getBalanceData = async (params: AdminTypes.IGetBalanceParams): Promise<ResponseTypes.IActionResponse<BalanceTypes.IUserBalanceData>> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();

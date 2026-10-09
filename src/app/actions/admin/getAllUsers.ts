@@ -11,7 +11,7 @@ const { UNEXPECTED_ERROR } = generalMessages;
 
 const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<ResponseTypes.IActionResponse<AdminTypes.IUsersData>> => {
   try {
-    const authError = await requireRoles([UserRole.ADMIN]);
+    const authError = await requireRoles([UserRole.ADMIN, UserRole.OPERATOR]);
     if (authError) return authError;
 
     await connectMongoDB();
