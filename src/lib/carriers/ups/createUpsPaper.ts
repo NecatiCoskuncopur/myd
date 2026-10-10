@@ -246,18 +246,47 @@ const createUpsPaper = async ({
                 },
               },
             },
-            Product: content.products.map((product: ShippingTypes.IProduct) => ({
-              Description: latinize(product.name),
-              Unit: {
-                Number: String(product.piece),
-                UnitOfMeasurement: {
-                  Code: 'PC',
+            Product: content.products.map((product: ShippingTypes.IProduct) => {
+              const productIdentifiers = [];
+
+              if (product.mPid) {
+                productIdentifiers.push({
+                  ProductID: product.mPid,
+                  ProductIDTypeCode: '0100',
+                });
+              }
+
+              if (product.nsPid) {
+                productIdentifiers.push({
+                  ProductID: product.nsPid,
+                  ProductIDTypeCode: '0200',
+                });
+              }
+
+              if (product.sPid) {
+                productIdentifiers.push({
+                  ProductID: product.sPid,
+                  ProductIDTypeCode: '0300',
+                });
+              }
+
+              return {
+                Description: latinize(product.name).slice(0, 35),
+                Unit: {
+                  Number: String(product.piece),
+                  UnitOfMeasurement: {
+                    Code: 'PC',
+                  },
+                  Value: String(product.unitPrice),
                 },
-                Value: String(product.unitPrice),
-              },
-              CommodityCode: product.gtip,
-              OriginCountryCode: 'TR',
-            })),
+                CommodityCode: product.gtip,
+                OriginCountryCode: 'TR',
+                ...(productIdentifiers.length > 0 && {
+                  ProductIdentifierExemptIndicator: 'false',
+                  ProductIdentifier: productIdentifiers,
+                }),
+              };
+            }),
           },
         },
         Package: [...new Array(pkg.numberOfPackage)].map(() => ({

@@ -11,7 +11,7 @@ import { ShippingTypes } from '@/types/shipping';
 import ErrorTooltip from './ErrorToolTip';
 import Wrapper from './Wrapper';
 
-const { CURRENCY, DESCRIPTION, FREIGHT, INSURANCE, PRODUCT } = shippingMessages;
+const { CURRENCY, DESCRIPTION, FREIGHT, PRODUCT } = shippingMessages;
 
 const PackageContentSection = () => {
   const {
@@ -135,7 +135,20 @@ const PackageContentSection = () => {
       </Grid>
 
       {fields.map((fieldItem, index) => (
-        <Grid container spacing={2} key={fieldItem.id} size={{ xs: 12 }}>
+        <Grid
+          container
+          spacing={2}
+          key={fieldItem.id}
+          sx={{
+            alignItems: 'center',
+            border: '1px dashed',
+            borderColor: 'divider',
+            borderRadius: 2,
+            p: 2,
+            mb: 2,
+            position: 'relative',
+          }}
+        >
           <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.name`}
@@ -163,7 +176,7 @@ const PackageContentSection = () => {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 2 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.piece`}
               rules={{
@@ -186,7 +199,7 @@ const PackageContentSection = () => {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 2 }}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.unitPrice`}
               control={control}
@@ -204,13 +217,7 @@ const PackageContentSection = () => {
               }}
             />
           </Grid>
-
-          <Grid
-            size={{
-              xs: 12,
-              md: hasMultipleProducts ? 3 : 5,
-            }}
-          >
+          <Grid size={{ xs: 12, md: 3 }}>
             <Controller
               name={`content.products.${index}.gtip`}
               control={control}
@@ -230,15 +237,7 @@ const PackageContentSection = () => {
                           endAdornment: (
                             <InputAdornment position="end">
                               <Tooltip title="GTİP kodunu bulmak için tıkla">
-                                <IconButton
-                                  component="a"
-                                  href="https://uygulama.gtb.gov.tr/Tara"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  sx={{
-                                    padding: 0,
-                                  }}
-                                >
+                                <IconButton component="a" href="https://uygulama.gtb.gov.tr/Tara" target="_blank" rel="noopener noreferrer" sx={{ padding: 0 }}>
                                   <HelpIcon fontSize="small" />
                                 </IconButton>
                               </Tooltip>
@@ -253,22 +252,108 @@ const PackageContentSection = () => {
             />
           </Grid>
 
-          {hasMultipleProducts && (
-            <Grid
-              size={{
-                xs: 12,
-                md: 2,
+          <Grid size={{ xs: 12, md: 3 }}>
+            <Controller
+              name={`content.products.${index}.mPid`}
+              control={control}
+              render={({ field }) => {
+                const errorMessage = errors.content?.products?.[index]?.mPid?.message;
+
+                return (
+                  <ErrorTooltip message={errorMessage}>
+                    <TextField
+                      {...field}
+                      label="Stok kodu"
+                      value={field.value ?? ''}
+                      fullWidth
+                      error={!!errorMessage}
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Tooltip title="Kendi sisteminizdeki benzersiz ürün/stok kodu (SKU)." arrow placement="top">
+                                <HelpIcon sx={{ fontSize: 18, color: 'action.active', cursor: 'pointer' }} />
+                              </Tooltip>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </ErrorTooltip>
+                );
               }}
-            >
-              <Button
-                type="button"
-                color="error"
-                onClick={() => remove(index)}
-                fullWidth
-                sx={{
-                  height: '100%',
-                }}
-              >
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <Controller
+              name={`content.products.${index}.nsPid`}
+              control={control}
+              render={({ field }) => {
+                const errorMessage = errors.content?.products?.[index]?.nsPid?.message;
+
+                return (
+                  <ErrorTooltip message={errorMessage}>
+                    <TextField
+                      {...field}
+                      label="Üretici Kodu"
+                      value={field.value ?? ''}
+                      fullWidth
+                      error={!!errorMessage}
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Tooltip title="Üreticinin belirlediği model, parça veya stil numarası." arrow placement="top">
+                                <HelpIcon sx={{ fontSize: 18, color: 'action.active', cursor: 'pointer' }} />
+                              </Tooltip>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </ErrorTooltip>
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <Controller
+              name={`content.products.${index}.sPid`}
+              control={control}
+              render={({ field }) => {
+                const errorMessage = errors.content?.products?.[index]?.sPid?.message;
+
+                return (
+                  <ErrorTooltip message={errorMessage}>
+                    <TextField
+                      {...field}
+                      label="Barkod"
+                      value={field.value ?? ''}
+                      fullWidth
+                      error={!!errorMessage}
+                      slotProps={{
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Tooltip title="Ürünün GTIN, EAN, UPC veya ISBN barkodu. Yoksa boş bırakılabilir." arrow placement="top">
+                                <HelpIcon sx={{ fontSize: 18, color: 'action.active', cursor: 'pointer' }} />
+                              </Tooltip>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </ErrorTooltip>
+                );
+              }}
+            />
+          </Grid>
+
+          {hasMultipleProducts && (
+            <Grid size={{ xs: 12, md: 1 }}>
+              <Button type="button" color="error" onClick={() => remove(index)} fullWidth sx={{ height: '100%' }}>
                 <RemoveCircleOutlined />
               </Button>
             </Grid>
@@ -287,6 +372,9 @@ const PackageContentSection = () => {
               piece: 1,
               unitPrice: 0,
               gtip: '',
+              mPid: '',
+              nsPid: '',
+              sPid: '',
             })
           }
         >
@@ -304,7 +392,6 @@ const PackageContentSection = () => {
               label={
                 <Stack sx={{ alignItems: 'center' }} direction="row" spacing={0.5}>
                   <Typography>Gönderiyi Sigortala</Typography>
-
                   <Tooltip title="Gönderinin sigortalanmasını istiyorsanız bu alanı işaretleyebilirsiniz." arrow placement="top">
                     <HelpIcon
                       sx={{

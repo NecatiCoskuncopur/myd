@@ -64,6 +64,9 @@ declare namespace ShippingTypes {
     unitPrice: number;
     piece: number;
     gtip?: string;
+    mPid?: string;
+    nsPid?: string;
+    sPid?: string;
   }
 
   interface IShippingContent {

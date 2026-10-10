@@ -6,18 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/addTransactionUserBalance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getBalanceData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getBalanceData.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/setUser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/updatePricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/consignee/getConsignees.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/consignee/getConsignees.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/createSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/deleteSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParam.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/updateSysParam.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateShippingForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/PackageContentSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/PackageContentSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/ups/createUpsPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,7 +233,9 @@
       <workItem from="1790389197851" duration="15000" />
       <workItem from="1790463320289" duration="9515000" />
       <workItem from="1791468105322" duration="7230000" />
-      <workItem from="1791520221815" duration="2132000" />
+      <workItem from="1791520221815" duration="2289000" />
+      <workItem from="1791536972291" duration="19984000" />
+      <workItem from="1791608057943" duration="2147000" />
     </task>
     <servers />
   </component>

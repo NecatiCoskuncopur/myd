@@ -66,6 +66,9 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
             piece: undefined,
             unitPrice: undefined,
             gtip: '',
+            mPid: '',
+            nsPid: '',
+            sPid: '',
           },
         ],
       },
@@ -82,7 +85,6 @@ const CreateShippingForm = ({ user }: CreateShippingFormProps) => {
 
   const {
     handleSubmit,
-    reset,
     formState: { isSubmitting },
   } = methods;
 

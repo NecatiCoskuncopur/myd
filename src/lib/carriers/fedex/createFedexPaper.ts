@@ -187,27 +187,35 @@ const createFedexPaper = async ({
           shipmentPurpose: detail.purpose,
         },
 
-        commodities: content.products.map((product: ShippingTypes.IProduct) => ({
-          name: latinize(product.name),
-          numberOfPieces: 1,
-          description: latinize(product.name),
-          countryOfManufacture: 'TR',
-          harmonizedCode: product.gtip,
-          weight: {
-            units: 'KG',
-            value: 0.001,
-          },
-          quantity: product.piece,
-          quantityUnits: 'PCS',
-          unitPrice: {
-            currency: content.currency,
-            amount: product.unitPrice,
-          },
-          customsValue: {
-            currency: content.currency,
-            amount: product.unitPrice * product.piece,
-          },
-        })),
+        commodities: content.products.map((product: ShippingTypes.IProduct) => {
+          const mPidStr = product.mPid ? `M-PID${product.mPid}` : '';
+          const nsPidStr = product.nsPid ? `NS-PID${product.nsPid}` : '';
+          const sPidStr = product.sPid ? `S-PID${product.sPid}` : 'S-PIDNO';
+
+          const itemDescription = [latinize(product.name), mPidStr, nsPidStr, sPidStr].filter(Boolean).join(' ');
+
+          return {
+            name: latinize(product.name),
+            numberOfPieces: 1,
+            description: itemDescription,
+            countryOfManufacture: 'TR',
+            harmonizedCode: product.gtip,
+            weight: {
+              units: 'KG',
+              value: 0.001,
+            },
+            quantity: product.piece,
+            quantityUnits: 'PCS',
+            unitPrice: {
+              currency: content.currency,
+              amount: product.unitPrice,
+            },
+            customsValue: {
+              currency: content.currency,
+              amount: product.unitPrice * product.piece,
+            },
+          };
+        }),
       },
 
       labelSpecification: {

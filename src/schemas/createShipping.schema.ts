@@ -4,23 +4,8 @@ import { addressMessages, CurrencyEnum, shippingMessages, ShippingPayor, Shippin
 
 const { CITY, COUNTRY, LINE, POSTALCODE, STATE } = addressMessages;
 const { COMPANY, EMAIL, PHONE } = userMessages;
-const {
-  CONSIGNEE,
-  CURRENCY,
-  DESCRIPTION,
-  FREIGHT,
-  HARMONIZED_CODE_TYPE,
-  HEIGHT,
-  NUMBEROFPACKAGE,
-  IOSSNUMBER,
-  INSURANCE,
-  LENGTH,
-  PAYOR,
-  PRODUCT,
-  PURPOSE,
-  WEIGHT,
-  WIDTH,
-} = shippingMessages;
+const { CONSIGNEE, CURRENCY, DESCRIPTION, FREIGHT, HARMONIZED_CODE_TYPE, HEIGHT, NUMBEROFPACKAGE, IOSSNUMBER, LENGTH, PAYOR, PRODUCT, PURPOSE, WEIGHT, WIDTH } =
+  shippingMessages;
 
 export default yup.object({
   additionalDocumentIds: yup.array().of(yup.string().required()).optional(),
@@ -84,6 +69,9 @@ export default yup.object({
           piece: yup.number().typeError(PRODUCT.PIECE.TYPE).min(1, PRODUCT.PIECE.MIN).required(PRODUCT.PIECE.REQUIRED),
           unitPrice: yup.number().typeError(PRODUCT.UNITPRICE.TYPE).required(PRODUCT.UNITPRICE.REQUIRED),
           gtip: yup.string().typeError(HARMONIZED_CODE_TYPE),
+          mPid: yup.string().max(50).optional(),
+          nsPid: yup.string().max(50).optional(),
+          sPid: yup.string().max(50).optional(),
         }),
       )
       .min(1)
