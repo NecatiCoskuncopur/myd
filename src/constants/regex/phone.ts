@@ -1,3 +1,3 @@
-const phoneRegex = /^5\d{9}$/;
+const phoneRegex = /^\d{10}$/;
 
 export default phoneRegex;

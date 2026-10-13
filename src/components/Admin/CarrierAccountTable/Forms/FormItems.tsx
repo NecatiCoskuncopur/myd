@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Box, Checkbox, Divider, FormControlLabel, Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { Control, Controller, FieldError, FieldErrors, FieldPath, UseFormSetValue, useWatch } from 'react-hook-form';
 
@@ -22,44 +21,8 @@ type FormItemsProps<T extends CarrierAccountFormPayload> = {
 
 const { ACCOUNTNUMBER, NAME } = carrierMessages;
 
-const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setValue, credentials, hasLongSideSurcharge, mode, account }: FormItemsProps<T>) => {
+const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, credentials, hasLongSideSurcharge, mode }: FormItemsProps<T>) => {
   const fieldName = <K extends FieldPath<T>>(name: K) => name;
-
-  const [showCustomInfo, setShowCustomInfo] = useState<boolean>(!!account?.customInfo);
-
-  useEffect(() => {
-    if (account?.customInfo) {
-      setShowCustomInfo(true);
-    }
-  }, [account]);
-
-  const handleCustomInfoChange = (checked: boolean) => {
-    setShowCustomInfo(checked);
-
-    if (checked) {
-      setValue(
-        fieldName('customInfo' as FieldPath<T>),
-        (account?.customInfo ?? {
-          email: '',
-          fullName: '',
-          company: '',
-          phone: '',
-          address: {
-            line1: '',
-            line2: '',
-            city: '',
-            district: '',
-            postalCode: '',
-          },
-        }) as never,
-        { shouldValidate: true, shouldDirty: true },
-      );
-
-      return;
-    }
-
-    setValue(fieldName('customInfo' as FieldPath<T>), undefined as never, { shouldValidate: true, shouldDirty: true });
-  };
 
   const credentialErrors = errors.credentials as
     | Array<{
@@ -87,9 +50,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         <Controller
           name={fieldName('name' as FieldPath<T>)}
           control={control}
-          rules={{
-            required: NAME.REQUIRED,
-          }}
+          rules={{ required: NAME.REQUIRED }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -109,14 +70,8 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
           control={control}
           rules={{
             required: NAME.REQUIRED,
-            minLength: {
-              value: 2,
-              message: NAME.MIN,
-            },
-            maxLength: {
-              value: 75,
-              message: NAME.MAX,
-            },
+            minLength: { value: 2, message: NAME.MIN },
+            maxLength: { value: 75, message: NAME.MAX },
           }}
           render={({ field }) => (
             <TextField
@@ -135,9 +90,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
         <Controller
           name={fieldName('accountNumber' as FieldPath<T>)}
           control={control}
-          rules={{
-            required: ACCOUNTNUMBER.REQUIRED,
-          }}
+          rules={{ required: ACCOUNTNUMBER.REQUIRED }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -215,7 +168,6 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
             <TextField {...field} value={field.value ?? ''} select fullWidth label="Hesap Tipi" error={!!errors.accountType}>
               {Object.values(CarrierAccountTypeEnum).map(accountType => {
                 const formattedLabel = accountType.charAt(0).toUpperCase() + accountType.slice(1).toLowerCase();
-
                 return (
                   <MenuItem key={accountType} value={accountType}>
                     {formattedLabel}
@@ -260,7 +212,6 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
                       value={field.value ?? ''}
                       onChange={event => {
                         const value = event.target.value;
-
                         field.onChange(value === '' ? '' : Number(value));
                       }}
                       fullWidth
@@ -268,12 +219,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
                       label="Ek Ücret"
                       error={!!longSideSurchargeErrors?.price}
                       helperText={longSideSurchargeErrors?.price?.message}
-                      slotProps={{
-                        htmlInput: {
-                          min: 0,
-                          step: 0.01,
-                        },
-                      }}
+                      slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
                     />
                   )}
                 />
@@ -289,7 +235,6 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
                       value={field.value ?? ''}
                       onChange={event => {
                         const value = event.target.value;
-
                         field.onChange(value === '' ? '' : Number(value));
                       }}
                       fullWidth
@@ -297,12 +242,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
                       label="Kenar Limiti (cm)"
                       error={!!longSideSurchargeErrors?.limit}
                       helperText={longSideSurchargeErrors?.limit?.message}
-                      slotProps={{
-                        htmlInput: {
-                          min: 0.1,
-                          step: 0.1,
-                        },
-                      }}
+                      slotProps={{ htmlInput: { min: 0.1, step: 0.1 } }}
                     />
                   )}
                 />
@@ -313,19 +253,22 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
       )}
 
       <Grid size={{ xs: 12 }}>
-        <FormControlLabel
-          control={<Checkbox checked={showCustomInfo} onChange={event => handleCustomInfoChange(event.target.checked)} />}
-          label="Özel gönderici bilgileri kullan"
-        />
+        <Divider sx={{ my: 2 }}>
+          <Typography variant="subtitle2">Özel Gönderici Bilgileri (Opsiyonel)</Typography>
+        </Divider>
+        <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+          Varsayılan bilgiler yerine bu hesap için farklı bir gönderici adresi kullanmak isterseniz bu alanları doldurabilirsiniz.
+        </Typography>
       </Grid>
 
-      {showCustomInfo && (
-        <Grid size={{ xs: 12 }}>
-          <CustomInfoSection control={control as never} errors={errors as never} />
-        </Grid>
-      )}
+      <Grid size={{ xs: 12 }}>
+        <CustomInfoSection control={control as never} errors={errors as never} />
+      </Grid>
 
       <Grid size={{ xs: 12 }}>
+        <Divider sx={{ my: 2 }}>
+          <Typography variant="subtitle2">API Kimlik Bilgileri</Typography>
+        </Divider>
         <Box
           sx={theme => ({
             p: 2,
@@ -361,17 +304,11 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, setVa
       </Grid>
 
       <Grid size={{ xs: 12 }}>
-        <Divider sx={{ mb: 2 }}>
+        <Divider sx={{ mb: 2, mt: 2 }}>
           <Typography variant="subtitle2">Fiyatlandırma</Typography>
         </Divider>
 
-        <Typography
-          variant="body2"
-          sx={{
-            mb: 2,
-            color: 'text.secondary',
-          }}
-        >
+        <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
           Bu taşıyıcı hesabı için ağırlık bazlı maliyet kurallarını tanımlayın.
         </Typography>
 
