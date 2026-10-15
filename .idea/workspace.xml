@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,7 +236,7 @@
       <workItem from="1791879167762" duration="1676000" />
       <workItem from="1791882404540" duration="1533000" />
       <workItem from="1791967415994" duration="87000" />
-      <workItem from="1792068340763" duration="3195000" />
+      <workItem from="1792068340763" duration="3803000" />
     </task>
     <servers />
   </component>

@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
 import { randomUUID } from 'crypto';
-import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
@@ -135,24 +134,6 @@ const getSelectedAdditionalServices = (quote: NavlungoQuote, shippingInstance: S
   }
 
   return [...selected];
-};
-
-const generateFallbackLabelPdf = async (cargoLabels: string[], shippingId: string): Promise<Buffer> => {
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  for (const [index, label] of cargoLabels.entries()) {
-    const page = pdfDoc.addPage([283.46, 425.2]);
-
-    page.drawText('NAVLUNGO KARGO ETIKETI', { x: 20, y: 390, size: 16, font });
-    page.drawText(`Siparis No: ${shippingId}`, { x: 20, y: 360, size: 12, font: regularFont });
-    page.drawText(`Paket: ${index + 1} / ${cargoLabels.length}`, { x: 20, y: 340, size: 12, font: regularFont });
-    page.drawText(label, { x: 20, y: 300, size: 24, font });
-    page.drawText('(Barkod numarasi depo tarafindan okutulacaktir)', { x: 20, y: 280, size: 10, font: regularFont });
-  }
-
-  const pdfBytes = await pdfDoc.save();
-  return Buffer.from(pdfBytes);
 };
 
 const createNavlungoPaper = async ({
@@ -302,28 +283,30 @@ const createNavlungoPaper = async ({
     throw new Error(TRACKING_NUMBER_NOT_FOUND);
   }
 
-  let labelBuffer: Buffer | null = null;
-  const cargoLabelsArray = shipmentData.cargoLabels?.length ? shipmentData.cargoLabels : [trackingNumber];
-
   const labelRes = await fetch(`${carrierBaseUrl.NAVLUNGO}/api/shipments/v1/${shipmentData.shipmentId}/label`, {
     method: 'GET',
     headers: { Authorization: `Bearer ${accessToken}` },
-  }).catch(() => null);
+  });
 
-  if (labelRes?.ok) {
-    const labelData = (await labelRes.json().catch(() => null)) as NavlungoLabelDownloadResponse | null;
-    if (labelData?.labelUrl) {
-      const labelPdfRes = await fetch(labelData.labelUrl).catch(() => null);
-      if (labelPdfRes?.ok) {
-        labelBuffer = Buffer.from(await labelPdfRes.arrayBuffer());
-      }
-    }
+  if (!labelRes.ok) {
+    const errorText = await labelRes.text();
+    throw new Error(`${SHIPMENT_FAILED}: Navlungo'dan etiket bilgisi alınamadı. Detay: ${errorText}`);
   }
 
-  if (!labelBuffer) {
-    console.warn('[NAVLUNGO] ORIJINAL ETIKET ALINAMADI, YEDEK PDF URETILIYOR...');
-    labelBuffer = await generateFallbackLabelPdf(cargoLabelsArray, shippingId);
+  const labelData = (await labelRes.json()) as NavlungoLabelDownloadResponse;
+
+  if (!labelData?.labelUrl) {
+    throw new Error(`${SHIPMENT_FAILED}: Navlungo yanıtında etiket URL'i bulunamadı.`);
   }
+
+  const labelPdfRes = await fetch(labelData.labelUrl);
+
+  if (!labelPdfRes.ok) {
+    throw new Error(`${SHIPMENT_FAILED}: Etiket PDF'i indirilemedi (HTTP ${labelPdfRes.status}).`);
+  }
+
+  const labelBuffer = Buffer.from(await labelPdfRes.arrayBuffer());
+  // --- GÜNCELLEME SONU ---
 
   const saveLabelResult = await saveShippingDocument({
     shippingId,
