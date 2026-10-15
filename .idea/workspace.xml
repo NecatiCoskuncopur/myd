@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/regex/phone.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/regex/phone.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/EditUser/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,7 +234,9 @@
       <workItem from="1791824131695" duration="602000" />
       <workItem from="1791877660008" duration="846000" />
       <workItem from="1791879167762" duration="1676000" />
-      <workItem from="1791882404540" duration="776000" />
+      <workItem from="1791882404540" duration="1533000" />
+      <workItem from="1791967415994" duration="87000" />
+      <workItem from="1792068340763" duration="3195000" />
     </task>
     <servers />
   </component>

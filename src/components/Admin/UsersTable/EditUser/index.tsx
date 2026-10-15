@@ -124,7 +124,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
     const loadData = async () => {
       try {
         const [pricingResponse, carrierResponse] = await Promise.all([
-          getPricingLists(),
+          getPricingLists({ limit: 100 }),
           getCarrierAccounts({
             limit: 100,
             isActive: true,
