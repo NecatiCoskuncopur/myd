@@ -306,7 +306,6 @@ const createNavlungoPaper = async ({
   }
 
   const labelBuffer = Buffer.from(await labelPdfRes.arrayBuffer());
-  // --- GÜNCELLEME SONU ---
 
   const saveLabelResult = await saveShippingDocument({
     shippingId,
