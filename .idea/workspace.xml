@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/sentry.client.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sentry.edge.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sentry.server.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/createCarrierAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/Forms/FormItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/carrierBaseUrl.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/carrierBaseUrl.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/enums/navlungoFirmEnum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/enums/navlungoFirmEnum.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
