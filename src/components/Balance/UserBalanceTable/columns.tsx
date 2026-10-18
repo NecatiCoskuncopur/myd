@@ -3,9 +3,8 @@ import { alpha, Box, Chip, Divider, Link, Stack, Tooltip, Typography } from '@mu
 import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
-import { BalanceTypes } from '@/types/balance';
 import { getCountryFlagUrl } from '@/lib/getCountryFlags';
-import PublishedWithChangesOutlinedIcon from '@mui/icons-material/PublishedWithChangesOutlined';
+import { BalanceTypes } from '@/types/balance';
 
 interface ICarrierCosts {
   amount?: number;

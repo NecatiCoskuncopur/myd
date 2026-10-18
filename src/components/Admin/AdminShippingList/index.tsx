@@ -11,12 +11,14 @@ import cancelShipping from '@/app/actions/admin/cancelShipping';
 import printLabel from '@/app/actions/admin/printLabel';
 import createBarcode from '@/app/actions/shipping/createBarcode';
 import getPaper from '@/app/actions/shipping/getPaper';
+import getUserPricingLists from '@/app/actions/user/getUserPricingList';
 import { BulkBarcode, TableHeader, Wrapper } from '@/components';
 import { generalMessages } from '@/constants';
 import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
+import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
 
 import CancelShippingPopover from './CancelShippingPopover';
@@ -36,12 +38,12 @@ const AdminShippingList = () => {
 
   const [additionalDocuments, setAdditionalDocuments] = useState<AdditionalDocumentTypes.IAdditionalDocument[]>([]);
   const [selectedShippingIds, setSelectedShippingIds] = useState<string[]>([]);
-
+  const [rowPricingLists, setRowPricingLists] = useState<Record<string, PricingListTypes.IPricingList>>({});
   const actionMenuRequestIdRef = useRef(0);
 
   const { data, rows, isLoading, page, limit, refetch } = useShippingList(searchParams);
 
-  const { pricingLists, accounts, canCreateBarcode } = useShippingUser();
+  const { accounts, canCreateBarcode } = useShippingUser();
 
   const selectedShippings = useMemo(() => rows.filter(shipping => selectedShippingIds.includes(shipping._id)), [rows, selectedShippingIds]);
 
@@ -85,19 +87,26 @@ const AdminShippingList = () => {
     const requestId = ++actionMenuRequestIdRef.current;
 
     setAdditionalDocuments([]);
+    setRowPricingLists({});
 
     void (async () => {
       try {
-        const response = await getAdditionalDocuments(row._id);
+        const [docsResponse, pricingResponse] = await Promise.all([getAdditionalDocuments(row._id), getUserPricingLists(row.userId)]);
 
         if (requestId !== actionMenuRequestIdRef.current) {
           return;
         }
 
-        if (response.status === 'OK') {
-          setAdditionalDocuments(response.data ?? []);
+        if (docsResponse.status === 'OK') {
+          setAdditionalDocuments(docsResponse.data ?? []);
         } else {
           setAdditionalDocuments([]);
+        }
+
+        if (pricingResponse.status === 'OK' && pricingResponse.data) {
+          setRowPricingLists(pricingResponse.data);
+        } else {
+          setRowPricingLists({});
         }
       } catch {
         if (requestId !== actionMenuRequestIdRef.current) {
@@ -105,6 +114,7 @@ const AdminShippingList = () => {
         }
 
         setAdditionalDocuments([]);
+        setRowPricingLists({});
       }
 
       if (requestId !== actionMenuRequestIdRef.current) {
@@ -286,7 +296,7 @@ const AdminShippingList = () => {
           open={menuOpen}
           selectedRow={selectedRow}
           accounts={accounts}
-          pricingLists={pricingLists}
+          pricingLists={rowPricingLists}
           canCreateBarcode={canCreateBarcode}
           additionalDocuments={additionalDocuments}
           onClose={closeActionsMenu}

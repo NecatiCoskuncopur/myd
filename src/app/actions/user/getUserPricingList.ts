@@ -10,7 +10,7 @@ import { PricingListTypes } from '@/types/pricingList';
 const { NOT_FOUND, USER_LIST_UNDEFINED } = pricingListMessages;
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Record<string, PricingListTypes.IPricingList>>> => {
+const getUserPricingLists = async (targetUserId?: string): Promise<ResponseTypes.IActionResponse<Record<string, PricingListTypes.IPricingList>>> => {
   try {
     await connectMongoDB();
 
@@ -23,7 +23,12 @@ const getUserPricingLists = async (): Promise<ResponseTypes.IActionResponse<Reco
       };
     }
 
-    const user = await User.findById(currentUser.id).select('priceLists').lean();
+    let userIdToFetch = currentUser.id;
+    if (targetUserId && (currentUser.role === 'ADMIN' || currentUser.role === 'OPERATOR')) {
+      userIdToFetch = targetUserId;
+    }
+
+    const user = await User.findById(userIdToFetch).select('priceLists').lean();
 
     if (!user?.priceLists?.length) {
       return {

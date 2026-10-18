@@ -33,7 +33,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
       setFetching(true);
 
       try {
-        const [accountsRes, pricingListsRes] = await Promise.all([getUserPermittedAccounts(), getUserPricingLists()]);
+        const [accountsRes, pricingListsRes] = await Promise.all([getUserPermittedAccounts(), getUserPricingLists(shipping.userId)]);
 
         if (accountsRes.status === 'OK' && accountsRes.data) {
           setAccounts(accountsRes.data);
@@ -54,7 +54,7 @@ const CreateBarcodeButton = ({ shipping, onSuccess }: Props) => {
     };
 
     fetchData();
-  }, []);
+  }, [shipping.userId]);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
