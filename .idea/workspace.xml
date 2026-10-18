@@ -5,7 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/calculateCarrierAccountCosts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/calculateCarrierAccountCosts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/cancelQuickShipperShipping.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/createQuickShipperPaper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/quickShipper/trackQuickShipperShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/quickShipper/trackQuickShipperShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/getCarrierCost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getCarrierCost.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/getShippingCost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getShippingCost.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/getShippingPrices.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/getShippingPrices.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

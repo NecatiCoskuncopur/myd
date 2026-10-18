@@ -75,9 +75,7 @@ export const calculateCarrierAccountCosts = async (
           continue;
         }
 
-        const additionalWeight = validatedData.weight - lastPrice.weight;
-
-        price = lastPrice.price + additionalWeight * pricingZone.than;
+        price = validatedData.weight * pricingZone.than;
       }
 
       result.push({

@@ -26,8 +26,8 @@ type CarrierCostResponse = { status: 'OK'; data: number } | { status: 'ERROR'; m
  * Ağırlık yukarı doğru en yakın 0.5 birime yuvarlanır ve uygun fiyat
  * kademesi bulunarak taşıyıcı maliyeti hesaplanır.
  *
- * Normalize edilmiş ağırlık tanımlı en yüksek ağırlığı aşarsa,
- * aşan kısım için bölgenin `than` değeri kullanılarak ek ücret hesaplanır.
+ *  Normalize edilmiş ağırlık tanımlı en yüksek ağırlığı aşarsa,
+ *  Toplam ağırlık ile bölgenin `than` (paket aşım) değeri çarpılarak ücret hesaplanır.
  *
  * Ülke, bölge veya uygun fiyat bilgisi bulunamazsa hata durumuyla birlikte
  * ilgili mesajı döndürür.
@@ -76,11 +76,9 @@ const getCarrierCost = async (pricing: IPricing, weight: number, countryCode: st
     const normalizedWeight = normalizeWeight(weight);
 
     if (normalizedWeight > maxItem.weight) {
-      const extra = normalizedWeight - maxItem.weight;
-
       return {
         status: 'OK',
-        data: maxItem.price + extra * than,
+        data: normalizedWeight * than,
       };
     }
 

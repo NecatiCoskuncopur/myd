@@ -35,9 +35,7 @@ const calculatePrice = ({ weight, zone }: { weight: number; zone?: PriceZone }) 
     return null;
   }
 
-  const extraWeight = weight - lastPrice.weight;
-
-  return lastPrice.price + extraWeight * zone.than;
+  return weight * zone.than;
 };
 
 export const getShippingPrices = ({ countryCode, weight, carrierPricing, customerPricing }: GetShippingPricesParams) => {

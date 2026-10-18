@@ -48,9 +48,9 @@ type ShippingCostResponse = { status: 'OK'; data: number } | { status: 'ERROR'; 
  *      input: 1.3 → 1.5 → 2 → fiyat
  *
  * 6. Eğer ağırlık maksimum weight'i aşarsa:
- *    → lineer fiyatlandırma uygulanır:
+ *    → toplam desi/kg * paket aşım fiyatı uygulanır:
  *
- *      total = maxPrice + (extraWeight × than)
+ *      total = normalizedWeight × than
  *
  *    Örn:
  *      tablo:
@@ -125,11 +125,9 @@ const getShippingCost = async (pricingListId: Types.ObjectId, weight: number, co
     const normalizedWeight = normalizeWeight(weight);
 
     if (normalizedWeight > maxItem.weight) {
-      const extra = normalizedWeight - maxItem.weight;
-
       return {
         status: 'OK',
-        data: maxItem.price + extra * than,
+        data: normalizedWeight * than,
       };
     }
 
