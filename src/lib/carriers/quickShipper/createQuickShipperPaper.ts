@@ -75,10 +75,10 @@ const createQuickShipperPaper = async ({
 
     items: [...Array(pkg.numberOfPackage).keys()].map(() => ({
       quantity: pkg.piece,
-      weight: pkg.weight / 2,
-      width: pkg.width / 2,
-      size: pkg.length / 2,
-      height: pkg.height / 2,
+      weight: pkg.weight,
+      width: pkg.width,
+      size: pkg.length,
+      height: pkg.height,
     })),
 
     goods: content.products.map((product: ShippingTypes.IProduct) => ({

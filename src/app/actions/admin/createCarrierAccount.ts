@@ -5,14 +5,13 @@ import { ValidationError } from 'yup';
 import { carrierMessages, generalMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
-import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
 import requireRoles from '@/lib/requireRoles';
 import { CarrierAccount } from '@/models';
 import createCarrierAccountSchema from '@/schemas/createCarrierAccount.schema';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 
 const { UNEXPECTED_ERROR } = generalMessages;
-const { ACCOUNTNUMBER, CREATE } = carrierMessages;
+const { CREATE } = carrierMessages;
 
 const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAccountPayload): Promise<ResponseTypes.IActionResponse> => {
   try {
@@ -36,13 +35,6 @@ const createCarrierAccount = async (data: CarrierAccountTypes.ICreateCarrierAcco
       message: CREATE.SUCCESS,
     };
   } catch (error) {
-    if (isMongoDuplicateKeyError(error)) {
-      return {
-        status: 'ERROR',
-        message: ACCOUNTNUMBER.ALREADY_EXISTS,
-      };
-    }
-
     if (error instanceof ValidationError) {
       return {
         status: 'ERROR',

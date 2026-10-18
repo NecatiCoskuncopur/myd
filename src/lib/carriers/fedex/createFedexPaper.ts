@@ -249,11 +249,11 @@ const createFedexPaper = async ({
           sequenceNumber: 1,
           groupNumber: 1,
           groupPackageCount: pkg.numberOfPackage,
-          weight: { units: 'KG', value: pkg.weight / 2 },
+          weight: { units: 'KG', value: pkg.weight },
           dimensions: {
-            length: pkg.length / 2,
-            width: pkg.width / 2,
-            height: pkg.height / 2,
+            length: pkg.length,
+            width: pkg.width,
+            height: pkg.height,
             units: 'CM',
           },
           ...(content.insurance && {

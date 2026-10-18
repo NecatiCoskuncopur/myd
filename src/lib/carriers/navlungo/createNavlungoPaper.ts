@@ -84,6 +84,10 @@ const selectNavlungoQuote = (
   const isEconomy = accountType === CarrierAccountTypeEnum.ECONOMY;
   const matchingQuotes = filteredQuotes.filter(quote => {
     const serviceType = quote.serviceType.toLowerCase();
+    if (navlungoFirm?.toUpperCase() === 'THY') {
+      return isEconomy;
+    }
+
     const targetServiceType = isEconomy ? 'expedited' : 'express';
 
     return serviceType.includes(targetServiceType);

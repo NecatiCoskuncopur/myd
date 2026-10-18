@@ -151,7 +151,7 @@ const FormItems = <T extends CarrierAccountFormPayload>({ control, errors, crede
               <TextField {...field} value={field.value ?? ''} select fullWidth label="Navlungo Alt Firması">
                 {Object.values(NavlungoFirmEnum).map(firm => (
                   <MenuItem key={firm} value={firm}>
-                    {firm}
+                    {firm === 'THY' ? 'Widect' : firm}
                   </MenuItem>
                 ))}
               </TextField>
