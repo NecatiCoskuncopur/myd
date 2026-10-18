@@ -52,7 +52,8 @@ const createShipping = async (data: ShippingTypes.ICreateShippingPayload): Promi
     const totalProductValue = Number(validatedData.content.products.reduce((total, product) => total + product.unitPrice * product.piece, 0).toFixed(2));
 
     const insuranceRate = await getInsuranceRate();
-    const insuranceAmount = validatedData.content.insurance ? Number((totalProductValue * (insuranceRate / 100)).toFixed(2)) : 0;
+    const calculatedInsurance = totalProductValue <= 100 ? 0 : totalProductValue <= 1000 ? 10 : totalProductValue * (insuranceRate / 100);
+    const insuranceAmount = validatedData.content.insurance ? Number(calculatedInsurance.toFixed(2)) : 0;
 
     let consigneeDoc;
 

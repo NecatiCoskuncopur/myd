@@ -39,7 +39,8 @@ const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<Re
         .populate({
           path: 'shippingId',
           model: Shipping,
-          select: '_id carrier.amount carrier.dutiesAndTaxesCost carrier.insuranceCost carrier.longSideSurchargeCost carrier.serviceFee',
+          select:
+            '_id carrier.amount carrier.dutiesAndTaxesCost carrier.insuranceCost carrier.longSideSurchargeCost carrier.serviceFee carrier.trackingNumber consignee.address.country package',
         })
         .lean(),
       Transaction.countDocuments({ userId: currentUser.id }),

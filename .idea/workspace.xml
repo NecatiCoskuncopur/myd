@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/sentry.client.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sentry.edge.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sentry.server.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/createShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/updateShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

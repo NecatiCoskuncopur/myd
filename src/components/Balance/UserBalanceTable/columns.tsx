@@ -4,6 +4,8 @@ import { GridColDef } from '@mui/x-data-grid';
 import moment from 'moment';
 
 import { BalanceTypes } from '@/types/balance';
+import { getCountryFlagUrl } from '@/lib/getCountryFlags';
+import PublishedWithChangesOutlinedIcon from '@mui/icons-material/PublishedWithChangesOutlined';
 
 interface ICarrierCosts {
   amount?: number;
@@ -192,6 +194,105 @@ const columns: GridColDef<BalanceRow>[] = [
               };
             }}
           />
+        </Box>
+      );
+    },
+  },
+
+  {
+    field: 'country',
+    headerName: 'Alıcı Ülkesi',
+    flex: 1,
+    minWidth: 120,
+    renderCell: ({ row }) => {
+      const shipping = typeof row.shippingId === 'object' && row.shippingId !== null ? row.shippingId : null;
+      const country = shipping?.consignee?.address?.country || '-';
+
+      const flagUrl = getCountryFlagUrl(country);
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            gap: 1,
+            overflow: 'hidden',
+          }}
+        >
+          {flagUrl && (
+            <img
+              src={flagUrl}
+              alt={country}
+              style={{
+                width: '20px',
+                height: '14px',
+                objectFit: 'cover',
+                borderRadius: '2px',
+                display: 'block',
+                flexShrink: 0,
+              }}
+            />
+          )}
+          <Typography variant="body2" noWrap>
+            {country}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+
+  {
+    field: 'packageInfo',
+    headerName: 'Paket',
+    flex: 1,
+    minWidth: 100,
+    renderCell: params => {
+      const shipping = typeof params.row.shippingId === 'object' && params.row.shippingId !== null ? params.row.shippingId : null;
+      const count = shipping?.package?.numberOfPackage ?? '-';
+
+      const weight = shipping?.package?.weight ?? '-';
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="caption" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
+              <Box component="span" sx={{ color: 'text.secondary', mr: 0.5 }}>
+                Adet:
+              </Box>
+              {count}
+            </Typography>
+
+            <Typography variant="caption" sx={{ color: 'text.primary', lineHeight: 1.2 }}>
+              <Box component="span" sx={{ color: 'text.secondary', mr: 0.5 }}>
+                Desi/KG:
+              </Box>
+              {weight}
+            </Typography>
+          </Box>
+        </Box>
+      );
+    },
+  },
+  {
+    field: 'trackingNumber',
+    headerName: 'Takip Numarası',
+    flex: 1,
+    minWidth: 150,
+    renderCell: ({ row }) => {
+      const shipping = typeof row.shippingId === 'object' && row.shippingId !== null ? row.shippingId : null;
+      const trackingNo = shipping?.carrier?.trackingNumber || '-';
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+          {trackingNo !== '-' ? (
+            <Typography variant="body2" sx={{ userSelect: 'all' }}>
+              {trackingNo}
+            </Typography>
+          ) : (
+            <Typography variant="body2" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+              -
+            </Typography>
+          )}
         </Box>
       );
     },
