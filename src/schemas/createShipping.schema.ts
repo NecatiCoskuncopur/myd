@@ -30,8 +30,8 @@ export default yup.object({
     address: yup.object({
       line1: yup.string().typeError(LINE.TYPE).min(5, LINE.MIN).max(255, LINE.MAX).required(LINE.REQUIRED),
       line2: yup.string().typeError(LINE.TYPE).max(255, LINE.MAX),
-      city: yup.string().typeError(CITY.TYPE).min(2, CITY.MIN).max(35, CITY.MAX).required(CITY.REQUIRED),
-      country: yup.string().typeError(COUNTRY.TYPE).min(2, COUNTRY.MIN).max(45, COUNTRY.MAX).required(COUNTRY.REQUIRED),
+      city: yup.string().typeError(CITY.TYPE).min(2, CITY.MIN).max(255, CITY.MAX).required(CITY.REQUIRED),
+      country: yup.string().typeError(COUNTRY.TYPE).min(2, COUNTRY.MIN).max(255, COUNTRY.MAX).required(COUNTRY.REQUIRED),
       state: yup
         .string()
         .transform(value => (value === '' ? undefined : value))
