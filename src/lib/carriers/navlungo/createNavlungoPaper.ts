@@ -297,22 +297,30 @@ const createNavlungoPaper = async ({
     let carrierErrorMessage = null;
     let shipmentDetails = null;
 
+    let detailsFetchStatus = null;
+    let detailsFetchError = null;
+
     try {
       const detailsRes = await fetch(`${carrierBaseUrl.NAVLUNGO}/api/shipments/v1/${shipmentData.shipmentId}`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
+      detailsFetchStatus = detailsRes.status;
+
       if (detailsRes.ok) {
         shipmentDetails = await detailsRes.json();
+
         if (shipmentDetails?.statusDetail) {
           carrierErrorMessage = shipmentDetails.statusDetail;
         } else if (shipmentDetails?.carrierErrorMessage) {
           carrierErrorMessage = shipmentDetails.carrierErrorMessage;
         }
+      } else {
+        detailsFetchError = await detailsRes.text();
       }
-    } catch (e) {
-      console.error('Navlungo detay isteği başarısız oldu:', e);
+    } catch (err) {
+      detailsFetchError = err instanceof Error ? err.message : String(err);
     }
 
     const errorMessage = `${SHIPMENT_FAILED}: Navlungo'dan etiket bilgisi alınamadı. ${carrierErrorMessage ? `Taşıyıcı Hatası: ${carrierErrorMessage}` : `Detay: ${errorText}`}`;
@@ -326,6 +334,8 @@ const createNavlungoPaper = async ({
         navlungoErrorText: errorText,
         carrierErrorMessage,
         rawShipmentDetails: shipmentDetails,
+        detailsFetchStatus,
+        detailsFetchError,
       },
     });
 
