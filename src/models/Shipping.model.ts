@@ -46,7 +46,7 @@ const ShippingSchema = new mongoose.Schema(
         country: { type: String, length: 2, required: true },
         state: { type: String, length: 2 },
         city: { type: String, minLength: 2, maxlength: 255, required: true },
-        postalCode: { type: String, maxlength: 10, required: true },
+        postalCode: { type: String, required: true },
       },
     },
     detail: {
