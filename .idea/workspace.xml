@@ -6,10 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserPricingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/columns.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/CreateBarcodeButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountsList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountsList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceLists.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingList.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

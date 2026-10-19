@@ -19,7 +19,7 @@ const useUsersList = (searchParams: ReadonlyURLSearchParams) => {
 
   const page = Number(searchParams.get('sayfa')) || 1;
 
-  const limit = Number(searchParams.get('limit')) || 5;
+  const limit = Number(searchParams.get('limit')) || 10;
 
   const filters = useMemo(
     () => ({

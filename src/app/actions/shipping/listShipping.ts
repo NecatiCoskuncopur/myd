@@ -29,7 +29,7 @@ const listShipping = async (
       };
     }
 
-    const { page = 1, limit = 5, trackingNumber, startDate, endDate, download, senderName, consigneeName, consigneeCompany, consigneePhone } = params;
+    const { page = 1, limit = 10, trackingNumber, startDate, endDate, download, senderName, consigneeName, consigneeCompany, consigneePhone } = params;
 
     const safePage = Math.max(page, 1);
     const safeLimit = Math.max(limit, 1);

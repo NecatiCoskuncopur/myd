@@ -14,7 +14,7 @@ const useSysParams = (searchParams: ReadonlyURLSearchParams) => {
   const [isLoading, setIsLoading] = useState(false);
   const requestIdRef = useRef(0);
   const page = Number(searchParams.get('sayfa')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
+  const limit = Number(searchParams.get('limit')) || 10;
 
   const filters = useMemo(
     () => ({

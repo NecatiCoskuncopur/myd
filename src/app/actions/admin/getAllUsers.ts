@@ -16,7 +16,7 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, firstName, lastName, company, phone, email, balanceSorting, isActive } = params;
+    const { page = 1, limit = 10, firstName, lastName, company, phone, email, balanceSorting, isActive } = params;
 
     const safePage = Math.max(Number(page), 1);
     const safeLimit = Math.max(Number(limit), 1);

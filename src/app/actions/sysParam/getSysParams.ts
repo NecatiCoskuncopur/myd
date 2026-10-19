@@ -15,7 +15,7 @@ const getSysParams = async (params: SysParamTypes.ISysParamParams): Promise<Resp
     if (authError) return authError;
 
     await connectMongoDB();
-    const { page = 1, limit = 5, key } = params;
+    const { page = 1, limit = 10, key } = params;
 
     const currentPage = Math.max(1, page);
     const currentLimit = Math.max(1, limit);

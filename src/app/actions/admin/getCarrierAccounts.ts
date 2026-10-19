@@ -17,7 +17,7 @@ const getCarrierAccounts = async (
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, name, accountType, displayName, carrier, accountNumber, isActive } = params;
+    const { page = 1, limit = 10, name, accountType, displayName, carrier, accountNumber, isActive } = params;
 
     const currentPage = Math.max(1, page);
     const currentLimit = Math.max(1, limit);

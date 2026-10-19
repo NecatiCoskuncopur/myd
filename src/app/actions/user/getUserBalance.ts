@@ -10,7 +10,7 @@ import { BalanceTypes } from '@/types/balance';
 
 const { UNAUTHORIZED, UNEXPECTED_ERROR } = generalMessages;
 
-const DEFAULT_LIMIT = 5;
+const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
 const getUserBalance = async (params: ParamsTypes.IPaginationParams): Promise<ResponseTypes.IActionResponse<BalanceTypes.IUserBalanceData>> => {

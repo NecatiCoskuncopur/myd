@@ -21,7 +21,7 @@ const getPricingLists = async (
 
     await connectMongoDB();
 
-    const { page = 1, limit = 5, name, listType } = params;
+    const { page = 1, limit = 10, name, listType } = params;
 
     const currentPage = Math.max(1, page);
     const currentLimit = Math.max(1, limit);

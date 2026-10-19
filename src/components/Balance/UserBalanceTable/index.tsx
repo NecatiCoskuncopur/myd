@@ -21,7 +21,7 @@ const UserBalanceTable = () => {
   const { showSnackbar } = useSnackbar();
 
   const page = Number(searchParams.get('sayfa')) || 1;
-  const limit = Number(searchParams.get('limit')) || 5;
+  const limit = Number(searchParams.get('limit')) || 10;
 
   const [data, setData] = useState<BalanceTypes.IUserBalanceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
