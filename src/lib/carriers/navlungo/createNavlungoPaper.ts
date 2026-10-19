@@ -305,7 +305,7 @@ const createNavlungoPaper = async ({
         errorText,
       },
     });
-
+    await Sentry.flush(2000);
     throw new Error(`${SHIPMENT_FAILED}: Navlungo'dan etiket bilgisi alınamadı. Detay: ${errorText}`);
   }
 

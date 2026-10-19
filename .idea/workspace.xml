@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/sentry.edge.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sentry.edge.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/instrument.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/instrumentation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +241,7 @@
       <workItem from="1792104604567" duration="13000" />
       <workItem from="1792148302210" duration="9068000" />
       <workItem from="1792396480398" duration="85000" />
-      <workItem from="1792410362601" duration="2366000" />
+      <workItem from="1792410362601" duration="3064000" />
     </task>
     <servers />
   </component>
