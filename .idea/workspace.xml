@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="" />
+    <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/sentry.edge.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sentry.edge.config.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -237,7 +239,7 @@
       <workItem from="1792104604567" duration="13000" />
       <workItem from="1792148302210" duration="9068000" />
       <workItem from="1792396480398" duration="85000" />
-      <workItem from="1792410362601" duration="2162000" />
+      <workItem from="1792410362601" duration="2366000" />
     </task>
     <servers />
   </component>
