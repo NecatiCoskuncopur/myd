@@ -6,20 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getAllUsers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getCarrierAccounts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/getPricingLists.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/sysParam/getSysParams.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/user/getUserBalance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountsList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/CarrierAccountTable/hooks/useCarrierAccountsList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceLists.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/PricingLists/hooks/usePriceLists.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/SysParams/hooks/useSysParams.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/UsersTable/hooks/useUsersList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Balance/UserBalanceTable/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingList/hooks/useShippingList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/navlungo/createNavlungoPaper.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="410" />
+    <option name="cachedIndexableFilesCount" value="413" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -252,6 +239,8 @@
       <workItem from="1792068340763" duration="5001000" />
       <workItem from="1792104604567" duration="13000" />
       <workItem from="1792148302210" duration="9068000" />
+      <workItem from="1792396480398" duration="85000" />
+      <workItem from="1792410362601" duration="352000" />
     </task>
     <servers />
   </component>

@@ -294,6 +294,18 @@ const createNavlungoPaper = async ({
 
   if (!labelRes.ok) {
     const errorText = await labelRes.text();
+    const errorMessage = `${SHIPMENT_FAILED}: Navlungo'dan etiket bilgisi alınamadı. Detay: ${errorText}`;
+    const error = new Error(errorMessage);
+
+    Sentry.captureException(error, {
+      extra: {
+        shippingId,
+        carrierShipmentId: shipmentData.shipmentId,
+        statusCode: labelRes.status,
+        errorText,
+      },
+    });
+
     throw new Error(`${SHIPMENT_FAILED}: Navlungo'dan etiket bilgisi alınamadı. Detay: ${errorText}`);
   }
 
