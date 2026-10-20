@@ -7,9 +7,8 @@
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/admin/listAllShipping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/FilterSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Admin/AdminShippingList/hooks/useShippingList.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/shipping.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/shipping.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/actions/shipping/listShipping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/excelColumns.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/excelColumns.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +245,7 @@
       <workItem from="1792410362601" duration="9493000" />
       <workItem from="1792438313865" duration="5171000" />
       <workItem from="1792504040611" duration="5122000" />
-      <workItem from="1792511129148" duration="1562000" />
+      <workItem from="1792511129148" duration="5032000" />
     </task>
     <servers />
   </component>

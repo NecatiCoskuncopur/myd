@@ -61,7 +61,7 @@ const listShippingAdmin = async (
 
     if (trackingNumber) match['carrier.trackingNumber'] = createRegex(trackingNumber);
     if (senderName) match['sender.name'] = createRegex(senderName);
-    if (senderCompany) match['sender.company'] = createRegex(senderCompany); // <-- Eklendi
+    if (senderCompany) match['sender.company'] = createRegex(senderCompany);
     if (consigneeName) match['consignee.name'] = createRegex(consigneeName);
     if (consigneeCompany) match['consignee.company'] = createRegex(consigneeCompany);
     if (consigneePhone) match['consignee.phone'] = createRegex(consigneePhone);
@@ -92,21 +92,31 @@ const listShippingAdmin = async (
         const totalProductValue = item.content?.products?.reduce((prev: number, { piece = 0, unitPrice = 0 }) => prev + piece! * unitPrice!, 0) ?? 0;
         const productNames = item.content?.products?.map(p => p.name).join(', ') ?? '';
 
+        const baseAmount = Number(item.carrier?.amount) || 0;
+        const insuranceAmount = Number(item.carrier?.insuranceCost) || 0;
+        const taxAmount = Number(item.carrier?.dutiesAndTaxesCost) || 0;
+        const serviceFee = Number(item.carrier?.serviceFee) || 0;
+        const longSideCost = Number(item.carrier?.longSideSurchargeCost) || 0;
+        const totalShippingCost = baseAmount + insuranceAmount + taxAmount + serviceFee + longSideCost;
+
         return {
           [excelColumns.senderName]: item.sender?.name || '',
           [excelColumns.senderCompany]: item.sender?.company || '',
           [excelColumns.consigneeName]: item.consignee?.name || '',
-          [excelColumns.consigneeAddress]:
-            `${item.consignee?.address?.line1 ?? ''} ${item.consignee?.address?.line2 ?? ''} ${item.consignee?.address?.city ?? ''}`.trim(),
           [excelColumns.consigneeCountry]: item.consignee?.address?.country || '',
-          [excelColumns.consigneeState]: item.consignee?.address?.state ?? '',
-          [excelColumns.consigneePostalCode]: item.consignee?.address?.postalCode || '',
           [excelColumns.trackingNumber]: item.carrier?.trackingNumber ?? '',
           [excelColumns.weight]: item.package?.weight || 0,
-          [excelColumns.price]: item.carrier?.amount ?? '',
           [excelColumns.content]: productNames,
           [excelColumns.totalContentValue]: totalProductValue,
+          [excelColumns.accountType]: item.carrier?.accountType || '',
+          [excelColumns.price]: baseAmount || '',
+          [excelColumns.insuranceAmount]: insuranceAmount || '',
+          [excelColumns.taxAmount]: taxAmount || '',
+          [excelColumns.serviceFee]: serviceFee || '',
+          [excelColumns.longSideCost]: longSideCost || '',
+          [excelColumns.totalShippingCost]: totalShippingCost || '',
           [excelColumns.date]: item.createdAt ? moment(item.createdAt).format('YYYY-MM-DD') : '',
+          [excelColumns.status]: item.status === 'CANCELLED' ? 'İPTAL' : '',
         };
       });
 
@@ -135,7 +145,7 @@ const listShippingAdmin = async (
       },
       projection: {
         userId: 1,
-        sender: { name: 1, company: 1 }, // <-- company eklendi (Sayfalama sonuçlarında da gelsin diye)
+        sender: { name: 1, company: 1 },
         consignee: {
           name: 1,
           address: { country: 1, state: 1, city: 1 },
