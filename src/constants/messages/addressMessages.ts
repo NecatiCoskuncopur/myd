@@ -2,7 +2,7 @@ const addressMessages = {
   CITY: {
     TYPE: 'Şehir metin tipinde olmalı',
     MIN: 'Şehir en az 2 karakter olmalı.',
-    MAX: 'Şehir en fazla 35 karakter olmalı.',
+    MAX: 'Şehir en fazla 255 karakter olmalı.',
     REQUIRED: 'Şehir zorunludur.',
   },
   COUNTRY: {

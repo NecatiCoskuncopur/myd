@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ConsigneeSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Shipping/ShippingFormFields/ConsigneeSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/addressMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/addressMessages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/messages/shippingMessages.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Shipping.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Shipping.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/createShipping.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,7 +245,7 @@
       <workItem from="1792148302210" duration="9068000" />
       <workItem from="1792396480398" duration="85000" />
       <workItem from="1792410362601" duration="9493000" />
-      <workItem from="1792438313865" duration="61000" />
+      <workItem from="1792438313865" duration="4012000" />
     </task>
     <servers />
   </component>

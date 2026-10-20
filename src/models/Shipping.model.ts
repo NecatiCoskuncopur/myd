@@ -31,7 +31,7 @@ const ShippingSchema = new mongoose.Schema(
       },
     },
     consignee: {
-      name: { type: String, maxlength: 35, required: true },
+      name: { type: String, maxlength: 50, required: true },
       company: {
         type: String,
         minLength: 5,

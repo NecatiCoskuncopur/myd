@@ -12,7 +12,7 @@ export default yup.object({
   senderId: yup.string(),
   consignee: yup.object({
     _id: yup.string(),
-    name: yup.string().typeError(CONSIGNEE.NAME.TYPE).min(4, CONSIGNEE.NAME.MIN).max(35, CONSIGNEE.NAME.MAX).required(CONSIGNEE.NAME.REQUIRED),
+    name: yup.string().typeError(CONSIGNEE.NAME.TYPE).min(4, CONSIGNEE.NAME.MIN).max(50, CONSIGNEE.NAME.MAX).required(CONSIGNEE.NAME.REQUIRED),
     company: yup
       .string()
       .transform(value => (value === '' ? undefined : value))

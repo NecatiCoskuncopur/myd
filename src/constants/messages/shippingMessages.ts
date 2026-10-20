@@ -11,7 +11,7 @@ const shippingMessages = {
     NAME: {
       TYPE: 'Alıcı adı dizi tipinde olmalıdır.',
       MIN: 'Alıcı adı en az 4 karakter olmalıdır.',
-      MAX: 'Alıcı adı en fazla 35 karakter olmalıdır.',
+      MAX: 'Alıcı adı en fazla 50 karakter olmalıdır.',
       REQUIRED: 'Alıcı adı zorunludur.',
     },
     NOT_FOUND: 'Alıcı bulunamadı.',

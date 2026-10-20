@@ -173,7 +173,7 @@ const ConsigneeSection = () => {
               message: CONSIGNEE.NAME.MIN,
             },
             maxLength: {
-              value: 35,
+              value: 50,
               message: CONSIGNEE.NAME.MAX,
             },
           }}
