@@ -185,6 +185,9 @@ const createNavlungoPaper = async ({
 
   const uniqueOrderReference = `${shippingId}-${randomUUID().slice(0, 8)}`;
   const destinationCountry = consignee.address.country;
+  const fullAddress = [consignee.address.line1, consignee.address.line2].filter(Boolean).join(' ').trim();
+  const safeFirstLine = fullAddress.substring(0, 30).trim();
+  const safeSecondLine = fullAddress.substring(30, 60).trim();
 
   const quotePayload = {
     order: {
@@ -197,7 +200,8 @@ const createNavlungoPaper = async ({
         town: consignee.address.city,
         city: consignee.address.city,
         postalCode: String(consignee.address.postalCode).trim(),
-        firstLine: [consignee.address.line1, consignee.address.line2].filter(Boolean).join(' ').trim(),
+        firstLine: safeFirstLine,
+        ...(safeSecondLine && { secondLine: safeSecondLine }),
       },
       ...(consignee.email && { receiverEmail: consignee.email }),
       receiverPhoneNumber: consignee.phone,
