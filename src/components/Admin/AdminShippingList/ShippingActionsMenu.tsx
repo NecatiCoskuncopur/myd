@@ -84,7 +84,7 @@ const ShippingActionsMenu = ({
   };
 
   return (
-    <Menu anchorEl={anchorEl} open={open} onClose={onClose}>
+    <Menu anchorEl={anchorEl} open={open} onClose={onClose} disableScrollLock={true}>
       <MenuItem onClick={onOpenPackage}>
         <ListItemIcon>
           <Inventory2OutlinedIcon fontSize="small" />

@@ -24,7 +24,7 @@ const CarrierAccountActionsMenu = ({ row, selectedRow, anchorEl, onOpen, onClose
         <MoreVertIcon />
       </IconButton>
 
-      <Menu anchorEl={anchorEl} open={isOpen} onClose={onClose}>
+      <Menu anchorEl={anchorEl} open={isOpen} onClose={onClose} disableScrollLock={true}>
         <MenuItem onClick={onEdit}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
