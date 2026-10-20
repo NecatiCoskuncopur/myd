@@ -31,6 +31,7 @@ const listShippingAdmin = async (
       endDate,
       download,
       senderName,
+      senderCompany,
       consigneeName,
       consigneeCompany,
       consigneePhone,
@@ -60,6 +61,7 @@ const listShippingAdmin = async (
 
     if (trackingNumber) match['carrier.trackingNumber'] = createRegex(trackingNumber);
     if (senderName) match['sender.name'] = createRegex(senderName);
+    if (senderCompany) match['sender.company'] = createRegex(senderCompany); // <-- Eklendi
     if (consigneeName) match['consignee.name'] = createRegex(consigneeName);
     if (consigneeCompany) match['consignee.company'] = createRegex(consigneeCompany);
     if (consigneePhone) match['consignee.phone'] = createRegex(consigneePhone);
@@ -133,7 +135,7 @@ const listShippingAdmin = async (
       },
       projection: {
         userId: 1,
-        sender: { name: 1 },
+        sender: { name: 1, company: 1 }, // <-- company eklendi (Sayfalama sonuçlarında da gelsin diye)
         consignee: {
           name: 1,
           address: { country: 1, state: 1, city: 1 },

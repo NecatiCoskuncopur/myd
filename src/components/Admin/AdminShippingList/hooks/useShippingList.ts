@@ -23,6 +23,10 @@ const useShippingList = (searchParams: ReadonlyURLSearchParams) => {
 
   const filters = useMemo(
     () => ({
+      senderName: searchParams.get('senderName') || undefined,
+
+      senderCompany: searchParams.get('senderCompany') || undefined,
+
       consigneeName: searchParams.get('consigneeName') || undefined,
 
       consigneePhone: searchParams.get('consigneePhone') || undefined,

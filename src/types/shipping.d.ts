@@ -142,6 +142,7 @@ declare namespace ShippingTypes {
 
   interface IListShippingParams extends ParamsTypes.IPaginationParams {
     senderName?: string;
+    senderCompany?: string;
     consigneeName?: string;
     consigneeCompany?: string;
     consigneePhone?: string;

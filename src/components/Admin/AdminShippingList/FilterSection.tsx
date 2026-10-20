@@ -21,6 +21,8 @@ type FilterSectionProps = {
 };
 
 type FilterInputs = {
+  senderName: string;
+  senderCompany: string;
   consigneeName: string;
   consigneePhone: string;
   trackingNumber: string;
@@ -31,6 +33,8 @@ type FilterInputs = {
 const { UNEXPECTED_ERROR } = generalMessages;
 
 const getInputsFromSearchParams = (searchParams: ReadonlyURLSearchParams): FilterInputs => ({
+  senderName: searchParams.get('senderName') ?? '',
+  senderCompany: searchParams.get('senderCompany') ?? '',
   consigneeName: searchParams.get('consigneeName') ?? '',
   consigneePhone: searchParams.get('consigneePhone') ?? '',
   trackingNumber: searchParams.get('trackingNumber') ?? '',
@@ -39,6 +43,8 @@ const getInputsFromSearchParams = (searchParams: ReadonlyURLSearchParams): Filte
 });
 
 const initialInputs: FilterInputs = {
+  senderName: '',
+  senderCompany: '',
   consigneeName: '',
   consigneePhone: '',
   trackingNumber: '',
@@ -61,11 +67,19 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const handleSearch = () => {
     const params = new URLSearchParams();
 
+    const senderName = inputs.senderName.trim();
+    const senderCompany = inputs.senderCompany.trim();
     const consigneeName = inputs.consigneeName.trim();
-
     const consigneePhone = inputs.consigneePhone.trim();
-
     const trackingNumber = inputs.trackingNumber.trim();
+
+    if (senderName) {
+      params.set('senderName', senderName);
+    }
+
+    if (senderCompany) {
+      params.set('senderCompany', senderCompany);
+    }
 
     if (consigneeName) {
       params.set('consigneeName', consigneeName);
@@ -88,7 +102,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     }
 
     params.set('sayfa', '1');
-
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
@@ -100,7 +113,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     const params = new URLSearchParams();
 
     params.set('sayfa', '1');
-
     params.set('limit', searchParams.get('limit') ?? '5');
 
     router.push(`?${params.toString()}`);
@@ -116,28 +128,22 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
     try {
       const response = await listAllShipping({
         download: true,
-
+        senderName: inputs.senderName.trim() || undefined,
+        senderCompany: inputs.senderCompany.trim() || undefined,
         consigneeName: inputs.consigneeName.trim() || undefined,
-
         consigneePhone: inputs.consigneePhone.trim() || undefined,
-
         trackingNumber: inputs.trackingNumber.trim() || undefined,
-
         startDate: inputs.startDate?.toISOString(),
-
         endDate: inputs.endDate?.toISOString(),
       });
 
       if (response.status !== 'OK' || !response.data || !('content' in response.data)) {
         showSnackbar(response.message ?? 'Excel dosyası oluşturulamadı.', 'error');
-
         return;
       }
 
       const { content, fileName } = response.data;
-
       const byteCharacters = atob(content);
-
       const byteArray = Uint8Array.from(byteCharacters, character => character.charCodeAt(0));
 
       const blob = new Blob([byteArray], {
@@ -145,7 +151,6 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
       });
 
       const url = window.URL.createObjectURL(blob);
-
       const anchor = document.createElement('a');
 
       anchor.href = url;
@@ -164,7 +169,13 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   };
 
   const isFiltered =
-    inputs.consigneeName !== '' || inputs.consigneePhone !== '' || inputs.trackingNumber !== '' || inputs.startDate !== null || inputs.endDate !== null;
+    inputs.senderName !== '' ||
+    inputs.senderCompany !== '' ||
+    inputs.consigneeName !== '' ||
+    inputs.consigneePhone !== '' ||
+    inputs.trackingNumber !== '' ||
+    inputs.startDate !== null ||
+    inputs.endDate !== null;
 
   return (
     <Grid container spacing={2}>
@@ -173,7 +184,61 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 6,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
+        }}
+      >
+        <TextField
+          label="Gönderici Adı"
+          size="small"
+          fullWidth
+          value={inputs.senderName}
+          onChange={event =>
+            setInputs(prev => ({
+              ...prev,
+              senderName: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
+        />
+      </Grid>
+
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 3,
+          xl: 1.2,
+        }}
+      >
+        <TextField
+          label="Gönderici Firma"
+          size="small"
+          fullWidth
+          value={inputs.senderCompany}
+          onChange={event =>
+            setInputs(prev => ({
+              ...prev,
+              senderCompany: event.target.value,
+            }))
+          }
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              handleSearch();
+            }
+          }}
+        />
+      </Grid>
+
+      <Grid
+        size={{
+          xs: 12,
+          md: 6,
+          lg: 3,
+          xl: 1.2,
         }}
       >
         <TextField
@@ -200,7 +265,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 6,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <TextField
@@ -227,7 +292,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 6,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <TextField
@@ -254,7 +319,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 6,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <DatePicker
@@ -280,7 +345,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 6,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <DatePicker
@@ -306,7 +371,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 6,
           md: 2,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <StyledButton type="button" fullWidth variant="contained" startIcon={<SearchIcon />} onClick={handleSearch}>
@@ -319,7 +384,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 6,
           md: 2,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <StyledButton type="button" disabled={!isFiltered} fullWidth variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset}>
@@ -332,7 +397,7 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
           xs: 12,
           md: 2,
           lg: 3,
-          xl: 1.5,
+          xl: 1.2,
         }}
       >
         <Button
