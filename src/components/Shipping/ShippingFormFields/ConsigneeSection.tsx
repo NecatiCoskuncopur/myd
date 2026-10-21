@@ -476,7 +476,7 @@ const ConsigneeSection = () => {
                 <ErrorTooltip message={errorMessage}>
                   <Autocomplete
                     options={states}
-                    getOptionLabel={option => option.name}
+                    getOptionLabel={option => `${option.name} (${option.code})`}
                     value={states.find(state => state.code === field.value) || null}
                     onChange={(_, value) => {
                       field.onChange(value ? value.code : '');
