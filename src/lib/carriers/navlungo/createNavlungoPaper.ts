@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 import { randomUUID } from 'crypto';
+import JSZip from 'jszip';
 
 import saveShippingDocument from '@/app/actions/shippingDocument/saveShippingDocument';
 import { CarrierAccountTypeEnum, carrierBaseUrl, carrierMessages } from '@/constants';
 import formatHsCode from '@/lib/formatHsCode';
+import mergePdfLabels from '@/lib/mergedPdfLabels';
 import { AdditionalDocument } from '@/models';
 import { CarrierTypes } from '@/types/carrier';
 import { ShippingTypes } from '@/types/shipping';
@@ -359,11 +361,36 @@ const createNavlungoPaper = async ({
     throw new Error(`${SHIPMENT_FAILED}: Etiket PDF'i indirilemedi (HTTP ${labelPdfRes.status}).`);
   }
 
-  const labelBuffer = Buffer.from(await labelPdfRes.arrayBuffer());
+  const downloadedBuffer = Buffer.from(await labelPdfRes.arrayBuffer());
+  let finalLabelBuffer: Buffer = downloadedBuffer;
+
+  const isZipFile = downloadedBuffer.length > 4 && downloadedBuffer.slice(0, 4).toString('hex') === '504b0304';
+
+  if (isZipFile) {
+    try {
+      const zip = await JSZip.loadAsync(downloadedBuffer);
+      const pdfBase64List: string[] = [];
+
+      for (const [filename, file] of Object.entries(zip.files)) {
+        if (!file.dir && filename.toLowerCase().endsWith('.pdf')) {
+          const pdfBuffer = await file.async('nodebuffer');
+          pdfBase64List.push(pdfBuffer.toString('base64'));
+        }
+      }
+
+      if (pdfBase64List.length > 0) {
+        finalLabelBuffer = await mergePdfLabels(pdfBase64List);
+      } else {
+        throw new Error('İndirilen ZIP arşivi içerisinde PDF bulunamadı.');
+      }
+    } catch (error) {
+      throw new Error(`${SHIPMENT_FAILED}: ZIP arşivi açılıp PDF'ler birleştirilirken hata oluştu. Detay: ${(error as Error).message}`, { cause: error });
+    }
+  }
 
   const saveLabelResult = await saveShippingDocument({
     shippingId,
-    label: labelBuffer,
+    label: finalLabelBuffer,
   });
 
   if (saveLabelResult.status === 'ERROR') {
@@ -473,7 +500,7 @@ const createNavlungoPaper = async ({
 
   return {
     trackingNumber,
-    label: labelBuffer.toString('base64'),
+    label: finalLabelBuffer.toString('base64'),
     invoice: '',
     carrierShipmentId: shipmentData.shipmentId,
     ...(documentUploadErrors.length > 0 && { documentUploadErrors }),
