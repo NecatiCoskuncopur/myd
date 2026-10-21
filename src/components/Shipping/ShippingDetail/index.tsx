@@ -141,7 +141,7 @@ const ShippingDetail = ({ canCreateBarcode }: ShippingDetailProps) => {
 
       <Grid container spacing={2} sx={{ mt: 3 }}>
         <Grid
-          size={{ xs: 12, md: 6 }}
+          size={{ xs: 12, md: 3 }}
           sx={{
             ...sectionSx,
             display: 'flex',
@@ -150,6 +150,18 @@ const ShippingDetail = ({ canCreateBarcode }: ShippingDetailProps) => {
           }}
         >
           Taşıyıcı Hesabı: {shipping.carrier?.displayName || 'Henüz barkod oluşturulmadı.'}
+        </Grid>
+
+        <Grid
+          size={{ xs: 12, md: 3 }}
+          sx={{
+            ...sectionSx,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          Desi/KG: {shipping.package?.weight || '-'}
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }} sx={sectionSx}>

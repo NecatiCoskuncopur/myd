@@ -17,6 +17,7 @@ import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 interface ShippingActionsMenuProps {
   anchorEl: HTMLButtonElement | null;
@@ -57,6 +58,20 @@ const ShippingActionsMenu = ({
 
   const isCancelled = selectedRow?.status === ShippingStatus.CANCELLED;
 
+  const handleNavigate = (path: string) => {
+    onClose();
+
+    router.push(path);
+  };
+
+  const handleView = () => {
+    if (!selectedRow?._id) {
+      return;
+    }
+
+    handleNavigate(`/panel/gonderilerim/${selectedRow?._id}`);
+  };
+
   const hasLabel = (() => {
     if (!selectedRow?.labeledAt) {
       return false;
@@ -85,6 +100,13 @@ const ShippingActionsMenu = ({
 
   return (
     <Menu anchorEl={anchorEl} open={open} onClose={onClose} disableScrollLock={true}>
+      <MenuItem onClick={handleView}>
+        <ListItemIcon>
+          <VisibilityOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+
+        <ListItemText>İncele</ListItemText>
+      </MenuItem>
       <MenuItem onClick={onOpenPackage}>
         <ListItemIcon>
           <Inventory2OutlinedIcon fontSize="small" />
