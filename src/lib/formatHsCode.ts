@@ -8,7 +8,7 @@ const formatHsCode = (hsCode: string, countryCode: string): string => {
     return cleanCode.slice(0, 10);
   }
 
-  return cleanCode.slice(0, 8);
+  return cleanCode.slice(0, 6);
 };
 
 export default formatHsCode;

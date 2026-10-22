@@ -46,7 +46,7 @@ const carrierConfig: Record<Carrier, ICarrierConfig> = {
   },
   [Carrier.NAVLUNGO]: {
     name: 'NAVLUNGO',
-    trackingUrl: 'https://www.ups.com/track?tracknum=%s',
+    trackingUrl: 'https://www.fedex.com/fedextrack/?trknbr=%s',
     credentials: [
       { key: 'clientId', value: '' },
       { key: 'clientSecret', value: '' },
