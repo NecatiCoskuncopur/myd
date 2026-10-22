@@ -327,7 +327,7 @@ const countries = [
     code: 'DK',
     name: 'Denmark',
     turkishName: 'Danimarka',
-    zone: 3,
+    zone: 2,
   },
   {
     code: 'DJ',
