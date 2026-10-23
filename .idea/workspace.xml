@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2baba228-6845-4964-ac00-bb179001fbf7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/carriers/fedex/createFedexPaper.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -249,7 +250,8 @@
       <workItem from="1792625587710" duration="22000" />
       <workItem from="1792661724062" duration="2821000" />
       <workItem from="1792690993634" duration="4000" />
-      <workItem from="1792691205082" duration="5795000" />
+      <workItem from="1792691205082" duration="7811000" />
+      <workItem from="1792769871574" duration="1107000" />
     </task>
     <servers />
   </component>

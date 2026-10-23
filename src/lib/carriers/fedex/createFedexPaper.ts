@@ -83,7 +83,14 @@ const createFedexPaper = async ({
     residential: false,
   };
 
-  const serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
+  const length = pkg.length;
+  const girth = 2 * (pkg.width + pkg.height);
+  const isOversized = length + girth > 330 || length > 274 || pkg.weight > 68;
+
+  let serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
+  if (isOversized) {
+    serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY_FREIGHT' : 'INTERNATIONAL_PRIORITY_FREIGHT';
+  }
 
   const additionalDocuments = shippingInstance.additionalDocumentIds?.length
     ? await AdditionalDocument.find({
