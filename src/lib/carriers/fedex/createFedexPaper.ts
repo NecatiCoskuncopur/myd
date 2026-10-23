@@ -83,9 +83,13 @@ const createFedexPaper = async ({
     residential: false,
   };
 
-  const length = pkg.length;
-  const girth = 2 * (pkg.width + pkg.height);
-  const isOversized = length + girth > 330 || length > 274 || pkg.weight > 68;
+  const reducedWeight = Number((pkg.weight * 0.8).toFixed(2));
+  const reducedLength = Math.round(pkg.length * 0.8);
+  const reducedWidth = Math.round(pkg.width * 0.8);
+  const reducedHeight = Math.round(pkg.height * 0.8);
+
+  const girth = 2 * (reducedWidth + reducedHeight);
+  const isOversized = reducedLength + girth > 330 || reducedLength > 274 || reducedWeight > 68;
 
   let serviceType = accountType === CarrierAccountTypeEnum.ECONOMY ? 'INTERNATIONAL_ECONOMY' : 'FEDEX_INTERNATIONAL_PRIORITY';
   if (isOversized) {
@@ -111,8 +115,8 @@ const createFedexPaper = async ({
       shipDatestamp: shipmentDate,
       pickupType: 'DROPOFF_AT_FEDEX_LOCATION',
       serviceType,
-      packagingType: pkg.weight <= 5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
-      totalWeight: pkg.weight * pkg.numberOfPackage,
+      packagingType: reducedWeight <= 2.5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
+      totalWeight: reducedWeight * pkg.numberOfPackage,
       preferredCurrency: content.currency,
       shipper: {
         accountNumber: {
@@ -256,11 +260,11 @@ const createFedexPaper = async ({
           sequenceNumber: 1,
           groupNumber: 1,
           groupPackageCount: pkg.numberOfPackage,
-          weight: { units: 'KG', value: pkg.weight },
+          weight: { units: 'KG', value: reducedWeight },
           dimensions: {
-            length: pkg.length,
-            width: pkg.width,
-            height: pkg.height,
+            length: reducedLength,
+            width: reducedWidth,
+            height: reducedHeight,
             units: 'CM',
           },
           ...(content.insurance && {
