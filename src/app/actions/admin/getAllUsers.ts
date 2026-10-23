@@ -41,57 +41,56 @@ const getAllUsers = async (params: AdminTypes.IListAllUsersParams): Promise<Resp
       match.isActive = false;
     }
 
-    // Doğrudan User.balance alanı üzerinden sıralama
     const sort: Record<string, 1 | -1> = balanceSorting === '1' || balanceSorting === '-1' ? { balance: Number(balanceSorting) as 1 | -1 } : { createdAt: -1 };
 
     const aggregation = await User.aggregate([
       { $match: match },
-
-      {
-        $project: {
-          _id: { $toString: '$_id' },
-          email: 1,
-          firstName: 1,
-          lastName: 1,
-          nickname: 1,
-          company: 1,
-          taxId: 1,
-          taxOffice: 1,
-          phone: 1,
-          address: 1,
-          role: 1,
-          isActive: 1,
-          barcodePermits: 1,
-
-          priceLists: {
-            $map: {
-              input: '$priceLists',
-              as: 'priceList',
-              in: {
-                serviceType: '$$priceList.serviceType',
-                priceListId: {
-                  $toString: '$$priceList.priceListId',
-                },
-              },
-            },
-          },
-
-          createdAt: {
-            $dateToString: {
-              format: '%Y-%m-%dT%H:%M:%S.%LZ',
-              date: '$createdAt',
-            },
-          },
-          balance: {
-            total: { $ifNull: ['$balance', 0] },
-          },
-        },
-      },
-
       {
         $facet: {
           metadata: [{ $count: 'totalCount' }],
-          docs: [{ $sort: sort }, { $skip: skip }, { $limit: safeLimit }],
+          docs: [
+            { $sort: sort },
+            { $skip: skip },
+            { $limit: safeLimit },
+            {
+              $project: {
+                _id: { $toString: '$_id' },
+                email: 1,
+                firstName: 1,
+                lastName: 1,
+                nickname: 1,
+                company: 1,
+                taxId: 1,
+                taxOffice: 1,
+                phone: 1,
+                address: 1,
+                role: 1,
+                isActive: 1,
+                barcodePermits: 1,
+                priceLists: {
+                  $map: {
+                    input: '$priceLists',
+                    as: 'priceList',
+                    in: {
+                      serviceType: '$$priceList.serviceType',
+                      priceListId: {
+                        $toString: '$$priceList.priceListId',
+                      },
+                    },
+                  },
+                },
+                createdAt: {
+                  $dateToString: {
+                    format: '%Y-%m-%dT%H:%M:%S.%LZ',
+                    date: '$createdAt',
+                  },
+                },
+                balance: {
+                  total: { $ifNull: ['$balance', 0] },
+                },
+              },
+            },
+          ],
         },
       },
     ]);

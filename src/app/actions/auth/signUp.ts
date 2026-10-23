@@ -35,19 +35,6 @@ const signUp = async (data: AuthTypes.ISignUpPayload): Promise<ResponseTypes.IAc
 
     const email = userData.email.trim().toLowerCase();
 
-    const existingUser = await User.findOne({
-      email,
-    })
-      .select('_id')
-      .lean();
-
-    if (existingUser) {
-      return {
-        status: 'ERROR',
-        message: userMessages.EXIST,
-      };
-    }
-
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
     const newUser = await User.create({
       ...userData,

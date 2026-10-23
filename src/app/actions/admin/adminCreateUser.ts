@@ -35,15 +35,6 @@ const adminCreateUser = async (data: AdminTypes.ICreateUser): Promise<ResponseTy
 
     const email = validatedData.email.trim().toLowerCase();
 
-    const existingUser = await User.findOne({ email }).select('_id').lean();
-
-    if (existingUser) {
-      return {
-        status: 'ERROR',
-        message: EXIST,
-      };
-    }
-
     const hashedPassword = await bcrypt.hash(validatedData.password, BCRYPT_SALT_ROUNDS);
 
     const newUser = await User.create({

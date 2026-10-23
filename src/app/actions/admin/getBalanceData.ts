@@ -1,6 +1,8 @@
 'use server';
 
-import { generalMessages, UserRole } from '@/constants';
+import { Types } from 'mongoose';
+
+import { generalMessages, userMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import requireRoles from '@/lib/requireRoles';
@@ -26,6 +28,13 @@ const getBalanceData = async (params: AdminTypes.IGetBalanceParams): Promise<Res
     const skip = (page - 1) * limit;
 
     const targetUserId = params.userId;
+
+    if (!targetUserId || !Types.ObjectId.isValid(targetUserId)) {
+      return {
+        status: 'ERROR',
+        message: userMessages.NOT_FOUND,
+      };
+    }
 
     const [userDoc, transactionDocs, totalCount] = await Promise.all([
       User.findById(targetUserId).select('balance').lean(),

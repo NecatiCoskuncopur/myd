@@ -32,7 +32,9 @@ const forgotPassword = async (data: AuthTypes.IForgotPasswordPayload): Promise<R
 
     const user = await User.findOne({
       email: validatedData.email.trim().toLowerCase(),
-    }).select('_id email +password');
+    })
+      .select('_id email +password')
+      .lean();
 
     if (!user) {
       return {

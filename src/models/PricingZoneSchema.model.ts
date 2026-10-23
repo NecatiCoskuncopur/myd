@@ -14,16 +14,19 @@ const PricingZoneSchema = new Schema(
         weight: {
           type: Number,
           required: true,
+          min: 0,
         },
         price: {
           type: Number,
           required: true,
+          min: 0,
         },
       },
     ],
     than: {
       type: Number,
       required: true,
+      min: 0,
     },
   },
   {

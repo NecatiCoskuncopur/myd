@@ -2,7 +2,7 @@
 
 import { ValidationError } from 'yup';
 
-import { escapeRegex, generalMessages, pricingListMessages, UserRole } from '@/constants';
+import { generalMessages, pricingListMessages, UserRole } from '@/constants';
 import captureActionError from '@/lib/captureActionError';
 import connectMongoDB from '@/lib/db';
 import isMongoDuplicateKeyError from '@/lib/isMongoDuplicateKeyError';
@@ -30,23 +30,6 @@ const createPricingList = async (data: PricingListTypes.ICreatePricingListPayloa
     await connectMongoDB();
 
     const listName = validatedData.name.trim();
-    const safeListName = escapeRegex(listName);
-
-    const existingPricingList = await PricingList.findOne({
-      name: {
-        $regex: `^${safeListName}$`,
-        $options: 'i',
-      },
-    })
-      .select('_id')
-      .lean();
-
-    if (existingPricingList) {
-      return {
-        status: 'ERROR',
-        message: EXIST,
-      };
-    }
 
     await PricingList.create({
       ...validatedData,

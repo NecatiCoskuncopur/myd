@@ -25,6 +25,7 @@ const AdditionalDocumentSchema = new Schema(
   },
 );
 
+AdditionalDocumentSchema.index({ userId: 1 });
 AdditionalDocumentSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 90 });
 
 export type IAdditionalDocument = InferSchemaType<typeof AdditionalDocumentSchema>;

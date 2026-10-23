@@ -145,6 +145,13 @@ const CarrierAccountSchema = new Schema(
   },
 );
 
+CarrierAccountSchema.index({ isActive: 1 });
+
+CarrierAccountSchema.index({ name: 1 });
+CarrierAccountSchema.index({ displayName: 1 });
+CarrierAccountSchema.index({ accountNumber: 1 });
+CarrierAccountSchema.index({ isActive: 1, createdAt: -1 });
+
 export type ICarrierAccount = InferSchemaType<typeof CarrierAccountSchema>;
 
 export type CarrierAccountDocument = HydratedDocument<ICarrierAccount> & {

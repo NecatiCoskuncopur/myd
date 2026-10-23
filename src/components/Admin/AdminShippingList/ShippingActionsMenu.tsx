@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import QrCode2OutlinedIcon from '@mui/icons-material/QrCode2Outlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 
 import { ShippingStatus } from '@/constants';
@@ -17,7 +18,6 @@ import { AdditionalDocumentTypes } from '@/types/additionalDocument';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
 import { ShippingTypes } from '@/types/shipping';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 interface ShippingActionsMenuProps {
   anchorEl: HTMLButtonElement | null;

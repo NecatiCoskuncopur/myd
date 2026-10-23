@@ -131,6 +131,13 @@ const UserSchema = new Schema(
   { timestamps: true },
 );
 
+UserSchema.index({ firstName: 1 });
+UserSchema.index({ lastName: 1 });
+UserSchema.index({ email: 1 });
+UserSchema.index({ company: 1 });
+UserSchema.index({ isActive: 1, createdAt: -1 });
+UserSchema.index({ isActive: 1, balance: -1 });
+
 UserSchema.plugin(paginate);
 
 export type IUser = InferSchemaType<typeof UserSchema>;

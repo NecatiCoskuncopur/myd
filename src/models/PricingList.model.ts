@@ -24,7 +24,13 @@ const PricingListSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-PricingListSchema.index({ name: 1 }, { unique: true });
+PricingListSchema.index(
+  { name: 1 },
+  {
+    unique: true,
+    collation: { locale: 'tr', strength: 2 },
+  },
+);
 PricingListSchema.plugin(mongoosePaginate);
 export type IPricingList = InferSchemaType<typeof PricingListSchema>;
 export type PricingListDocument = HydratedDocument<IPricingList> & {

@@ -53,6 +53,9 @@ const ConsigneeSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+ConsigneeSchema.index({ userId: 1, name: 1 });
+ConsigneeSchema.index({ name: 1 });
+
 export type IConsignee = InferSchemaType<typeof ConsigneeSchema>;
 
 export type ConsigneeDocument = HydratedDocument<IConsignee> & {

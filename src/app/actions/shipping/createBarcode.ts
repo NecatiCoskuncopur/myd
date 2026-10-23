@@ -102,7 +102,7 @@ const createBarcode = async (
       };
     }
 
-    const userForPricing = await User.findById(shipping.userId).lean();
+    const userForPricing = shipping.userId.toString() === userId ? user : await User.findById(shipping.userId).lean();
 
     if (!userForPricing) {
       return {

@@ -171,6 +171,16 @@ const ShippingSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+ShippingSchema.index({ createdAt: -1 });
+ShippingSchema.index({ userId: 1, createdAt: -1 });
+ShippingSchema.index({ additionalDocumentIds: 1 });
+ShippingSchema.index({ 'carrier.trackingNumber': 1 });
+ShippingSchema.index({ 'sender.name': 1 });
+ShippingSchema.index({ 'sender.company': 1 });
+ShippingSchema.index({ 'consignee.name': 1 });
+ShippingSchema.index({ 'consignee.company': 1 });
+ShippingSchema.index({ 'consignee.phone': 1 });
+
 ShippingSchema.plugin(paginate);
 
 export type IShipping = InferSchemaType<typeof ShippingSchema>;

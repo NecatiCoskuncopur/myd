@@ -17,6 +17,7 @@ const TransactionSchema = new Schema(
     amount: {
       type: Number,
       required: true,
+      min: 0,
     },
     shippingId: {
       type: Schema.Types.ObjectId,
@@ -33,6 +34,7 @@ const TransactionSchema = new Schema(
 );
 
 TransactionSchema.index({ userId: 1, createdAt: -1 });
+TransactionSchema.index({ shippingId: 1, transactionType: 1 });
 
 TransactionSchema.plugin(paginate);
 

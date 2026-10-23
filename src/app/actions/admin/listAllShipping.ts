@@ -55,7 +55,7 @@ const listShippingAdmin = async (
     }
 
     const createRegex = (val: string) => ({
-      $regex: escapeRegex(val),
+      $regex: `^${escapeRegex(val)}`,
       $options: 'i',
     });
 
