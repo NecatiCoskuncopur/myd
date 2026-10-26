@@ -106,6 +106,8 @@ const createFedexPaper = async ({
 
   const shipmentDate = new Date(Date.now() + 86_400_000).toISOString().split('T')[0];
 
+  const fedexCurrency = content.currency === 'GBP' ? 'UKL' : content.currency;
+
   const payload = {
     labelResponseOptions: 'LABEL',
     accountNumber: {
@@ -117,7 +119,7 @@ const createFedexPaper = async ({
       serviceType,
       packagingType: reducedWeight <= 2.5 ? 'FEDEX_PAK' : 'YOUR_PACKAGING',
       totalWeight: reducedWeight * pkg.numberOfPackage,
-      preferredCurrency: content.currency,
+      preferredCurrency: fedexCurrency,
       shipper: {
         accountNumber: {
           value: accountNumber,
@@ -179,7 +181,7 @@ const createFedexPaper = async ({
           },
         },
         customsValue: {
-          currency: content.currency,
+          currency: fedexCurrency,
           amount: totalValue,
         },
         partiesToTransactionAreRelated: false,
@@ -188,7 +190,7 @@ const createFedexPaper = async ({
           comments: [productDesc],
           ...(content.freight && {
             freightCharge: {
-              currency: content.currency,
+              currency: fedexCurrency,
               amount: content.freight,
             },
           }),
@@ -218,11 +220,11 @@ const createFedexPaper = async ({
             quantity: product.piece,
             quantityUnits: 'PCS',
             unitPrice: {
-              currency: content.currency,
+              currency: fedexCurrency,
               amount: product.unitPrice,
             },
             customsValue: {
-              currency: content.currency,
+              currency: fedexCurrency,
               amount: product.unitPrice * product.piece,
             },
           };
@@ -269,7 +271,7 @@ const createFedexPaper = async ({
           },
           ...(content.insurance && {
             insuredValue: {
-              currency: content.currency,
+              currency: fedexCurrency,
               amount: content.insuranceAmount,
             },
           }),
