@@ -1,5 +1,6 @@
 'use client';
 
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -16,9 +17,10 @@ interface PriceListActionsMenuProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onDuplicate: () => void;
 }
 
-const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, onClose, onEdit, onDelete }: PriceListActionsMenuProps) => {
+const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, onClose, onEdit, onDelete, onDuplicate }: PriceListActionsMenuProps) => {
   const isOpen = menuOpen && anchorEl !== null && selectedRow?._id === row._id;
 
   return (
@@ -32,8 +34,14 @@ const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, on
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
-
           <ListItemText>Düzenle</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={onDuplicate}>
+          <ListItemIcon>
+            <ContentCopyIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Çoğalt</ListItemText>
         </MenuItem>
 
         <MenuItem
@@ -50,7 +58,6 @@ const PriceListActionsMenu = ({ row, selectedRow, anchorEl, menuOpen, onOpen, on
               }}
             />
           </ListItemIcon>
-
           <ListItemText>Sil</ListItemText>
         </MenuItem>
       </Menu>

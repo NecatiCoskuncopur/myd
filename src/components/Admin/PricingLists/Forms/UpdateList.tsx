@@ -184,6 +184,36 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
     onClose();
   };
 
+  const handleBulkPriceUpdate = (operation: 'increase' | 'decrease', type: 'amount' | 'percentage', value: number) => {
+    setRows(prevRows =>
+      prevRows.map(row => {
+        const newRow = { ...row };
+
+        Object.keys(newRow).forEach(key => {
+          if (key.startsWith('zone') && newRow[key] !== null && newRow[key] !== '') {
+            const currentValue = Number(newRow[key]);
+
+            if (!isNaN(currentValue)) {
+              let updatedValue = currentValue;
+
+              const changeAmount = type === 'amount' ? value : currentValue * (value / 100);
+
+              if (operation === 'increase') {
+                updatedValue += changeAmount;
+              } else if (operation === 'decrease') {
+                updatedValue -= changeAmount;
+              }
+
+              newRow[key] = Math.max(0, Number(updatedValue.toFixed(2)));
+            }
+          }
+        });
+
+        return newRow;
+      }),
+    );
+  };
+
   const onSubmit = async (data: PricingListTypes.ICreatePricingListPayload) => {
     if (!list) {
       return;
@@ -243,6 +273,7 @@ const UpdateList = ({ open, onClose, onSuccess, list }: UpdateListProps) => {
           onRemoveLastRow={removeLastRow}
           onProcessRowUpdate={processRowUpdate}
           onPastePrices={handlePastePrices}
+          onBulkPriceUpdate={handleBulkPriceUpdate}
         />
       </DialogContent>
 

@@ -4,15 +4,12 @@ import { useState } from 'react';
 
 import { PricingListTypes } from '@/types/pricingList';
 
-type ModalType = 'create' | 'edit' | 'delete' | '';
+type ModalType = 'create' | 'edit' | 'delete' | 'duplicate' | '';
 
 const usePriceListActions = () => {
   const [selectedRow, setSelectedRow] = useState<PricingListTypes.IPricingList | null>(null);
-
   const [actionIconButton, setActionIconButton] = useState<HTMLButtonElement | null>(null);
-
   const [menuOpen, setMenuOpen] = useState(false);
-
   const [modalState, setModalState] = useState<{
     type: ModalType;
     open: boolean;
@@ -37,54 +34,38 @@ const usePriceListActions = () => {
     setSelectedRow(null);
     setActionIconButton(null);
     setMenuOpen(false);
-
-    setModalState({
-      type: 'create',
-      open: true,
-    });
+    setModalState({ type: 'create', open: true });
   };
 
   const openEditModal = () => {
-    if (!selectedRow) {
-      return;
-    }
-
+    if (!selectedRow) return;
     setMenuOpen(false);
-
-    setModalState({
-      type: 'edit',
-      open: true,
-    });
+    setModalState({ type: 'edit', open: true });
   };
 
   const openDeleteModal = () => {
-    if (!selectedRow) {
-      return;
-    }
+    if (!selectedRow) return;
     setMenuOpen(false);
+    setModalState({ type: 'delete', open: true });
+  };
 
-    setModalState({
-      type: 'delete',
-      open: true,
-    });
+  const openDuplicateModal = () => {
+    if (!selectedRow) return;
+    setMenuOpen(false);
+    setModalState({ type: 'duplicate', open: true });
   };
 
   const closeModal = () => {
     setSelectedRow(null);
     setActionIconButton(null);
     setMenuOpen(false);
-
-    setModalState({
-      type: '',
-      open: false,
-    });
+    setModalState({ type: '', open: false });
   };
 
   const isCreateModalOpen = modalState.type === 'create' && modalState.open;
-
   const isEditModalOpen = modalState.type === 'edit' && modalState.open;
-
   const isDeleteModalOpen = modalState.type === 'delete' && modalState.open;
+  const isDuplicateModalOpen = modalState.type === 'duplicate' && modalState.open;
 
   return {
     selectedRow,
@@ -94,6 +75,7 @@ const usePriceListActions = () => {
     isCreateModalOpen,
     isEditModalOpen,
     isDeleteModalOpen,
+    isDuplicateModalOpen,
 
     openMenu,
     closeMenu,
@@ -101,6 +83,7 @@ const usePriceListActions = () => {
     openCreateModal,
     openEditModal,
     openDeleteModal,
+    openDuplicateModal,
     closeModal,
   };
 };

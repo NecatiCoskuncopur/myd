@@ -10,6 +10,7 @@ import columns from './columns';
 import DeleteList from './DeleteList';
 import FilterSection from './FilterSection';
 import CreateList from './Forms/CreateList';
+import DuplicateList from './Forms/DuplicateList';
 import UpdateList from './Forms/UpdateList';
 import usePriceListActions from './hooks/usePriceListActions';
 import usePriceLists from './hooks/usePriceLists';
@@ -28,6 +29,7 @@ const PriceLists = () => {
     isCreateModalOpen,
     isEditModalOpen,
     isDeleteModalOpen,
+    isDuplicateModalOpen,
 
     openMenu,
     closeMenu,
@@ -35,6 +37,7 @@ const PriceLists = () => {
     openCreateModal,
     openEditModal,
     openDeleteModal,
+    openDuplicateModal,
     closeModal,
   } = usePriceListActions();
 
@@ -57,6 +60,7 @@ const PriceLists = () => {
           onClose={closeMenu}
           onEdit={openEditModal}
           onDelete={openDeleteModal}
+          onDuplicate={openDuplicateModal} // YENİ EKLENEN PROP
         />
       ),
     },
@@ -103,6 +107,8 @@ const PriceLists = () => {
       <CreateList open={isCreateModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
       <UpdateList list={selectedRow} open={isEditModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
       <DeleteList list={selectedRow} anchorEl={actionIconButton} open={isDeleteModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
+
+      <DuplicateList list={selectedRow} open={isDuplicateModalOpen} onClose={closeModal} onSuccess={handleSuccess} />
     </Wrapper>
   );
 };

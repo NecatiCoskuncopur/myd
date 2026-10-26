@@ -109,12 +109,12 @@ const listShippingAdmin = async (
           [excelColumns.content]: productNames,
           [excelColumns.totalContentValue]: totalProductValue,
           [excelColumns.accountType]: item.carrier?.accountType || '',
+          [excelColumns.totalShippingCost]: totalShippingCost || '',
           [excelColumns.price]: baseAmount || '',
           [excelColumns.insuranceAmount]: insuranceAmount || '',
           [excelColumns.taxAmount]: taxAmount || '',
           [excelColumns.serviceFee]: serviceFee || '',
           [excelColumns.longSideCost]: longSideCost || '',
-          [excelColumns.totalShippingCost]: totalShippingCost || '',
           [excelColumns.date]: item.createdAt ? moment(item.createdAt).format('YYYY-MM-DD') : '',
           [excelColumns.status]: item.status === 'CANCELLED' ? 'İPTAL' : '',
         };
