@@ -253,7 +253,7 @@ const columns: GridColDef<BalanceRow>[] = [
           <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
             <Link
               component={NextLink}
-              href={`/admin/gonderiler/${shippingTargetId}`}
+              href={`/panel/gonderilerim/${shippingTargetId}`}
               sx={{
                 fontWeight: 600,
                 fontSize: '0.875rem',
