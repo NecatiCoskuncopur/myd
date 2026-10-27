@@ -9,7 +9,7 @@ import connectMongoDB from '@/lib/db';
 import getMailTransport from '@/lib/mailer';
 import { Shipping, Transaction } from '@/models';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const maxDuration = 60;
 
 interface IUserPopulated {
   _id: Types.ObjectId;
@@ -80,6 +80,14 @@ const isPopulatedShipping = (shipping: unknown): shipping is IShippingPopulated 
 
 type ExcelRowItem = Record<string, string | number>;
 
+function chunkArray<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size));
+  }
+  return chunks;
+}
+
 export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get('authorization');
@@ -89,7 +97,7 @@ export async function GET(req: Request) {
 
     await connectMongoDB();
 
-    const endOfRange = moment().startOf('isoWeek');
+    const endOfRange = moment().startOf('day');
     const startOfRange = moment(endOfRange).subtract(7, 'days');
 
     const rawTransactions = await Transaction.find({
@@ -151,103 +159,113 @@ export async function GET(req: Request) {
     const displayEndDate = moment(endOfRange).subtract(1, 'day');
     const dateRangeStr = `${startOfRange.format('DD.MM.YYYY')} - ${displayEndDate.format('DD.MM.YYYY')}`;
 
+    const userList = Array.from(userGroups.values());
     let sentCount = 0;
     const failedEmails: string[] = [];
 
-    for (const { user, transactions } of userGroups.values()) {
-      try {
-        const excelRows: ExcelRowItem[] = transactions.map(t => {
-          const shipping = isPopulatedShipping(t.shippingId) ? t.shippingId : null;
-          const carrier = shipping?.carrier;
+    const sendMailForUser = async ({ user, transactions }: IUserGroup) => {
+      const excelRows: ExcelRowItem[] = transactions.map(t => {
+        const shipping = isPopulatedShipping(t.shippingId) ? t.shippingId : null;
+        const carrier = shipping?.carrier;
 
-          const totalProductValue = shipping?.content?.products?.reduce((prev, { piece = 0, unitPrice = 0 }) => prev + piece * unitPrice, 0) ?? 0;
-          const productNames =
-            shipping?.content?.products
-              ?.map(p => p.name)
-              .filter(Boolean)
-              .join(', ') ?? '';
+        const totalProductValue = shipping?.content?.products?.reduce((prev, { piece = 0, unitPrice = 0 }) => prev + piece * unitPrice, 0) ?? 0;
+        const productNames =
+          shipping?.content?.products
+            ?.map(p => p.name)
+            .filter(Boolean)
+            .join(', ') ?? '';
 
-          const baseAmount = Number(carrier?.amount) || 0;
-          const insuranceAmount = Number(carrier?.insuranceCost) || 0;
-          const taxAmount = Number(carrier?.dutiesAndTaxesCost) || 0;
-          const serviceFee = Number(carrier?.serviceFee) || 0;
-          const longSideCost = Number(carrier?.longSideSurchargeCost) || 0;
-          const totalShippingCost = baseAmount + insuranceAmount + taxAmount + serviceFee + longSideCost;
+        const baseAmount = Number(carrier?.amount) || 0;
+        const insuranceAmount = Number(carrier?.insuranceCost) || 0;
+        const taxAmount = Number(carrier?.dutiesAndTaxesCost) || 0;
+        const serviceFee = Number(carrier?.serviceFee) || 0;
+        const longSideCost = Number(carrier?.longSideSurchargeCost) || 0;
+        const totalShippingCost = baseAmount + insuranceAmount + taxAmount + serviceFee + longSideCost;
 
-          return {
-            [excelColumns.date]: shipping?.createdAt ? moment(shipping.createdAt).format('YYYY-MM-DD') : '',
-            [excelColumns.senderName]: shipping?.sender?.name || '',
-            [excelColumns.senderCompany]: shipping?.sender?.company || '',
-            [excelColumns.consigneeName]: shipping?.consignee?.name || '',
-            [excelColumns.consigneeCountry]: shipping?.consignee?.address?.country || '',
-            [excelColumns.trackingNumber]: carrier?.trackingNumber || '',
-            [excelColumns.weight]: shipping?.package?.weight ?? 0,
-            [excelColumns.content]: productNames,
-            [excelColumns.totalContentValue]: totalProductValue,
-            [excelColumns.accountType]: carrier?.accountType || '',
-            [excelColumns.price]: baseAmount,
-            [excelColumns.insuranceAmount]: insuranceAmount,
-            [excelColumns.taxAmount]: taxAmount,
-            [excelColumns.serviceFee]: serviceFee,
-            [excelColumns.longSideCost]: longSideCost,
-            [excelColumns.totalShippingCost]: totalShippingCost,
-          };
-        });
+        return {
+          [excelColumns.date]: shipping?.createdAt ? moment(shipping.createdAt).format('YYYY-MM-DD') : '',
+          [excelColumns.senderName]: shipping?.sender?.name || '',
+          [excelColumns.senderCompany]: shipping?.sender?.company || '',
+          [excelColumns.consigneeName]: shipping?.consignee?.name || '',
+          [excelColumns.consigneeCountry]: shipping?.consignee?.address?.country || '',
+          [excelColumns.trackingNumber]: carrier?.trackingNumber || '',
+          [excelColumns.weight]: shipping?.package?.weight ?? 0,
+          [excelColumns.content]: productNames,
+          [excelColumns.totalContentValue]: totalProductValue,
+          [excelColumns.accountType]: carrier?.accountType || '',
+          [excelColumns.price]: baseAmount,
+          [excelColumns.insuranceAmount]: insuranceAmount,
+          [excelColumns.taxAmount]: taxAmount,
+          [excelColumns.serviceFee]: serviceFee,
+          [excelColumns.longSideCost]: longSideCost,
+          [excelColumns.totalShippingCost]: totalShippingCost,
+        };
+      });
 
-        const totalAmountSpent = transactions.reduce((acc, cur) => acc + (cur.amount || 0), 0);
+      const totalAmountSpent = transactions.reduce((acc, cur) => acc + (cur.amount || 0), 0);
 
-        excelRows.push({
-          [excelColumns.date]: '',
-          [excelColumns.senderName]: '',
-          [excelColumns.senderCompany]: '',
-          [excelColumns.consigneeName]: '',
-          [excelColumns.consigneeCountry]: '',
-          [excelColumns.trackingNumber]: '',
-          [excelColumns.weight]: '',
-          [excelColumns.content]: '',
-          [excelColumns.totalContentValue]: '',
-          [excelColumns.accountType]: '',
-          [excelColumns.price]: '',
-          [excelColumns.insuranceAmount]: '',
-          [excelColumns.taxAmount]: '',
-          [excelColumns.serviceFee]: '',
-          [excelColumns.longSideCost]: 'TOPLAM',
-          [excelColumns.totalShippingCost]: Number(totalAmountSpent.toFixed(2)),
-        });
+      excelRows.push({
+        [excelColumns.date]: '',
+        [excelColumns.senderName]: '',
+        [excelColumns.senderCompany]: '',
+        [excelColumns.consigneeName]: '',
+        [excelColumns.consigneeCountry]: '',
+        [excelColumns.trackingNumber]: '',
+        [excelColumns.weight]: '',
+        [excelColumns.content]: '',
+        [excelColumns.totalContentValue]: '',
+        [excelColumns.accountType]: '',
+        [excelColumns.price]: '',
+        [excelColumns.insuranceAmount]: '',
+        [excelColumns.taxAmount]: '',
+        [excelColumns.serviceFee]: '',
+        [excelColumns.longSideCost]: 'TOPLAM',
+        [excelColumns.totalShippingCost]: Number(totalAmountSpent.toFixed(2)),
+      });
 
-        const worksheet = XLSX.utils.json_to_sheet(excelRows);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Harcama_Ekstresi');
+      const worksheet = XLSX.utils.json_to_sheet(excelRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Harcama_Ekstresi');
 
-        const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+      const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-        const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || 'Değerli Müşterimiz';
-        const fileName = `Harcama_Ekstresi_${startOfRange.format('DD_MM_YYYY')}_${displayEndDate.format('DD_MM_YYYY')}.xlsx`;
+      const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || 'Değerli Müşterimiz';
+      const fileName = `Harcama_Ekstresi_${startOfRange.format('DD_MM_YYYY')}_${displayEndDate.format('DD_MM_YYYY')}.xlsx`;
 
-        await transporter.sendMail({
-          from: `"Finans & Muhasebe" <${senderEmail}>`,
-          to: user.email,
-          subject: `Haftalık Harcama Ekstreniz (${dateRangeStr})`,
-          text: `Merhaba ${fullName},\n\n${dateRangeStr} tarihleri arasında hesabınızdan gerçekleşen toplam ${totalAmountSpent.toFixed(2)}$ tutarındaki harcamalarınıza ait detaylı ekstre ekte yer almaktadır.\n\nİyi çalışmalar dileriz.`,
-          attachments: [
-            {
-              filename: fileName,
-              content: excelBuffer,
-            },
-          ],
-        });
-
-        sentCount++;
-        await sleep(200);
-      } catch (userMailError) {
-        captureActionError('cron.weeklyBalanceReport.userMailFailed', userMailError, {
-          extras: {
-            userId: String(user._id),
-            email: user.email,
+      await transporter.sendMail({
+        from: `"Finans & Muhasebe" <${senderEmail}>`,
+        to: user.email,
+        subject: `Haftalık Harcama Ekstreniz (${dateRangeStr})`,
+        text: `Merhaba ${fullName},\n\n${dateRangeStr} tarihleri arasında hesabınızdan gerçekleşen toplam ${totalAmountSpent.toFixed(2)}$ tutarındaki harcamalarınıza ait detaylı ekstre ekte yer almaktadır.\n\nİyi çalışmalar dileriz.`,
+        attachments: [
+          {
+            filename: fileName,
+            content: excelBuffer,
           },
-        });
-        failedEmails.push(user.email);
-      }
+        ],
+      });
+    };
+
+    const BATCH_SIZE = 5;
+    const userBatches = chunkArray(userList, BATCH_SIZE);
+
+    for (const batch of userBatches) {
+      const results = await Promise.allSettled(batch.map(item => sendMailForUser(item)));
+
+      results.forEach((res, index) => {
+        const currentUser = batch[index].user;
+        if (res.status === 'fulfilled') {
+          sentCount++;
+        } else {
+          failedEmails.push(currentUser.email);
+          captureActionError('cron.weeklyBalanceReport.userMailFailed', res.reason, {
+            extras: {
+              userId: String(currentUser._id),
+              email: currentUser.email,
+            },
+          });
+        }
+      });
     }
 
     return NextResponse.json(
