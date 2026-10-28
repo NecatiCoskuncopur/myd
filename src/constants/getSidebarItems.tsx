@@ -93,7 +93,7 @@ const getSidebarItems = (role: UserTypes.ICurrentUser['role'] | ''): UserTypes.I
         },
       ]
     : []),
-  ...(role === 'ADMIN'
+  ...(role !== 'CUSTOMER'
     ? [
         {
           key: 'sistem-parametreleri',

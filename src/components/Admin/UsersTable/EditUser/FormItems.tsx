@@ -1,12 +1,12 @@
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PriceChangeOutlinedIcon from '@mui/icons-material/PriceChangeOutlined';
-import { Divider, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Divider, FormControl, FormHelperText, Grid, InputAdornment, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import type { Control, FieldErrors } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import { AddressFields, ContactFields, NickNameField, PersonalFields, TaxFields } from '@/components';
-import { CarrierAccountTypeEnum } from '@/constants';
+import { CarrierAccountTypeEnum, UserRole } from '@/constants';
 import { AdminTypes } from '@/types/admin';
 import { CarrierAccountTypes } from '@/types/carrierAccount';
 import { PricingListTypes } from '@/types/pricingList';
@@ -18,11 +18,13 @@ type FormItemsProps = {
   errors: FieldErrors<AdminTypes.ISetUserPayload>;
   pricingLists: PricingListTypes.IPricingList[];
   carrierAccounts: CarrierAccountTypes.ICarrierAccount[];
+  originalRole?: UserRole | string;
 };
 
 const priceListTypes = Object.values(CarrierAccountTypeEnum);
 
-const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItemsProps) => {
+const FormItems = ({ control, errors, pricingLists, carrierAccounts, originalRole }: FormItemsProps) => {
+  const isAdmin = originalRole === UserRole.ADMIN;
   return (
     <Grid container spacing={2}>
       <Grid size={12}>
@@ -84,11 +86,12 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
           name="role"
           control={control}
           render={({ field }) => (
-            <FormControl fullWidth error={!!errors.role}>
+            <FormControl fullWidth error={!!errors.role} disabled={isAdmin}>
               <InputLabel shrink>Üye Rolü</InputLabel>
 
               <Select
                 {...field}
+                value={isAdmin ? UserRole.ADMIN : field.value}
                 label="Üye Rolü"
                 startAdornment={
                   <InputAdornment position="start">
@@ -96,12 +99,18 @@ const FormItems = ({ control, errors, pricingLists, carrierAccounts }: FormItems
                   </InputAdornment>
                 }
               >
-                <MenuItem value="CUSTOMER">Müşteri</MenuItem>
+                {/* Kullanıcı Admin ise seçili görünmesi için eklenen disabled opsiyon */}
+                {isAdmin && (
+                  <MenuItem value={UserRole.ADMIN} disabled>
+                    Yönetici (Admin)
+                  </MenuItem>
+                )}
 
-                <MenuItem value="ADMIN">Yönetici</MenuItem>
-
-                <MenuItem value="OPERATOR">Operatör</MenuItem>
+                <MenuItem value={UserRole.CUSTOMER}>Müşteri</MenuItem>
+                <MenuItem value={UserRole.OPERATOR}>Operatör</MenuItem>
               </Select>
+
+              {isAdmin && <FormHelperText>Yönetici rolü sistem arayüzünden değiştirilemez.</FormHelperText>}
             </FormControl>
           )}
         />

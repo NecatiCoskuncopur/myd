@@ -1,6 +1,8 @@
 import { CarrierAccountTypeEnum } from '@/constants';
 
 declare namespace AdminTypes {
+  type AssignableUserRole = Exclude<UserRole, UserRole.ADMIN>;
+
   interface IAddTransactionUserBalancePayload {
     userId: string;
     amount: number;
@@ -39,7 +41,7 @@ declare namespace AdminTypes {
     address: UserTypes.IAddress;
     userId: string;
     priceLists: IPriceListAssignment[];
-    role: 'CUSTOMER' | 'ADMIN' | 'OPERATOR';
+    role: 'CUSTOMER' | 'OPERATOR';
     isActive: boolean;
     barcodePermits: string[];
   }

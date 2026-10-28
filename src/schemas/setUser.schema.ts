@@ -22,7 +22,7 @@ const setUserSchema = editUserSchema.shape({
       const types = value.map(item => item.serviceType);
       return new Set(types).size === types.length;
     }),
-  role: yup.string().oneOf(['CUSTOMER', 'ADMIN', 'OPERATOR'], ROLE.INVALID).required(ROLE.REQUIRED),
+  role: yup.string().oneOf(['CUSTOMER', 'OPERATOR'], ROLE.INVALID).required(ROLE.REQUIRED),
   nickname: yup
     .string()
     .transform(value => (value === '' ? undefined : value))

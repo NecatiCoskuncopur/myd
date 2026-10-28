@@ -27,7 +27,7 @@ export const proxy = auth(request => {
     return NextResponse.redirect(new URL('/panel', request.url));
   }
 
-  if (isSystemParamRoute && user?.role !== UserRole.ADMIN) {
+  if (isSystemParamRoute && (!user?.role || !managementRoles.includes(user.role))) {
     return NextResponse.redirect(new URL('/panel', request.url));
   }
 
@@ -35,5 +35,5 @@ export const proxy = auth(request => {
 });
 
 export const config = {
-  matcher: ['/panel/:path*', '/kullanici/:path*', '/panel/sistem-parametreleri/:path*'],
+  matcher: ['/panel/:path*', '/kullanici/:path*'],
 };

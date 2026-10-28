@@ -75,6 +75,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
     if (!open || !user) {
       return;
     }
+    const safeRole: AdminTypes.ISetUserPayload['role'] = user.role === 'OPERATOR' ? 'OPERATOR' : 'CUSTOMER';
 
     reset({
       userId: user._id,
@@ -93,7 +94,7 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
         city: user.address?.city ?? '',
         postalCode: user.address?.postalCode ?? '',
       },
-      role: user.role,
+      role: safeRole,
       isActive: user.isActive,
       priceLists: priceListTypes.map(serviceType => {
         const currentPriceList = user.priceLists?.find(item => item.serviceType === serviceType);
@@ -215,7 +216,13 @@ const EditUser = ({ open, onClose, user, onSuccess }: Props) => {
       <DialogTitle>Üyeyi Düzenle</DialogTitle>
 
       <DialogContent dividers>
-        <FormItems control={control} errors={errors} pricingLists={pricingLists} carrierAccounts={carrierAccountsData?.carrierAccounts ?? []} />
+        <FormItems
+          control={control}
+          errors={errors}
+          pricingLists={pricingLists}
+          carrierAccounts={carrierAccountsData?.carrierAccounts ?? []}
+          originalRole={user?.role}
+        />
       </DialogContent>
 
       <DialogActions sx={{ m: 2 }}>

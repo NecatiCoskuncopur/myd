@@ -28,21 +28,21 @@ const setUser = async (data: AdminTypes.ISetUserPayload): Promise<ResponseTypes.
 
     const { userId, ...updateData } = validatedData;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: updateData },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const existingUser = await User.findById(userId);
 
-    if (!updatedUser) {
+    if (!existingUser) {
       return {
         status: 'ERROR',
         message: NOT_FOUND,
       };
     }
+
+    if (existingUser.role === UserRole.ADMIN) {
+      delete (updateData as Partial<typeof updateData>).role;
+    }
+
+    Object.assign(existingUser, updateData);
+    await existingUser.save();
 
     return { status: 'OK', message: EDITUSER.SUCCESS };
   } catch (error) {
