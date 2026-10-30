@@ -6,7 +6,7 @@ import { CarrierTypes } from '@/types/carrier';
 const trackUpsShipping = async (params: CarrierTypes.ITrackingParams) => {
   const { credentials, trackingNumber } = params;
 
-  const authRes = await fetch(`${carrierBaseUrl.UPS}/api/oauth/v1/token`, {
+  const authRes = await fetch(`${carrierBaseUrl.UPS}/security/v1/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

@@ -1,11 +1,25 @@
 import { TrackingStatusEnum } from '@/constants';
 
-const normalize = (status: string) => status.trim().toUpperCase();
+const normalize = (status: unknown): string => {
+  if (typeof status !== 'string') {
+    return '';
+  }
+  return status.trim().toLocaleUpperCase('tr-TR');
+};
 
-const normalizeCarrierTrackingStatus = (firm: string, status: string): TrackingStatusEnum => {
+const normalizeCarrierTrackingStatus = (firm?: string | null, status?: unknown): TrackingStatusEnum => {
+  if (!firm || !status) {
+    return TrackingStatusEnum.UNKNOWN;
+  }
+
   const normalizedStatus = normalize(status);
+  const normalizedFirm = firm.trim().toUpperCase();
 
-  switch (firm) {
+  if (!normalizedStatus) {
+    return TrackingStatusEnum.UNKNOWN;
+  }
+
+  switch (normalizedFirm) {
     case 'FEDEX': {
       switch (normalizedStatus) {
         case 'SHIPMENT INFORMATION SENT':
@@ -128,6 +142,7 @@ const normalizeCarrierTrackingStatus = (firm: string, status: string): TrackingS
         case 'EXCEPTION':
         case 'HATA':
         case 'ISTISNA':
+        case 'İSTİSNA':
           return TrackingStatusEnum.EXCEPTION;
 
         default:
