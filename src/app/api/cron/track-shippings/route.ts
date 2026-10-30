@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 
 import syncShippingTrackingStatuses from '@/lib/carriers/syncShippingTrackingStatuses';
@@ -6,21 +6,13 @@ import syncShippingTrackingStatuses from '@/lib/carriers/syncShippingTrackingSta
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export const GET = async (request: NextRequest) => {
-  const secret = request.headers.get('x-cron-secret');
-
-  if (secret !== process.env.CRON_SECRET) {
-    return NextResponse.json(
-      {
-        message: 'Unauthorized',
-      },
-      {
-        status: 401,
-      },
-    );
-  }
-
+export async function GET(req: Request) {
   try {
+    const authHeader = req.headers.get('authorization');
+    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
     const result = await syncShippingTrackingStatuses();
 
     return NextResponse.json({
@@ -34,8 +26,8 @@ export const GET = async (request: NextRequest) => {
         route: '/api/cron/track-shippings',
       },
       extra: {
-        method: request.method,
-        userAgent: request.headers.get('user-agent'),
+        method: req.method,
+        userAgent: req.headers.get('user-agent'),
       },
     });
 
@@ -44,9 +36,7 @@ export const GET = async (request: NextRequest) => {
         status: 'ERROR',
         message: 'Tracking senkronizasyonu sırasında bir hata oluştu.',
       },
-      {
-        status: 500,
-      },
+      { status: 500 },
     );
   }
-};
+}
