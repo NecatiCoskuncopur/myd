@@ -6,8 +6,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import { Grid, TextField } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers';
 import moment, { Moment } from 'moment';
 import type { FormEvent } from 'react';
 
@@ -134,123 +133,121 @@ const FilterSection = ({ searchParams }: FilterSectionProps) => {
   const isFiltered = Boolean(inputs.consigneeName || inputs.consigneePhone || inputs.trackingNumber || inputs.startDate || inputs.endDate);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Grid component="form" onSubmit={handleSearch} container spacing={2}>
-        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
-          <TextField
-            label="Alıcı Adı"
-            size="small"
-            fullWidth
-            value={inputs.consigneeName}
-            onChange={event =>
-              setInputs(current => ({
-                ...current,
-                consigneeName: event.target.value,
-              }))
-            }
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
-          <TextField
-            label="Alıcı Telefon"
-            size="small"
-            fullWidth
-            value={inputs.consigneePhone}
-            onChange={event =>
-              setInputs(current => ({
-                ...current,
-                consigneePhone: event.target.value,
-              }))
-            }
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
-          <TextField
-            label="Takip No"
-            size="small"
-            fullWidth
-            value={inputs.trackingNumber}
-            onChange={event =>
-              setInputs(current => ({
-                ...current,
-                trackingNumber: event.target.value,
-              }))
-            }
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
-          <DatePicker
-            label="Başlangıç"
-            value={inputs.startDate}
-            onChange={startDate =>
-              setInputs(current => ({
-                ...current,
-                startDate,
-              }))
-            }
-            slotProps={{
-              textField: {
-                size: 'small',
-                fullWidth: true,
-              },
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
-          <DatePicker
-            label="Bitiş"
-            value={inputs.endDate}
-            onChange={endDate =>
-              setInputs(current => ({
-                ...current,
-                endDate,
-              }))
-            }
-            slotProps={{
-              textField: {
-                size: 'small',
-                fullWidth: true,
-              },
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
-          <StyledButton type="submit" fullWidth variant="contained" startIcon={<SearchIcon />}>
-            Ara
-          </StyledButton>
-        </Grid>
-
-        <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
-          <StyledButton type="button" fullWidth variant="outlined" startIcon={<RestartAltIcon />} disabled={!isFiltered} onClick={handleReset}>
-            Sıfırla
-          </StyledButton>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 2, lg: 3, xl: 1.5 }}>
-          <StyledButton
-            type="button"
-            fullWidth
-            variant="outlined"
-            color="success"
-            startIcon={<FileDownloadIcon />}
-            loading={isDownloading}
-            disabled={isDownloading}
-            onClick={handleDownloadExcel}
-            sx={{
-              fontSize: 12,
-              lineHeight: 1,
-            }}
-          >
-            Dışa Aktar
-          </StyledButton>
-        </Grid>
+    <Grid component="form" onSubmit={handleSearch} container spacing={2}>
+      <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
+        <TextField
+          label="Alıcı Adı"
+          size="small"
+          fullWidth
+          value={inputs.consigneeName}
+          onChange={event =>
+            setInputs(current => ({
+              ...current,
+              consigneeName: event.target.value,
+            }))
+          }
+        />
       </Grid>
-    </LocalizationProvider>
+
+      <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
+        <TextField
+          label="Alıcı Telefon"
+          size="small"
+          fullWidth
+          value={inputs.consigneePhone}
+          onChange={event =>
+            setInputs(current => ({
+              ...current,
+              consigneePhone: event.target.value,
+            }))
+          }
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
+        <TextField
+          label="Takip No"
+          size="small"
+          fullWidth
+          value={inputs.trackingNumber}
+          onChange={event =>
+            setInputs(current => ({
+              ...current,
+              trackingNumber: event.target.value,
+            }))
+          }
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
+        <DatePicker
+          label="Başlangıç"
+          value={inputs.startDate}
+          onChange={startDate =>
+            setInputs(current => ({
+              ...current,
+              startDate,
+            }))
+          }
+          slotProps={{
+            textField: {
+              size: 'small',
+              fullWidth: true,
+            },
+          }}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, lg: 3, xl: 1.5 }}>
+        <DatePicker
+          label="Bitiş"
+          value={inputs.endDate}
+          onChange={endDate =>
+            setInputs(current => ({
+              ...current,
+              endDate,
+            }))
+          }
+          slotProps={{
+            textField: {
+              size: 'small',
+              fullWidth: true,
+            },
+          }}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
+        <StyledButton type="submit" fullWidth variant="contained" startIcon={<SearchIcon />}>
+          Ara
+        </StyledButton>
+      </Grid>
+
+      <Grid size={{ xs: 6, md: 2, lg: 3, xl: 1.5 }}>
+        <StyledButton type="button" fullWidth variant="outlined" startIcon={<RestartAltIcon />} disabled={!isFiltered} onClick={handleReset}>
+          Sıfırla
+        </StyledButton>
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 2, lg: 3, xl: 1.5 }}>
+        <StyledButton
+          type="button"
+          fullWidth
+          variant="outlined"
+          color="success"
+          startIcon={<FileDownloadIcon />}
+          loading={isDownloading}
+          disabled={isDownloading}
+          onClick={handleDownloadExcel}
+          sx={{
+            fontSize: 12,
+            lineHeight: 1,
+          }}
+        >
+          Dışa Aktar
+        </StyledButton>
+      </Grid>
+    </Grid>
   );
 };
 

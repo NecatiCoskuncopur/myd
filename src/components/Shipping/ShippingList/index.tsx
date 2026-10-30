@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { trTR } from '@mui/x-date-pickers/locales';
 
 import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
 import getAdditionalDocuments from '@/app/actions/additionalDocument/getAdditionalDocuments';
@@ -189,7 +190,7 @@ const ShippingList = ({ accounts, pricingLists, canCreateBarcode }: ShippingList
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterMoment}>
+    <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="tr" localeText={trTR.components.MuiLocalizationProvider.defaultProps.localeText}>
       <Wrapper>
         <TableHeader title="Gönderilerim" subTitle="Gönderilerinize ait tüm detaylar ve güncel durum bilgileri." stacked>
           <FilterSection searchParams={searchParams} />
