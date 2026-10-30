@@ -11,8 +11,6 @@ import deleteAdditionalDocument from '@/app/actions/additionalDocument/deleteAdd
 import getAdditionalDocument from '@/app/actions/additionalDocument/getAdditionalDocument';
 import saveAdditionalDocument from '@/app/actions/additionalDocument/saveAdditionalDocument';
 import { AdditionalDocumentContentTypeEnum, additionalDocumentMessages, generalMessages, MAX_DOCUMENT_SIZE } from '@/constants';
-import compressImage from '@/lib/compressImage';
-import compressPdf from '@/lib/compressPdf';
 import openBase64File from '@/lib/openBase64File';
 import { useSnackbar } from '@/providers/SnackbarProvider';
 import { AdditionalDocumentTypes } from '@/types/additionalDocument';
@@ -85,7 +83,7 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
     );
   };
 
-  const handleFileChange = async (localId: string, event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (localId: string, event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     event.target.value = '';
@@ -94,31 +92,14 @@ const AdditionalDocumentsSection = (props: AdditionalDocumentsSectionProps) => {
       return;
     }
 
-    try {
-      let compressedFile = file;
-
-      if (file.type === 'application/pdf') {
-        compressedFile = await compressPdf(file);
-      }
-
-      if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        compressedFile = await compressImage(file);
-      }
-
-      const finalFile = compressedFile.size < file.size ? compressedFile : file;
-
-      if (finalFile.size > MAX_DOCUMENT_SIZE) {
-        showSnackbar(FILE.SIZE, 'error');
-
-        return;
-      }
-
-      updateRow(localId, {
-        file: finalFile,
-      });
-    } catch {
-      showSnackbar('Belge sıkıştırılırken bir hata oluştu.', 'error');
+    if (file.size > MAX_DOCUMENT_SIZE) {
+      showSnackbar(FILE.SIZE, 'error');
+      return;
     }
+
+    updateRow(localId, {
+      file,
+    });
   };
 
   const handleAddRow = () => {
