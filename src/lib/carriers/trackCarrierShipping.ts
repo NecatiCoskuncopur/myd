@@ -8,15 +8,14 @@ import trackUpsShipping from './ups/trackUpsShipping';
 type TrackingDriver = (params: CarrierTypes.ITrackingParams) => Promise<string>;
 
 const trackingDrivers: Record<string, TrackingDriver> = {
-  FEDEX: params => trackFedexShipping(params.trackingNumber),
-  UPS: trackUpsShipping,
+  FEDEX: async params => (await trackFedexShipping(params.trackingNumber)) || '',
+  UPS: async params => (await trackUpsShipping(params)) || '',
   QUICKSHIPPER: trackQuickShipperShipping,
   NAVLUNGO: trackNavlungoShipping,
 };
 
 interface TrackCarrierShippingParams extends Omit<CarrierTypes.ITrackingParams, 'credentials'> {
   firm: string;
-
   credentials: {
     key: string;
     value: string;

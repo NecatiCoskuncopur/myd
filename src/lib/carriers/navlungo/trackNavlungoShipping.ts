@@ -12,6 +12,16 @@ interface INavlungoAuthResponse {
   scope?: string;
 }
 
+interface INavlungoTrackingResponse {
+  status?: string;
+  state?: string;
+  data?: {
+    status?: string;
+    state?: string;
+  };
+  [key: string]: unknown;
+}
+
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
 const getNavlungoToken = async (credentials: CarrierTypes.ITrackingParams['credentials'], accountNumber?: string): Promise<string> => {
@@ -61,11 +71,11 @@ const getNavlungoToken = async (credentials: CarrierTypes.ITrackingParams['crede
   return token;
 };
 
-const trackNavlungoShipping = async (params: CarrierTypes.ITrackingParams): Promise<unknown | null> => {
+const trackNavlungoShipping = async (params: CarrierTypes.ITrackingParams): Promise<string> => {
   const { accountNumber, credentials, trackingNumber } = params;
 
   if (!trackingNumber) {
-    return null;
+    return '';
   }
 
   try {
@@ -83,7 +93,7 @@ const trackNavlungoShipping = async (params: CarrierTypes.ITrackingParams): Prom
       const responseText = await trackingRes.text();
 
       if (responseText.includes('shipmentnotfound.error') || trackingRes.status === 404) {
-        return null;
+        return '';
       }
 
       if (responseText.includes('too.many.requests') || trackingRes.status === 429) {
@@ -91,7 +101,7 @@ const trackNavlungoShipping = async (params: CarrierTypes.ITrackingParams): Prom
           level: 'warning',
           extra: { trackingNumber },
         });
-        return null;
+        return '';
       }
 
       const error = new Error(`Navlungo takip bilgisi alınamadı: ${responseText}`);
@@ -104,12 +114,15 @@ const trackNavlungoShipping = async (params: CarrierTypes.ITrackingParams): Prom
         },
       });
 
-      return null;
+      return '';
     }
 
-    return (await trackingRes.json()) as unknown;
+    const trackingData = (await trackingRes.json()) as INavlungoTrackingResponse;
+    const status = trackingData?.status || trackingData?.data?.status || trackingData?.state || '';
+
+    return typeof status === 'string' ? status : '';
   } catch {
-    return null;
+    return '';
   }
 };
 
